@@ -3,10 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "topics-dev": "NODE_ENV=dev node_modules/.bin/webpack-dev-server --port 2992 --content-base build/public --hot --inline --history-api-fallback --config config/webpack.topics.config.babel.js",
     "sources-dev": "NODE_ENV=dev node_modules/.bin/webpack-dev-server --port 2992 --content-base build/public --hot --inline --history-api-fallback --config config/webpack.sources.config.babel.js",
-    "topics-release": "NODE_ENV=production webpack --progress -p --config config/webpack.topics.config.babel.js",
     "sources-release": "NODE_ENV=production webpack --progress -p --config config/webpack.sources.config.babel.js",
+    "topics-dev": "NODE_ENV=dev node_modules/.bin/webpack-dev-server --port 2992 --content-base build/public --hot --inline --history-api-fallback --config config/webpack.topics.config.babel.js",
+    "topics-release": "NODE_ENV=production webpack --progress -p --config config/webpack.topics.config.babel.js",
+    "tools-dev": "NODE_ENV=dev node_modules/.bin/webpack-dev-server --port 2992 --content-base build/public --hot --inline --history-api-fallback --config config/webpack.tools.config.babel.js",
+    "tools-release": "NODE_ENV=production webpack --progress -p --config config/webpack.tools.config.babel.js",
     "test-acceptance": "react-scripts test --env=jsdom test/acceptance"
   },
   "dependencies": {

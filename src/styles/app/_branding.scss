@@ -23,6 +23,9 @@
         color: $white;
       }
     }
+    li.tools {
+      background-color: $tools-primary;
+    }
     li.dashboard {
       background-color: $dashboard-primary;
     }

@@ -8,7 +8,7 @@ import SourceMgrSubHeaderContainer from './SourceMgrSubHeaderContainer';
 
 const SourcesApp = (props) => {
   const { formatMessage } = props.intl;
-  const titleHandler = parentTitle => `${formatMessage(messages.sourcesToolShortName)} | ${parentTitle}`;
+  const titleHandler = parentTitle => `${formatMessage(messages.sourcesToolName)} | ${parentTitle}`;
   const drawer = <SourcesDrawer />;
   return (
     <div>

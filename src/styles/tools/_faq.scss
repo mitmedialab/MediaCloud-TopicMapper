@@ -1,0 +1,26 @@
+@import '../_constants';
+
+.faq {
+  margin-top: 40px;
+  text-align: left;
+
+  h2 {
+  }
+  
+  .faq-item {
+    h4 {
+      font-size: 20px;
+      background-color: $material-grey200;
+      padding: 10px;
+      display: block;
+      margin: 0px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 14px;
+      display: block;
+      margin: 0px;
+      padding: 0px 0px 20px 10px;
+    }
+  }
+}

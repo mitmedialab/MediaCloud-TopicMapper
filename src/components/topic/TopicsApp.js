@@ -8,7 +8,7 @@ import TopicsSubHeaderContainer from './TopicsSubHeaderContainer';
 
 const TopicsApp = (props) => {
   const { formatMessage } = props.intl;
-  const titleHandler = parentTitle => `${formatMessage(messages.topicsToolShortName)} | ${parentTitle}`;
+  const titleHandler = parentTitle => `${formatMessage(messages.topicsToolName)} | ${parentTitle}`;
   const drawer = <TopicsDrawer />;
   return (
     <div>

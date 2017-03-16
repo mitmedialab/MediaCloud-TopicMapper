@@ -4,6 +4,12 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import messages from '../../../resources/messages';
 import UserMenuContainer from './UserMenuContainer';
 
+export const TOPICS_URL = 'https://topics.mediacloud.org/';
+export const DASHBOARD_URL = 'https://dashboard.mediacloud.org/';
+export const SOURCES_URL = 'https://sources.mediacloud.org/';
+export const BLOG_URL = 'http://mediacloud.org/';
+export const TOOLS_URL = 'https://tools.mediacloud.org/';
+
 const BrandToolbar = (props) => {
   const { backgroundColor, drawer } = props;
   const { formatMessage } = props.intl;
@@ -14,36 +20,44 @@ const BrandToolbar = (props) => {
         <Row>
           <Col lg={10}>
             <ul>
+              <li className="tools">
+                <a
+                  href={TOPICS_URL}
+                  title={formatMessage(messages.toolsAppDescription)}
+                >
+                  <FormattedMessage {...messages.toolsAppName} />
+                </a>
+              </li>
               <li className="dashboard">
                 <a
-                  href="https://dashboard.mediacloud.org/"
+                  href={DASHBOARD_URL}
                   title={formatMessage(messages.dashboardToolDescription)}
                 >
-                  <FormattedMessage {...messages.dashboardToolShortName} />
+                  <FormattedMessage {...messages.dashboardToolName} />
                 </a>
               </li>
               <li className="topics">
                 <a
-                  href="https://topics.mediacloud.org/"
+                  href={TOPICS_URL}
                   title={formatMessage(messages.topicsToolDescription)}
                 >
-                  <FormattedMessage {...messages.topicsToolShortName} />
+                  <FormattedMessage {...messages.topicsToolName} />
                 </a>
               </li>
               <li className="sources">
                 <a
-                  href="https://sources.mediacloud.org/"
+                  href={SOURCES_URL}
                   title={formatMessage(messages.sourcesToolDescription)}
                 >
-                  <FormattedMessage {...messages.sourcesToolShortName} />
+                  <FormattedMessage {...messages.sourcesToolName} />
                 </a>
               </li>
               <li className="blog">
                 <a
-                  href="http://mediacloud.org/"
+                  href={BLOG_URL}
                   title={formatMessage(messages.blogToolDescription)}
                 >
-                  <FormattedMessage {...messages.blogToolShortName} />
+                  <FormattedMessage {...messages.blogToolName} />
                 </a>
               </li>
             </ul>

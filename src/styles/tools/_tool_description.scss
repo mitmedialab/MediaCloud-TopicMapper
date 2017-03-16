@@ -1,0 +1,28 @@
+@import '../_constants';
+
+.tool-description {
+  text-align: center;
+  color: $white;
+  padding: 25px;
+  cursor: pointer;
+
+  p {
+    font-size: 13px;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 25px;
+  }
+
+  &.tool-dashboard {
+    background-color: $dashboard-primary;
+  }
+
+  &.tool-topics {
+    background-color: $topics-primary;
+  }
+
+  &.tool-sources {
+    background-color: $sources-primary;
+  }
+
+}
