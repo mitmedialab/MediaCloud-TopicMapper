@@ -180,6 +180,8 @@ def _create_or_update_sources(source_list_from_csv, create_new):
         for idx, response in enumerate(creation_responses):
             src = sources_to_create[idx]
             src['status'] = 'found and updated this source' if response['status'] == 'existing' else response['status']
+            src['media_id'] = response['media_id'] if 'media_id' in response else None
+            src['name'] = response['url']
             if 'error' in response:
                 src['status_message'] = response['error']
             else:
@@ -216,7 +218,7 @@ def _create_or_update_sources(source_list_from_csv, create_new):
             if source['url'] in info_by_url:
                 info_by_url[source['url']].update(source)
         update_metadata_for_sources(info_by_url)
-        return results, info_by_url, errors
+        return results, info_by_url.values(), errors
 
     # if a successful update, just return what we have, success
     update_metadata_for_sources(successful)
