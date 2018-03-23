@@ -12,7 +12,7 @@ import { selectBySearchParams, fetchSampleSearches, updateQuerySourceLookupInfo,
   fetchQuerySourcesByIds, fetchQueryCollectionsByIds, demoQuerySourcesByIds, demoQueryCollectionsByIds } from '../../actions/explorerActions';
 // import { FETCH_INVALID, FETCH_SUCCEEDED } from '../../lib/fetchConstants';
 import { DEFAULT_COLLECTION_OBJECT_ARRAY, autoMagicQueryLabel, generateQueryParamString, decodeQueryParamString } from '../../lib/explorerUtil';
-import { getPastTwoWeeksDateRange } from '../../lib/dateUtil';
+import { getDateRange, solrFormat, PAST_MONTH } from '../../lib/dateUtil';
 import { notEmptyString } from '../../lib/formValidators';
 
 const localMessages = {
@@ -95,12 +95,12 @@ function composeUrlBasedQueryContainer() {
         let extraDefaults = {};
         // add in an index, label, and color if they are not there
         if (!isLoggedIn) {  // and demo mode needs some extra stuff too
-          const defaultDates = getPastTwoWeeksDateRange();
+          const dateObj = getDateRange(PAST_MONTH);
           extraDefaults = {
             sources: [],
             collections: DEFAULT_COLLECTION_OBJECT_ARRAY,
-            startDate: defaultDates.start,
-            endDate: defaultDates.end,
+            startDate: solrFormat(dateObj.start),
+            endDate: solrFormat(dateObj.end),
           };
         } else {
           extraDefaults = { autoNaming };

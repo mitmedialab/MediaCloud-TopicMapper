@@ -63,7 +63,7 @@ class SourceDetailsContainer extends React.Component {
 */
     const endDate = getCurrentDate();
     const startDate = oneMonthBefore(endDate);
-    const explorerUrl = urlToExplorerQuery(source.name, source.name, source.id, '', startDate, endDate);
+    const explorerUrl = urlToExplorerQuery(source.name, '*', source.id, '', startDate, endDate);
     window.open(explorerUrl, '_blank');
   }
 

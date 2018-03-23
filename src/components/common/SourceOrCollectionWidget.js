@@ -14,10 +14,9 @@ const SourceOrCollectionWidget = (props) => {
     <div
       className={`media-widget ${typeClass}`}
       key={`media-widget${objectId}`}
-      onTouchTap={onClick}
     >
       <Col>
-        {name}
+        <a role="button" tabIndex="0" onClick={onClick}>{name}</a>
         {children}
       </Col>
       <Col>

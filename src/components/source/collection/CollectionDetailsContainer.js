@@ -39,7 +39,7 @@ class CollectionDetailsContainer extends React.Component {
     const { collection } = this.props;
     const endDate = getCurrentDate();
     const startDate = oneMonthBefore(endDate);
-    const explorerUrl = urlToExplorerQuery(collection.label, collection.label, '', collection.id, startDate, endDate);
+    const explorerUrl = urlToExplorerQuery(collection.label, '*', '', collection.id, startDate, endDate);
     window.open(explorerUrl, '_blank');
   }
 

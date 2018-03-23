@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import Link from 'react-router/lib/Link';
 import { getUserRoles, hasPermissions, PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import { generateQueryParamString } from '../../../lib/explorerUtil';
-import { getPastTwoWeeksDateRange } from '../../../lib/dateUtil';
+import { getDateRange, PAST_MONTH, solrFormat } from '../../../lib/dateUtil';
 import { assetUrl } from '../../../lib/assetUtil';
 
 const SampleSearchItem = (props) => {
@@ -18,14 +18,14 @@ const SampleSearchItem = (props) => {
     urlParamString = `demo/${search.id}`;
   } else {
     // use default dates, collection, sources. The logged in user can change in url or in the querybuilder
-    const dateObj = getPastTwoWeeksDateRange();
+    const dateObj = getDateRange(PAST_MONTH);
     urlParamString = generateQueryParamString(search.queries.map(q => ({
       index: q.index,
       label: q.label,
       q: q.q,
       color: q.color,
-      startDate: dateObj.start,
-      endDate: dateObj.end,
+      startDate: solrFormat(dateObj.start),
+      endDate: solrFormat(dateObj.end),
       sources: [],
       collections: q.collections,
     })));

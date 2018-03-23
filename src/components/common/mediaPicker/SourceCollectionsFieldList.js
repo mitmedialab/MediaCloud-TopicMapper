@@ -6,11 +6,22 @@ import { reduxForm, FieldArray, Field, propTypes } from 'redux-form';
 import composeHelpfulContainer from '../HelpfulContainer';
 import composeIntlForm from '../../common/IntlForm';
 import SourceOrCollectionWidget from '../../common/SourceOrCollectionWidget';
+import { urlToSource, urlToCollection } from '../../../lib/urlUtil';
 
 const localMessages = {
   noMedia: { id: 'explorer.results.attention.noMedia', defaultMessage: 'All media (generally not a good idea)' },
   helpTitleMsg: { id: 'explorer.results.attention.helpTitle', defaultMessage: 'Don\'t Search All Media' },
   helpContentMsg: { id: 'explorer.results.attention.helpMessage', defaultMessage: 'Our collection of media sources is closely aligned with topics we have researched before, and doesn\'t represent a balanced list of media sources that represent the media ecosystem online. For instance, because we have done deep research on gender and reproductive rights, we have an over-representation of blogs and media outlets that cover those issues. The same is true for public health and international development. You should try to avoid searching all sources. Click \'Add Media\' and pick some specific sources, or country-based collections to localize your search and get more representative results.' },
+};
+
+const goToSourceManager = (obj) => {
+  let url = null;
+  if (obj.tag_set_name === 'collection') {
+    url = urlToCollection(obj.id);
+  } else {
+    url = urlToSource(obj.id);
+  }
+  window.open(url, '_blank');
 };
 
 const renderCollectionSelector = ({ allowRemoval, showWarningIfEmpty, helpButton, fields, onDelete }) => {
@@ -40,7 +51,7 @@ const renderCollectionSelector = ({ allowRemoval, showWarningIfEmpty, helpButton
               tempObj = info.input.value;
             }
             return (
-              <SourceOrCollectionWidget object={tempObj} onDelete={handleDelete} />
+              <SourceOrCollectionWidget object={tempObj} onClick={() => goToSourceManager(tempObj)} onDelete={handleDelete} />
             );
           }}
         />

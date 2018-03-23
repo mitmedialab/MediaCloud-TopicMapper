@@ -7,7 +7,8 @@ import composeAsyncContainer from '../../common/AsyncContainer';
 import composeHelpfulContainer from '../../common/HelpfulContainer';
 import messages from '../../../resources/messages';
 import PeriodicEditableWordCloudDataCard from '../../common/PeriodicEditableWordCloudDataCard';
-import { calculateTimePeriods } from '../../../lib/dateUtil';
+import { calculateTimePeriods, getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
+import { urlToExplorerQuery } from '../../../lib/urlUtil';
 
 const localMessages = {
   title: { id: 'source.summary.topWords.title', defaultMessage: 'Top Words' },
@@ -21,11 +22,13 @@ class SourceTopWordsContainer extends React.Component {
     const { fetchData } = this.props;
     fetchData(timePeriod, dateQuery);
   }
-  handleWordClick = (word) => {
+  defaultOnWordClick = (word) => {
     const { source } = this.props;
+    const endDate = getCurrentDate();
+    const startDate = oneMonthBefore(endDate);
     const searchStr = `${word.stem}*`;
-    const url = `https://dashboard.mediacloud.org/#query/["${searchStr}"]/[{"sources":[${source.media_id}]}]/["${source.health.start_date.substring(0, 10)}"]/["${source.health.end_date.substring(0, 10)}"]/[{"uid":3,"name":"${source.name}","color":"55868A"}]`;
-    window.open(url, '_blank');
+    const explorerUrl = urlToExplorerQuery(source.name, searchStr, source.media_id, '', startDate, endDate);
+    window.open(explorerUrl, '_blank');
   }
   render() {
     const { source, words, helpButton, timePeriod } = this.props;
@@ -38,7 +41,7 @@ class SourceTopWordsContainer extends React.Component {
         selectedTimePeriod={timePeriod}
         downloadUrl={downloadUrl}
         targetURL={`/sources/${source.media_id}`}
-        onViewModeClick={this.handleWordClick}
+        onViewModeClick={this.defaultOnWordClick}
         title={formatMessage(localMessages.title)}
         domId={`media-source-top-words-${source.media_id}`}
         width={520}

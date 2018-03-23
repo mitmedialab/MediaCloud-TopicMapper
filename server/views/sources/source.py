@@ -99,7 +99,6 @@ def _media_source_details(media_id):
     info['id'] = media_id
     return info
 
-
 def _safely_get_health_start_date(health):
     """
     The health might be empty, so call this to default to 1 year ago if it is
@@ -161,9 +160,7 @@ def source_sentence_count_csv(media_id):
 def api_media_source_sentence_count(media_id):
     health = _cached_media_source_health(user_mediacloud_key(), media_id)
     counts = cached_recent_sentence_counts(user_mediacloud_key(),
-                                           ['media_id:'+str(media_id)],
-                                           _safely_get_health_start_date(health),
-                                           _safely_get_health_end_date(health))
+                                           ['media_id:'+str(media_id)])
     info = {
         'health': health,
         'sentenceCounts': counts

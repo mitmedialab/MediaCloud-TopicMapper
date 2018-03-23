@@ -244,7 +244,7 @@ class EditableWordCloudDataCard extends React.Component {
     const { words, explore, onViewModeClick, width, height, maxFontSize, minFontSize, domId, actionsAsLinksUnderneath,
       subHeaderContent, textAndLinkColor, border } = this.props;
     let className = 'editable-word-cloud-datacard';
-    let editingClickHandler = onViewModeClick;
+    let editingClickHandler = onViewModeClick; // default from parent container
     const textColor = textAndLinkColor || getBrandDarkColor();
     let wordsArray = words.map(w => ({ ...w, display: true }));
     let editingWarning;
@@ -369,7 +369,7 @@ EditableWordCloudDataCard.propTypes = {
   actionMenuHeaderText: PropTypes.string, // text to put as a subheader in the action menu popup
   includeTopicWord2Vec: PropTypes.bool,   // show an option to draw a word2vec map basde on w2v_x / w2v_y from topic-specific model
   hideGoogleWord2Vec: PropTypes.bool,        // show an option to draw a word2vec map basde on w2v_x / w2v_y from GoogleNews model
-  onViewModeClick: PropTypes.func.isRequired,
+  onViewModeClick: PropTypes.func.isRequired, // word click in View versus Edit Mode
   actionsAsLinksUnderneath: PropTypes.bool, // show the actions as links under the viz (ie. in a SummarizedVisualization card)
   domId: PropTypes.string.isRequired,     // unique dom id needed to support CSV downloading
   // from compositional chain

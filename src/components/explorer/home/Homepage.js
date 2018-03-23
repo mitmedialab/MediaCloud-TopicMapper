@@ -9,7 +9,7 @@ import DataCard from '../../common/DataCard';
 import LoginForm from '../../user/LoginForm';
 import SearchForm from './SearchForm';
 import SampleSearchContainer from './SampleSearchContainer';
-import { getPastTwoWeeksDateRange } from '../../../lib/dateUtil';
+import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { getUserRoles, hasPermissions, PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import { DEFAULT_COLLECTION_OBJECT_ARRAY, generateQueryParamString, autoMagicQueryLabel } from '../../../lib/explorerUtil';
 import { emptyString } from '../../../lib/formValidators';
@@ -93,11 +93,11 @@ const mapDispatchToProps = dispatch => ({
     let urlParamString;
     const keyword = emptyString(values.keyword) ? '' : values.keyword;
     if (hasPermissions(getUserRoles(user), PERMISSION_LOGGED_IN)) {
-      const defaultDates = getPastTwoWeeksDateRange();
+      const defaultDates = getDateRange(PAST_MONTH);
       const queries = [{
         q: keyword,
-        startDate: defaultDates.start,
-        endDate: defaultDates.end,
+        startDate: solrFormat(defaultDates.start),
+        endDate: solrFormat(defaultDates.end),
         color: schemeCategory10[0],
         collections: DEFAULT_COLLECTION_OBJECT_ARRAY,
         sources: [],
