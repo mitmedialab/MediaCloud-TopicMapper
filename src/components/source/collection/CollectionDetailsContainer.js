@@ -12,10 +12,12 @@ import CollectionSourceRepresentation from './CollectionSourceRepresentation';
 import CollectionSimilarContainer from './CollectionSimilarContainer';
 import CollectionMetadataCoverageSummaryContainer from './CollectionMetadataCoverageSummaryContainer';
 import { hasPermissions, getUserRoles, PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
+import { getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
+import { urlToExplorerQuery } from '../../../lib/urlUtil';
 import { WarningNotice } from '../../common/Notice';
 
 const localMessages = {
-  searchNow: { id: 'collection.details.searchNow', defaultMessage: 'Search on the Dashboard' },
+  searchNow: { id: 'collection.details.searchNow', defaultMessage: 'Search in Explorer' },
   collectionDetailsTitle: { id: 'collection.details.title', defaultMessage: 'Collection: {name}' },
   noHealth: { id: 'collection.details.noHealth', defaultMessage: 'Sorry, we can\'t show collection-level health yet.' },
   sourceTableTitle: { id: 'collection.details.sourceTable.title', defaultMessage: 'Sources' },
@@ -33,10 +35,12 @@ const localMessages = {
 
 class CollectionDetailsContainer extends React.Component {
 
-  searchOnDashboard = () => {
+  searchOnExplorer = () => {
     const { collection } = this.props;
-    const dashboardUrl = `https://dashboard.mediacloud.org/#query/["*"]/[{"sets":[${collection.tags_id}]}]/[]/[]/[{"uid":1,"name":"${collection.label}","color":"55868A"}]`;
-    window.open(dashboardUrl, '_blank');
+    const endDate = getCurrentDate();
+    const startDate = oneMonthBefore(endDate);
+    const explorerUrl = urlToExplorerQuery(collection.label, collection.label, '', collection.id, startDate, endDate);
+    window.open(explorerUrl, '_blank');
   }
 
   render() {
@@ -61,7 +65,7 @@ class CollectionDetailsContainer extends React.Component {
             </p>
           </Col>
           <Col lg={4}>
-            <RaisedButton label={formatMessage(localMessages.searchNow)} primary onClick={this.searchOnDashboard} />
+            <RaisedButton label={formatMessage(localMessages.searchNow)} primary onClick={this.searchOnExplorer} />
           </Col>
         </Row>
         <Row>

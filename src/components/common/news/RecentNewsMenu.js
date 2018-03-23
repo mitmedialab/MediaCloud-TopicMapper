@@ -34,7 +34,7 @@ class RecentNewsMenu extends React.Component {
   };
 
   render() {
-    const { newsItems, changeDate } = this.props;
+    const { newsItems, subTitle } = this.props;
     return (
       <div className="recent-news-menu">
         <NotificationsButton onClick={this.handleToggle} color={'#FFFFFF'} />
@@ -46,7 +46,7 @@ class RecentNewsMenu extends React.Component {
           onRequestClose={this.handleRequestClose}
         >
           <div className="recent-news-menu-content">
-            <h3> <FormattedMessage {...messages.recentNews} /> <small>{changeDate}</small></h3>
+            <h3> <FormattedMessage {...messages.recentNews} /> <small>{subTitle}</small></h3>
             <div className="recent-news-menu-items">
               {newsItems.map((item, idx) => <RecentNewsMenuItem item={item} key={`item${idx}`} />)}
             </div>
@@ -64,7 +64,7 @@ class RecentNewsMenu extends React.Component {
 RecentNewsMenu.propTypes = {
   // from parent
   newsItems: PropTypes.array.isRequired,
-  changeDate: PropTypes.string.isRequired,
+  subTitle: PropTypes.string.isRequired,
 };
 
 export default

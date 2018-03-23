@@ -6,7 +6,6 @@ import composeAsyncContainer from '../../common/AsyncContainer';
 import { fetchSourceSentenceCount } from '../../../actions/sourceActions';
 import DataCard from '../../common/DataCard';
 import AttentionOverTimeChart from '../../vis/AttentionOverTimeChart';
-import { getBrandDarkColor } from '../../../styles/colors';
 
 import messages from '../../../resources/messages';
 import composeHelpfulContainer from '../../common/HelpfulContainer';
@@ -16,7 +15,7 @@ const localMessages = {
   title: { id: 'sentenceCount.title', defaultMessage: 'Sentences in this Media Source' },
   helpTitle: { id: 'source.summary.sentenceCount.help.title', defaultMessage: 'About Sentences Over Time' },
   helpText: { id: 'source.summary.sentenceCount.help.text',
-    defaultMessage: '<p>This chart shows you the number of sentences we have collected from this source over time. Click on the line to see a summary of the content in this source for that date.</p>',
+    defaultMessage: '<p>This chart shows you the number of sentences we have collected from this source over time. Click on the line to see a summary of the content in this source for that date. The grey vertical lines indicate weeks where we didn\'t get as many stories as we\'d expect to.</p>',
   },
 };
 
@@ -51,7 +50,6 @@ class SourceSentenceCountContainer extends React.Component {
           health={health}
           height={250}
           filename={filename}
-          lineColor={getBrandDarkColor()}
           onDataPointClick={this.handleDataPointClick}
         />
       </DataCard>

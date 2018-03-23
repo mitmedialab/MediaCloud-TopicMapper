@@ -64,7 +64,7 @@ def source_stats(media_id):
     results['story_count'] = total_story_count
     # health
     media_health = _cached_media_source_health(username, media_id)
-    results['is_healthy'] = media_health['is_healthy'] if 'is_healthy' in media_health else None
+    results['num_stories_90'] = media_health['num_stories_90'] if 'num_stories_90' in media_health else None
     results['start_date'] = media_health['start_date'] if 'start_date' in media_health else None
     info = _media_source_details(media_id)
     user_can_see_private_collections = user_has_auth_role(ROLE_MEDIA_EDIT)

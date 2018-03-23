@@ -48,6 +48,11 @@ export function oneWeekLater(date) {
   return weekLater;
 }
 
+export function oneMonthBefore(date) {
+  const monthBefore = moment(date).subtract(1, 'month').format(TOPIC_DATE_FORMAT);
+  return monthBefore;
+}
+
 export function isMoreThanAYearInPast(dateInPast) {
   const yearPriorToNow = moment().subtract(1, 'years');
   return yearPriorToNow.isAfter(dateInPast);

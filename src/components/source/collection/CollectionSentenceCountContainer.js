@@ -6,7 +6,6 @@ import composeAsyncContainer from '../../common/AsyncContainer';
 import { fetchCollectionSentenceCount } from '../../../actions/sourceActions';
 import DataCard from '../../common/DataCard';
 import AttentionOverTimeChart from '../../vis/AttentionOverTimeChart';
-import { getBrandDarkColor } from '../../../styles/colors';
 
 import messages from '../../../resources/messages';
 import composeHelpfulContainer from '../../common/HelpfulContainer';
@@ -51,7 +50,6 @@ class CollectionSentenceCountContainer extends React.Component {
           health={health}
           height={250}
           filename={filename}
-          lineColor={getBrandDarkColor()}
           onDataPointClick={this.handleDataPointClick}
         />
       </DataCard>

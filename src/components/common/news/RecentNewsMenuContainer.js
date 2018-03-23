@@ -6,12 +6,19 @@ import { fetchRecentNews } from '../../../actions/systemActions';
 import composeAsyncContainer from '../../common/AsyncContainer';
 import RecentNewsMenu from './RecentNewsMenu';
 
+const MAX_ITEMS = 8;
+
 const RecentNewsMenuContainer = (props) => {
   const { recentNews } = props;
-  const listOfNotes = recentNews.map(release => release.notes);
-  const newsItems = [].concat([], ...listOfNotes);
-  const changeDate = moment(recentNews[0].date, 'YYYY-MM-DD').fromNow();
-  return <RecentNewsMenu newsItems={newsItems.slice(0, 8)} changeDate={changeDate} />;
+  const latestRelease = recentNews[0];
+  const newsItems = latestRelease.notes;
+  const changeDate = moment(latestRelease.date, 'YYYY-MM-DD').fromNow();
+  return (
+    <RecentNewsMenu
+      newsItems={newsItems.slice(0, MAX_ITEMS)}
+      subTitle={changeDate}
+    />
+  );
 };
 
 RecentNewsMenuContainer.propTypes = {

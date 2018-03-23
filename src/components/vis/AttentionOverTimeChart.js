@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import ReactHighcharts from 'react-highcharts';
 import initHighcharts from './initHighcharts';
+import { getBrandDarkColor } from '../../styles/colors';
 
 initHighcharts();
 
@@ -33,6 +34,7 @@ class AttentionOverTimeChart extends React.Component {
     const { formatMessage, formatNumber } = this.props.intl;
     const config = {
       title: formatMessage(localMessages.chartTitle),
+      lineColor: getBrandDarkColor(),
       chart: {
         type: 'spline',
         zoomType: 'x',
@@ -92,6 +94,9 @@ class AttentionOverTimeChart extends React.Component {
     if ((health !== null) && (health !== undefined)) {
       config.xAxis.plotLines = health.map(h => ({ className: 'health-plot-line', ...h }));
     }
+    if ((lineColor !== null) && (lineColor !== undefined)) {
+      config.lineColor = lineColor;
+    }
     if (onDataPointClick) {
       config.plotOptions.series.allowPointSelect = true;
       config.plotOptions.series.point = {
@@ -120,7 +125,7 @@ class AttentionOverTimeChart extends React.Component {
       allSeries = [{
         id: 0,
         name: filename,
-        color: lineColor,
+        color: config.lineColor,
         data: values,
         pointStart: dates[0],
         pointInterval: intervalMs,

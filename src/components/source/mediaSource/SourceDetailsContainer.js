@@ -12,14 +12,15 @@ import SourceGeographyContainer from './SourceGeographyContainer';
 import { anyCollectionTagSets } from '../../../lib/tagUtil';
 import { SOURCE_SCRAPE_STATE_QUEUED, SOURCE_SCRAPE_STATE_RUNNING, SOURCE_SCRAPE_STATE_COMPLETED, SOURCE_SCRAPE_STATE_ERROR } from '../../../reducers/sources/sources/selected/sourceDetails';
 import { InfoNotice, ErrorNotice, WarningNotice } from '../../common/Notice';
-import { jobStatusDateToMoment } from '../../../lib/dateUtil';
+import { jobStatusDateToMoment, getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
+import { urlToExplorerQuery } from '../../../lib/urlUtil';
 import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import Permissioned from '../../common/Permissioned';
 import AppButton from '../../common/AppButton';
 import SourceMetadataStatBar from '../../common/SourceMetadataStatBar';
 
 const localMessages = {
-  searchNow: { id: 'source.basicInfo.searchNow', defaultMessage: 'Search on the Dashboard' },
+  searchNow: { id: 'source.basicInfo.searchNow', defaultMessage: 'Search in Explorer' },
   sourceDetailsTitle: { id: 'source.details.title', defaultMessage: 'Media Source: {name}' },
   sourceDetailsCollectionsTitle: { id: 'source.details.collections.title', defaultMessage: 'Collections' },
   sourceDetailsCollectionsIntro: { id: 'source.details.collections.intro',
@@ -48,16 +49,22 @@ const localMessages = {
 
 class SourceDetailsContainer extends React.Component {
 
-  searchOnDashboard = () => {
+  searchInExplorer = () => {
     const { source } = this.props;
-    let dashboardUrl = `https://dashboard.mediacloud.org/#query/["*"]/[{"sources":[${source.media_id}]}]/`;
+    /* let explorerUrl = `https://explorer.mediacloud.org/#/queries/search?q=[{"sources":[${source.media_id}], "collections":[], `;
     if (source.health && source.health.start_date && source.health.end_date) {
-      dashboardUrl += `["${source.health.start_date.substring(0, 10)}"]/["${source.health.end_date.substring(0, 10)}"]/`;
+      explorerUrl += `"startDate","${source.health.start_date.substring(0, 10)}","endDate": "${source.health.end_date.substring(0, 10)}"`;
     } else {
-      dashboardUrl += '[""]/[""]/';
+      explorerUrl += ''; // should pick up default dates
     }
-    dashboardUrl += `[{"uid":3,"name":"${source.name}","color":"55868A"}]`;
-    window.open(dashboardUrl, '_blank');
+    explorerUrl += `"label": ${encodeURIComponent('*')}`.concat(', ');
+    explorerUrl += `"q": ${encodeURIComponent('*')}`.concat(', ');
+    explorerUrl += `"color": ${encodeURIComponent(source.color)}`.concat('}]');
+*/
+    const endDate = getCurrentDate();
+    const startDate = oneMonthBefore(endDate);
+    const explorerUrl = urlToExplorerQuery(source.name, source.name, source.id, '', startDate, endDate);
+    window.open(explorerUrl, '_blank');
   }
 
   render() {
@@ -134,7 +141,7 @@ class SourceDetailsContainer extends React.Component {
             </p>
           </Col>
           <Col lg={3} xs={12} className="search-section">
-            <AppButton label={formatMessage(localMessages.searchNow)} primary onClick={this.searchOnDashboard} />
+            <AppButton label={formatMessage(localMessages.searchNow)} primary onClick={this.searchInExplorer} />
             <p>
               <a href={source.url}> {source.url} </a>
             </p>

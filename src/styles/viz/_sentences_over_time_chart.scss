@@ -2,10 +2,14 @@
 
 .sentences-over-time-chart {
   .health-plot-line {
-    fill: $warning-color;
+    fill: $material-grey500 !important;
   }
 }
 
 .sentences-over-time-chart-with-node-info {
     cursor: pointer !important;
+
+    .health-plot-line {
+        fill: $material-grey500 !important;
+    }
 }
