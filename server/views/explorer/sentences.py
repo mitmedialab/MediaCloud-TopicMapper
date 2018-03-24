@@ -42,8 +42,8 @@ def api_explorer_sentences_list():
 # handles search id query or keyword query
 @api_error_handler
 def api_explorer_demo_sentences_count():
-    two_weeks_before_now = datetime.datetime.now() - datetime.timedelta(days=14)
-    start_date = two_weeks_before_now.strftime("%Y-%m-%d")
+    one_month_before_now = datetime.datetime.now() - datetime.timedelta(days=30)
+    start_date = one_month_before_now.strftime("%Y-%m-%d")
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
     search_id = int(request.args['search_id']) if 'search_id' in request.args else None
@@ -73,8 +73,8 @@ def api_explorer_sentence_count_csv():
     if 'searchId' in data:
         solr_query = parse_as_sample(data['searchId'], data['index'])
         filename = filename  # don't have this info + current_query['q']
-        two_weeks_before_now = datetime.datetime.now() - datetime.timedelta(days=14)
-        start_date = two_weeks_before_now.strftime("%Y-%m-%d")
+        one_month_before_now = datetime.datetime.now() - datetime.timedelta(days=30)
+        start_date = one_month_before_now.strftime("%Y-%m-%d")
         end_date = datetime.datetime.now().strftime("%Y-%m-%d")
     else:
         query_object = json.loads(data['q'])

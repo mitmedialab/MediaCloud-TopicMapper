@@ -15,7 +15,7 @@ import { updateFeedback } from '../../../actions/appActions';
 import QueryHelpDialog from '../../common/help/QueryHelpDialog';
 import { selectQuery, updateQuery, addCustomQuery, loadUserSearches, saveUserSearch, deleteUserSearch, markAsDeletedQuery, copyAndReplaceQueryField } from '../../../actions/explorerActions';
 import { AddQueryButton } from '../../common/IconButton';
-import { getPastTwoWeeksDateRange } from '../../../lib/dateUtil';
+import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { DEFAULT_COLLECTION_OBJECT_ARRAY, autoMagicQueryLabel, generateQueryParamString, KEYWORD, DATES, MEDIA } from '../../../lib/explorerUtil';
 
 const localMessages = {
@@ -210,7 +210,9 @@ class QueryPicker extends React.Component {
       // provide the add Query button, load with default values when Added is clicked
       if (isLoggedIn || isEditable) {
         const colorPallette = idx => d3.schemeCategory10[idx % 10];
-        const dateObj = getPastTwoWeeksDateRange();
+        const dateObj = getDateRange(PAST_MONTH);
+        dateObj.start = solrFormat(dateObj.start);
+        dateObj.end = solrFormat(dateObj.end);
         if (unDeletedQueries.length > 0) {
           dateObj.start = unDeletedQueries[unDeletedQueries.length - 1].startDate;
           dateObj.end = unDeletedQueries[unDeletedQueries.length - 1].endDate;

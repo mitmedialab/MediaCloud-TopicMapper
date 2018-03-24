@@ -101,8 +101,8 @@ def concatenate_query_and_dates(start_date, end_date):
 def parse_query_with_keywords(args):
     solr_query = ''
     # default dates
-    two_weeks_before_now = datetime.datetime.now() - datetime.timedelta(days=14)
-    default_start_date = two_weeks_before_now.strftime("%Y-%m-%d")
+    one_month_before_now = datetime.datetime.now() - datetime.timedelta(days=30)
+    default_start_date = one_month_before_now.strftime("%Y-%m-%d")
     default_end_date = datetime.datetime.now().strftime("%Y-%m-%d")
     # should I break this out into just a demo routine where we add in the start/end date without relying that the
     # try statement will fail?
@@ -178,8 +178,8 @@ def parse_as_sample(search_id_or_query, query_id=None):
 # this is only called when handling a sample search
 def parse_query_with_args_and_sample_search(args_or_query, current_search) :
     # default dates
-    two_weeks_before_now = datetime.datetime.now() - datetime.timedelta(days=14)
-    start_date = two_weeks_before_now.strftime("%Y-%m-%d")
+    one_month_before_now = datetime.datetime.now() - datetime.timedelta(days=30)
+    default_start_date = one_month_before_now.strftime("%Y-%m-%d")
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
     try:
         if isinstance(args_or_query, int): # special handling for an indexed query
