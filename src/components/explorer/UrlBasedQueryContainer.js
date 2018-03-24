@@ -53,6 +53,10 @@ function composeUrlBasedQueryContainer() {
             // console.log('  got media info from server, ready!');
             this.setState({ queryInStore: true });  // mark that the parsing process has finished
           }
+          if (nextProps.queries.filter(q => q.sources.length > 0).length === 0 && nextProps.queries.filter(q => q.collections.length > 0).length === 0) {
+            this.setState({ queryInStore: true });
+            updateUrl(nextProps.queries, isLoggedIn);
+          }
         } else if (lastSearchTime !== nextProps.lastSearchTime) {
           updateUrl(nextProps.queries, isLoggedIn);
         } else {

@@ -17,7 +17,7 @@ import ActiveFiltersContainer from './ActiveFiltersContainer';
 import { asyncContainerize } from '../../common/AsyncContainer';
 import ModifyTopicDialog from './ModifyTopicDialog';
 import { LEVEL_WARNING } from '../../common/Notice';
-import { urlToDashboardQuery /* , urlToExplorerQuery */ } from '../../../lib/urlUtil';
+import { urlToDashboardQuery, urlToExplorerQuery } from '../../../lib/urlUtil';
 
 const REMOVE_FOCUS = 0;
 
@@ -50,7 +50,8 @@ class TopicFilterControlBar extends React.Component {
       subControls = <TimespanSelectorContainer topicId={topicId} location={location} filters={filters} />;
     }
     // set up links to jump to other tools
-    let jumps;
+    let jumpsDashboard;
+    let jumpsExplorer;
     if (selectedTimespan) {
       const queryName = `${topic.name}`;
       let queryKeywords = `{~ timespan:${filters.timespanId} }`;
@@ -67,11 +68,21 @@ class TopicFilterControlBar extends React.Component {
       ];
       const dashboardUrl = urlToDashboardQuery(...args);
       // const explorerUrl = urlToExplorerQuery(...args);
-      jumps = (
+      jumpsDashboard = (
         <span className="jumps">
           <a target="top" href={dashboardUrl}>
             <ExploreButton />
             <FormattedMessage {...localMessages.jumpToDashboard} />
+          </a>
+        </span>
+      );
+      const explorerUrl = urlToExplorerQuery(...args);
+      // const explorerUrl = urlToExplorerQuery(...args);
+      jumpsExplorer = (
+        <span className="jumps">
+          <a target="top" href={explorerUrl}>
+            <ExploreButton />
+            <FormattedMessage {...localMessages.jumpToExplorer} />
           </a>
         </span>
       );
@@ -94,7 +105,8 @@ class TopicFilterControlBar extends React.Component {
                     onSpiderRequest={handleSpiderRequest}
                   />
                 </Permissioned>
-                {jumps}
+                {jumpsDashboard}
+                {jumpsExplorer}
               </Col>
               <Col lg={6} className="right">
                 <FilterButton onClick={() => handleFilterToggle()} tooltip={formatMessage(localMessages.filterTopic)} />

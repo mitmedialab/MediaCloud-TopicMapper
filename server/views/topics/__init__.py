@@ -11,7 +11,7 @@ SORT_INLINK = 'inlink'
 
 TOPICS_TEMPLATE_PROPS = ['media_id', 'name', 'url', 'story_count',
                          'media_inlink_count', 'sum_media_inlink_count', 'inlink_count',
-                         'outlink_count', 'bitly_click_count', 'facebook_share_count',
+                         'outlink_count', 'facebook_share_count',
                          'pub_country', 'pub_state', 'primary_language', 'subject_country']
 
 

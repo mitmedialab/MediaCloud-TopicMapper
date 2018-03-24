@@ -223,7 +223,7 @@ def stream_story_list_csv(user_mc_key, filename, topics_id, **kwargs):
     params['limit'] = 1000  # an arbitrary value to let us page through with big pages
     props = ['stories_id', 'publish_date', 'date_is_reliable',
              'title', 'url', 'media_id', 'media_name',
-             'media_inlink_count', 'inlink_count', 'outlink_count', 'bitly_click_count',
+             'media_inlink_count', 'inlink_count', 'outlink_count',
              'facebook_share_count', 'simple_tweet_count', 'language', 'subtopics', 'themes']
     try:
         while more_stories:
