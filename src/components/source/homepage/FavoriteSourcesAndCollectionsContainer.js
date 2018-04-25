@@ -7,6 +7,7 @@ import DataCard from '../../common/DataCard';
 import { fetchFavoriteCollections, fetchFavoriteSources } from '../../../actions/sourceActions';
 import composeAsyncContainer from '../../common/AsyncContainer';
 import { ExploreButton } from '../../common/IconButton';
+import { slugifyLocalCollectionPath, slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const NUMBER_TO_SHOW = 8; // how many of each to show
 
@@ -26,7 +27,7 @@ const FavoriteSourcesAndCollectionsContainer = (props) => {
     favSourcesContent = (
       <ul className="fav-sources">
         { favoritedSources.slice(0, NUMBER_TO_SHOW).map(c =>
-            (<li key={c.media_id} ><Link to={`/sources/${c.media_id}`}>{c.name}</Link></li>)
+            (<li key={c.media_id} ><Link to={slugifyLocalSourcePath(c)}>{c.name}</Link></li>)
           )
         }
       </ul>
@@ -37,7 +38,7 @@ const FavoriteSourcesAndCollectionsContainer = (props) => {
     favCollectionsContent = (
       <ul className="fav-collections">
         { favoritedCollections.slice(0, NUMBER_TO_SHOW).map(c =>
-            (<li key={c.tags_id} ><Link to={`/collections/${c.tags_id}`}>{c.label}</Link></li>)
+            (<li key={c.tags_id} ><Link to={slugifyLocalCollectionPath(c)}>{c.label}</Link></li>)
           )
       }
       </ul>

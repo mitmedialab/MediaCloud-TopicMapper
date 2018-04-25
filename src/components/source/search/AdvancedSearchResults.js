@@ -9,6 +9,7 @@ import { ExploreButton } from '../../common/IconButton';
 import messages from '../../../resources/messages';
 import FilledStarIcon from '../../common/icons/FilledStarIcon';
 import { ADD_ALL_THIS_PAGE, REMOVE_ALL, ADD_ALL_PAGES } from './AdvancedSearchResultsContainer';
+import { slugifyLocalCollectionPath, slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const localMessages = {
   title: { id: 'sourceCollectionList.title', defaultMessage: 'Search Results' },
@@ -92,11 +93,11 @@ const AdvancedSearchResults = (props) => {
                     />
                   </div>
                   <div className="search-result-actions">
-                    <Link to={`/collections/${collection.tags_id}`}>
+                    <Link to={slugifyLocalCollectionPath(collection)}>
                       <FormattedMessage {...localMessages.exploreCollectionInvite} />
                     </Link>
                     &nbsp;
-                    <ExploreButton linkTo={`/collections/${collection.tags_id}`} />
+                    <ExploreButton linkTo={slugifyLocalCollectionPath(collection)} />
                   </div>
                   <div className="search-result-content">
                     <h2>
@@ -122,11 +123,11 @@ const AdvancedSearchResults = (props) => {
                   </div>
                   <div className="search-result-actions">
                     { source.isFavorite ? <FilledStarIcon /> : '' }
-                    <Link to={`/sources/${source.media_id}`}>
+                    <Link to={slugifyLocalSourcePath(source)}>
                       <FormattedMessage {...localMessages.exploreSourceInvite} />
                     </Link>
                     &nbsp;
-                    <ExploreButton linkTo={`/sources/${source.media_id}`} />
+                    <ExploreButton linkTo={slugifyLocalSourcePath(source)} />
                   </div>
                   <div className="search-result-content">
                     <h2>

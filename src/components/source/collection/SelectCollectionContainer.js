@@ -12,6 +12,7 @@ import Permissioned from '../../common/Permissioned';
 import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import { EditButton, ExploreButton } from '../../common/IconButton';
 import SourceMgrHeaderContainer from '../SourceMgrHeaderContainer';
+import { slugifyLocalCollectionPath } from '../../../lib/urlUtil';
 
 const localMessages = {
   editCollection: { id: 'collection.edit', defaultMessage: 'Modify this Collection' },
@@ -43,16 +44,16 @@ class SelectCollectionContainer extends React.Component {
         <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
           <SourceControlBar>
             <span className="collection-edit-link">
-              <Link to={`/collections/${collection.tags_id}/edit`} >
+              <Link to={`${slugifyLocalCollectionPath(collection)}/edit`} >
                 <EditButton />
                 <FormattedMessage {...localMessages.editCollection} />
               </Link>
             </span>
-            <Link to={`/collections/${collection.tags_id}/manage-source-list`} >
+            <Link to={`${slugifyLocalCollectionPath(collection)}/manage-source-list`} >
               <ExploreButton />
               <FormattedMessage {...localMessages.manageSources} />
             </Link>
-            <Link to={`/collections/${collection.tags_id}/content-history`} >
+            <Link to={`${slugifyLocalCollectionPath(collection)}/content-history`} >
               <ExploreButton />
               <FormattedMessage {...localMessages.contentHistory} />
             </Link>

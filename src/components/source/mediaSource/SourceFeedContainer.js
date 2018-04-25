@@ -17,6 +17,7 @@ import Permissioned from '../../common/Permissioned';
 import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import { updateFeedback } from '../../../actions/appActions';
 import { SOURCE_SCRAPE_STATE_QUEUED, SOURCE_SCRAPE_STATE_RUNNING } from '../../../reducers/sources/sources/selected/sourceDetails';
+import { slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const localMessages = {
   sourceFeedsTitle: { id: 'source.details.feeds.title', defaultMessage: '{name}: Feeds' },
@@ -43,6 +44,7 @@ class SourceFeedContainer extends React.Component {
     const { formatMessage } = this.props.intl;
     const titleHandler = parentTitle => `${sourceName} | ${parentTitle}`;
     const content = null;
+    const sourceObj = { id: sourceId, name: sourceName };
     if (feeds === undefined) {
       return (
         <div>
@@ -57,7 +59,7 @@ class SourceFeedContainer extends React.Component {
           <Col lg={11} xs={11}>
             <h1>
               <MediaSourceIcon height={32} />
-              <Link to={`/sources/${sourceId}`} >
+              <Link to={slugifyLocalSourcePath(sourceObj)} >
                 <FormattedMessage {...localMessages.sourceFeedsTitle} values={{ name: sourceName }} />
               </Link>
             </h1>
@@ -74,7 +76,7 @@ class SourceFeedContainer extends React.Component {
             <div className="actions" style={{ marginTop: 40 }} >
               <AddButton
                 tooltip={formatMessage(localMessages.add)}
-                onClick={() => { pushToUrl(`/sources/${sourceId}/feeds/create`); }}
+                onClick={() => { pushToUrl(`${slugifyLocalSourcePath(sourceObj)}/feeds/create`); }}
               />
               <DownloadButton tooltip={formatMessage(messages.download)} onClick={this.downloadCsv} />
             </div>
@@ -133,7 +135,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
           dispatch(updateFeedback({ open: true, message: ownProps.intl.formatMessage(messages.sourceScraping) }));
           // update the source so the user sees the new scrape status
           dispatch(fetchSourceDetails(ownProps.params.sourceId))
-            .then(() => dispatch(push(`/sources/${ownProps.params.sourceId}`)));
+            .then(() => dispatch(push(slugifyLocalSourcePath(ownProps.params.sourceId))));
         } else {
           dispatch(updateFeedback({ open: true, message: ownProps.intl.formatMessage(messages.sourceScrapeFailed) }));
         }

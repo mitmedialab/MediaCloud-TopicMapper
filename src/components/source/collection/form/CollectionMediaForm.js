@@ -10,7 +10,7 @@ import { updateFeedback } from '../../../../actions/appActions';
 import composeIntlForm from '../../../common/IntlForm';
 import SourceSearchContainer from '../../controlbar/SourceSearchContainer';
 import CollectionUploadSourceContainer from '../CollectionUploadSourceContainer';
-import { googleFavIconUrl } from '../../../../lib/urlUtil';
+import { googleFavIconUrl, slugifyLocalSourcePath } from '../../../../lib/urlUtil';
 import { RemoveButton } from '../../../common/IconButton';
 import messages from '../../../../resources/messages';
 import CollectionCopyConfirmer from './CollectionCopyConfirmer';
@@ -196,7 +196,7 @@ class SourceSelectionRendererRaw extends React.Component {
                             <img className="google-icon" src={googleFavIconUrl(info.input.value.url)} alt={info.input.value.name} />
                           </td>
                           <td>
-                            <Link to={`/sources/${info.input.value.media_id ? info.input.value.media_id : info.input.value.id}`}>{info.input.value.name}</Link>
+                            <Link to={slugifyLocalSourcePath(info.input.value)}>{info.input.value.name}</Link>
                           </td>
                           <td>
                             <a href={`${info.input.value.url}`} target="_new">{info.input.value.url}</a>

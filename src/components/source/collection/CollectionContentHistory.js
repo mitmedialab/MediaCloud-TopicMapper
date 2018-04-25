@@ -11,6 +11,7 @@ import composePeriodicContent from '../../common/PeriodicContent';
 import { getBrandDarkColor } from '../../../styles/colors';
 import AttentionOverTimeChart from '../../vis/AttentionOverTimeChart';
 import { getDateRange } from '../../../lib/dateUtil';
+import { slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const localMessages = {
   title: { id: 'collection.contentHistory.title', defaultMessage: 'Total Sentences over Time' },
@@ -41,7 +42,7 @@ class CollectionContentHistory extends React.Component {
           {historicalCounts.map(source => (
             <Row key={source.media_id}>
               <Col lg={2} xs={12}>
-                <h3><Link to={`/sources/${source.media_id}`}>{source.media_name}</Link></h3>
+                <h3><Link to={slugifyLocalSourcePath(source)}>{source.media_name}</Link></h3>
                 <p>
                   <FormattedMessage
                     {...localMessages.counts}

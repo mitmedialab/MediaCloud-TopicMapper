@@ -12,6 +12,7 @@ import Permissioned from '../../common/Permissioned';
 import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import { EditButton } from '../../common/IconButton';
 import SourceMgrHeaderContainer from '../SourceMgrHeaderContainer';
+import { slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const localMessages = {
   editSource: { id: 'source.edit', defaultMessage: 'Modify this Source' },
@@ -44,13 +45,13 @@ class SelectSourceContainer extends React.Component {
             <Row>
               <Col lg={12}>
                 <span className="source-edit-link">
-                  <Link to={`/sources/${source.media_id}/edit`} >
+                  <Link to={`${slugifyLocalSourcePath(source)}/edit`} >
                     <EditButton />
                     <FormattedMessage {...localMessages.editSource} />
                   </Link>
                 </span>
                 <span className="source-edit-feeds-link">
-                  <Link to={`/sources/${source.media_id}/feeds`} >
+                  <Link to={`${slugifyLocalSourcePath(source)}/feeds`} >
                     <EditButton />
                     <FormattedMessage {...localMessages.editFeeds} />
                   </Link>

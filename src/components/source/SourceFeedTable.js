@@ -4,7 +4,7 @@ import Link from 'react-router/lib/Link';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import messages from '../../resources/messages';
 import { EditButton } from '../common/IconButton';
-
+import { slugifyLocalSourcePath } from '../../lib/urlUtil';
 
 const SourceFeedTable = (props) => {
   const { feeds } = props;
@@ -41,7 +41,7 @@ const SourceFeedTable = (props) => {
                 <a href={feed.url}>{feed.url}</a>
               </td>
               <td>
-                <Link to={`/sources/${feed.media_id}/feeds/${feed.feeds_id}/edit`} >
+                <Link to={`${slugifyLocalSourcePath(feed)}/${feed.feeds_id}/edit`} >
                   <EditButton />
                 </Link>
               </td>

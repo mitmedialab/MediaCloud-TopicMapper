@@ -4,7 +4,7 @@ import Link from 'react-router/lib/Link';
 import { FormattedMessage, injectIntl, FormattedNumber, FormattedDate } from 'react-intl';
 import FilledStarIcon from '../common/icons/FilledStarIcon';
 import messages from '../../resources/messages';
-import { googleFavIconUrl } from '../../lib/urlUtil';
+import { googleFavIconUrl, slugifyLocalSourcePath } from '../../lib/urlUtil';
 import { parseSolrShortDate } from '../../lib/dateUtil';
 
 const SourceTable = (props) => {
@@ -33,7 +33,7 @@ const SourceTable = (props) => {
                 <img className="google-icon" src={googleFavIconUrl(source.url)} alt={source.name} />
               </td>
               <td>
-                <Link to={`/sources/${source.id ? source.id : source.media_id}`}>{source.name}</Link>
+                <Link to={slugifyLocalSourcePath(source)}>{source.name}</Link>
                 { source.isFavorite ? <FilledStarIcon /> : '' }
               </td>
               <td className="numeric"><FormattedNumber value={Math.round(source.num_stories_90)} /></td>

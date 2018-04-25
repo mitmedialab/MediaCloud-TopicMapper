@@ -1,3 +1,4 @@
+import slugify from 'slugify';
 import { getBrandDarkerColor } from '../styles/colors';
 
 // internal tag used to get the hostname from a url
@@ -25,12 +26,26 @@ export function urlToSourceManager(param) {
   return `https://sources.mediacloud.org/#/${param}`;
 }
 
+export function slugifyLocalSourcePath(param) {
+  let name = param.name;
+  name = slugify(name);
+  return `sources/${param.id || param.media_id}/${name}`;
+}
+
+export function slugifyLocalCollectionPath(param) {
+  let collLabel = param.label || param.tag;
+  collLabel = slugify(collLabel);
+  return `collections/${param.id || param.tags_id}/${collLabel}`;
+}
+
 export function urlToCollection(param) {
-  return urlToSourceManager(`collections/${param}`);
+  let collLabel = param.label || param.tag;
+  collLabel = slugify(collLabel);
+  return urlToSourceManager(`collections/${param.id || param.tags_id}/${collLabel}`);
 }
 
 export function urlToSource(param) {
-  return urlToSourceManager(`sources/${param}`);
+  return urlToSourceManager(`sources/${param.id || param.media_id}/`);
 }
 
 export function urlToTopicMapper(param) {

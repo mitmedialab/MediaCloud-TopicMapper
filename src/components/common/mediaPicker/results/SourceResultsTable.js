@@ -31,7 +31,7 @@ const SourceResultsTable = (props) => {
             const actionContent = <ActionButton onClick={() => handleToggleAndSelectMedia(s)} />;
             return (
               <tr key={`${s.media_id}`} className={(idx % 2 === 0) ? 'even' : 'odd'}>
-                <td><a href={urlToSource(s.media_id)} target="new">{s.name}</a></td>
+                <td><a href={urlToSource(s)} target="new">{s.name}</a></td>
                 <td>{s.url}</td>
                 <td className="numeric"><FormattedNumber value={Math.round(s.num_stories_90)} /></td>
                 <td className="numeric"><FormattedDate value={parseSolrShortDate(s.start_date)} /></td>

@@ -51,8 +51,8 @@ const sourceRoutes = (
       <Route path="suggestions/history" component={AllSuggestionsContainer} onEnter={requireAuth} />
       <Route path="feeds/create" component={EditSourceFeedContainer} onEnter={requireAuth} />
 
-      <Redirect from="details" to=":sourceId" />
-      <Route path="/sources/:sourceId" component={SelectSourceContainer} >
+      <Redirect from="details" to=":sourceId/:sourceName" />
+      <Route path="/sources/:sourceId/:sourceName" component={SelectSourceContainer} >
         <IndexRoute component={SourceDetailsContainer} onEnter={requireAuth} />
         <Route path="edit" component={EditSourceContainer} onEnter={requireAuth} />
         <Route path="feeds" component={SourceFeedContainer} onEnter={requireAuth} />
@@ -67,8 +67,8 @@ const sourceRoutes = (
         <Route path="country-and-state" component={CountryCollectionListContainer} onEnter={requireAuth} />
       </Route>
       <Route path="create" component={CreateCollectionContainer} onEnter={requireAuth} />
-      <Redirect from="details" to=":collectionId" />
-      <Route path=":collectionId" component={SelectCollectionContainer} >
+      <Redirect from="details" to=":collectionId/:collectionName" />
+      <Route path=":collectionId/:collectionName" component={SelectCollectionContainer} >
         <IndexRoute component={CollectionDetailsContainer} onEnter={requireAuth} />
         <Route path="edit" component={EditCollectionContainer} onEnter={requireAuth} />
         <Route path="content-history" component={CollectionContentHistory} onEnter={requireAuth} />

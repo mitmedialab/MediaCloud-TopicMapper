@@ -17,9 +17,9 @@ const localMessages = {
 const goToSourceManager = (obj) => {
   let url = null;
   if (obj.tag_set_name === 'collection') {
-    url = urlToCollection(obj.id);
+    url = urlToCollection(obj);
   } else {
-    url = urlToSource(obj.id);
+    url = urlToSource(obj);
   }
   window.open(url, '_blank');
 };

@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { push } from 'react-router-redux';
 import SourceSearchContainer from './SourceSearchContainer';
+import { slugifyLocalCollectionPath, slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const SourceControlBar = props => (
   <div className="controlbar controlbar-sources">
@@ -46,10 +47,10 @@ const mapStateToProps = () => ({
 
 const mapDispatchToProps = dispatch => ({
   handleMediaSourceSelected: (item) => {
-    dispatch(push(`/sources/${item.id}`));
+    dispatch(push(slugifyLocalSourcePath(item)));
   },
   handleCollectionSelected: (item) => {
-    dispatch(push(`/collections/${item.id}`));
+    dispatch(push(slugifyLocalCollectionPath(item)));
   },
   handleAdvancedSearchSelected: (searchStr) => {
     dispatch(push(`/search?search=${searchStr}`));

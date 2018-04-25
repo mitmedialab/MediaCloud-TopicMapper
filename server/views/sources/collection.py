@@ -156,22 +156,11 @@ def _media_list_edit_worker(media_id):
 @flask_login.login_required
 @api_error_handler
 def api_collection_sources(collection_id):
-    pool = Pool(processes=FEED_SCRAPE_JOB_POOL_SIZE)
-    results = {
-        'tags_id': collection_id
-    }
+    results = {}
+    results['tags_id'] = collection_id
     media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
     add_user_favorite_flag_to_sources(media_in_collection)
-    if user_has_auth_role(ROLE_MEDIA_EDIT):
-        # for editing users, add in last scrape and active feed count
-        jobs = [m['media_id'] for m in media_in_collection]
-        job_results = pool.map(_media_list_edit_worker, jobs)  # blocks until they are all done
-        job_by_media_id = {j['media_id']: j for j in job_results}
-        for m in media_in_collection:
-            m['latest_scrape_job'] = job_by_media_id[m['media_id']]['latest_scrape_job']
-            m['active_feed_count'] = job_by_media_id[m['media_id']]['active_feed_count']
     results['sources'] = media_in_collection
-    pool.terminate()
     return jsonify(results)
 
 

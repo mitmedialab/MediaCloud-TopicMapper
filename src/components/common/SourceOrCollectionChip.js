@@ -19,7 +19,7 @@ const SourceOrCollectionChip = (props) => {
   const objectId = object.id || (isCollection ? object.tags_id : object.media_id);
   if (autoLink) {
     defaultOnClick = () => (
-     isCollection ? window.open(urlToCollection(objectId), '_blank') : window.open(urlToSource(objectId), '_blank')
+     isCollection ? window.open(urlToCollection(object), '_blank') : window.open(urlToSource(object), '_blank')
     );
   }
   const typeClass = isCollection ? 'chip-collection' : 'chip-media-source';

@@ -5,6 +5,7 @@ import Link from 'react-router/lib/Link';
 import FilledStarIcon from './icons/FilledStarIcon';
 import LockIcon from './icons/LockIcon';
 import messages from '../../resources/messages';
+import { urlToCollection, slugifyLocalCollectionPath } from '../../lib/urlUtil';
 
 const CollectionTable = props => (
   <div className="collection-table">
@@ -18,7 +19,7 @@ const CollectionTable = props => (
           <tr key={c.tags_id} className={(idx % 2 === 0) ? 'even' : 'odd'}>
             <td>
               <Link
-                to={props.absoluteLink ? `https://sources.mediacloud.org/#/collections/${c.tags_id}` : `/collections/${c.tags_id}`}
+                to={props.absoluteLink ? urlToCollection(c) : slugifyLocalCollectionPath(c)}
               >
                 {c.label || c.tag}
               </Link>

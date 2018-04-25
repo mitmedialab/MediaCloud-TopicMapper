@@ -13,7 +13,7 @@ import { anyCollectionTagSets } from '../../../lib/tagUtil';
 import { SOURCE_SCRAPE_STATE_QUEUED, SOURCE_SCRAPE_STATE_RUNNING, SOURCE_SCRAPE_STATE_COMPLETED, SOURCE_SCRAPE_STATE_ERROR } from '../../../reducers/sources/sources/selected/sourceDetails';
 import { InfoNotice, ErrorNotice, WarningNotice } from '../../common/Notice';
 import { jobStatusDateToMoment, getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
-import { urlToExplorerQuery } from '../../../lib/urlUtil';
+import { urlToExplorerQuery, slugifyLocalSourcePath } from '../../../lib/urlUtil';
 import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import Permissioned from '../../common/Permissioned';
 import AppButton from '../../common/AppButton';
@@ -179,7 +179,7 @@ class SourceDetailsContainer extends React.Component {
                 values={{ gapCount: (source.health && source.health.coverage_gaps) ? formatNumber(source.health.coverage_gaps) : formatMessage(localMessages.unknown) }}
               />
               &nbsp;
-              <Link to={`/sources/${source.media_id}/feeds`} >
+              <Link to={`${slugifyLocalSourcePath(source)}/feeds`} >
                 <FormattedMessage {...localMessages.feedLink} />
               </Link>
               {feedScrapeMsg}

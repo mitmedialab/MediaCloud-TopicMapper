@@ -13,7 +13,7 @@ import { PERMISSION_MEDIA_EDIT } from '../../../lib/auth';
 import { updateFeedback } from '../../../actions/appActions';
 import { SOURCE_SCRAPE_STATE_QUEUED, SOURCE_SCRAPE_STATE_RUNNING, SOURCE_SCRAPE_STATE_COMPLETED, SOURCE_SCRAPE_STATE_ERROR } from '../../../reducers/sources/sources/selected/sourceDetails';
 import FilledStarIcon from '../../common/icons/FilledStarIcon';
-import { googleFavIconUrl } from '../../../lib/urlUtil';
+import { googleFavIconUrl, slugifyLocalSourcePath } from '../../../lib/urlUtil';
 import { parseSolrShortDate, jobStatusDateToMoment } from '../../../lib/dateUtil';
 
 const localMessages = {
@@ -127,7 +127,7 @@ class ManageSourcesContainer extends React.Component {
                           <img className="google-icon" src={googleFavIconUrl(source.url)} alt={source.name} />
                         </td>
                         <td>
-                          <Link to={`/sources/${source.id ? source.id : source.media_id}`}>{source.name}</Link>
+                          <Link to={slugifyLocalSourcePath(source)}>{source.name}</Link>
                           { source.isFavorite ? <FilledStarIcon /> : '' }
                         </td>
                         <td><a href={source.url} rel="noopener noreferrer" target="_blank">{source.url}</a></td>

@@ -8,6 +8,8 @@ import { fetchFeaturedCollectionList } from '../../../actions/sourceActions';
 import composeAsyncContainer from '../../common/AsyncContainer';
 import DataCard from '../../common/DataCard';
 import { ExploreButton } from '../../common/IconButton';
+import { slugifyLocalCollectionPath } from '../../../lib/urlUtil';
+
 
 const localMessages = {
   mainTitle: { id: 'collection.popular.mainTitle', defaultMessage: 'Featured Collections' },
@@ -28,7 +30,7 @@ const FeaturedCollectionsContainer = (props) => {
         <div className="featured-collections-list">
           <Row>
             {collections.map((c) => {
-              const link = `collections/${c.tags_id}`;
+              const link = slugifyLocalCollectionPath(c);
               return (
                 <Col key={c.tags_id} lg={4} xs={12}>
                   <DataCard className="featured-collections-item">

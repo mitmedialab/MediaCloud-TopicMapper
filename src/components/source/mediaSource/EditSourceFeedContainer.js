@@ -12,6 +12,7 @@ import { selectSourceFeed, updateFeed, fetchSourceFeed } from '../../../actions/
 import { updateFeedback, addNotice } from '../../../actions/appActions';
 import { LEVEL_ERROR } from '../../common/Notice';
 import SourceFeedForm from './form/SourceFeedForm';
+import { slugifyLocalSourcePath } from '../../../lib/urlUtil';
 
 const localMessages = {
   sourceFeedsTitle: { id: 'source.details.feeds.title', defaultMessage: '{name}: ' },
@@ -45,6 +46,7 @@ class EditSourceFeedContainer extends React.Component {
     const intialValues = {
       ...feed,
     };
+    const sourceObj = { id: sourceId, name: sourceName };
     if (feed === undefined) {
       return (
         <div>
@@ -56,7 +58,7 @@ class EditSourceFeedContainer extends React.Component {
       <Grid className="details source-feed-details">
         <h2>
           <MediaSourceIcon height={32} />
-          <Link to={`/sources/${sourceId}/feeds`} >
+          <Link to={`${slugifyLocalSourcePath(sourceObj)}/feeds`} >
             <FormattedMessage {...localMessages.sourceFeedsTitle} values={{ name: sourceName }} />
           </Link>
           <FormattedMessage {...localMessages.updateFeedsTitle} />
@@ -104,6 +106,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       feed_status: values.feed_status,
       feed_type: values.feed_type,
     };
+    const sourceObj = { id: ownProps.params.sourceId, name: ownProps.params.sourceName };
     dispatch(updateFeed(ownProps.params.feedId, infoToSave))
       .then((result) => {
         if (result.feed !== undefined) {
@@ -112,7 +115,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
           // need to fetch it again because something may have changed
           dispatch(fetchSourceFeed(ownProps.params.mediaId, ownProps.params.feedId))
             .then(() =>
-              dispatch(push(`/sources/${ownProps.params.sourceId}/feeds`))
+              dispatch(push(`${slugifyLocalSourcePath(sourceObj)}/feeds`))
             );
         } else if (result.message && result.message.includes('duplicate key')) {
           dispatch(addNotice({ level: LEVEL_ERROR, message: ownProps.intl.formatMessage(localMessages.duplicateKey) }));
