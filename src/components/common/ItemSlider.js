@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import Slider from 'react-slick';
-import PreviousIcon from 'material-ui/svg-icons/image/navigate-before';
-import NextIcon from 'material-ui/svg-icons/image/navigate-next';
+import PreviousIcon from '@material-ui/icons/NavigateBefore';
+import NextIcon from '@material-ui/icons/NavigateNext';
 
 const ItemSlider = (props) => {
   const { slides, settings } = props;

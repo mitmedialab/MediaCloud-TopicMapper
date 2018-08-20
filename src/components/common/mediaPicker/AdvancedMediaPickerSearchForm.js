@@ -38,7 +38,7 @@ class AdvancedMediaPickerSearchForm extends React.Component {
               name={'advancedSearchQueryString'}
               value={initValues}
               component={renderTextField}
-              floatingLabelText={formatMessage(localMessages.searchSuggestion)}
+              label={formatMessage(localMessages.searchSuggestion)}
               fullWidth
             />
           </Col>
@@ -46,49 +46,48 @@ class AdvancedMediaPickerSearchForm extends React.Component {
         <Row>
           <Col lg={6}>
             <MetadataPickerContainer
+              autocomplete
               id={TAG_SET_PUBLICATION_COUNTRY}
               name={'publicationCountry'}
               form="advancedQueryForm"
-              floatingLabelText={formatMessage(localMessages.pubCountrySuggestion)}
-              autocomplete
+              label={formatMessage(localMessages.pubCountrySuggestion)}
             />
           </Col>
           <Col lg={6}>
             <MetadataPickerContainer
+              autocomplete
               id={TAG_SET_PUBLICATION_STATE}
               name={'publicationState'}
               form="advancedQueryForm"
-              floatingLabelText={formatMessage(localMessages.pubStateSuggestion)}
-              autocomplete
+              label={formatMessage(localMessages.pubStateSuggestion)}
             />
           </Col>
           <Col lg={6}>
             <MetadataPickerContainer
-              value={initValues}
+              autocomplete
               id={TAG_SET_PRIMARY_LANGUAGE}
               name={'primaryLanguage'}
               form="advancedQueryForm"
-              floatingLabelText={formatMessage(localMessages.pLanguageSuggestion)}
-              autocomplete
+              label={formatMessage(localMessages.pLanguageSuggestion)}
             />
           </Col>
           <Col lg={6}>
             <MetadataPickerContainer
-              value={initValues}
+              autocomplete
               id={TAG_SET_COUNTRY_OF_FOCUS}
               name={'countryOfFocus'}
               form="advancedQueryForm"
-              floatingLabelText={formatMessage(localMessages.pCountryOfFocusSuggestion)}
-              autocomplete
+              label={formatMessage(localMessages.pCountryOfFocusSuggestion)}
             />
           </Col>
           <Col lg={6}>
             <MetadataPickerContainer
+              autocomplete
               id={TAG_SET_MEDIA_TYPE}
               showDescription
               name="mediaType"
               form="advancedQueryForm"
-              floatingLabelText={formatMessage(localMessages.pMediaType)}
+              label={formatMessage(localMessages.pMediaType)}
             />
           </Col>
         </Row>
@@ -98,7 +97,7 @@ class AdvancedMediaPickerSearchForm extends React.Component {
               style={{ marginTop: 30 }}
               label={formatMessage(localMessages.search)}
               onClick={this.handleSearchButtonClick}
-              primary
+              color="primary"
             />
           </Col>
         </Row>

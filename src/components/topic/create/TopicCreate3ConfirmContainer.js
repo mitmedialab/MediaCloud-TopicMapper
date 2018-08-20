@@ -94,7 +94,6 @@ const TopicCreate3ConfirmContainer = (props) => {
             <AppButton flat label={formatMessage(messages.previous)} onClick={() => handlePreviousStep()} />
             &nbsp; &nbsp;
             <AppButton
-              style={{ marginTop: 30 }}
               type="submit"
               disabled={pristine || submitting}
               label={formatMessage(localMessages.createTopic)}

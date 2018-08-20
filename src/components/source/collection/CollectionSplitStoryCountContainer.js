@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import { fetchCollectionSplitStoryCount } from '../../../actions/sourceActions';
 import DataCard from '../../common/DataCard';
@@ -64,22 +66,25 @@ class CollectionSplitStoryCountContainer extends React.Component {
           <ActionMenu>
             <MenuItem
               className="action-icon-menu-item"
-              primaryText={formatMessage(messages.downloadCSV)}
-              rightIcon={<DownloadButton />}
               onTouchTap={this.downloadCsv}
-            />
+            >
+              <ListItemText><FormattedMessage {...messages.downloadCSV} /></ListItemText>
+              <ListItemIcon><DownloadButton /></ListItemIcon>
+            </MenuItem>
             <MenuItem
               className="action-icon-menu-item"
-              primaryText={formatMessage(localMessages.regularlyCollectedStories)}
               disabled={this.state.storyCollection === VIEW_REGULARLY_COLLECTED}
               onClick={() => this.onIncludeSpidered(VIEW_REGULARLY_COLLECTED)}
-            />
+            >
+              <FormattedMessage {...localMessages.regularlyCollectedStories} />
+            </MenuItem>
             <MenuItem
               className="action-icon-menu-item"
-              primaryText={formatMessage(localMessages.allStories)}
               disabled={this.state.storyCollection === VIEW_ALL_STORIES}
               onClick={() => this.onIncludeSpidered(VIEW_ALL_STORIES)}
-            />
+            >
+              <FormattedMessage {...localMessages.allStories} />
+            </MenuItem>
           </ActionMenu>
         </div>
         <h2>

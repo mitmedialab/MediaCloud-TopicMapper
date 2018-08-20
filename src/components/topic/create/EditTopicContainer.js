@@ -6,7 +6,10 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { reduxForm } from 'redux-form';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import { filteredLinkTo } from '../../util/location';
 import AppButton from '../../common/AppButton';
 import withIntlForm from '../../common/hocs/IntlForm';
@@ -110,14 +113,20 @@ class EditTopicContainer extends React.Component {
       ];
       dialogContent = (
         <Dialog
-          title={formatMessage(localMessages.riskConfirmTitle)}
-          actions={dialogActions}
           modal
           open={this.state.editConfirmationOpen}
-          onRequestClose={this.handleConfirmCancel}
+          onClose={this.handleConfirmCancel}
           className="app-dialog"
         >
-          <p><FormattedMessage {...localMessages.handleRiskDescription} /></p>
+          <DialogTitle>
+            {formatMessage(localMessages.riskConfirmTitle)}
+          </DialogTitle>
+          <DialogActions>
+            {dialogActions}
+          </DialogActions>
+          <DialogContent>
+            <p><FormattedMessage {...localMessages.handleRiskDescription} /></p>
+          </DialogContent>
         </Dialog>
       );
     }

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
-import TextField from 'material-ui/TextField';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import TextField from '@material-ui/core/TextField';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import ColorPicker from '../../common/ColorPicker';
 import messages from '../../../resources/messages';
 
@@ -15,12 +15,25 @@ const localMessages = {
 };
 
 class QueryPickerDemoHeader extends React.Component {
+  state = {
+    anchorEl: null,
+  };
+
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
   sendToLink = () => {
-    const registrationUrl = '/login';
+    const registrationUrl = '/#/login';
     window.open(registrationUrl, '_blank');
   };
+
   render() {
-    const { query, isLabelEditable, isDeletable, onColorChange, onDelete, handleMenuItemKeyDown, focusUsernameInputField } = this.props;
+    const { query, isLabelEditable, isDeletable, onColorChange, onDelete, handleMenuItemKeyDown } = this.props;
     const { formatMessage } = this.props.intl;
     let nameInfo = <div />;
     const isThisAProtectedQuery = query.searchId !== null && query.searchId !== undefined;
@@ -32,22 +45,29 @@ class QueryPickerDemoHeader extends React.Component {
     let menuDelete = null;
     if (query) {
       if (!isThisAProtectedQuery) {
-        menuRegister = <MenuItem primaryText={formatMessage(localMessages.register)} onTouchTap={this.sendToLink} />;
+        menuRegister = <MenuItem onTouchTap={this.sendToLink}><FormattedMessage {...localMessages.register} /></MenuItem>;
       }
       if (!isThisAProtectedQuery && isDeletable()) { // can delete only if this is a custom query (vs sample query) for demo users and this is not the only QueryPickerItem
-        menuDelete = <MenuItem primaryText={formatMessage(messages.delete)} onTouchTap={() => onDelete(query)} />;
+        menuDelete = <MenuItem onTouchTap={() => onDelete(query)}><FormattedMessage {...messages.delete} /></MenuItem>;
       }
       if (menuRegister !== null || menuDelete !== null) {
         iconOptions = (
-          <IconMenu
-            className="query-picker-icon-button"
-            iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-            targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-          >
-            {menuRegister}
-            {menuDelete}
-          </IconMenu>
+          <div className="query-picker-icon-button">
+            <IconButton onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
+            <Menu
+              id="logged-in-header-menu"
+              open={Boolean(this.state.anchorEl)}
+              className="query-picker-icon-button"
+              anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+              transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              anchorEl={this.state.anchorEl}
+              onBackdropClick={this.handleClose}
+              onClose={this.handleClose}
+            >
+              {menuRegister}
+              {menuDelete}
+            </Menu>
+          </div>
         );
       }
       const colorPickerContent = (
@@ -66,9 +86,8 @@ class QueryPickerDemoHeader extends React.Component {
                 id={`query-${query.index}-q`}
                 name="q"
                 defaultValue={query.q}
-                hintText={formatMessage(localMessages.searchHint)}
+                placeholder={formatMessage(localMessages.searchHint)}
                 onKeyPress={handleMenuItemKeyDown}
-                ref={focusUsernameInputField}
               />
               {iconOptions}
             </div>
@@ -101,7 +120,6 @@ QueryPickerDemoHeader.propTypes = {
   updateDemoQueryLabel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   handleMenuItemKeyDown: PropTypes.func.isRequired,
-  focusUsernameInputField: PropTypes.func.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
 };

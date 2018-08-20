@@ -4,6 +4,7 @@
   height: 60px;
   font-family: $font-families;
   color: $white;
+
   ul {
     display: block;
     list-style: none;
@@ -13,27 +14,16 @@
     &.right {
       float: right;
       li {
-        margin-right: 20px;
+        margin-left: 0px;
+        margin-right: 5px;
       }
     }
 
-    li.support, li.blog, li.recent-changes {
-      color: $white;
-      margin-top: 10px;
-    }
-    li.about {
-      border-right: 1px solid white;
-      padding-right: 20px;
-    }
-    li.recent-changes {
-      margin-top: 15px;
-    }
     li {
       display: block;
       float: left;
       margin-left: 10px;
       margin-top: 10px;
-      height: 34px;
 
       span, a {
         font-size: 14px;
@@ -41,20 +31,22 @@
         text-decoration: none;
         color: $white;
       }
+
     }
   }
-  .user-menu {
-    margin-top: 10px;
-  }
+
   .app-menu {
-    .icon-button {
-      float: right;
-      margin-top: 5px;
+    button {
+      svg {
+        margin-left: 8px;
+      }
     }
   }
+
   .app-logo {
     padding-top: 10px;
     padding-right: 10px;
     float: left;
   }
+
 }

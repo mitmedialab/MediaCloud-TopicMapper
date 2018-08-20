@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
 import messages from '../../../resources/messages';
 
 const localMessages = {
@@ -38,7 +38,8 @@ class QueryHelpDialog extends React.Component {
   render() {
     const { formatMessage } = this.props.intl;
     const dialogActions = [
-      <FlatButton
+      <Button
+        variant="outlined"
         label={formatMessage(messages.ok)}
         primary
         onClick={this.handleClose}

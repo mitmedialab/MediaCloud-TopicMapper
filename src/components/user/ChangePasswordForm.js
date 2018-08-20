@@ -27,7 +27,7 @@ const ChangePasswordContainer = (props) => {
             name="old_password"
             type="password"
             component={renderTextField}
-            floatingLabelText={messages.userOldPassword}
+            label={messages.userOldPassword}
           />
         </Col>
       </Row>
@@ -48,7 +48,7 @@ const ChangePasswordContainer = (props) => {
             name="new_password"
             type="password"
             component={renderTextField}
-            floatingLabelText={messages.userNewPassword}
+            label={messages.userNewPassword}
           />
         </Col>
       </Row>
@@ -59,7 +59,7 @@ const ChangePasswordContainer = (props) => {
             name="confirm_password"
             type="password"
             component={renderTextField}
-            floatingLabelText={messages.userConfirmPassword}
+            label={messages.userConfirmPassword}
           />
         </Col>
       </Row>

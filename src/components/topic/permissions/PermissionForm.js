@@ -3,7 +3,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import { notEmptyString } from '../../../lib/formValidators';
 import AppButton from '../../common/AppButton';
 import withIntlForm from '../../common/hocs/IntlForm';
@@ -25,7 +25,7 @@ const localMessages = {
 };
 
 const PermissionForm = (props) => {
-  const { handleSubmit, onSave, pristine, submitting, renderTextField, renderSelectField, initialValues, showDeleteButton, onDelete } = props;
+  const { handleSubmit, onSave, pristine, submitting, renderTextField, renderSelect, initialValues, showDeleteButton, onDelete } = props;
   const { formatMessage } = props.intl;
   const buttonLabel = (initialValues.email === null) ? formatMessage(localMessages.addUser) : formatMessage(localMessages.updateUser);
   let deleteButton = null;
@@ -40,15 +40,15 @@ const PermissionForm = (props) => {
             name="email"
             component={renderTextField}
             fullWidth
-            floatingLabelText={localMessages.email}
+            label={localMessages.email}
             hintText={localMessages.emailFieldHint}
           />
         </Col>
         <Col lg={3} md={3} sm={3} xs={12}>
-          <Field name="permission" component={renderSelectField} floatingLabelText={localMessages.permission}>
-            <MenuItem key={PERMISSION_TOPIC_READ} value={PERMISSION_TOPIC_READ} primaryText={formatMessage(localMessages.read)} />
-            <MenuItem key={PERMISSION_TOPIC_WRITE} value={PERMISSION_TOPIC_WRITE} primaryText={formatMessage(localMessages.write)} />
-            <MenuItem key={PERMISSION_TOPIC_ADMIN} value={PERMISSION_TOPIC_ADMIN} primaryText={formatMessage(localMessages.admin)} />
+          <Field name="permission" component={renderSelect} label={localMessages.permission}>
+            <MenuItem key={PERMISSION_TOPIC_READ} value={PERMISSION_TOPIC_READ} primaryText={formatMessage(localMessages.read)}>{PERMISSION_TOPIC_READ}</MenuItem>
+            <MenuItem key={PERMISSION_TOPIC_WRITE} value={PERMISSION_TOPIC_WRITE} primaryText={formatMessage(localMessages.write)}>{PERMISSION_TOPIC_WRITE}</MenuItem>
+            <MenuItem key={PERMISSION_TOPIC_ADMIN} value={PERMISSION_TOPIC_ADMIN} primaryText={formatMessage(localMessages.admin)}>{PERMISSION_TOPIC_ADMIN}</MenuItem>
           </Field>
         </Col>
         <Col lg={2} md={2} sm={2} xs={12}>
@@ -57,7 +57,7 @@ const PermissionForm = (props) => {
             type="submit"
             disabled={pristine || submitting}
             label={buttonLabel}
-            primary
+            color="primary"
           />
           {deleteButton}
         </Col>
@@ -70,7 +70,7 @@ PermissionForm.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   initialValues: PropTypes.object,
   // from form helper
   handleSubmit: PropTypes.func,

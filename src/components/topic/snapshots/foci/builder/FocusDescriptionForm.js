@@ -3,7 +3,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import withIntlForm from '../../../../common/hocs/IntlForm';
 import FocalSetForm from './FocalSetForm';
 import { emptyString, nullOrUndefined } from '../../../../../lib/formValidators';
@@ -42,8 +42,7 @@ class FocusDescriptionForm extends React.Component {
   }
 
   render() {
-    const { renderTextField, renderSelectField, focalSetDefinitions, initialValues, currentFocalSetDefinitionId, focalTechnique } = this.props;
-    const { formatMessage } = this.props.intl;
+    const { renderTextField, renderSelect, focalSetDefinitions, initialValues, currentFocalSetDefinitionId, focalTechnique } = this.props;
     // only show focal set selection for editing mode
     let focalSetContent;
     if (initialValues.focusDefinitionId === undefined) {
@@ -56,21 +55,23 @@ class FocusDescriptionForm extends React.Component {
         <div className="focal-set-details">
           <Field
             name="focalSetDefinitionId"
-            component={renderSelectField}
-            floatingLabelText={localMessages.pickFocalSet}
+            component={renderSelect}
+            helpertext={localMessages.pickFocalSet}
           >
             {focalSetDefinitions.map(focalSetDef =>
               <MenuItem
                 key={focalSetDef.focal_set_definitions_id}
                 value={focalSetDef.focal_set_definitions_id}
-                primaryText={focalSetDef.name}
-              />
+              >
+                {focalSetDef.name}
+              </MenuItem>
             )}
             <MenuItem
               key={NEW_FOCAL_SET_PLACEHOLDER_ID}
               value={NEW_FOCAL_SET_PLACEHOLDER_ID}
-              primaryText={formatMessage(localMessages.newFocalSetName)}
-            />
+            >
+              <FormattedMessage {...localMessages.newFocalSetName} />
+            </MenuItem>
           </Field>
           {focalSetDetailedContent}
         </div>
@@ -89,15 +90,15 @@ class FocusDescriptionForm extends React.Component {
             <Field
               name="focusName"
               component={renderTextField}
-              floatingLabelText={localMessages.focusName}
+              helpertext={localMessages.focusName}
             />
           </Col>
           <Col lg={3} xs={12}>
             <Field
               name="focusDescription"
               component={renderTextField}
-              multiLine
-              floatingLabelText={localMessages.focusDescription}
+              multiline
+              helpertext={localMessages.focusDescription}
             />
           </Col>
           <Col lg={3} xs={12}>
@@ -126,7 +127,7 @@ FocusDescriptionForm.propTypes = {
   // form composition
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   change: PropTypes.func.isRequired,
   // from state
 };

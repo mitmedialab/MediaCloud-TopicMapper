@@ -2,11 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem';
 import composeSummarizedVisualization from './SummarizedVizualization';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
-import { DownloadButton } from '../../common/IconButton';
 import ActionMenu from '../../common/ActionMenu';
+import SVGAndCSVMenu from '../../common/SVGAndCSVMenu';
 import { resetThemes, fetchTopThemes, fetchDemoTopThemes } from '../../../actions/explorerActions';
 import { postToDownloadUrl, downloadExplorerSvg, COVERAGE_REQUIRED } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
@@ -31,7 +30,7 @@ class QueryThemesResultsContainer extends React.Component {
   }
   render() {
     const { results, queries, handleThemeClicked, selectedTabIndex, tabSelector } = this.props;
-    const { formatMessage, formatNumber } = this.props.intl;
+    const { formatNumber } = this.props.intl;
     let rawData = [];
     let content = null;
     if (results) {
@@ -76,23 +75,11 @@ class QueryThemesResultsContainer extends React.Component {
         { content }
         <div className="actions">
           <ActionMenu actionTextMsg={messages.downloadOptions}>
-            {queries.map((q, idx) =>
-              <span key={`q${idx}-items`}>
-                <MenuItem
-                  key={idx}
-                  className="action-icon-menu-item"
-                  primaryText={formatMessage(localMessages.downloadCsv, { name: q.label })}
-                  rightIcon={<DownloadButton />}
-                  onTouchTap={() => this.downloadCsv(q)}
-                />
-                <MenuItem
-                  className="action-icon-menu-item"
-                  primaryText={formatMessage(localMessages.downloadSvg, { name: q.label })}
-                  rightIcon={<DownloadButton />}
-                  onTouchTap={() => downloadExplorerSvg(q.label, 'sampled-nyt_themes', BUBBLE_CHART_DOM_ID)}
-                />
-              </span>
-            )}
+            <SVGAndCSVMenu
+              downloadCsv={() => this.downloadCsv(queries[selectedTabIndex].label)}
+              downloadSvg={() => downloadExplorerSvg(queries[selectedTabIndex].label, 'sampled-nyt_themes', BUBBLE_CHART_DOM_ID)}
+              label={queries[selectedTabIndex].label}
+            />
           </ActionMenu>
         </div>
       </div>

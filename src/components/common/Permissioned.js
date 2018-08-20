@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 import { connect } from 'react-redux';
 import { PERMISSION_TOPIC_READ, PERMISSION_TOPIC_WRITE, PERMISSION_TOPIC_ADMIN, hasPermissions, getUserRoles,
          PERMISSION_ADMIN, PERMISSION_MEDIA_EDIT, PERMISSION_STORY_EDIT, PERMISSION_LOGGED_IN,
@@ -45,6 +44,7 @@ const Permissioned = (props) => {
   if (allowed) {
     content = children;
   }
+  /*
   let cssClasses = 'permissioned';
   if (onlyTopic) cssClasses += ` topic-${onlyTopic}`;
   if (onlyRole) cssClasses += ` role-${onlyRole}`;
@@ -53,6 +53,8 @@ const Permissioned = (props) => {
       {content}
     </span>
   );
+  */
+  return content;
 };
 
 Permissioned.propTypes = {

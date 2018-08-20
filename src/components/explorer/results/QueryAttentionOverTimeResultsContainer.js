@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import { fetchQuerySplitStoryCount, fetchDemoQuerySplitStoryCount, resetSentenceCounts, setSentenceDataPoint, resetSentenceDataPoint } from '../../../actions/explorerActions';
+import withLoginRequired from '../../common/hocs/LoginRequiredDialog';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import composeSummarizedVisualization from './SummarizedVizualization';
 import withQueryResults from './QueryResultsSelector';
@@ -11,7 +14,7 @@ import AttentionOverTimeChart from '../../vis/AttentionOverTimeChart';
 import { DownloadButton } from '../../common/IconButton';
 import ActionMenu from '../../common/ActionMenu';
 import { oneDayLater, solrFormat } from '../../../lib/dateUtil';
-import { postToDownloadUrl } from '../../../lib/explorerUtil';
+import { postToDownloadUrl, ACTION_MENU_ITEM_CLASS } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
 import { FETCH_INVALID } from '../../../lib/fetchConstants';
 
@@ -30,8 +33,6 @@ const VIEW_REGULAR = 'VIEW_REGULAR';
 
 class QueryAttentionOverTimeResultsContainer extends React.Component {
   state = {
-    isDrillDownVisible: false,
-    dateRange: null,
     clickedQuery: null,
     view: VIEW_REGULAR, // which view to show (see view constants above)
   }
@@ -41,29 +42,34 @@ class QueryAttentionOverTimeResultsContainer extends React.Component {
   }
 
   handleDataPointClick = (date0, date1, evt, origin) => {
-    const { selectDataPoint, queries } = this.props;
-    const name = origin.series.name;
-    const currentQueryOfInterest = queries.filter(qry => qry.label === name)[0];
-    const dayGap = 1; // TODO: harcoded for now because we are always showing daily results
-    // date calculations for span/range
-    const clickedQuery = {
-      q: currentQueryOfInterest.q,
-      start_date: solrFormat(date0),
-      color: origin.series.color,
-      dayGap,
-      sources: currentQueryOfInterest.sources.map(s => s.media_id),
-      collections: currentQueryOfInterest.collections.map(c => c.tags_id),
-    };
-    clickedQuery.end_date = solrFormat(oneDayLater(date1), true);
-    this.setState({ clickedQuery });
-    selectDataPoint(clickedQuery);
+    const { isLoggedIn, selectDataPoint, queries, onShowLoginDialog } = this.props;
+    if (isLoggedIn) {
+      const name = origin.series.name;
+      const currentQueryOfInterest = queries.filter(qry => qry.label === name)[0];
+      const dayGap = 1; // TODO: harcoded for now because we are always showing daily results
+      // date calculations for span/range
+      const clickedQuery = {
+        q: currentQueryOfInterest.q,
+        start_date: solrFormat(date0),
+        color: origin.series.color,
+        dayGap,
+        sources: currentQueryOfInterest.sources.map(s => s.media_id),
+        collections: currentQueryOfInterest.collections.map(c => c.tags_id),
+      };
+      clickedQuery.end_date = solrFormat(oneDayLater(date1), true);
+      this.setState({ clickedQuery });
+      selectDataPoint(clickedQuery);
+    } else {
+      onShowLoginDialog();
+    }
   }
+
   downloadCsv = (query) => {
     postToDownloadUrl('/api/explorer/stories/split-count.csv', query);
   }
+
   render() {
     const { results, queries } = this.props;
-    const { formatMessage } = this.props.intl;
     // stich together bubble chart data
 
     // because these results are indexed, we can merge these two arrays
@@ -106,26 +112,37 @@ class QueryAttentionOverTimeResultsContainer extends React.Component {
             {safeResults.map((q, idx) =>
               <MenuItem
                 key={idx}
-                className="action-icon-menu-item"
-                primaryText={formatMessage(localMessages.downloadCsv, { name: q.label })}
-                rightIcon={<DownloadButton />}
-                onTouchTap={() => this.downloadCsv(q)}
-              />
+                className={ACTION_MENU_ITEM_CLASS}
+                onClick={() => this.downloadCsv(q)}
+              >
+                <ListItemText>
+                  <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />
+                </ListItemText>
+                <ListItemIcon>
+                  <DownloadButton />
+                </ListItemIcon>
+              </MenuItem>
             )}
           </ActionMenu>
           <ActionMenu actionTextMsg={messages.viewOptions}>
             <MenuItem
-              className="action-icon-menu-item"
-              primaryText={formatMessage(localMessages.withKeywords)}
+              className={ACTION_MENU_ITEM_CLASS}
               disabled={this.state.view === VIEW_REGULAR}
               onClick={() => this.setView(VIEW_REGULAR)}
-            />
+            >
+              <ListItemText>
+                <FormattedMessage {...localMessages.withKeywords} />
+              </ListItemText>
+            </MenuItem>
             <MenuItem
-              className="action-icon-menu-item"
-              primaryText={formatMessage(localMessages.withoutKeywords)}
+              className={ACTION_MENU_ITEM_CLASS}
               disabled={this.state.view === VIEW_NORMALIZED}
               onClick={() => this.setView(VIEW_NORMALIZED)}
-            />
+            >
+              <ListItemText>
+                <FormattedMessage {...localMessages.withoutKeywords} />
+              </ListItemText>
+            </MenuItem>
           </ActionMenu>
         </div>
       </div>
@@ -138,8 +155,9 @@ QueryAttentionOverTimeResultsContainer.propTypes = {
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
-  // from composition
+  // from hocs
   intl: PropTypes.object.isRequired,
+  onShowLoginDialog: PropTypes.func.isRequired,
   // from dispatch
   fetchData: PropTypes.func.isRequired,
   results: PropTypes.array.isRequired,
@@ -210,7 +228,9 @@ export default
       composeSummarizedVisualization(localMessages.lineChartTitle, localMessages.descriptionIntro, [localMessages.descriptionDetail, messages.countsVsPercentageHelp])(
         withAsyncFetch(
           withQueryResults(
-            QueryAttentionOverTimeResultsContainer
+            withLoginRequired(
+              QueryAttentionOverTimeResultsContainer
+            )
           )
         )
       )

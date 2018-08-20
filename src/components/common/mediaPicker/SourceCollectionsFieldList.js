@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-// import ErrorIcon from 'material-ui/svg-icons/alert/error';
+// import ErrorIcon from '@material-ui/core/SvgIcons/alert/error';
 import { reduxForm, FieldArray, Field, propTypes } from 'redux-form';
 import withHelp from '../hocs/HelpfulContainer';
 import withIntlForm from '../../common/hocs/IntlForm';

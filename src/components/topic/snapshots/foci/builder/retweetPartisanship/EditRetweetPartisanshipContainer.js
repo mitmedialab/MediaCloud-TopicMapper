@@ -43,9 +43,9 @@ const EditRetweetPartisanshipContainer = (props) => {
         <Row>
           <Col lg={8} xs={12}>
             <br />
-            <AppButton flat onClick={onPreviousStep} label={formatMessage(messages.previous)} />
+            <AppButton color="secondary" variant="outlined" onClick={onPreviousStep} label={formatMessage(messages.previous)} />
             &nbsp; &nbsp;
-            <AppButton type="submit" label={formatMessage(messages.next)} primary />
+            <AppButton type="submit" label={formatMessage(messages.next)} color="primary" />
           </Col>
         </Row>
       </form>

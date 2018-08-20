@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import slugify from 'slugify';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import MenuItem from 'material-ui/MenuItem';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import DataCard from '../../common/DataCard';
 import { fetchCollectionSourceRepresentation } from '../../../actions/sourceActions';
 import messages from '../../../resources/messages';
 import withHelp from '../../common/hocs/HelpfulContainer';
-import { DownloadButton, ExploreButton } from '../../common/IconButton';
+import ActionMenu from '../../common/ActionMenu';
 import PackedBubbleChart from '../../vis/PackedBubbleChart';
 import { getBrandDarkColor } from '../../../styles/colors';
-import ActionMenu from '../../common/ActionMenu';
+import SVGAndCSVMenu from '../../common/SVGAndCSVMenu';
 import { downloadSvg } from '../../util/svg';
 
 const localMessages = {
@@ -36,18 +36,13 @@ const TOP_N_LABELS_TO_SHOW = 5; // only the top N bubbles will get a label visib
 class CollectionSourceRepresentation extends React.Component {
 
   downloadCsv = () => {
-    const { collectionId } = this.props;
-    const url = `/api/collections/${collectionId}/sources/representation/representation.csv`;
+    const { collection } = this.props;
+    const url = `/api/collections/${collection.tags_id}/sources/representation/representation.csv`;
     window.location = url;
   }
 
-  handlePieSliceClick = () => {
-    // const { sources } = this.props;
-    // const source = sources[evt.point.index];
-  }
-
   render() {
-    const { helpButton, sources, collectionId, navToSource } = this.props;
+    const { helpButton, sources, navToSource, collection } = this.props;
     const { formatMessage, formatNumber } = this.props.intl;
 
     let content = null;
@@ -94,19 +89,14 @@ class CollectionSourceRepresentation extends React.Component {
     return (
       <DataCard>
         <div className="actions">
-          <ExploreButton linkTo={`/collections/${collectionId}/content-history`} />
-          <ActionMenu>
-            <MenuItem
-              className="action-icon-menu-item"
-              primaryText={formatMessage(messages.downloadCSV)}
-              rightIcon={<DownloadButton />}
-              onTouchTap={this.downloadCsv}
-            />
-            <MenuItem
-              className="action-icon-menu-item"
-              primaryText={formatMessage(messages.downloadSVG)}
-              rightIcon={<DownloadButton />}
-              onTouchTap={() => downloadSvg(BUBBLE_CHART_DOM_ID)}
+          <ActionMenu actionTextMsg={messages.downloadOptions}>
+            <SVGAndCSVMenu
+              downloadCsv={this.downloadCsv}
+              downloadSvg={() => {
+                const filename = `${slugify(collection.label)}-source-representation`;
+                downloadSvg(filename, BUBBLE_CHART_DOM_ID);
+              }}
+              label={formatMessage(localMessages.title)}
             />
           </ActionMenu>
         </div>
@@ -126,7 +116,7 @@ CollectionSourceRepresentation.propTypes = {
   fetchStatus: PropTypes.string.isRequired,
   sources: PropTypes.array.isRequired,
   // from parent
-  collectionId: PropTypes.number.isRequired,
+  collection: PropTypes.number.isRequired,
   // from dispatch
   asyncFetch: PropTypes.func.isRequired,
   navToSource: PropTypes.func.isRequired,
@@ -142,7 +132,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   asyncFetch: () => {
-    dispatch(fetchCollectionSourceRepresentation(ownProps.collectionId));
+    dispatch(fetchCollectionSourceRepresentation(ownProps.collection.tags_id));
   },
   navToSource: (element) => {
     dispatch(push(`/sources/${element.data.id}`));

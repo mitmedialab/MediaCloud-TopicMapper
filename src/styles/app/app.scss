@@ -10,6 +10,7 @@
 @import '_app_form';
 @import '_app_notice_list';
 @import '_collection_list';
+@import '_source_table';
 @import '_slider';
 @import '_action_icon_menu';
 @import '_notice';
@@ -35,6 +36,8 @@
 @import '_story_switchover';
 @import '_homepage';
 @import '_about';
+@import '_error_boundary';
+@import '_signup_form';
 
 #content { 
   min-height: 400px;
@@ -49,4 +52,8 @@
 
 .warning {
   color: $warning-color;
+}
+
+.warning-background {
+  background-color: $warning-color;
 }

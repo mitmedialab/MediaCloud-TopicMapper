@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 import messages from '../../../resources/messages';
 
 /**
@@ -15,11 +15,11 @@ function withPaging(ComposedContainer) {
     const { formatMessage } = props.intl;
     let previousButton = null;
     if ((links !== undefined) && {}.hasOwnProperty.call(links, 'previous')) {
-      previousButton = <FlatButton label={formatMessage(messages.previousPage)} primary onClick={previousPage} />;
+      previousButton = <Button variant="outlined" label={formatMessage(messages.previousPage)} color="primary" onClick={previousPage} />;
     }
     let nextButton = null;
     if ((links !== undefined) && {}.hasOwnProperty.call(links, 'next')) {
-      nextButton = <FlatButton label={formatMessage(messages.nextPage)} primary onClick={nextPage} />;
+      nextButton = <Button variant="contained" label={formatMessage(messages.nextPage)} color="primary" onClick={nextPage} />;
     }
     return <ComposedContainer {...props} nextButton={nextButton} previousButton={previousButton} />;
   };

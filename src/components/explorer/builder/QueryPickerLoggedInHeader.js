@@ -1,49 +1,67 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import ColorPicker from '../../common/ColorPicker';
 import messages from '../../../resources/messages';
-import { QUERY_LABEL_CHARACTER_LIMIT } from '../../../lib/explorerUtil';
+import { QUERY_LABEL_CHARACTER_LIMIT, ACTION_MENU_ITEM_CLASS } from '../../../lib/explorerUtil';
+import { defaultMenuOriginProps } from '../../util/uiUtil';
 
 const localMessages = {
   title: { id: 'explorer.querypicker.title', defaultMessage: 'Rename Query' },
 };
 
 class QueryPickerLoggedInHeader extends React.Component {
+  state = {
+    anchorEl: null,
+  };
+
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
   render() {
     const { query, isDeletable, onColorChange, onDelete, onLabelEditRequest } = this.props;
-    const { formatMessage } = this.props.intl;
     let nameInfo = <div />;
     let menuChildren = null;
     let iconOptions = null;
     if (isDeletable()) { // if this is not the only QueryPickerItem
       menuChildren = (
         <div>
-          <MenuItem primaryText={formatMessage(localMessages.title)} onTouchTap={() => onLabelEditRequest()} />
-          <MenuItem primaryText={formatMessage(messages.delete)} onTouchTap={() => onDelete(query)} />
+          <MenuItem className={ACTION_MENU_ITEM_CLASS} onClick={() => onLabelEditRequest()}><FormattedMessage {...localMessages.title} /></MenuItem>
+          <MenuItem className={ACTION_MENU_ITEM_CLASS} onClick={() => onDelete(query)}><FormattedMessage {...messages.delete} /></MenuItem>
         </div>
       );
     } else {
       menuChildren = (
         <div>
-          <MenuItem primaryText={formatMessage(localMessages.title)} onTouchTap={() => onLabelEditRequest()} />
+          <MenuItem className={ACTION_MENU_ITEM_CLASS} onClick={() => onLabelEditRequest()}><FormattedMessage {...localMessages.title} /></MenuItem>
         </div>
       );
     }
     if (menuChildren !== null) {
       iconOptions = (
-        <IconMenu
-          className="query-picker-icon-button"
-          iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-          anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-        >
-          {menuChildren}
-        </IconMenu>
+        <div className="query-picker-icon-button">
+          <IconButton onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
+          <Menu
+            id="logged-in-header-menu"
+            open={Boolean(this.state.anchorEl)}
+            className="query-picker-icon-button"
+            {...defaultMenuOriginProps}
+            anchorEl={this.state.anchorEl}
+            onBackdropClick={this.handleClose}
+            onClose={this.handleClose}
+          >
+            {menuChildren}
+          </Menu>
+        </div>
       );
       let abbrevQuery = query.label;
       if (abbrevQuery.length > QUERY_LABEL_CHARACTER_LIMIT) {

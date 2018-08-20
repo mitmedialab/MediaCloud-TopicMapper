@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import TextField from 'material-ui/TextField';
-import Dialog from 'material-ui/Dialog';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import AppButton from '../../common/AppButton';
 import QueryPickerLoggedInHeader from './QueryPickerLoggedInHeader';
 import QueryPickerDemoHeader from './QueryPickerDemoHeader';
@@ -85,20 +88,6 @@ class QueryPickerItem extends React.Component {
     /* query fields are only editable in place for Demo mode. the user can delete a query
       in Logged-In mode, the user can click the icon button, and edit the label of the query or delete the query
     */
-    const actions = [
-      <AppButton
-        className="query-item-header-dialog-button"
-        label={formatMessage(messages.cancel)}
-        primary
-        onClick={this.handleLabelClose}
-      />,
-      <AppButton
-        label={formatMessage(messages.rename)}
-        primary
-        keyboardFocused
-        onClick={() => this.handleLabelChangeAndClose(query)}
-      />,
-    ];
     if (query) {
       if (isLoggedIn) {
         headerInfo = (
@@ -178,25 +167,44 @@ class QueryPickerItem extends React.Component {
       >
         {headerInfo}
         <Dialog
-          title={formatMessage(localMessages.title)}
-          actions={actions}
           modal={false}
           open={this.state.labelChangeDialogOpen}
-          onRequestClose={this.handleLabelClose}
+          onClose={this.handleLabelClose}
         >
-          <p><FormattedMessage {...localMessages.queryDialog} /></p>
-          <TextField
-            className="query-picker-editable-name"
-            id="labelInDialog"
-            name="labelInDialog"
-            defaultValue={fullQuery}
-            maxLength={QUERY_LABEL_CHARACTER_LIMIT}
-            onChange={(e, val) => {
-              this.updateLabelInDialog(val);
-            }}
-            ref={focusUsernameInputField}
-            hintText={query.label || formatMessage(localMessages.searchHint)}
-          />
+          <DialogTitle>{formatMessage(localMessages.title)}</DialogTitle>
+          <DialogContent>
+            <p>
+              <FormattedMessage {...localMessages.queryDialog} />
+            </p>
+            <TextField
+              className="query-picker-editable-name"
+              id="labelInDialog"
+              name="labelInDialog"
+              defaultValue={fullQuery}
+              maxLength={QUERY_LABEL_CHARACTER_LIMIT}
+              onChange={(e, val) => {
+                this.updateLabelInDialog(val);
+              }}
+              inputRef={focusUsernameInputField}
+              hintText={query.label || formatMessage(localMessages.searchHint)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <AppButton
+              className="query-item-header-dialog-button"
+              label={formatMessage(messages.cancel)}
+              variant="outlined"
+              onClick={this.handleLabelClose}
+              key="picker-cancel"
+            />
+            <AppButton
+              label={formatMessage(messages.rename)}
+              primary
+              keyboardFocused
+              onClick={() => this.handleLabelChangeAndClose(query)}
+              key="picker-ok"
+            />,
+          </DialogActions>
         </Dialog>
         {subT}
       </div>

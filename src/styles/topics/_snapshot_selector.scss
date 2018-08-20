@@ -3,5 +3,9 @@
 .controlbar-topic {
   .snapshot-selector {
     display: inline-block;
+
+    svg {
+        fill: $white !important;
+    }
   }
 }

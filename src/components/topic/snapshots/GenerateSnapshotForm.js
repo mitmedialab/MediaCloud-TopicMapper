@@ -24,7 +24,7 @@ const GenerateSnapshotForm = (props) => {
           <Field
             name="note"
             component={renderTextField}
-            floatingLabelText={localMessages.noteLabel}
+            label={localMessages.noteLabel}
             fullWidth
             hintText={localMessages.noteHint}
           />

@@ -39,7 +39,7 @@ const Homepage = (props) => {
           </Col>
           <Col lg={1} />
           <Col lg={4}>
-            <DataCard>
+            <DataCard leftBorder>
               <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
               <LoginForm />
             </DataCard>

@@ -13,6 +13,7 @@
     "react"
   ],
   "rules": {
+    "jsx-a11y/no-autofocus": [2, { "ignoreNonDOM": true }],
     "max-len": 0,
     "no-case-declarations": 0,
     "react/jsx-filename-extension": 0,

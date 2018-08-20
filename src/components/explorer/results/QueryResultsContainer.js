@@ -16,11 +16,12 @@ import QueryGeoResultsContainer from './QueryGeoResultsContainer';
 import QueryWordsResultsContainer from './QueryWordsResultsContainer';
 import QueryWordSpaceResultsContainer from './QueryWordSpaceResultsContainer';
 import TabSelector from '../../common/TabSelector';
+import ErrorBoundary from '../../common/ErrorBoundary';
 import QueryThemesResultsContainer from './QueryThemesResultsContainer';
 import { updateQuery } from '../../../actions/explorerActions';
 import messages from '../../../resources/messages';
-import Permissioned from '../../common/Permissioned';
 import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
+import Permissioned from '../../common/Permissioned';
 
 class QueryResultsContainer extends React.Component {
   state = {
@@ -39,13 +40,15 @@ class QueryResultsContainer extends React.Component {
             isLoggedIn={isLoggedIn}
           />
         </Col>
-        <Col lg={12} xs={12}>
-          <QueryAttentionOverTimeDrillDownContainer
-            lastSearchTime={lastSearchTime}
-            queries={queries}
-            isLoggedIn={isLoggedIn}
-          />
-        </Col>
+        <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
+          <Col lg={12} xs={12}>
+            <QueryAttentionOverTimeDrillDownContainer
+              lastSearchTime={lastSearchTime}
+              queries={queries}
+              isLoggedIn={isLoggedIn}
+            />
+          </Col>
+        </Permissioned>
         <Col lg={12} xs={12}>
           <QueryTotalAttentionResultsContainer
             lastSearchTime={lastSearchTime}
@@ -179,7 +182,9 @@ class QueryResultsContainer extends React.Component {
         <div className="tabbed-content-wrapper">
           <Grid>
             <Row>
-              {viewContent}
+              <ErrorBoundary>
+                {viewContent}
+              </ErrorBoundary>
             </Row>
           </Grid>
         </div>

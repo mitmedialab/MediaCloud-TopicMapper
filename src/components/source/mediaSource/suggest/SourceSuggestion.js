@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, FormattedDate, injectIntl } from 'react-intl';
-import TextField from 'material-ui/TextField';
-import Dialog from 'material-ui/Dialog';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
 import DataCard from '../../../common/DataCard';
 import { DeleteButton, AddButton } from '../../../common/IconButton';
 import messages from '../../../../resources/messages';

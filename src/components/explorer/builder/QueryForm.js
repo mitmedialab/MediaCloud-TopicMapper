@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { reduxForm, Field, propTypes } from 'redux-form';
+import Link from 'react-router/lib/Link';
 // import MenuItem from 'material-ui/MenuItem';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../common/hocs/IntlForm';
@@ -21,11 +22,16 @@ const localMessages = {
   mainTitle: { id: 'explorer.queryBuilder.maintitle', defaultMessage: 'Create Query' },
   addButton: { id: 'explorer.queryBuilder.saveAll', defaultMessage: 'Search' },
   feedback: { id: 'explorer.queryBuilder.feedback', defaultMessage: 'We saved your new source' },
-  query: { id: 'explorer.queryBuilder.query', defaultMessage: 'Enter search terms' },
-  selectSandC: { id: 'explorer.queryBuilder.selectSAndC', defaultMessage: 'Select media' },
+  query: { id: 'explorer.queryBuilder.query', defaultMessage: '1. Enter search terms' },
+  queryDesc: { id: 'explorer.queryBuilder.query.desc', defaultMessage: 'Media Cloud will return stories that match your search query. We use standard boolean search syntax.' },
+  queryDescLink: { id: 'explorer.queryBuilder.query.descLink', defaultMessage: 'Learn more about writing boolean search queries.' },
+  selectSandC: { id: 'explorer.queryBuilder.selectSAndC', defaultMessage: '2. Select your media' },
+  selectSandCDesc: { id: 'explorer.queryBuilder.selectSAndCDesc', defaultMessage: 'Choose individual sources or collections to be searched.' },
+  selectSandCDescLink: { id: 'explorer.queryBuilder.selectSAndCDescLink', defaultMessage: 'Learn more about choosing media.' },
   SandC: { id: 'explorer.queryBuilder.sAndC', defaultMessage: 'Media' },
   color: { id: 'explorer.queryBuilder.color', defaultMessage: 'Choose a color' },
-  dates: { id: 'explorer.queryBuilder.dates', defaultMessage: 'For dates' },
+  dates: { id: 'explorer.queryBuilder.dates', defaultMessage: '3. Enter dates' },
+  datesDesc: { id: 'explorer.queryBuilder.datesDesc', defaultMessage: 'Our database goes back to 2011, however for the most accurate and comprehensive results, we recommend staying within one year of the current date.' },
   dateTo: { id: 'explorer.queryBuilder.dateTo', defaultMessage: 'to' },
   queryHelpTitle: { id: 'explorer.queryBuilder.queryHelp.title', defaultMessage: 'Building Query Strings' },
   queryHelpContent: { id: 'explorer.queryBuilder.queryHelp.content', defaultMessage: '<p>You can write boolean queries to search against out database. To search for a single word, just enter that word:</p><code>gender</code><p>You can also use boolean and phrase searches like this:</p><code>"gender equality" OR "gender equity"</code>' },
@@ -90,12 +96,19 @@ class QueryForm extends React.Component {
               <Col lg={5}>
                 <div className="q-field-wrapper">
                   <CopyAllComponent label={formatMessage(localMessages.query)} title={formatMessage(localMessages.copyQueryKeywordTitle)} msg={formatMessage(localMessages.copyQueryKeywordMsg)} onOk={() => handleCopyAll(KEYWORD)} />
+                  <br />
+                  <FormattedMessage {...localMessages.queryDesc} />
+                  <Link
+                    to={'https://'}
+                  >
+                    <FormattedMessage {...localMessages.queryDescLink} />
+                  </Link>
                   <Field
                     className="query-field"
                     name="q"
                     type="text"
                     value={currentQ}
-                    multiLine
+                    multiline
                     rows={3}
                     rowsMax={4}
                     fullWidth
@@ -117,6 +130,13 @@ class QueryForm extends React.Component {
               <Col lg={6}>
                 <div className="media-field-wrapper">
                   <CopyAllComponent label={mediaLabel} title={formatMessage(localMessages.copyQueryMediaTitle)} msg={formatMessage(localMessages.copyQueryMediaMsg)} onOk={() => handleCopyAll(MEDIA)} />
+                  <br />
+                  <FormattedMessage {...localMessages.selectSandCDesc} />
+                  <Link
+                    to={'https://'}
+                  >
+                    <FormattedMessage {...localMessages.selectSandCDescLink} />
+                  </Link>
                   <SourceCollectionsFieldList
                     className="query-field"
                     form="queryForm"
@@ -131,6 +151,8 @@ class QueryForm extends React.Component {
                 </div>
                 <div>
                   <CopyAllComponent label={formatMessage(localMessages.dates)} title={formatMessage(localMessages.copyQueryDatesTitle)} msg={formatMessage(localMessages.copyQueryDatesMsg)} onOk={() => handleCopyAll(DATES)} />
+                  <br />
+                  <FormattedMessage {...localMessages.datesDesc} />
                 </div>
                 <div className="dates-field-wrapper">
                   <Field
@@ -139,7 +161,7 @@ class QueryForm extends React.Component {
                     name="startDate"
                     type="inline"
                     component={renderTextField}
-                    underlineShow={false}
+                    disableunderline="true"
                     disabled={!isEditable}
                     onChange={onDateChange}
                   />
@@ -150,7 +172,7 @@ class QueryForm extends React.Component {
                     name="endDate"
                     type="inline"
                     component={renderTextField}
-                    underlineShow={false}
+                    disableunderline="true"
                     disabled={!isEditable}
                     onChange={onDateChange}
                   />
@@ -196,7 +218,7 @@ QueryForm.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   renderTextFieldWithFocus: PropTypes.func.isRequired,
   searchNickname: PropTypes.string.isRequired,
   savedSearches: PropTypes.array,

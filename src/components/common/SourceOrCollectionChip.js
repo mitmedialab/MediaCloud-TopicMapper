@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Chip from 'material-ui/Chip';
-import Avatar from 'material-ui/Avatar';
+import Chip from '@material-ui/core/Chip';
 import CollectionIcon from './icons/CollectionIcon';
 import MediaSourceIcon from './icons/MediaSourceIcon';
 import { urlToCollection, urlToSource } from '../../lib/urlUtil';
 
 const SourceOrCollectionChip = (props) => {
-  const { object, onDelete, onClick, children, autoLink } = props;
+  const { object, onDelete, onClick, autoLink } = props;
   const isCollection = object.tags_id !== undefined;
   let icon;
   if (isCollection) {
@@ -28,15 +27,12 @@ const SourceOrCollectionChip = (props) => {
     <Chip
       className={`chip ${typeClass}`}
       key={`chip${objectId}`}
-      onRequestDelete={onDelete}
-      onTouchTap={autoLink ? defaultOnClick : onClick}
-      backgroundColor={'rgb(255,255,255)'}
+      onDelete={onDelete}
+      onClick={autoLink ? defaultOnClick : onClick}
       style={{ border: '1px solid rgb(204,204,204)' }}
-    >
-      <Avatar size={32}>{icon}</Avatar>
-      {name}
-      {children}
-    </Chip>
+      avatar={icon}
+      label={name}
+    />
   );
 };
 
@@ -44,7 +40,6 @@ SourceOrCollectionChip.propTypes = {
   object: PropTypes.object.isRequired,
   onDelete: PropTypes.func,
   onClick: PropTypes.func,
-  children: PropTypes.node,
   autoLink: PropTypes.bool,
 };
 

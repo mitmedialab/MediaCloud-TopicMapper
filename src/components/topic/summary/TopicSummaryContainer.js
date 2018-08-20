@@ -95,14 +95,16 @@ class TopicSummaryContainer extends React.Component {
               <TopicWordSpaceContainer topicId={topicId} />
             </Col>
           </Row>
-          <Row>
-            <Col lg={6}>
-              <TopPeopleContainer topicId={topicId} filters={filters} location={location} />
-            </Col>
-            <Col lg={6}>
-              <TopOrgsContainer topicId={topicId} filters={filters} location={location} />
-            </Col>
-          </Row>
+          <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
+            <Row>
+              <Col lg={6}>
+                <TopPeopleContainer topicId={topicId} filters={filters} location={location} />
+              </Col>
+              <Col lg={6}>
+                <TopOrgsContainer topicId={topicId} filters={filters} location={location} />
+              </Col>
+            </Row>
+          </Permissioned>
           <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
             <Row>
               <Col lg={12}>

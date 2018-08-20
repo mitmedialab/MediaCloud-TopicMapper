@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
 import { injectIntl } from 'react-intl';
 
 class ConfirmationDialog extends React.Component {
@@ -19,12 +19,14 @@ class ConfirmationDialog extends React.Component {
   render() {
     const { open, title, children, okText } = this.props;
     const actions = [
-      <FlatButton
+      <Button
+        variant="outlined"
         label="Cancel"
         primary
         onTouchTap={this.handleCancel}
       />,
-      <FlatButton
+      <Button
+        variant="outlined"
         label={okText}
         primary
         keyboardFocused

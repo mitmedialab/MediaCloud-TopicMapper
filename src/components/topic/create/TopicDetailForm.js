@@ -3,8 +3,12 @@ import React from 'react';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { Field } from 'redux-form';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import MenuItem from 'material-ui/MenuItem';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MenuItem from '@material-ui/core/MenuItem';
 import withIntlForm from '../../common/hocs/IntlForm';
 import { TOPIC_FORM_MODE_EDIT } from './TopicForm';
 import { WarningNotice } from '../../common/Notice';
@@ -38,7 +42,7 @@ const localMessages = {
 };
 
 const TopicDetailForm = (props) => {
-  const { renderTextField, renderCheckbox, renderSelectField, mode } = props;
+  const { renderTextField, renderCheckbox, renderSelect, mode } = props;
   const { formatMessage } = props.intl;
   const iterations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   let queryWarning = null;
@@ -61,8 +65,8 @@ const TopicDetailForm = (props) => {
           <Field
             name="name"
             component={renderTextField}
-            floatingLabelText={localMessages.name}
             fullWidth
+            label={formatMessage(localMessages.name)}
           />
         </Col>
       </Row>
@@ -72,7 +76,7 @@ const TopicDetailForm = (props) => {
             name="description"
             component={renderTextField}
             fullWidth
-            floatingLabelText={localMessages.description}
+            label={formatMessage(localMessages.description)}
           />
         </Col>
       </Row>
@@ -83,9 +87,7 @@ const TopicDetailForm = (props) => {
             component={renderTextField}
             type="inline"
             fullWidth
-            floatingLabelText={formatMessage(localMessages.startDate)}
             label={formatMessage(localMessages.startDate)}
-            hintText={formatMessage(localMessages.startDate)}
           />
         </Col>
         <Col lg={6}>
@@ -94,9 +96,8 @@ const TopicDetailForm = (props) => {
             component={renderTextField}
             type="inline"
             fullWidth
-            floatingLabelText={formatMessage(localMessages.endDate)}
             label={formatMessage(localMessages.endDate)}
-            hintText={formatMessage(localMessages.endDate)}
+            helpertext={formatMessage(localMessages.endDate)}
           />
         </Col>
       </Row>
@@ -125,72 +126,59 @@ const TopicDetailForm = (props) => {
           <Field
             name="solr_seed_query"
             component={renderTextField}
-            multiLine
+            multiline
             rows={2}
             rowsMax={4}
             fullWidth
-            floatingLabelText={localMessages.seedQuery}
+            label={formatMessage(localMessages.seedQuery)}
+            helpertext={formatMessage(localMessages.seedQueryError)}
           />
           <small><b><QueryHelpDialog /></b> <FormattedMessage {...localMessages.seedQueryDescription} /></small>
           {queryWarning}
         </Col>
       </Row>
       <Row>
-        <Col lg={10}>
+        <Col lg={12}>
           <br />
-          <Card style={{ boxShadow: 'none' }} >
-            <CardHeader
-              style={{ fontWeight: 'bold' }}
-              title={formatMessage(localMessages.advancedSettings)}
-              actAsExpander
-              showExpandableButton
-            />
-            <CardText expandable>
-              <Permissioned onlyRole={PERMISSION_ADMIN}>
-                <Row>
-                  <Col lg={12}>
-                    <Field
-                      name="max_stories"
-                      component={renderTextField}
-                      type="inline"
-                      fullWidth
-                      initialValues="100000"
-                      floatingLabelText={formatMessage(localMessages.maxStories)}
-                      label={formatMessage(localMessages.maxStories)}
-                      hintText={100000}
-                    />
-                    <small><FormattedMessage {...localMessages.maxSeedStoriesHelp} /></small>
-                  </Col>
-                </Row>
-              </Permissioned>
-              <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
-                <Row>
-                  <Col lg={12}>
-                    <Field
-                      name="ch_monitor_id"
-                      component={renderTextField}
-                      fullWidth
-                      floatingLabelText={formatMessage(localMessages.crimsonHexagon)}
-                    />
-                    <small><FormattedMessage {...localMessages.crimsonHexagonHelp} /></small>
-                  </Col>
-                </Row>
-              </Permissioned>
-              <Row>
-                <Col lg={12}>
-                  <Field
-                    name="max_iterations"
-                    component={renderSelectField}
-                    fullWidth
-                    floatingLabelText={localMessages.maxIterations}
-                  >
-                    {iterations.map(t => <MenuItem key={t} value={t} primaryText={t === 0 ? `${t} - no spidering` : t} />)}
-                  </Field>
-                  <small><FormattedMessage {...localMessages.maxIterationsHelp} /></small>
-                </Col>
-              </Row>
-            </CardText>
-          </Card>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{formatMessage(localMessages.advancedSettings)}</Typography>
+            </ExpansionPanelSummary>
+            <Permissioned onlyRole={PERMISSION_ADMIN}>
+              <ExpansionPanelDetails>
+                <Field
+                  name="max_stories"
+                  component={renderTextField}
+                  type="inline"
+                  fullWidth
+                  // defaultValue="100000"
+                  label={formatMessage(localMessages.maxStories)}
+                  helpertext={100000}
+                />
+                <Typography><small><FormattedMessage {...localMessages.maxSeedStoriesHelp} /></small></Typography>
+              </ExpansionPanelDetails>
+            </Permissioned>
+            <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
+              <ExpansionPanelDetails>
+                <Field
+                  name="ch_monitor_id"
+                  component={renderTextField}
+                  fullWidth
+                />
+                <Typography><small><FormattedMessage {...localMessages.crimsonHexagonHelp} /></small></Typography>
+              </ExpansionPanelDetails>
+            </Permissioned>
+            <ExpansionPanelDetails>
+              <Field
+                name="max_iterations"
+                component={renderSelect}
+                fullWidth
+              >
+                {iterations.map(t => <MenuItem key={t} value={t}>{t === 0 ? `${t} - no spidering` : t}</MenuItem>)}
+              </Field>
+              <Typography><small><FormattedMessage {...localMessages.maxIterationsHelp} /></small></Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         </Col>
       </Row>
     </div>
@@ -202,8 +190,7 @@ TopicDetailForm.propTypes = {
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
   renderCheckbox: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
-  renderDatePickerInline: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   // from parent
   mode: PropTypes.string.isRequired,
   initialValues: PropTypes.object,

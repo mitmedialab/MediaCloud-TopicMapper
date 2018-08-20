@@ -1,6 +1,15 @@
 @import '../_constants';
 
 .recent-news-menu {
+
+  .icon-button-recent-changes {
+    button {
+      padding: 0px !important;
+      width: 38px !important;
+      height: 38px !important;
+    }
+  }
+
 }
 
 .recent-news-menu-content {

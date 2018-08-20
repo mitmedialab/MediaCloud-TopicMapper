@@ -4,8 +4,9 @@ from operator import itemgetter
 import requests
 import logging
 
+from flask import request
 from server import app, cliff, NYT_THEME_LABELLER_URL, mc
-from server.auth import user_mediacloud_client
+from server.auth import user_mediacloud_client, user_admin_mediacloud_client
 from server.util.request import api_error_handler
 import server.util.csv as csv
 from server.cache import cache, key_generator
@@ -25,7 +26,11 @@ logger = logging.getLogger(__name__)
 @api_error_handler
 def story_info(stories_id):
     user_mc = user_mediacloud_client()
-    story = user_mc.story(stories_id)
+    admin_mc = user_admin_mediacloud_client()
+    if 'text' in request.args and request.args['text'] == 'true':
+        story = admin_mc.story(stories_id, text=True)
+    else:
+        story = user_mc.story(stories_id)
     story["media"] = user_mc.media(story["media_id"])
     return jsonify({'info': story})
 

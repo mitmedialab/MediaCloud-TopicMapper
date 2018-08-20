@@ -59,7 +59,7 @@ const SourceDetailsForm = (props) => {
           <Field
             name="public_notes"
             component={renderTextField}
-            hintText={localMessages.publicNotesHint}
+            label={localMessages.publicNotesHint}
             fullWidth
             disabled={initialValues.disabled}
             rows={2}
@@ -76,7 +76,7 @@ const SourceDetailsForm = (props) => {
           <Field
             name="editor_notes"
             component={renderTextField}
-            hintText={localMessages.editorNotesHint}
+            label={localMessages.editorNotesHint}
             disabled={initialValues.disabled}
             fullWidth
             rows={2}

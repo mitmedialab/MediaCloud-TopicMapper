@@ -3,8 +3,8 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import messages from '../../../resources/messages';
 import AppMenu from '../../common/header/AppMenu';
 import { urlToTopicMapper } from '../../../lib/urlUtil';
@@ -49,6 +49,7 @@ const TopicsAppMenu = (props) => {
   }
   return (
     <AppMenu
+      color="primary"
       titleMsg={localMessages.menuTitle}
       showMenu={getAppName() === 'topics' && props.isLoggedIn}
       onTitleClick={() => { props.handleItemClick('', getAppName() === 'topics'); }}

@@ -3,37 +3,47 @@
 .topic-list-container {
   margin-top: 20px;
 
-	.topic-preview-list-item {
-		padding: 30px;
+  .topic-preview-list-item {
+    padding: 30px;
 
-		div > span {
-			font-style: italic;
+    div > span {
+      font-style: italic;
+    }
+  }
+
+  .label {
+    margin-top: 15px;
+    float: right;
+  }
+
+  .topic-mini-cards {
+    div {
+      div {
+        border: 1px solid $material-grey300;
+      }
+    }
+  }
+
+  .fav-toggle-button {
+    float: right;
+    button {
+    	background-color: transparent !important;
+		  .app-icon {
+	      svg {
+	        margin-left: 1px;
+	        margin-top: 5px;
+	        width: 14px;
+	        height: 14px;
+	      }
+		  }
+		  .app-icon-empty-star {
+		  	svg {
+		  		path {
+		  			fill: rgb(56, 187, 172);
+		  		}
+		  	}
+		  }
 		}
-	}
-
-	.label {
-		margin-top: 15px;
-		float: right;
-	}
-
-	.topic-mini-cards {
-		div {
-			div {
-				border: 1px solid $material-grey300;
-			}
-		}
-	}
-
-	.fav-toggle-button {
-		float: right;
-		margin-top: -10px;
-		.app-icon {
-			svg {
-			  margin-left: 5px;
-			  width: 15px !important;
-			  height: 15px !important;
-			}
-		}
-	}
+  }
 
 }

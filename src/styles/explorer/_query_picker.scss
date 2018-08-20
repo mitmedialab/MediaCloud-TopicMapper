@@ -44,6 +44,7 @@
         margin-left: 23px;
         display: block;
         color: $material-grey600;
+        margin-top: 10px;
       }
 
       .add-query-item {
@@ -60,8 +61,12 @@
       }
 
       .query-picker-icon-button {
-        width: 20px !important;
+        padding-top: 10px;
         float: right !important;
+        button {
+          width: 30px;
+          height: 30px;
+        }
       }
 
       .query-picker-name {

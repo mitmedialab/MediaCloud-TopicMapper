@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import MenuItem from '@material-ui/core/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
-import MenuItem from 'material-ui/MenuItem';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { SearchButton } from '../../common/IconButton';
 import { FETCH_ONGOING, FETCH_SUCCEEDED } from '../../../lib/fetchConstants';
@@ -156,7 +156,7 @@ class SourceSearchContainer extends React.Component {
         <SearchButton />
         <div className="fetching">{fetchingStatus}</div>
         <AutoComplete
-          hintText={formatMessage(localMessages.searchHint)}
+          label={formatMessage(localMessages.searchHint)}
           fullWidth
           openOnFocus
           searchText={this.state.lastSearchString}
@@ -175,6 +175,7 @@ class SourceSearchContainer extends React.Component {
 
 SourceSearchContainer.propTypes = {
   intl: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   // from parent
   searchSources: PropTypes.bool,      // include source results?
   searchCollections: PropTypes.bool,  // include collection results?
@@ -226,6 +227,7 @@ SourceSearchContainer.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
 };
+
 
 export default
   injectIntl(

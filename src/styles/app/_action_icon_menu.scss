@@ -7,18 +7,17 @@
 .action-icon-menu-item {
 	line-height: 28px !important;
 	min-height: 28px !important;
-	margin: 10px !important;
 	min-width: 230px !important;
+    border: none !important;
 
 	button {
 		margin: 0 !important;
 		padding: 0 !important;
 	}
 
-	.icon-button {
-		position: absolute;
-		right: 34px;
-	}
+    span {
+        border: none !important;
+    }
 
 }
 

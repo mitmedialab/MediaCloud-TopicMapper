@@ -91,7 +91,7 @@ class TopicContainer extends React.Component {
                   label={formatMessage(localMessages.trySpidering)}
                   onTouchTap={() => handleSpiderRequest(topicInfo.topics_id)}
                   type="submit"
-                  primary
+                  color="primary"
                 />
               </div>
             </Col>

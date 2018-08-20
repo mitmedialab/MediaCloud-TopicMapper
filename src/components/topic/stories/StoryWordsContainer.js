@@ -47,7 +47,7 @@ class StoryWordsContainer extends React.Component {
         onViewSampleSizeClick={onViewSampleSizeClick}
         title={formatMessage(messages.topWords)}
         domId={WORD_CLOUD_DOM_ID}
-        svgDownloadPrefix={`${topicDownloadFilename(topicInfo.name, filters)}-story-${storiesId}--words`}
+        svgDownloadPrefix={`${topicDownloadFilename(topicInfo.name, filters)}-story-${storiesId}-words`}
         includeTopicWord2Vec
       />
     );

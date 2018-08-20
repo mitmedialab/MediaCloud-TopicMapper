@@ -18,17 +18,20 @@ class LoginContainer extends React.Component {
   }
   render() {
     const { formatMessage, isLoggedIn } = this.props.intl;
-    const titleHandler = parentTitle => `${formatMessage(localMessages.loginTitle)} | ${parentTitle}`;
     const className = `logged-in-${isLoggedIn}`;
     return (
       <Grid>
-        <Helmet><title>{titleHandler()}</title></Helmet>
+        <Helmet><title>{formatMessage(localMessages.loginTitle)}</title></Helmet>
         <Row>
-          <Col lg={12} md={12} sm={12} className={className}>
+          <Col lg={12} className={className}>
             <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
           </Col>
         </Row>
-        <LoginForm location={this.props.location} />
+        <Row>
+          <Col lg={4} className={className}>
+            <LoginForm location={this.props.location} />
+          </Col>
+        </Row>
       </Grid>
     );
   }

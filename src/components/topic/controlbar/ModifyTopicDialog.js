@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import Link from 'react-router/lib/Link';
 import messages from '../../../resources/messages';
 import AppButton from '../../common/AppButton';
@@ -46,12 +49,6 @@ class ModifyTopicDialog extends React.Component {
   render() {
     const { topicId, onUrlChange, needsNewSnapshot, onSpiderRequest } = this.props;
     const { formatMessage } = this.props.intl;
-    const dialogActions = [
-      <AppButton
-        label={formatMessage(messages.cancel)}
-        onTouchTap={this.handleRemoveDialogClose}
-      />,
-    ];
     return (
       <div className="modify-topic">
         <Permissioned onlyTopic={PERMISSION_TOPIC_WRITE}>
@@ -64,55 +61,61 @@ class ModifyTopicDialog extends React.Component {
           </Link>
         </Permissioned>
         <Dialog
-          title={formatMessage(localMessages.modifyTopic)}
-          actions={dialogActions}
           open={this.state.open}
-          onRequestClose={this.handleRemoveDialogClose}
+          onClose={this.handleRemoveDialogClose}
           className={'modify-topic-dialog'}
-          bodyClassName={'modify-topic-dialog-body'}
-          contentClassName={'modify-topic-dialog-content'}
-          overlayClassName={'modify-topic-dialog-overlay'}
-          titleClassName={'modify-topic-dialog-title'}
           autoDetectWindowHeight={false}
         >
-          <DescriptiveButton
-            svgIcon={(<SnapshotIcon height={40} />)}
-            label={formatMessage(messages.snapshotGenerate)}
-            description={(needsNewSnapshot) ? formatMessage(localMessages.generateSnapshotDetails) : ''}
-            onClick={() => onUrlChange(`/topics/${topicId}/snapshot/generate`)}
-            className={(needsNewSnapshot) ? 'warning' : ''}
-            id="modify-topic-snapshot"
-          />
-          <Permissioned onlyTopic={PERMISSION_TOPIC_ADMIN}>
+          <DialogTitle>
+            {formatMessage(localMessages.modifyTopic)}
+          </DialogTitle>
+          <DialogContent>
             <DescriptiveButton
-              label={formatMessage(localMessages.runSpider)}
-              description={formatMessage(localMessages.runSpiderDetails)}
-              onClick={() => {
-                onSpiderRequest();
-                this.handleRemoveDialogClose();
-              }}
-              id="modify-topic-spider"
+              svgIcon={(<SnapshotIcon height={40} />)}
+              label={formatMessage(messages.snapshotGenerate)}
+              description={(needsNewSnapshot) ? formatMessage(localMessages.generateSnapshotDetails) : ''}
+              onClick={() => onUrlChange(`/topics/${topicId}/snapshot/generate`)}
+              className={(needsNewSnapshot) ? 'warning' : ''}
+              id="modify-topic-snapshot"
             />
-          </Permissioned>
-          <DescriptiveButton
-            svgIcon={(<FocusIcon height={50} />)}
-            label={formatMessage(messages.manageFoci)}
-            description={formatMessage(localMessages.addFocusDetails)}
-            onClick={() => onUrlChange(`/topics/${topicId}/snapshot/foci`)}
-            id="modify-topic-subtopics"
-          />
-          <DescriptiveButton
-            label={formatMessage(localMessages.changePermissions)}
-            description={formatMessage(localMessages.changePermissionsDetails)}
-            onClick={() => onUrlChange(`/topics/${topicId}/permissions`)}
-            id="modify-topic-permissions"
-          />
-          <DescriptiveButton
-            label={formatMessage(localMessages.changeSettings)}
-            description={formatMessage(localMessages.changeSettingsDetails)}
-            onClick={() => onUrlChange(`/topics/${topicId}/edit`)}
-            id="modify-topic-settings"
-          />
+            <Permissioned onlyTopic={PERMISSION_TOPIC_ADMIN}>
+              <DescriptiveButton
+                label={formatMessage(localMessages.runSpider)}
+                description={formatMessage(localMessages.runSpiderDetails)}
+                onClick={() => {
+                  onSpiderRequest();
+                  this.handleRemoveDialogClose();
+                }}
+                id="modify-topic-spider"
+              />
+            </Permissioned>
+            <DescriptiveButton
+              svgIcon={(<FocusIcon height={50} />)}
+              label={formatMessage(messages.manageFoci)}
+              description={formatMessage(localMessages.addFocusDetails)}
+              onClick={() => onUrlChange(`/topics/${topicId}/snapshot/foci`)}
+              id="modify-topic-subtopics"
+            />
+            <DescriptiveButton
+              label={formatMessage(localMessages.changePermissions)}
+              description={formatMessage(localMessages.changePermissionsDetails)}
+              onClick={() => onUrlChange(`/topics/${topicId}/permissions`)}
+              id="modify-topic-permissions"
+            />
+            <DescriptiveButton
+              label={formatMessage(localMessages.changeSettings)}
+              description={formatMessage(localMessages.changeSettingsDetails)}
+              onClick={() => onUrlChange(`/topics/${topicId}/edit`)}
+              id="modify-topic-settings"
+            />
+            <DialogActions>
+              <AppButton
+                label={formatMessage(messages.cancel)}
+                onTouchTap={this.handleRemoveDialogClose}
+                key="close"
+              />
+            </DialogActions>
+          </DialogContent>
         </Dialog>
       </div>
     );

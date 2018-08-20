@@ -11,6 +11,9 @@
 
 .icon-button {
   display: inline-block;
+  &.icon-button-help {
+    margin-left: 8px;
+  }
 }
 
 .app-icon {
@@ -18,11 +21,12 @@
   height: 26px;
   border-radius: 13px;
   display: inline-block;
+  font-size: 12px;
 
   &.app-icon-medium {
     width: 23px;
     height: 23px;
-    border-radius: 11px;
+    border-radius: 50%;
   }
 
   &.app-icon-large {
@@ -57,6 +61,7 @@
   &.app-icon-add {
     svg {
       margin-top: 7px;
+      margin-left: 1px;
     }
   }
 
@@ -68,12 +73,17 @@
   }
 
   &.app-icon-delete {
-    background-color: $material-grey400;
     svg {
-      margin-top: 8px;
+      margin-top: 9px;
+      path {
+        fill: $material-grey600;
+      }
     }
     &:hover {
       background-color: #fc521f !important;
+      path {
+        fill: $material-grey100;
+      }
     }
   }
 
@@ -88,12 +98,13 @@
   }
 
   &.app-icon-help {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    background-color: $material-grey400;
+    background-color: rgba(0, 0, 0, 0.08);
     svg {
-      margin-top: 4px;
+      margin-top: 8px;
+      margin-left: 1px;
+      path, circle {
+        fill: black;
+      }
     }
   }
 
@@ -107,14 +118,6 @@
 
   &.app-icon-story {
     width: 35px;
-  }
-
-  &.app-icon-media-source {
-    width: 40px;
-  }
-
-  &.app-icon-collection {
-    width: 50px;
   }
 
   &.app-icon-snapshot {
@@ -153,18 +156,26 @@
 
 }
 
-h2 {
-  .app-icon-help {
+h1, h2 {
+  .app-icon-media-source {
+    width: 40px;
+  }
+  .app-icon-collection {
+    width: 50px;
   }
 }
 
 .chip {
   .app-icon-collection {
-    padding-top:30px;
     padding-left: 5px;
+    svg {
+      padding-top:15px;
+    }
   }
   .app-icon-media-source {
-    padding-top:30px;
     padding-left: 10px;
+    svg {
+      padding-top:15px;
+    }
   }
 }

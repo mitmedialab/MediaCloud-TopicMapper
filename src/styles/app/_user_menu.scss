@@ -1,30 +1,18 @@
 @import '../_constants';
 
 .user-menu {
-  display: inline-block;
-  padding-left: 1em;
-  padding-right: 1em;
-  height: 34px;
+
   a {
     color: $white !important;
     cursor: pointer;
     font-size: 14px;
   }
+
   button {
-
     padding: 0px !important;
-    width: 28px !important;
-    height: 28px !important;
-    margin-right: 5px !important;
+    width: 38px !important;
+    height: 38px !important;
     color: $white !important;
-
-    svg {
-      margin-top: 10px;
-      width: 18px !important;
-      height: 18px !important;
-      fill: $material-grey400 !important;
-    }
-
   }
 
 }

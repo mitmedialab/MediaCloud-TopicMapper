@@ -33,7 +33,7 @@ class Word2VecTimespanPlayerContainer extends React.Component {
       <Row>
         <Col lg={12}>
           <DataCard>
-            <h1><FormattedMessage {...localMessages.title} /></h1>
+            <h2><FormattedMessage {...localMessages.title} /></h2>
             <Word2VecTimespanPlayer
               xProperty={'w2v_x'}
               yProperty={'w2v_y'}

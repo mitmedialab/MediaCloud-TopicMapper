@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Popover from 'material-ui/Popover';
+import Popover from '@material-ui/core/Popover';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Link from 'react-router/lib/Link';
 import { NotificationsButton } from '../IconButton';
 import messages from '../../../resources/messages';
 import RecentNewsMenuItem from './RecentNewsMenuItem';
+import { defaultMenuOriginProps } from '../../util/uiUtil';
 
 const localMessages = {
   releaseNotes: { id: 'recentNewsMenu.releaseNotes', defaultMessage: 'Read More Release Notes' },
@@ -14,22 +15,19 @@ const localMessages = {
 class RecentNewsMenu extends React.Component {
 
   state = {
-    open: false,
     anchorEl: null,
   };
 
   handleToggle = (event) => {
-    // This prevents ghost click.
-    event.preventDefault();
+    event.preventDefault(); // This prevents ghost click.
     this.setState({
-      open: !this.state.open,
       anchorEl: event.currentTarget,
     });
   }
 
   handleRequestClose = () => {
     this.setState({
-      open: false,
+      anchorEl: null,
     });
   };
 
@@ -39,11 +37,10 @@ class RecentNewsMenu extends React.Component {
       <div className="recent-news-menu">
         <NotificationsButton onClick={this.handleToggle} color={'#FFFFFF'} />
         <Popover
-          open={this.state.open}
+          open={Boolean(this.state.anchorEl)}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          {...defaultMenuOriginProps}
+          onClose={this.handleRequestClose}
         >
           <div className="recent-news-menu-content">
             <h3> <FormattedMessage {...messages.recentNews} /> <small>{subTitle}</small></h3>

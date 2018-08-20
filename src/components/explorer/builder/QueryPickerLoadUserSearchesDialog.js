@@ -1,14 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl, FormattedDate, FormattedHTMLMessage } from 'react-intl';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import { Col } from 'react-flexbox-grid/lib';
-import { List, ListItem } from 'material-ui/List';
+import { injectIntl, FormattedDate, FormattedHTMLMessage, FormattedMessage } from 'react-intl';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import { Row, Col } from 'react-flexbox-grid/lib';
 import Link from 'react-router/lib/Link';
 import { DeleteButton } from '../../common/IconButton';
 import AppButton from '../../common/AppButton';
 import { getDateFromTimestamp } from '../../../lib/dateUtil';
+import messages from '../../../resources/messages';
 
 const STORY_SEARCH_RELEASE_DATE = new Date(2018, 5, 18);
 
@@ -55,43 +57,29 @@ class QueryPickerLoadUserSearchesDialog extends React.Component {
   render() {
     const { searches, submitting } = this.props;
     const { formatMessage } = this.props.intl;
-    const actions = [
-      <FlatButton
-        label="Done"
-        primary
-        keyboardFocused
-        onClick={this.handleDialogClose}
-      />,
-    ];
     let searchList;
     if (searches !== null && searches !== undefined && searches.length > 0) {
       searchList = (
-        <List
-          className="query-picker-save-search-list"
-          id="searchNameInDialog"
-          name="searchNameInDialog"
-        >
+        <div className="query-picker-save-search-list">
           {searches.map((search, idx) => {
             const searchDate = getDateFromTimestamp(search.timestamp);
             const needsUpdating = searchDate < STORY_SEARCH_RELEASE_DATE;
             return (
-              <div key={idx}>
-                <DeleteButton className="delete-search" onClick={() => this.onDeleteRequest(search)} />
-                <Col lg={11} >
-                  <ListItem onTouchTap={() => this.onLoadConfirm(search)}>
-                    <Link to={`queries/search?q=${search.queryParams}`}>{search.queryName}</Link>
-                    <br /><FormattedDate value={searchDate} />
+              <Row>
+                <Col lg={12}>
+                  <div key={idx} className="query-picker-save-search-item">
+                    <DeleteButton className="delete-search" onClick={() => this.onDeleteRequest(search)} />
+                    <h3><Link to={`queries/search?q=${search.queryParams}`}>{search.queryName}</Link></h3>
+                    <p><FormattedDate value={searchDate} /></p>
                     {needsUpdating && (
-                      <div className="story-switchover">
-                        <FormattedHTMLMessage {...localMessages.needsUpdating} />
-                      </div>
+                      <i><FormattedHTMLMessage {...localMessages.needsUpdating} /></i>
                     )}
-                  </ListItem>
+                  </div>
                 </Col>
-              </div>
+              </Row>
             );
           })}
-        </List>
+        </div>
       );
     } else {
       // no searches so show a nice messages
@@ -102,16 +90,25 @@ class QueryPickerLoadUserSearchesDialog extends React.Component {
     return (
       <div className="load-saved-search-wrapper">
         <Dialog
-          title={formatMessage(localMessages.loadSearchTitle)}
-          modal={false}
-          actions={actions}
           open={this.state.loadSearchDialogOpen}
-          onRequestClose={this.handleDialogClose}
-          autoScrollBodyContent
+          onClose={this.handleDialogClose}
+          maxWidth={'md'}
         >
-          {searchList}
+          <DialogTitle><FormattedMessage {...localMessages.loadSearchTitle} /></DialogTitle>
+          <DialogContent>
+            {searchList}
+          </DialogContent>
+          <DialogActions>
+            <AppButton
+              primary
+              onClick={this.handleDialogClose}
+            >
+              <FormattedMessage {...messages.close} />
+            </AppButton>,
+          </DialogActions>
         </Dialog>
         <AppButton
+          variant="outlined"
           style={{ marginTop: 30 }}
           onClick={this.onLoadRequest}
           label={formatMessage(localMessages.loadSavedSearches)}

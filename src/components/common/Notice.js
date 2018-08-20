@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 export const LEVEL_INFO = 'info';
@@ -45,7 +45,7 @@ function composeNotice(level) {
       }
       return (
         <div className={`notice ${level}-notice`}>
-          <FontIcon className="material-icons" color={'#000000'}>{fontIconName}</FontIcon>
+          <Icon className="material-icons" color="disabled">{fontIconName}</Icon>
           {children}
           {detailsContent}
         </div>

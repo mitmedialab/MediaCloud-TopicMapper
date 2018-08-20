@@ -34,15 +34,16 @@ class CollectionCopyConfirmer extends Component {
           />
         </p>
         <AppButton
-          label={formatMessage(messages.cancel)}
           onClick={onCancel}
-        />
+          color="secondary"
+        >{formatMessage(messages.cancel)}
+        </AppButton>
         &nbsp; &nbsp;
         <AppButton
-          label={formatMessage(messages.ok)}
           onClick={() => onConfirm(collection)}
-          primary
-        />
+          color="primary"
+        >{formatMessage(messages.ok)}
+        </AppButton>
       </div>
     );
   }

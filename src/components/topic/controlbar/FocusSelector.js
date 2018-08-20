@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import { REMOVE_FOCUS } from './TopicFilterControlBar';
-import { getBrandDarkerColor } from '../../../styles/colors';
 import messages from '../../../resources/messages';
-
-const localMessages = {
-};
 
 class FocusSelector extends React.Component {
 
@@ -17,7 +15,7 @@ class FocusSelector extends React.Component {
     const { formatMessage } = this.props.intl;
     let selected;
     if (value === REMOVE_FOCUS) {
-      selected = { foci_id: REMOVE_FOCUS, name: formatMessage(localMessages.noFocus) };
+      selected = { foci_id: REMOVE_FOCUS, name: formatMessage(messages.noFocus) };
     } else {
       selected = foci.find(focus => (focus.foci_id === value));
     }
@@ -46,13 +44,12 @@ class FocusSelector extends React.Component {
     // default to none
     return (
       <div className="focus-selector-wrapper">
-        <SelectField
-          floatingLabelText={formatMessage(messages.focusPick)}
-          floatingLabelFixed
-          floatingLabelStyle={{ color: 'rgb(224,224,224)', opacity: 0.8 }}
-          selectedMenuItemStyle={{ color: getBrandDarkerColor(), fontWeight: 'bold' }}
-          labelStyle={{ color: 'rgb(255,255,255)' }}
-          value={selectedId}
+        <InputLabel htmlFor="name-readonly">Name</InputLabel>
+        <Select
+          label={formatMessage(messages.focusPick)}
+          style={{ color: 'rgb(224,224,224)', opacity: 0.8 }}
+          className="focus-selector"
+          value={selectedId || ''}
           fullWidth
           onChange={this.handleFocusChange}
         >
@@ -60,11 +57,16 @@ class FocusSelector extends React.Component {
             <MenuItem
               key={focus.foci_id}
               value={focus.foci_id}
-              primaryText={focusName(focus)}
-            />
+            >
+              <ListItemText>{focusName(focus)}</ListItemText>
+            </MenuItem>
           )}
-          <MenuItem value={REMOVE_FOCUS} primaryText={formatMessage(messages.removeFocus)} />
-        </SelectField>
+          <MenuItem
+            value={REMOVE_FOCUS}
+          >
+            <ListItemText>{formatMessage(messages.removeFocus)}</ListItemText>
+          </MenuItem>
+        </Select>
         {detailsContent}
       </div>
     );

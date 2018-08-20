@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'react-router/lib/Link';
 import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
-import { SelectField, Checkbox, MenuItem } from 'material-ui';
+import { Select, Checkbox, MenuItem } from '@material-ui/core';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import AppButton from '../../common/AppButton';
 import { ExploreButton } from '../../common/IconButton';
@@ -45,25 +45,25 @@ const AdvancedSearchResults = (props) => {
         <Row>
           <Col lg={6}>
             <div className="search-results-controls">
-              <SelectField name="allOrNone" style={{ fontSize: 13 }}>
+              <Select name="allOrNone" style={{ fontSize: 13 }}>
                 <MenuItem
                   name="chkSelectAllFirstPage"
                   onClick={(...args) => addRemoveAll(ADD_ALL_THIS_PAGE, args[1])}
-                  primaryText={formatMessage(localMessages.checkAllFirstPage)}
                   style={{ fontSize: 13 }}
-                />
+                ><FormattedMessage {...localMessages.checkAllFirstPage} />
+                </MenuItem>
                 <MenuItem
-                  primaryText={formatMessage(localMessages.unCheckAll)}
                   onClick={(...args) => addRemoveAll(REMOVE_ALL, args[1])}
                   style={{ fontSize: 13 }}
-                />
+                ><FormattedMessage {...localMessages.unCheckAll} />
+                </MenuItem>
                 <MenuItem
                   name="chkSelectAllPages"
                   onClick={(...args) => addRemoveAll(ADD_ALL_PAGES, args[1])}
-                  primaryText={formatMessage(localMessages.checkAllPages)}
                   style={{ fontSize: 13 }}
-                />
-              </SelectField>
+                ><FormattedMessage {...localMessages.checkAllPages} />
+                </MenuItem>
+              </Select>
             </div>
           </Col>
           <Col lg={6}>
@@ -72,7 +72,7 @@ const AdvancedSearchResults = (props) => {
                 style={{ marginTop: 30 }}
                 type="submit"
                 label={formatMessage(localMessages.addToCollection)}
-                primary
+                color="primary"
                 onClick={onAddToCollection}
               />
             </div>
@@ -88,7 +88,7 @@ const AdvancedSearchResults = (props) => {
                       checked={collection.selected}
                       key={collection.tags_id}
                       name={`clxn_${collection.tags_id}`}
-                      onCheck={(...args) => addOrRemoveToSelectedCollections(collection.tags_id, args[1])}
+                      onChange={(...args) => addOrRemoveToSelectedCollections(collection.tags_id, args[1])}
                     />
                   </div>
                   <div className="search-result-actions">
@@ -117,7 +117,7 @@ const AdvancedSearchResults = (props) => {
                       checked={source.selected}
                       key={source.media_id}
                       name={`src_${source.media_id}`}
-                      onCheck={(...args) => addOrRemoveToSelectedSources(source.media_id, args[1])}
+                      onChange={(...args) => addOrRemoveToSelectedSources(source.media_id, args[1])}
                     />
                   </div>
                   <div className="search-result-actions">

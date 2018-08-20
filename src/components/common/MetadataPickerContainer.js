@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field } from 'redux-form';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import { FETCH_SUCCEEDED } from '../../lib/fetchConstants';
 import withAsyncFetch from './hocs/AsyncContainer';
 import { fetchMetadataValuesForCountry, fetchMetadataValuesForState, fetchMetadataValuesForPrimaryLanguage, fetchMetadataValuesForCountryOfFocus, fetchMetadataValuesForMediaType } from '../../actions/systemActions';
@@ -17,7 +17,7 @@ const localMessages = {
 };
 
 const MetadataPickerContainer = (props) => {
-  const { label, name, tags, renderSelectField, renderAutoComplete, autocomplete, floatingLabelText, disabled, showDescription } = props;
+  const { label, name, tags, renderSelect, renderAutoComplete, autocomplete, disabled, showDescription } = props;
   const { formatMessage } = props.intl;
   const mode = autocomplete ? MODE_AUTOCOMPLETE : MODE_SELECT;
   let content = null;
@@ -26,23 +26,23 @@ const MetadataPickerContainer = (props) => {
       if (showDescription) {
         content = (
           <Field
-            fullWidth name={name}
-            component={renderSelectField}
+            fullWidth
+            name={name}
+            component={renderSelect}
             disabled={disabled}
-            floatingLabelText={floatingLabelText || label}
+            label={label}
           >
-            <MenuItem className="header-primary-menu" value={null} primaryText={''} />
+            <MenuItem className="header-primary-menu" value={null} />
             {tags.map(t =>
               <MenuItem
                 className="header-primary-menu"
                 key={t.tags_id}
                 value={t.tags_id}
-                primaryText={
-                  <div className="header-primary-label">{t.label}
-                    <br /><span className="header-primary-description">{t.description}</span>
-                  </div>
-                }
-              />
+              >
+                <div className="header-primary-label">{t.label}
+                  <br /><span className="header-primary-description">{t.description}</span>
+                </div>
+              </MenuItem>
             )}
           </Field>
         );
@@ -50,18 +50,17 @@ const MetadataPickerContainer = (props) => {
         content = (
           <Field
             fullWidth name={name}
-            component={renderSelectField}
+            component={renderSelect}
             disabled={disabled}
-            floatingLabelText={floatingLabelText || label}
+            label={label}
           >
-            <MenuItem value={null} primaryText={''} />
-            {tags.map(t => <MenuItem key={t.tags_id} value={t.tags_id} primaryText={t.label} />)}
+            <MenuItem value={null} />
+            {tags.map(t => <MenuItem key={t.tags_id} value={t.tags_id}>{t.label}</MenuItem>)}
           </Field>
         );
       }
       break;
     case MODE_AUTOCOMPLETE:
-      // need to figure out autocomplete text to prepopulate here
       // commented out because the initialvalues are interfering with the display of the selected values
       /* let initialText = '';
       if ((initialValues) && (initialValues[name]) && (tags.length > 0)) {
@@ -76,8 +75,7 @@ const MetadataPickerContainer = (props) => {
           // searchText={initialText}
           name={name}
           component={renderAutoComplete}
-          hintText={formatMessage(localMessages.hintText, { label })}
-          floatingLabelText={floatingLabelText || label}
+          label={formatMessage(localMessages.hintText, { label })}
           openOnFocus
           fullWidth
           dataSource={tags}
@@ -101,10 +99,9 @@ MetadataPickerContainer.propTypes = {
   disabled: PropTypes.bool,
   autocomplete: PropTypes.bool,
   showDescription: PropTypes.bool,
-  floatingLabelText: PropTypes.string,
   // from compositional chain
   intl: PropTypes.object.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   renderAutoComplete: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string,

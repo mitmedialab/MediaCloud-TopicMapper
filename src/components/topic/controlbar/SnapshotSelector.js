@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import { getBrandDarkerColor } from '../../../styles/colors';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const localMessages = {
   pickSnapshot: { id: 'snapshot.pick', defaultMessage: 'Load an Archived Snapshot' },
@@ -26,12 +25,10 @@ class SnapshotSelector extends React.Component {
       selected = snapshots[0];
     }
     return (
-      <SelectField
-        floatingLabelText={formatMessage(localMessages.pickSnapshot)}
-        floatingLabelFixed
-        floatingLabelStyle={{ color: 'rgb(224,224,224)', opacity: 0.8 }}
-        selectedMenuItemStyle={{ color: getBrandDarkerColor(), fontWeight: 'bold' }}
-        labelStyle={{ color: 'rgb(255,255,255)' }}
+      <Select
+        label={formatMessage(localMessages.pickSnapshot)}
+        style={{ color: 'rgb(224,224,224)', opacity: 0.8 }}
+        underline={{ color: 'rgb(255,255,255)', opacity: 0.8 }}
         value={selectedId}
         fullWidth
         onChange={this.handleSnapshotSelected}
@@ -45,11 +42,12 @@ class SnapshotSelector extends React.Component {
               disabled={!snapshot.isUsable}
               key={snapshot.snapshots_id}
               value={snapshot.snapshots_id}
-              primaryText={`${formattedDateStr} ${stateMessage} ${noteMessage}`}
-            />
+            >
+              {`${formattedDateStr} ${stateMessage} ${noteMessage}`}
+            </MenuItem>
           );
         })}
-      </SelectField>
+      </Select>
 
     );
   }

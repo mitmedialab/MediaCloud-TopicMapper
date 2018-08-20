@@ -3,7 +3,7 @@ import React from 'react';
 import { reduxForm, formValueSelector, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import AppButton from '../../../../../common/AppButton';
 import withIntlForm from '../../../../../common/hocs/IntlForm';
@@ -21,7 +21,7 @@ const localMessages = {
 };
 
 const EditTopCountriesContainer = (props) => {
-  const { topicId, onPreviousStep, handleSubmit, finishStep, formData, renderSelectField, initialValues } = props;
+  const { topicId, onPreviousStep, handleSubmit, finishStep, formData, renderSelect, initialValues } = props;
   const { formatMessage } = props.intl;
   let numCountries = initialValues.numberSelected;
   if (formData && formData.values.numberSelected) {
@@ -40,15 +40,15 @@ const EditTopCountriesContainer = (props) => {
           <Col md={12}>
             <Field
               name="numberSelected"
-              component={renderSelectField}
-              floatingLabelText={formatMessage(localMessages.numberLabel)}
+              component={renderSelect}
+              label={formatMessage(localMessages.numberLabel)}
               value={5}
             >
-              <MenuItem value={5} primaryText={formatMessage(messages.top5)} />
-              <MenuItem value={10} primaryText={formatMessage(messages.top10)} />
-              <MenuItem value={15} primaryText={formatMessage(messages.top15)} />
-              <MenuItem value={20} primaryText={formatMessage(messages.top20)} />
-              <MenuItem value={25} primaryText={formatMessage(messages.top25)} />
+              <MenuItem value={5}><FormattedMessage {...messages.top5} /></MenuItem>
+              <MenuItem value={10}><FormattedMessage {...messages.top10} /></MenuItem>
+              <MenuItem value={15}><FormattedMessage {...messages.top15} /></MenuItem>
+              <MenuItem value={20}><FormattedMessage {...messages.top20} /></MenuItem>
+              <MenuItem value={25}><FormattedMessage {...messages.top25} /></MenuItem>
             </Field>
           </Col>
         </Row>
@@ -65,9 +65,9 @@ const EditTopCountriesContainer = (props) => {
         <Row>
           <Col lg={8} xs={12}>
             <br />
-            <AppButton flat onClick={onPreviousStep} label={formatMessage(messages.previous)} />
+            <AppButton color="secondary" variant="outlined" onClick={onPreviousStep} label={formatMessage(messages.previous)} />
             &nbsp; &nbsp;
-            <AppButton type="submit" label={formatMessage(messages.next)} primary />
+            <AppButton type="submit" label={formatMessage(messages.next)} color="primary" />
           </Col>
         </Row>
       </form>
@@ -92,7 +92,7 @@ EditTopCountriesContainer.propTypes = {
   intl: PropTypes.object.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

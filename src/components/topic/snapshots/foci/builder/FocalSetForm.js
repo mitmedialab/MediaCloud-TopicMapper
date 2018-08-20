@@ -71,14 +71,14 @@ class FocalSetForm extends React.Component {
         <Field
           name="focalSetName"
           component={renderTextField}
-          floatingLabelText={localMessages.focalSetName}
+          helpertext={localMessages.focalSetName}
           fullWidth={fullWidthFields}
         />
         <br />
         <Field
           name="focalSetDescription"
           component={renderTextField}
-          floatingLabelText={localMessages.focalSetDescription}
+          helpertext={localMessages.focalSetDescription}
           fullWidth={fullWidthFields}
         />
       </div>

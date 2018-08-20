@@ -19,6 +19,7 @@ const SourceMetadataForm = props => (
     <Row>
       <Col lg={3} xs={12}>
         <MetadataPickerContainer
+          autocomplete
           id={TAG_SET_PUBLICATION_COUNTRY}
           name={'publicationCountry'}
           form="sourceForm"
@@ -27,6 +28,7 @@ const SourceMetadataForm = props => (
       </Col>
       <Col lg={3} xs={12}>
         <MetadataPickerContainer
+          autocomplete
           id={TAG_SET_PUBLICATION_STATE}
           name={'publicationState'}
           form="sourceForm"
@@ -35,6 +37,7 @@ const SourceMetadataForm = props => (
       </Col>
       <Col lg={3} xs={12}>
         <MetadataPickerContainer
+          autocomplete
           id={TAG_SET_PRIMARY_LANGUAGE}
           name={'primaryLanguage'}
           form="sourceForm"
@@ -44,6 +47,7 @@ const SourceMetadataForm = props => (
       </Col>
       <Col lg={3} xs={12}>
         <MetadataPickerContainer
+          autocomplete
           id={TAG_SET_COUNTRY_OF_FOCUS}
           name={'countryOfFocus'}
           form="sourceForm"
@@ -55,6 +59,7 @@ const SourceMetadataForm = props => (
     <Row>
       <Col lg={3} xs={12}>
         <MetadataPickerContainer
+          autocomplete
           id={TAG_SET_MEDIA_TYPE}
           name={'mediaType'}
           form="sourceForm"

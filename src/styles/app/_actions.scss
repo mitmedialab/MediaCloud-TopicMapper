@@ -2,4 +2,9 @@
 .actions {
   display: inline-block;
   float: right;
+
+  > .icon-button {
+    margin-left: 10px;
+  }
+
 }

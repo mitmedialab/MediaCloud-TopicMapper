@@ -39,8 +39,10 @@ const FocusForm1TechniqueContainer = (props) => {
               disabled={(currentFocalTechnique === undefined) || submitting}
               type="submit"
               label={formatMessage(messages.next)}
-              primary
-            />
+              color="primary"
+            >
+              {formatMessage(messages.next)}
+            </AppButton>
           </Col>
         </Row>
       </form>
@@ -56,7 +58,7 @@ FocusForm1TechniqueContainer.propTypes = {
   // form composition
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,

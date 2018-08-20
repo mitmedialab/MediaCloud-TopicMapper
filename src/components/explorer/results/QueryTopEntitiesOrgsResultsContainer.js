@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import composeSummarizedVisualization from './SummarizedVizualization';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import { DownloadButton } from '../../common/IconButton';
@@ -29,7 +31,7 @@ class QueryTopEntitiesOrgsResultsContainer extends React.Component {
   }
   render() {
     const { results, queries, handleEntitySelection, selectedTabIndex, tabSelector } = this.props;
-    const { formatMessage, formatNumber } = this.props.intl;
+    const { formatNumber } = this.props.intl;
     let content = null;
     if (results) {
       const rawData = results[selectedTabIndex] ? results[selectedTabIndex].results : [];
@@ -65,15 +67,17 @@ class QueryTopEntitiesOrgsResultsContainer extends React.Component {
         { content }
         <div className="actions">
           <ActionMenu actionTextMsg={messages.downloadOptions}>
-            {queries.map((q, idx) =>
-              <MenuItem
-                key={idx}
-                className="action-icon-menu-item"
-                primaryText={formatMessage(localMessages.downloadCsv, { name: q.label })}
-                rightIcon={<DownloadButton />}
-                onTouchTap={() => this.downloadCsv(q)}
-              />
-            )}
+            <MenuItem
+              className="action-icon-menu-item"
+              onClick={() => this.downloadCsv(queries[selectedTabIndex])}
+            >
+              <ListItemText>
+                <FormattedMessage {...localMessages.downloadCsv} values={{ name: queries[selectedTabIndex].label }} />
+              </ListItemText>
+              <ListItemIcon>
+                <DownloadButton />
+              </ListItemIcon>
+            </MenuItem>
           </ActionMenu>
         </div>
       </div>

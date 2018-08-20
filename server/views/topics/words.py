@@ -5,7 +5,7 @@ import flask_login
 from server import app, TOOL_API_KEY
 from server.views import WORD_COUNT_DOWNLOAD_NUM_WORDS, WORD_COUNT_SAMPLE_SIZE
 import server.util.csv as csv
-from server.util.request import api_error_handler
+from server.util.request import api_error_handler, arguments_required, filters_from_args
 from server.auth import user_mediacloud_key, is_user_logged_in
 from server.views.topics.splitstories import stream_topic_split_story_counts_csv
 from server.views.topics.stories import stream_story_list_csv
@@ -17,12 +17,43 @@ logger = logging.getLogger(__name__)
 WORD_CONTEXT_SIZE = 5   # for sentence fragments, this is the amount of words before & after that we return
 
 
+@app.route('/api/topics/<topics_id>/words/subtopic-comparison.csv', methods=['GET'])
+@flask_login.login_required
+@arguments_required('focal_sets_id')
+@api_error_handler
+def topic_compare_subtopic_top_words(topics_id):
+    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    selected_focal_sets_id = request.args['focal_sets_id']
+    word_count = request.args['word_count'] if 'word_count' in request.args else 20
+    # first we need to figure out which timespan they are working on
+    selected_snapshot_timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id=snapshots_id)
+    selected_timespan = None
+    for t in selected_snapshot_timespans:
+        if t['timespans_id'] == int(timespans_id):
+            selected_timespan = t
+    focal_set = apicache.topic_focal_set(user_mediacloud_key(), topics_id, snapshots_id, selected_focal_sets_id)
+    timespans = apicache.matching_timespans_in_foci(topics_id, selected_timespan, focal_set['foci'])
+    for idx in range(0, len(timespans)):
+        data = apicache.topic_word_counts(user_mediacloud_key(), topics_id,
+                                          timespans_id=timespans[idx]['timespans_id'])
+        focal_set['foci'][idx]['top_words'] = data
+    # stitch together the counts to download now
+    data = []
+    headers = [f['name'] for f in focal_set['foci']]
+    for idx in range(0, word_count):
+        row = {f['name']: u"{} ({})".format(f['top_words'][idx]['term'], f['top_words'][idx]['count'])
+               for f in focal_set['foci']}
+        data.append(row)
+    return csv.stream_response(data, headers,
+                               'topic-{}-subtopic-{}-{}-top-words-comparison'.format(
+                                   topics_id, focal_set['name'], selected_focal_sets_id))
+
+
 @app.route('/api/topics/<topics_id>/words/<word>', methods=['GET'])
 @flask_login.login_required
 @api_error_handler
 def topic_word(topics_id, word):
     response = apicache.topic_word_counts(user_mediacloud_key(), topics_id, q=word)[:1]
-    logger.info(response)
     return jsonify(response)
 
 

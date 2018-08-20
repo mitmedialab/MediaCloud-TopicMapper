@@ -13,7 +13,7 @@ export function storyNytThemes(storyId) {
 }
 
 export function story(storiesId, params) {
-  const acceptedParams = acceptParams(params, ['q', 'snapshotId', 'timespanId', 'focusId', 'id']);
+  const acceptedParams = acceptParams(params, ['text', 'q', 'snapshotId', 'timespanId', 'focusId', 'id']);
   return createApiPromise(`/api/stories/${storiesId}`, acceptedParams);
 }
 

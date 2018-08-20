@@ -54,20 +54,20 @@ class SelectCollectionContainer extends React.Component {
         <SourceMgrHeaderContainer />
         <SourceControlBar>
           <a href="search-in-explorer" onClick={this.searchInExplorer} >
-            <ExploreButton />
+            <ExploreButton color="primary" useBackgroundColor />
             <FormattedMessage {...localMessages.searchNow} />
           </a>
           <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
             <Link to={`/collections/${collection.tags_id}/edit`} >
-              <EditButton />
+              <EditButton color="primary" useBackgroundColor />
               <FormattedMessage {...localMessages.editCollection} />
             </Link>
             <Link to={`/collections/${collection.tags_id}/manage-source-list`} >
-              <ExploreButton />
+              <ExploreButton color="primary" />
               <FormattedMessage {...localMessages.manageSources} />
             </Link>
             <Link to={`/collections/${collection.tags_id}/content-history`} >
-              <ExploreButton />
+              <ExploreButton color="primary" />
               <FormattedMessage {...localMessages.contentHistory} />
             </Link>
           </Permissioned>

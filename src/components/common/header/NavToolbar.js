@@ -9,6 +9,7 @@ import TopicsAppMenu from './TopicsAppMenu';
 import ExplorerAppMenu from './ExplorerAppMenu';
 import { assetUrl } from '../../../lib/assetUtil';
 import RecentNewsMenuContainer from '../news/RecentNewsMenuContainer';
+import AppButton from '../AppButton';
 
 export const TOPICS_URL = 'https://topics.mediacloud.org/';
 export const EXPLORER_URL = 'https://explorer.mediacloud.org/';
@@ -54,36 +55,40 @@ const NavToolbar = (props) => {
               </li>
             </ul>
           </Col>
-          <Col lg={5}>
+          <Col lg={6}>
             <ul className="right">
-              <li className="recent-changes">
-                <RecentNewsMenuContainer />
-              </li>
               <li className="support">
-                <a
+                <AppButton
+                  variant="text"
                   href={SUPPORT_URL}
-                  title={formatMessage(messages.toolsAppDescription)}
-                >
-                  {formatMessage(localMessages.support).toUpperCase()}
-                </a>
+                  target="new"
+                  label={formatMessage(localMessages.support)}
+                />
               </li>
               <li className="blog">
-                <a
+                <AppButton
+                  variant="text"
                   href={BLOG_URL}
+                  target="new"
                   title={formatMessage(messages.blogToolDescription)}
-                >
-                  {formatMessage(messages.blogToolName).toUpperCase()}
-                </a>
+                  label={formatMessage(messages.blogToolName)}
+                />
               </li>
               <li className="about">
-                <a href={`#/${formatMessage(localMessages.about)}`}>
-                  {formatMessage(messages.menuAbout).toUpperCase()}
-                </a>
+                <AppButton
+                  variant="text"
+                  href="#/about"
+                  target="new"
+                  label={formatMessage(messages.menuAbout)}
+                />
+              </li>
+              <li className="recent-changes-item">
+                <RecentNewsMenuContainer />
+              </li>
+              <li className="user-menu-item">
+                <UserMenuContainer />
               </li>
             </ul>
-          </Col>
-          <Col lg={1}>
-            <UserMenuContainer />
           </Col>
         </Row>
       </Grid>

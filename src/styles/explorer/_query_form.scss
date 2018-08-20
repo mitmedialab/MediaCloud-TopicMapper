@@ -22,7 +22,7 @@
       }
       .icon-button {
         float: right !important;
-        margin-top: -17px;
+        margin-top: -21px;
       }
     }
     .add-media {
@@ -62,19 +62,19 @@
   .dates-field-wrapper {
     .start-date-wrapper {
       width: 108px !important;
+      margin-top: 0px;
       vertical-align: top;
     }
     .date-for-wrapper {
-      padding: 12px;
+      padding: 0px 10px;
+      margin-top: 0px;
       display: inline-block;
-      border-bottom: 1px solid $material-grey200;
-      border-top: 1px solid $material-grey200;
-      padding-top: 14px;
-      line-height: 22px;
+      line-height: 41px;
       vertical-align: top;
     }
     .end-date-wrapper {
       width: 108px !important;
+      margin-top: 0px;
       vertical-align: top;
     }
   }

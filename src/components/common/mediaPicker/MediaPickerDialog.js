@@ -91,7 +91,7 @@ class MediaPickerDialog extends React.Component {
                   label={formatMessage(messages.ok)}
                   onTouchTap={() => this.handleRemoveDialogClose(true)}
                   type="submit"
-                  primary
+                  color="primary"
                 />
               </div>
               <div className="select-media-content">
@@ -111,7 +111,9 @@ class MediaPickerDialog extends React.Component {
           tooltip={formatMessage(localMessages.addMedia)}
         />
         {modalContent}
-        <FormattedMessage {...localMessages.addMedia} />
+        <div className="add-media-label">
+          <FormattedMessage {...localMessages.addMedia} />
+        </div>
       </div>
     );
   }

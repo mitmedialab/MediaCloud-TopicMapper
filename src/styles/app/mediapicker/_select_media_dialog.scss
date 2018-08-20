@@ -6,13 +6,20 @@ div [data-reactroot] {
 
 .add-media {
 
+  .add-media-label {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 4px;
+    padding-top: 6px;
+  }
+
   .select-media-dialog-modal {
     width: 90% !important;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999;
+    z-index: 800;
     background: #fff;
     overflow-y: auto;
     overflow-x: hidden;
@@ -104,7 +111,7 @@ div [data-reactroot] {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 9998;
+    z-index: 799;
     background: rgba(0, 0, 0, 0.6);
   }
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import withIntlForm from '../../../common/hocs/IntlForm';
 import AppButton from '../../../common/AppButton';
 import { emptyString, invalidUrl } from '../../../../lib/formValidators';
@@ -17,7 +17,7 @@ const localMessages = {
 };
 
 const SourceFeedForm = (props) => {
-  const { renderTextField, renderSelectField, renderCheckbox, buttonLabel, handleSubmit, onSave, pristine, submitting } = props;
+  const { renderTextField, renderSelect, renderCheckbox, buttonLabel, handleSubmit, onSave, pristine, submitting } = props;
   const { formatMessage } = props.intl;
   return (
     <form className="app-form source-feed-form" name="sourceFeedForm" onSubmit={handleSubmit(onSave.bind(this))}>
@@ -56,9 +56,9 @@ const SourceFeedForm = (props) => {
           </span>
         </Col>
         <Col md={8}>
-          <Field name="type" component={renderSelectField} >
-            <MenuItem key="syndicated" value="syndicated" primaryText={formatMessage(localMessages.typeSyndicated)} />
-            <MenuItem key="web_page" value="web_page" primaryText={formatMessage(localMessages.typeWebPage)} />
+          <Field name="type" component={renderSelect} >
+            <MenuItem key="syndicated" value="syndicated"><FormattedMessage {...localMessages.typeSyndicated} /></MenuItem>
+            <MenuItem key="web_page" value="web_page"><FormattedMessage {...localMessages.typeWebPage} /></MenuItem>
           </Field>
         </Col>
       </Row>
@@ -79,8 +79,8 @@ const SourceFeedForm = (props) => {
         </Col>
       </Row>
       <AppButton
-        className="source-feed-updated"
         type="submit"
+        className="source-feed-updated"
         label={buttonLabel}
         primary
         disabled={pristine || submitting}
@@ -93,7 +93,7 @@ SourceFeedForm.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   renderCheckbox: PropTypes.func.isRequired,
   initialValues: PropTypes.object,
   handleSubmit: PropTypes.func,

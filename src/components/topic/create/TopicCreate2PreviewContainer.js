@@ -34,9 +34,9 @@ const TopicCreate2PreviewContainer = (props) => {
       <br />
       <Row>
         <Col lg={12} md={12} sm={12} >
-          <AppButton flat label={formatMessage(messages.previous)} onClick={() => handlePreviousStep()} />
+          <AppButton color="secondary" variant="outlined" label={formatMessage(messages.previous)} onClick={() => handlePreviousStep()} />
           &nbsp; &nbsp;
-          <AppButton type="submit" label={formatMessage(messages.confirm)} primary onClick={() => handleNextStep()} />
+          <AppButton color="primary" type="submit" label={formatMessage(messages.confirm)} onClick={() => handleNextStep()} />
         </Col>
       </Row>
     </Grid>

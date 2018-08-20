@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
-import SelectField from 'material-ui/SelectField';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
 import AutoComplete from 'material-ui/AutoComplete';
-import DatePicker from 'material-ui/DatePicker';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 /**
  * Helpful compositional wrapper for forms that want to use Material-UI, react-intl and redux-form.
@@ -23,7 +23,7 @@ function withIntlForm(Component) {
 
     intlCustomProps = (customProps) => {
       const intlCustom = Object.assign({}, customProps);
-      ['label', 'floatingLabelText', 'hintText', 'errorText', 'disabled'].forEach((prop) => {
+      ['label', 'helpertext', 'error', 'disabled'].forEach((prop) => {
         if ((prop in customProps)) {
           intlCustom[prop] = this.intlIfObject(customProps[prop]);
         }
@@ -31,58 +31,73 @@ function withIntlForm(Component) {
       return intlCustom;
     };
 
-    renderTextField = ({ input, meta: { touched, error, warning }, ...custom }) => {
+    renderTextField = ({ autoComplete, input, meta: { touched, error, asyncValidating }, ...custom }) => {
       const intlCustom = this.intlCustomProps(custom);
+      if (intlCustom && intlCustom.helpertext !== undefined) {
+        intlCustom.helperText = intlCustom.helpertext;
+      }
       return (
         <TextField
-          className="form-field-text"
-          errorText={touched &&
-            ((error ? this.intlIfObject(error) : null)
-              || (warning ? this.intlIfObject(warning) : null))}
+          className={`form-field-text${asyncValidating ? 'async-validating' : ''}`}
           {...input}
           {...intlCustom}
+          error={Boolean(touched && error)}
+          inputProps={{
+            autoComplete,
+          }}
+          helperText={touched ? this.intlIfObject(error) : ''}
+          margin="normal"
         />
       );
     };
-    renderTextFieldWithFocus = ({ input, saveRef, meta: { touched, error, warning }, ...custom }) => {
+    renderTextFieldWithFocus = ({ input, saveRef, meta: { touched, error }, ...custom }) => {
       const intlCustom = this.intlCustomProps(custom);
-
+      if (intlCustom.helpertext !== undefined) {
+        intlCustom.helperText = intlCustom.helpertext;
+      }
       return (
         <TextField
           className="form-field-text"
-          errorText={touched &&
-            ((error ? this.intlIfObject(error) : null)
-              || (warning ? this.intlIfObject(warning) : null))}
+          error={error !== undefined}
           ref={saveRef}
           {...input}
           {...intlCustom}
+          helperText={touched ? this.intlIfObject(error) : ''}
         />
       );
     };
 
     renderCheckbox = ({ input, label, disabled }) => (
-      <Checkbox
-        name={input.name}
-        className="form-field-checkbox"
+      <FormControlLabel
+        control={
+          <Checkbox
+            name={input.name}
+            className="form-field-checkbox"
+            label={this.intlIfObject(label)}
+            checked={input.value === true || input.value === 1}
+            onChange={input.onChange}
+            disabled={this.intlIfObject(disabled)}
+          />
+        }
         label={this.intlIfObject(label)}
-        checked={input.value === true || input.value === 1}
-        onCheck={input.onChange}
-        disabled={this.intlIfObject(disabled)}
       />
     );
 
-    renderSelectField = ({ input, meta: { touched, error }, children, ...custom }) => {
+    renderSelect = ({ input, meta: { touched, error }, children, ...custom }) => {
       const intlCustom = this.intlCustomProps(custom);
+      if (intlCustom && intlCustom.helpertext !== undefined) {
+        intlCustom.helperText = intlCustom.helpertext;
+      }
       return (
-        <SelectField
+        <Select
           className="form-field-select"
-          errorText={touched && (error ? this.intlIfObject(error) : null)}
+          error={touched && (error ? this.intlIfObject(error) : null)}
           {...input}
-          onChange={(event, index, value) => input.onChange(value)}
+          onChange={event => input.onChange(event.target.value)}
           {...intlCustom}
         >
           {children}
-        </SelectField>
+        </Select>
       );
     }
 
@@ -105,31 +120,13 @@ function withIntlForm(Component) {
       );
     }
 
-    renderDatePickerInline = ({ input, name, type, ...custom }) => {
-      const intlCustom = this.intlCustomProps(custom);
-      return (
-        <DatePicker
-          className="form-field-date"
-          {...input}
-          value={new Date(input.value)}
-          onChange={(event, value) => input.onChange(value)}
-          name={name}
-          autoOk
-          {...intlCustom}
-          container={type}
-          mode="landscape"
-          hintText={intlCustom.hintText}
-        />
-      );
-    }
 
     render() {
       const helpers = {
         renderTextField: this.renderTextField,
         renderCheckbox: this.renderCheckbox,
-        renderSelectField: this.renderSelectField,
+        renderSelect: this.renderSelect,
         renderAutoComplete: this.renderAutoComplete,
-        renderDatePickerInline: this.renderDatePickerInline,
         renderTextFieldWithFocus: this.renderTextFieldWithFocus,
       };
       return (

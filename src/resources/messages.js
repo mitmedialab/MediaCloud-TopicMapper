@@ -227,9 +227,9 @@ const messages = {
   totalStoriesStat: { id: 'totalStories', defaultMessage: 'Total Stories' },
   totalDownloadsStat: { id: 'totalDownloads', defaultMessage: 'Total Downloads' },
   totalSentencesStat: { id: 'totalSentences', defaultMessage: 'Total Sentences' },
-  crawledMediaStat: { id: 'crawledMedia', defaultMessage: 'Active Crawled Media' },
+  crawledMediaStat: { id: 'crawledMedia', defaultMessage: 'Media Crawled Daily' },
   crawledFeedsStat: { id: 'crawledFeeds', defaultMessage: 'Active Crawled Feeds' },
-  dailyStoriesStat: { id: 'dailyStories', defaultMessage: 'Daily Stories' },
+  dailyStoriesStat: { id: 'dailyStories', defaultMessage: 'Stories Added Daily' },
   dailyDownloadsStat: { id: 'dailyDownloads', defaultMessage: 'Daily Downloads' },
 
   entityHelpTitle: { id: 'geo.help.title', defaultMessage: 'About Our Entity Detection' },

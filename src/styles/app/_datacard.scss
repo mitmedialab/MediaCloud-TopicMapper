@@ -5,6 +5,7 @@
   border: 1px solid $material-grey300;
   padding: 30px;
   margin-top: 30px;
+  border-radius: 4px;
   margin-right: 14px;
 
   .actions {
@@ -31,6 +32,12 @@
     border: 0px;
     padding: 0px;
   }
+
+  &.left-border{
+    border: 0px;
+    border-left: 1px solid $material-grey300;
+  }
+
 
   &.inline {
     margin-top: 0px;

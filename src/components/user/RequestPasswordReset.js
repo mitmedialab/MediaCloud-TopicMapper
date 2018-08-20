@@ -39,7 +39,7 @@ const RequestPasswordReset = (props) => {
               fullWidth
               name="email"
               component={renderTextField}
-              floatingLabelText={messages.userEmail}
+              label={messages.userEmail}
             />
           </Col>
         </Row>

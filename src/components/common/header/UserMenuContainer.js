@@ -3,64 +3,97 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
-import IconMenu from 'material-ui/IconMenu';
-import PersonIcon from 'material-ui/svg-icons/social/person';
-import FlatButton from 'material-ui/FlatButton';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
+import Menu from '@material-ui/core/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
 import { PERMISSION_LOGGED_IN, logout } from '../../../lib/auth';
 import Permissioned from '../Permissioned';
 import messages from '../../../resources/messages';
+import { PersonButton } from '../../common/IconButton';
+import { defaultMenuOriginProps } from '../../util/uiUtil';
 
-const localMessages = {
-  menuTitle: { id: 'sources.menu.title', defaultMessage: 'Login' },
+const styles = {
+  root: {
+    borderColor: 'white',
+  },
+  label: {
+    color: 'white',
+  },
 };
+
 /**
  * A permissioned menu of user-related activities, for display on a nav bar or something.
  **/
-const UserMenuContainer = (props) => {
-  const { user, routeToUrl } = props;
-  const { formatMessage } = props.intl;
-  // gotta show login or logout correctly based on the user state
-  let loginLogoutMenuItem = (
-    <FlatButton
-      className="user-login"
-      onClick={() => routeToUrl('/login')}
-      label={formatMessage(localMessages.menuTitle).toUpperCase()}
-    />
-  );
-  if (user.isLoggedIn) {
-    loginLogoutMenuItem = (
-      <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-        <IconMenu
-          iconButtonElement={<IconButton><PersonIcon /></IconButton>}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+class UserMenuContainer extends React.Component {
+  state = {
+    anchorEl: null,
+  };
+
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  render() {
+    const { user, routeToUrl, classes } = this.props;
+    // gotta show login or logout correctly based on the user state
+    let content;
+    if (user.isLoggedIn) {
+      content = (
+        <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
+          <PersonButton color={'#FFFFFF'} onClick={this.handleClick} />
+          <Menu
+            id="user-menu"
+            open={Boolean(this.state.anchorEl)}
+            anchorEl={this.state.anchorEl}
+            onClose={this.handleClose}
+            {...defaultMenuOriginProps}
+          >
+            <MenuItem onClick={() => { this.handleClose(); routeToUrl('/user/profile'); }}>
+              <FormattedMessage {...messages.userProfile} />
+            </MenuItem>
+            <MenuItem onClick={() => { this.handleClose(); routeToUrl('/user/change-password'); }}>
+              <FormattedMessage {...messages.userChangePassword} />
+            </MenuItem>
+            <MenuItem id="user-logout" onClick={logout}>
+              <FormattedMessage {...messages.userLogout} />
+            </MenuItem>
+          </Menu>
+        </Permissioned>
+      );
+    } else {
+      content = (
+        <Button
+          variant="outlined"
+          classes={{
+            root: classes.root, // class name, e.g. `classes-nesting-root-x`
+            label: classes.label, // class name, e.g. `classes-nesting-label-x`
+          }}
+          className="user-login"
+          onClick={() => routeToUrl('/login')}
         >
-          <MenuItem onTouchTap={() => { routeToUrl('/user/profile'); }}>
-            <FormattedMessage {...messages.userProfile} />
-          </MenuItem>
-          <MenuItem onTouchTap={() => { routeToUrl('/user/change-password'); }}>
-            <FormattedMessage {...messages.userChangePassword} />
-          </MenuItem>
-          <MenuItem id="user-logout" onTouchTap={logout}>
-            <FormattedMessage {...messages.userLogout} />
-          </MenuItem>
-        </IconMenu>
-      </Permissioned>
+          <FormattedMessage {...messages.userLogin} />
+        </Button>
+      );
+    }
+    return (
+      <div className="user-menu">
+        {content}
+      </div>
     );
   }
-  return (
-    <div className="user-menu">
-      {loginLogoutMenuItem}
-    </div>
-  );
-};
+}
 
 UserMenuContainer.propTypes = {
   // from state
   user: PropTypes.object.isRequired,
+  // from HOC chain
   intl: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   // from dispatch
   routeToUrl: PropTypes.func.isRequired,
 };
@@ -78,6 +111,8 @@ const mapDispatchToProps = dispatch => ({
 export default
   injectIntl(
     connect(mapStateToProps, mapDispatchToProps)(
-      UserMenuContainer
+      withStyles(styles)(
+        UserMenuContainer
+      )
     )
   );

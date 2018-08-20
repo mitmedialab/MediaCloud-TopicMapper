@@ -58,6 +58,7 @@ const UserProfileContainer = (props) => {
             /></li>
             <li><FormattedHTMLMessage {...localMessages.apiKey} values={{ key: profile.api_key }} /></li>
           </ul>
+          <br /><br />
           <AppButton
             label={formatMessage(localMessages.resetKey)}
             onClick={handleResetApiKey}

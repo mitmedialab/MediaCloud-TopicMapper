@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import AppButton from '../../common/AppButton';
+import messages from '../../../resources/messages';
 
 const localMessages = {
   saveSearchTitle: { id: 'explorer.querypicker.saveSearchTitle', defaultMessage: 'Save Your Search' },
@@ -49,52 +52,56 @@ class QueryPickerSaveUserSearchesDialog extends React.Component {
     this.onSaveConfirm();
   };
 
-  updateTextInDialog = (val) => {
-    this.setState({ searchName: val });
+  updateTextInDialog = (ev) => {
+    this.setState({ searchName: ev.target.value });
   };
 
   render() {
     const { searchNickname, submitting } = this.props;
     const { formatMessage } = this.props.intl;
     const actions = [
-      <FlatButton
-        label="Cancel"
-        secondary
+      <AppButton
+        variant="outlined"
+        label={formatMessage(messages.cancel)}
+        color="secondary"
         onClick={this.handleDialogClose}
+        key="qpsusd-cancel"
       />,
-      <FlatButton
-        label="Submit"
+      <AppButton
         primary
+        label={formatMessage(messages.save)}
         keyboardFocused
         onClick={this.handleLabelChangeAndClose}
+        key="qpsusd-save"
       />,
     ];
     return (
       <div className="save-search-wrapper">
         <Dialog
-          title={formatMessage(localMessages.saveSearchTitle)}
-          modal={false}
-          actions={actions}
           open={this.state.saveSearchDialogOpen}
-          onRequestClose={this.handleDialogClose}
+          onClose={this.handleDialogClose}
         >
-          <p><FormattedMessage {...localMessages.saveSearchDialog} /></p>
-          <TextField
-            className="query-picker-save-search-name"
-            id="searchNameInDialog"
-            name="searchNameInDialog"
-            ref={this.focusQueryInputField}
-            onChange={(e, val) => {
-              this.updateTextInDialog(val);
-            }}
-            hintText={searchNickname}
-          />
+          <DialogTitle><FormattedMessage {...localMessages.saveSearchTitle} /></DialogTitle>
+          <DialogContent>
+            <p><FormattedMessage {...localMessages.saveSearchDialog} /></p>
+            <TextField
+              className="query-picker-save-search-name"
+              id="searchNameInDialog"
+              name="searchNameInDialog"
+              inputRef={this.focusQueryInputField}
+              onChange={this.updateTextInDialog}
+              placeholder={searchNickname}
+            />
+          </DialogContent>
+          <DialogActions>{actions}</DialogActions>
         </Dialog>
         <AppButton
+          variant="outlined"
           style={{ marginTop: 30 }}
           onClick={this.onSaveRequest}
           label={formatMessage(localMessages.saveSearch)}
           disabled={submitting}
+          key="qpsusd-reallySave"
         />
       </div>
     );

@@ -255,14 +255,30 @@ def _cached_topic_split_story_counts(user_mc_key, topics_id, **kwargs):
     results['total_story_count'] = total_stories
     return results
 
+
+@cache.cache_on_arguments(function_key_generator=key_generator)
+def topic_foci_list(user_mc_key, topics_id, focal_sets_id):
+    # This needs user_mc_key in the function signature to make sure the caching is keyed correctly.
+    user_mc = user_admin_mediacloud_client()
+    response = user_mc.topicFociList(topics_id, focal_sets_id)
+    return response
+
+
 @cache.cache_on_arguments(function_key_generator=key_generator)
 def topic_focal_sets(user_mc_key, topics_id, snapshots_id):
-    '''
-    This needs user_mc_key in the function signature to make sure the caching is keyed correctly.
-    '''
+    # This needs user_mc_key in the function signature to make sure the caching is keyed correctly.
     user_mc = user_admin_mediacloud_client()
     response = user_mc.topicFocalSetList(topics_id, snapshots_id=snapshots_id)
     return response
+
+
+@cache.cache_on_arguments(function_key_generator=key_generator)
+def topic_focal_set(user_mc_key, topics_id, snapshots_id, focal_sets_id):
+    all_focal_sets = topic_focal_sets(user_mc_key, topics_id, snapshots_id)
+    for fs in all_focal_sets:
+        if int(fs['focal_sets_id']) == int(focal_sets_id):
+            return fs
+    return None
 
 
 @cache.cache_on_arguments(function_key_generator=key_generator)
@@ -395,3 +411,39 @@ def _mc_client(user_mc_key):
         local_mc = user_admin_mediacloud_client(user_mc_key)
     return local_mc
 
+
+'''
+For cross-subtopic analysis within a subtopic set, we need to identify the timespan that has the same date
+range in each subtopic within the set.  This helper does that annoying work for you. 
+'''
+def matching_timespans_in_foci(topics_id, timespan_to_match, foci):
+    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    timespans = []
+    for focus in foci:
+        # find the matching timespan within this focus
+        snapshot_timespans = cached_topic_timespan_list(user_mediacloud_key(), topics_id,
+                                                        snapshots_id=snapshots_id, foci_id=focus['foci_id'])
+        timespan = _matching_timespan(timespan_to_match, snapshot_timespans)
+        timespans.append(timespan)
+#        if timespan is None:
+#            return json_error_response('Couldn\'t find a matching timespan in the '+focus.name+' focus')
+    return timespans
+
+
+def _matching_timespan(timespan_to_match, timespans_to_search):
+    match = None
+    for t in timespans_to_search:
+        if is_timespans_match(t, timespan_to_match):
+            match = t
+    return match
+
+
+def is_timespans_match(timespan1, timespan2):
+    '''
+    Useful to compare two timespans from different subtopics
+    :return: true if they match, false if they don't
+    '''
+    match = (timespan1['start_date'] == timespan2['start_date']) \
+            and (timespan1['end_date'] == timespan2['end_date']) \
+            and (timespan1['period'] == timespan2['period'])
+    return match

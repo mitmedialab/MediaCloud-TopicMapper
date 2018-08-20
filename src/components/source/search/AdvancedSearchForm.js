@@ -27,7 +27,7 @@ const AdvancedSearchForm = (props) => {
             name={'advancedSearchQueryString'}
             value={initialValues}
             component={renderTextField}
-            floatingLabelText={formatMessage(localMessages.searchSuggestion)}
+            label={formatMessage(localMessages.searchSuggestion)}
             fullWidth
           />
         </Col>
@@ -35,57 +35,56 @@ const AdvancedSearchForm = (props) => {
       <Row>
         <Col lg={6}>
           <MetadataPickerContainer
+            autocomplete
             id={TAG_SET_PUBLICATION_COUNTRY}
             name={'publicationCountry'}
             form="advancedQueryForm"
-            floatingLabelText={formatMessage(localMessages.pubCountrySuggestion)}
-            autocomplete
+            label={formatMessage(localMessages.pubCountrySuggestion)}
           />
         </Col>
         <Col lg={6}>
           <MetadataPickerContainer
+            autocomplete
             id={TAG_SET_PUBLICATION_STATE}
             name={'publicationState'}
             form="advancedQueryForm"
-            floatingLabelText={formatMessage(localMessages.pubStateSuggestion)}
-            autocomplete
+            label={formatMessage(localMessages.pubStateSuggestion)}
           />
         </Col>
         <Col lg={6}>
           <MetadataPickerContainer
-            value={initialValues}
+            autocomplete
             id={TAG_SET_PRIMARY_LANGUAGE}
             name={'primaryLanguage'}
             form="advancedQueryForm"
-            floatingLabelText={formatMessage(localMessages.pLanguageSuggestion)}
-            autocomplete
+            label={formatMessage(localMessages.pLanguageSuggestion)}
           />
         </Col>
         <Col lg={6}>
           <MetadataPickerContainer
-            value={initialValues}
+            autocomplete
             id={TAG_SET_COUNTRY_OF_FOCUS}
             name={'countryOfFocus'}
             form="advancedQueryForm"
-            floatingLabelText={formatMessage(localMessages.pCountryOfFocusSuggestion)}
-            autocomplete
+            label={formatMessage(localMessages.pCountryOfFocusSuggestion)}
           />
         </Col>
         <Col lg={6}>
           <MetadataPickerContainer
+            autocomplete
             id={TAG_SET_MEDIA_TYPE}
             showDescription
             name="mediaType"
             form="advancedQueryForm"
-            floatingLabelText={formatMessage(localMessages.pMediaType)}
+            label={formatMessage(localMessages.pMediaType)}
           />
         </Col>
       </Row>
       <Row>
         <Col lg={12}>
           <AppButton
-            style={{ marginTop: 30 }}
             type="submit"
+            style={{ marginTop: 30 }}
             label={buttonLabel}
             disabled={pristine || submitting}
             primary

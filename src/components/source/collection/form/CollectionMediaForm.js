@@ -5,7 +5,8 @@ import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { updateFeedback } from '../../../../actions/appActions';
 import withIntlForm from '../../../common/hocs/IntlForm';
 import SourceSearchContainer from '../../controlbar/SourceSearchContainer';
@@ -14,7 +15,7 @@ import { googleFavIconUrl } from '../../../../lib/urlUtil';
 import { RemoveButton } from '../../../common/IconButton';
 import messages from '../../../../resources/messages';
 import CollectionCopyConfirmer from './CollectionCopyConfirmer';
-import AppButton from '../../../common/AppButton';
+// import AppButton from '../../../common/AppButton';
 import AddByUrlConfirmer from './AddByUrlConfirmer';
 
 // show an extra submit button if source list is longer than this many entries
@@ -39,11 +40,32 @@ const localMessages = {
   },
 };
 
+function TabContainer(props) {
+  return (
+    <div>
+      <h3><FormattedMessage {...props.text} /></h3>
+      <p><FormattedMessage {...props.intro} /></p>
+      {props.children}
+    </div>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  text: PropTypes.object.isRequired,
+  intro: PropTypes.object.isRequired,
+};
+
 class SourceSelectionRendererRaw extends React.Component {
 
   state = {
+    tabValue: 0,
     collectionId: null, // the id of a collection to copy
     sourceUrls: null,   // an array of source urls to add by hand
+  };
+
+  handleChange = (event, value) => {
+    this.setState({ value });
   };
 
   resetCollectionId = () => this.setState({ collectionId: null });
@@ -106,6 +128,47 @@ class SourceSelectionRendererRaw extends React.Component {
         />
       );
     }
+
+    const firstTab = (
+      <TabContainer text={localMessages.tabSource} intro={localMessages.tabSourceIntro}>
+        <SourceSearchContainer
+          searchCollections={false}
+          onMediaSourceSelected={item => this.addSources([item])}
+          maxSources={12}
+        />
+      </TabContainer>
+    );
+    const secondTab = (
+      <TabContainer text={localMessages.tabCollection} intro={localMessages.tabCollectionIntro}>
+        <SourceSearchContainer
+          searchSources={false}
+          onCollectionSelected={c => this.pickCollectionToCopy(c.tags_id)}
+        />
+        {copyConfirmation}
+      </TabContainer>
+    );
+    const thirdTab = (
+      <TabContainer text={localMessages.tabCollection} intro={localMessages.tabCollectionIntro}>
+        <Field
+          name="sourceUrls"
+          component={renderTextField}
+          fullWidth
+          multiline
+          rows={4}
+          label={formatMessage(localMessages.sourceUrlHint)}
+        />
+        {addByUrlConfirmer}
+      </TabContainer>
+    );
+    const fourthTab = (
+      <TabContainer text={localMessages.tabCollection} intro={localMessages.tabCollectionIntro}>
+        <CollectionUploadSourceContainer
+          onConfirm={item => this.addSources(item)}
+          mysources={currentSources}
+          myCollectionId={editCollectionId}
+        />
+      </TabContainer>
+    );
     // show a extra submit button for convenience at top of long list
     const topButtonContent = (fields.length > EXTRA_BUTTON_LIST_LENGTH) ? submitButton : null;
     return (
@@ -119,52 +182,26 @@ class SourceSelectionRendererRaw extends React.Component {
           </Row>
           <Row>
             <Col lg={10}>
-              <Tabs>
-                <Tab label={<FormattedMessage {...localMessages.tabSource} />} >
-                  <h3><FormattedMessage {...localMessages.tabSource} /></h3>
-                  <p><FormattedMessage {...localMessages.tabSourceIntro} /></p>
-                  <SourceSearchContainer
-                    searchCollections={false}
-                    onMediaSourceSelected={item => this.addSources([item])}
-                    maxSources={12}
-                  />
-                </Tab>
-                <Tab label={<FormattedMessage {...localMessages.tabCollection} />} >
-                  <h3><FormattedMessage {...localMessages.tabCollection} /></h3>
-                  <p><FormattedMessage {...localMessages.tabCollectionIntro} /></p>
-                  <SourceSearchContainer
-                    searchSources={false}
-                    onCollectionSelected={c => this.pickCollectionToCopy(c.tags_id)}
-                  />
-                  {copyConfirmation}
-                </Tab>
-                <Tab label={<FormattedMessage {...localMessages.tabUrls} />} >
-                  <h3><FormattedMessage {...localMessages.tabUrls} /></h3>
-                  <p><FormattedMessage {...localMessages.tabUrlsIntro} /></p>
-                  <Field
-                    name="sourceUrls"
-                    component={renderTextField}
-                    fullWidth
-                    multiLine
-                    rows={4}
-                    hintText={formatMessage(localMessages.sourceUrlHint)}
-                  />
-                  <AppButton
-                    primary
-                    label={formatMessage(localMessages.addSourcesByUrl)}
-                    onClick={this.addSourcesByUrl}
-                  />
-                  {addByUrlConfirmer}
-                </Tab>
-                <Tab label={<FormattedMessage {...localMessages.tabUpload} />} >
-                  <h3><FormattedMessage {...localMessages.tabUpload} /></h3>
-                  <CollectionUploadSourceContainer
-                    onConfirm={item => this.addSources(item)}
-                    mysources={currentSources}
-                    myCollectionId={editCollectionId}
-                  />
-                </Tab>
+              <Tabs value={this.state.value} onChange={this.handleChange}>
+                <Tab
+                  label={formatMessage(localMessages.tabSource)}
+                  textColor="primary"
+                />
+                <Tab
+                  label={formatMessage(localMessages.tabCollection)}
+                  textColor="primary"
+                />
+                <Tab
+                  label={formatMessage(localMessages.tabUrls)}
+                />
+                <Tab
+                  label={formatMessage(localMessages.tabUpload)}
+                />
               </Tabs>
+              {this.state.value === 0 && firstTab}
+              {this.state.value === 1 && secondTab}
+              {this.state.value === 2 && thirdTab}
+              {this.state.value === 3 && fourthTab}
             </Col>
           </Row>
         </div>
@@ -202,7 +239,7 @@ class SourceSelectionRendererRaw extends React.Component {
                             <a href={`${info.input.value.url}`} target="_new">{info.input.value.url}</a>
                           </td>
                           <td>
-                            <RemoveButton onClick={() => fields.remove(idx)} />
+                            <RemoveButton color="red" onClick={() => fields.remove(idx)} />
                           </td>
                         </tr>
                       )}

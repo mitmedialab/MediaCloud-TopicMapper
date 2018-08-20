@@ -3,7 +3,9 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import withCsvDownloadNotifyContainer from '../../common/hocs/CsvDownloadNotifyContainer';
 import withDescription from '../../common/hocs/DescribedDataCard';
@@ -53,7 +55,6 @@ class StoriesSummaryContainer extends React.Component {
   }
   render() {
     const { stories, sort, topicId, filters, handleFocusSelected, user, showTweetCounts } = this.props;
-    const { formatMessage } = this.props.intl;
     const exploreUrl = `/topics/${topicId}/stories`;
     const isLoggedIn = hasPermissions(getUserRoles(user), PERMISSION_LOGGED_IN);
     return (
@@ -65,17 +66,23 @@ class StoriesSummaryContainer extends React.Component {
               <MenuItem
                 className="action-icon-menu-item"
                 id="topic-summary-top-stories-download"
-                primaryText={formatMessage(localMessages.downloadNoFBData)}
-                rightIcon={<DownloadButton />}
-                onTouchTap={this.downloadCsvNoFBData}
-              />
+                onClick={this.downloadCsvNoFBData}
+              >
+                <ListItemText><FormattedMessage {...localMessages.downloadNoFBData} /></ListItemText>
+                <ListItemIcon>
+                  <DownloadButton />
+                </ListItemIcon>
+              </MenuItem>
               <MenuItem
                 className="action-icon-menu-item"
                 id="topic-summary-top-stories-download-with-facebook"
-                primaryText={formatMessage(localMessages.downloadWithFBData)}
-                rightIcon={<DownloadButton />}
-                onTouchTap={this.downloadCsvWithFBData}
-              />
+                onClick={this.downloadCsvWithFBData}
+              >
+                <ListItemText><FormattedMessage {...localMessages.downloadWithFBData} /></ListItemText>
+                <ListItemIcon>
+                  <DownloadButton />
+                </ListItemIcon>
+              </MenuItem>
             </ActionMenu>
           </div>
         </Permissioned>

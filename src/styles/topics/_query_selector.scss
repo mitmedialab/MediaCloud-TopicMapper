@@ -1,0 +1,9 @@
+@import '../constants';
+
+.controlbar-topic {
+  .query-selector-wrapper {
+    label, input {
+        color: $white !important;
+    }
+  }
+}

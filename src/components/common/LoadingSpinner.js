@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const LoadingSpinner = (props) => {
   const { size, padding } = props;

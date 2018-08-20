@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 
 /**
  * Simple wrapper so we can style all the button the same.  Use this instead of
@@ -27,7 +26,7 @@ class AppButton extends React.Component {
   }
 
   render() {
-    const { flat, className } = this.props;
+    const { variant, className, children, icon } = this.props;
     const { formatMessage } = this.props.intl;
     const customClassName = className || '';
     const buttonProps = {
@@ -41,13 +40,29 @@ class AppButton extends React.Component {
     if ((buttonProps.label) && (typeof buttonProps.label === 'object')) {
       buttonProps.label = formatMessage(buttonProps.label);
     }
-    let content = null;
-    if (flat) {
-      delete buttonProps.flat;
-      content = <FlatButton {...buttonProps} />;
-    } else {
-      content = <RaisedButton {...buttonProps} />;
+    let textLabel = children;
+    if (children === undefined) {
+      textLabel = buttonProps.label;
     }
+    // material-ui shim
+    if (buttonProps.primary) {
+      buttonProps.color = 'primary';
+      buttonProps.variant = 'contained';
+      delete buttonProps.primary;
+    } else if (buttonProps.secondary) {
+      buttonProps.color = 'secondary';
+      buttonProps.variant = 'outlined';
+      delete buttonProps.secondary;
+    }
+    let content = null;
+
+    content = (
+      <Button variant={variant || 'outlined'} {...buttonProps}>
+        {textLabel}
+        {icon}
+      </Button>
+    );
+
     return content;
   }
 
@@ -56,8 +71,10 @@ class AppButton extends React.Component {
 AppButton.propTypes = {
   // from parent
   disabled: PropTypes.bool,
-  flat: PropTypes.bool,
+  variant: PropTypes.string,
   className: PropTypes.string,
+  children: PropTypes.node,
+  icon: PropTypes.node,
   // from composition chain
   intl: PropTypes.object.isRequired,
 };

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
 import messages from '../../resources/messages';
 
 const localMessages = {
@@ -28,12 +28,14 @@ class CopyAllComponent extends React.Component {
     const { label, title, msg } = this.props;
     const { formatMessage } = this.props.intl;
     const dialogActions = [
-      <FlatButton
+      <Button
+        variant="outlined"
         label={formatMessage(messages.cancel)}
         primary
         onClick={this.handleCancel}
       />,
-      <FlatButton
+      <Button
+        variant="outlined"
         label={formatMessage(messages.ok)}
         primary
         onClick={this.handleClose}

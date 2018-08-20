@@ -10,12 +10,12 @@ import { setAttentionFocalSetId } from '../../../actions/topicActions';
 
 const localMessages = {
   mainTitle: { id: 'attention.mainTitle', defaultMessage: 'Attention Scoreboard' },
+  pickFocalSet: { id: 'attention.focalSet.selector.intro', defaultMessage: 'Pick a Set to compare the attention between the Subtopics.' },
 };
 
 const AttentionContainer = (props) => {
   const { selectedFocalSetId, filters, focalSets, topicId, handleFocalSetSelected } = props;
   const { formatMessage } = props.intl;
-  const titleHandler = parentTitle => `${formatMessage(localMessages.mainTitle)} | ${parentTitle}`;
   let content = null;
   const defaultFocalSet = focalSets.length > 0 ? focalSets[0].focal_sets_id : NO_FOCAL_SET_SELECTED;
   if (selectedFocalSetId !== NO_FOCAL_SET_SELECTED) {
@@ -33,7 +33,7 @@ const AttentionContainer = (props) => {
   }
   return (
     <div>
-      <Helmet><title>{titleHandler()}</title></Helmet>
+      <Helmet><title>{formatMessage(localMessages.mainTitle)}</title></Helmet>
       <Grid>
         <Row>
           <Col lg={12}>
@@ -42,6 +42,7 @@ const AttentionContainer = (props) => {
         </Row>
         <Row>
           <Col lg={6}>
+            <p><FormattedMessage {...localMessages.pickFocalSet} /></p>
             <FocusSetSelectorContainer
               topicId={topicId}
               snapshotId={filters.snapshotId}

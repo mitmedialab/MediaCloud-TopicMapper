@@ -54,7 +54,7 @@ class SelectSourceContainer extends React.Component {
         <SourceMgrHeaderContainer />
         <SourceControlBar>
           <a href="search-in-explorer" onClick={this.searchInExplorer} >
-            <ExploreButton />
+            <ExploreButton color="primary" useBackgroundColor />
             <FormattedMessage {...localMessages.searchNow} />
           </a>
           <a href={source.url}>

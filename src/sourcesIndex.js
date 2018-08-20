@@ -18,6 +18,7 @@ setAppColors({
   light: '#5CB6DD',
   dark: '#3C96BD',  // primary
   darker: '#1C769D',
+  main: '#3C96BD',
 });
 
 initializeApp(routes);

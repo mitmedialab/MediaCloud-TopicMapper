@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import Chip from 'material-ui/Chip';
+import { injectIntl } from 'react-intl';
+import Chip from '@material-ui/core/Chip';
 import messages from '../../../resources/messages';
 import { trimToMaxLength } from '../../../lib/stringUtil';
 
@@ -16,23 +16,19 @@ const ActiveFilters = (props) => {
   if (focus) {
     focusChip = (
       <Chip
-        backgroundColor={'rgb(255,255,255)'}
         style={{ border: '1px solid rgb(189,189,189)', display: 'inline-flex' }}
-        onRequestDelete={onRemoveFocus}
-      >
-        <FormattedMessage {...messages.focus} />: {focus.name}
-      </Chip>
+        onDelete={onRemoveFocus}
+        label={`${props.intl.formatMessage(messages.focus)}: ${focus.name}`}
+      />
     );
   }
   if (query) {
     queryChip = (
       <Chip
-        backgroundColor={'rgb(255,255,255)'}
         style={{ border: '1px solid rgb(189,189,189)', display: 'inline-flex' }}
-        onRequestDelete={onRemoveQuery}
-      >
-        <FormattedMessage {...messages.query} />: {trimToMaxLength(query, MAX_QUERY_LENGTH)}
-      </Chip>
+        onDelete={onRemoveQuery}
+        label={`${props.intl.formatMessage(messages.query)}: ${trimToMaxLength(query, MAX_QUERY_LENGTH)}`}
+      />
     );
   }
   return (
@@ -46,6 +42,7 @@ ActiveFilters.propTypes = {
   // from parent
   focus: PropTypes.object,
   onRemoveFocus: PropTypes.func.isRequired,
+  intl: PropTypes.object.isRequired,
   query: PropTypes.string,
   onRemoveQuery: PropTypes.func.isRequired,
 };

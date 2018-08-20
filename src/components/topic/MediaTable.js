@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
-import ArrowDropDownIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import messages from '../../resources/messages';
 import LinkWithFilters from './LinkWithFilters';
 import { googleFavIconUrl } from '../../lib/urlUtil';

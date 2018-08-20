@@ -4,14 +4,18 @@ import 'core-js/es6/map';
 import 'core-js/es6/set';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ReactGA from 'react-ga';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { createMuiTheme } from '@material-ui/core/styles';
+// currently using old AutoComplete, keeping old theme in context
+import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+//
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import Router from 'react-router/lib/Router';
 import hashHistory from 'react-router/lib/hashHistory';
 import { syncHistoryWithStore } from 'react-router-redux';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Raven from 'raven-js';
 import { loginWithCookie } from './actions/userActions';
@@ -38,16 +42,56 @@ function reallyInitializeApp(routes) {
       ReactGA.pageview(window.location.pathname);
     }
   };
-
-  const muiTheme = getMuiTheme({
-    fontFamily: 'Lato, sans',
-    zIndex: {
-      menu: 10001,
-      dialogOverlay: 9999,
-      dialog: 10000,
-      layer: 10001,
-      popover: 10001,
+  const muiTheme = createMuiTheme({
+    palette: {
+      primary: getBrandColors(),
+      secondary: getBrandColors(),
     },
+    dialog: {
+      width: '80%',
+    },
+    status: {
+      info: 'info',
+      warning: 'warning',
+      error: 'error',
+    },
+    overrides: { // Name of the component ⚛️ / style sheet
+      MuiButton: {
+        root: {
+          padding: '0px 16px',
+        },
+        containedPrimary: {
+          color: 'white',
+        },
+        outlined: {
+          color: getBrandColors().dark,
+        },
+        label: {
+          fontFamily: 'Lato, sans',
+          fontWeight: 200,
+        },
+      },
+      MuiInput: {
+        input: {
+          padding: '8px 0px',
+        },
+      },
+      MuiModal: {
+        // paperWidth: '80%',
+      },
+      MuiTypography: {
+        title: {
+          fontFamily: 'Lato, sans',
+        },
+      },
+      zIndex: {
+        modal: 900,
+      },
+    },
+  });
+
+  const themeV0 = getMuiTheme({
+    fontFamily: 'Lato, sans',
     palette: {
       primary1Color: getBrandColors().dark,
       accent1Color: getBrandColors().light,
@@ -56,14 +100,16 @@ function reallyInitializeApp(routes) {
 
   const renderApp = () => {
     ReactDOM.render(
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <Provider store={store}>
-          <IntlProvider locale={DEFAULT_LOCALE}>
-            <Router history={history} onUpdate={logPageView}>
-              {routes}
-            </Router>
-          </IntlProvider>
-        </Provider>
+      <MuiThemeProvider theme={muiTheme}>
+        <V0MuiThemeProvider muiTheme={themeV0}>
+          <Provider store={store}>
+            <IntlProvider locale={DEFAULT_LOCALE}>
+              <Router history={history} onUpdate={logPageView}>
+                {routes}
+              </Router>
+            </IntlProvider>
+          </Provider>
+        </V0MuiThemeProvider>
       </MuiThemeProvider>,
       document.getElementById(APP_DOM_ELEMENT_ID)
     );
@@ -84,7 +130,7 @@ export default function initializeApp(routes) {
   if (isProdMode()) {
     Raven.config('https://e19420a2c46a4f97942553dfe8322cc4@sentry.io/1229723', {
       release: getVersion(),
-      environment: 'development-test',
+      environment: 'production',
       logger: getAppName(),
     }).install();
     // This wraps the app intialization in a Raven context to catch any init errors (as they recommend).

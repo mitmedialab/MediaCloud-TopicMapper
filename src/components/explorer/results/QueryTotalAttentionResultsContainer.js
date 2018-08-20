@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import composeSummarizedVisualization from './SummarizedVizualization';
-import { DownloadButton } from '../../common/IconButton';
+import SVGAndCSVMenu from '../../common/SVGAndCSVMenu';
 import ActionMenu from '../../common/ActionMenu';
 import BubbleRowChart from '../../vis/BubbleRowChart';
-import { queryChangedEnoughToUpdate, postToCombinedDownloadUrl } from '../../../lib/explorerUtil';
+import { queryChangedEnoughToUpdate, postToCombinedDownloadUrl, downloadExplorerSvg } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
 import { FETCH_INVALID } from '../../../lib/fetchConstants';
 
@@ -22,7 +23,7 @@ const localMessages = {
   helpDetails: { id: 'explorer.storyCount.help.details',
     defaultMessage: '<p>It is harder to determine how much of the media\'s attention your search got. If you want to dig into that, a good place to start is comparing your query to a search for everything from the sources and collections you are searching.  You can do this by searching for * in the same date range and media; that matches every story.</p>',
   },
-  downloadCsv: { id: 'explorer.attention.total.downloadCsv', defaultMessage: 'Download { name } total story count CSV' },
+  downloadLabel: { id: 'explorer.attention.total.downloadLabel', defaultMessage: 'combined total attention' },
   viewNormalized: { id: 'explorer.attention.mode.viewNormalized', defaultMessage: 'View by Story Count (default)' },
   viewRegular: { id: 'explorer.attention.mode.viewRegular', defaultMessage: 'View by Story Percentage' },
 };
@@ -43,11 +44,6 @@ class QueryTotalAttentionResultsContainer extends React.Component {
 
   setView = (nextView) => {
     this.setState({ view: nextView });
-  }
-
-  // if demo, use only sample search queries to download
-  downloadCsv = (query) => {
-    postToCombinedDownloadUrl('/api/explorer/stories/count.csv', [query]);
   }
 
   render() {
@@ -88,29 +84,31 @@ class QueryTotalAttentionResultsContainer extends React.Component {
           />
           <div className="actions">
             <ActionMenu actionTextMsg={messages.downloadOptions}>
-              {safeResults.map((q, idx) =>
-                <MenuItem
-                  key={idx}
-                  className="action-icon-menu-item"
-                  primaryText={formatMessage(localMessages.downloadCsv, { name: q.label })}
-                  rightIcon={<DownloadButton />}
-                  onTouchTap={() => this.downloadCsv(q)}
-                />
-              )}
+              <SVGAndCSVMenu
+                downloadCsv={() => postToCombinedDownloadUrl('/api/explorer/stories/count.csv', safeResults)}
+                downloadSvg={() => downloadExplorerSvg(formatMessage(localMessages.title), 'total-attention', BUBBLE_CHART_DOM_ID)}
+                label={formatMessage(localMessages.downloadLabel)}
+              />
             </ActionMenu>
             <ActionMenu actionTextMsg={messages.viewOptions}>
               <MenuItem
                 className="action-icon-menu-item"
-                primaryText={formatMessage(localMessages.viewNormalized)}
                 disabled={this.state.view === VIEW_REGULAR}
                 onClick={() => this.setView(VIEW_REGULAR)}
-              />
+              >
+                <ListItemText>
+                  <FormattedMessage {...localMessages.viewNormalized} />
+                </ListItemText>
+              </MenuItem>
               <MenuItem
                 className="action-icon-menu-item"
-                primaryText={formatMessage(localMessages.viewRegular)}
                 disabled={this.state.view === VIEW_NORMALIZED}
                 onClick={() => this.setView(VIEW_NORMALIZED)}
-              />
+              >
+                <ListItemText>
+                  <FormattedMessage {...localMessages.viewRegular} />
+                </ListItemText>
+              </MenuItem>
             </ActionMenu>
           </div>
         </div>

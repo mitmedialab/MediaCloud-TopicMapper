@@ -99,7 +99,7 @@ def load_user_searches():
 @arguments_required('queryName', 'timestamp', 'queryParams')
 def delete_user_search():
     username = user_name()
-    result = db.remove_item_from_users_list(username, 'searches', request.args)
+    result = db.remove_item_from_users_list(username, 'searches', {'timestamp': int(request.args['timestamp'])})
     return jsonify({'success': result.raw_result })
 
 

@@ -33,8 +33,8 @@ const SourceForm = (props) => {
       <Row>
         <Col lg={12}>
           <AppButton
-            style={{ marginTop: 30 }}
             type="submit"
+            style={{ marginTop: 30 }}
             label={buttonLabel}
             disabled={pristine || submitting}
             primary
@@ -53,7 +53,7 @@ SourceForm.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   collections: PropTypes.array,
   // from form healper
   handleSubmit: PropTypes.func,

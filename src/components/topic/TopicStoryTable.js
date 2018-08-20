@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Link from 'react-router/lib/Link';
-import ArrowDropDownIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import messages from '../../resources/messages';
 import LinkWithFilters from './LinkWithFilters';
 import { storyPubDateToTimestamp, STORY_PUB_DATE_UNDATEABLE } from '../../lib/dateUtil';

@@ -3,12 +3,13 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
 // polyfill for Safari :-(
 import intl from 'intl';  // eslint-disable-line
 import intlEn from 'intl/locale-data/jsonp/en.js';  // eslint-disable-line
 import { Row } from 'react-flexbox-grid/lib';
 import NavToolbar from './common/header/NavToolbar';
+import ErrorBoundary from './common/ErrorBoundary';
 import messages from '../resources/messages';
 import { getVersion } from '../config';
 import { updateFeedback } from '../actions/appActions';
@@ -49,9 +50,11 @@ const AppContainer = (props) => {
       <header>
         <NavToolbar />
       </header>
-      <div id="content">
-        {content}
-      </div>
+      <ErrorBoundary>
+        <div id="content">
+          {content}
+        </div>
+      </ErrorBoundary>
       <footer>
         <p><small>
           {'Created by the '}
@@ -73,9 +76,9 @@ const AppContainer = (props) => {
         open={feedback.open}
         message={feedback.message}
         action={feedback.action}
-        onActionClick={feedback.onActionClick}
+        // onClick={feedback.onActionClick}
         autoHideDuration={8000}
-        onRequestClose={handleSnackBarRequestClose}
+        onRequest={handleSnackBarRequestClose}
       />
     </div>
   );

@@ -2,8 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { selectMedia, fetchMedia } from '../../../actions/topicActions';
@@ -57,7 +60,8 @@ class MediaContainer extends React.Component {
     const { formatMessage, formatNumber } = this.props.intl;
     const titleHandler = parentTitle => `${media.name} | ${parentTitle}`;
     const dialogActions = [
-      <FlatButton
+      <Button
+        variant="outlined"
         label={formatMessage(messages.ok)}
         primary
         onClick={this.handleRemoveDialogClose}
@@ -103,15 +107,21 @@ class MediaContainer extends React.Component {
             </Col>
           </Row>
           <Dialog
-            className="app-dialog"
-            title={formatMessage(localMessages.removeTitle)}
-            actions={dialogActions}
             modal={false}
             open={this.state.open}
-            onRequestClose={this.handleRemoveDialogClose}
+            onClose={this.handleRemoveDialogClose}
+            className="app-dialog"
           >
-            <p><FormattedMessage {...localMessages.removeAbout} /></p>
-            <ComingSoon />
+            <DialogTitle>
+              {formatMessage(localMessages.removeTitle)}
+            </DialogTitle>
+            <DialogActions>
+              {dialogActions}
+            </DialogActions>
+            <DialogContent>
+              <p><FormattedMessage {...localMessages.removeAbout} /></p>
+              <ComingSoon />
+            </DialogContent>
           </Dialog>
           <Row>
             <Col lg={12}>

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { push } from 'react-router-redux';
 import { fetchMetadataValuesForPrimaryLanguage } from '../../../actions/systemActions'; // TODO relocate metadata actions into system if we use more often...
-import { selectStory, fetchStory, updateStory } from '../../../actions/topicActions';
+import { selectStory, fetchStory, updateStory } from '../../../actions/storyActions';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import StoryDetailForm from './StoryDetailForm';
 import messages from '../../../resources/messages';
@@ -63,7 +63,7 @@ class StoryUpdateContainer extends React.Component {
       <div>
         <Grid>
           <Row>
-            <h2>{titleHandler()}</h2>
+            <h2>{titleHandler}</h2>
           </Row>
           <Row>
             <Col lg={6} xs={12} >
@@ -95,10 +95,10 @@ StoryUpdateContainer.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  fetchStatus: state.topics.selected.story.info.fetchStatus,
+  fetchStatus: state.story.info.fetchStatus,
   storiesId: parseInt(ownProps.params.storiesId, 10),
   topicId: parseInt(ownProps.params.topicId, 10),
-  story: state.topics.selected.story.info,
+  story: state.story.info,
   tags: state.system.metadata.primaryLanguage.tags,
 });
 
@@ -117,7 +117,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       .then((result) => {
         if (result.success === 1) {
           dispatch(updateFeedback({ open: true, message: ownProps.intl.formatMessage(localMessages.feedback) }));
-          dispatch(push(`/topics/${ownProps.params.topicId}/stories/${storyInfo.stories_id}`));
+          dispatch(push(`/topics/${ownProps.params.topicId}/stories/${ownProps.params.storiesId}`));
         }
       });
   },

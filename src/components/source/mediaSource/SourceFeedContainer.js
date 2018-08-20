@@ -65,7 +65,7 @@ class SourceFeedContainer extends React.Component {
               <AppButton
                 className="source-scrape-feeds-button"
                 label={formatMessage(messages.scrapeForFeeds)}
-                primary
+                color="primary"
                 onClick={scrapeFeeds}
               />
             </Permissioned>

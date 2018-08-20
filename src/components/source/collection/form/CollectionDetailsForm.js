@@ -55,6 +55,7 @@ const CollectionDetailsForm = (props) => {
             component={renderCheckbox}
             fullWidth
             label={localMessages.staticLabel}
+            helpertext={localMessages.staticLabel}
             onChange={updateFields}
           />
         </Col>

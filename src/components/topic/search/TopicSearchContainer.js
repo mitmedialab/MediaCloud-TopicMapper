@@ -3,8 +3,8 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import AutoComplete from 'material-ui/AutoComplete';
-import MenuItem from 'material-ui/MenuItem';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { fetchTopicSearchResults } from '../../../actions/topicActions';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { SearchButton } from '../../common/IconButton';
@@ -83,23 +83,20 @@ class TopicSearchContainer extends React.Component {
   render() {
     const { fetchStatus } = this.props;
     const { formatMessage } = this.props.intl;
-    const resultsAsComponents = this.resetIfRequested();
+    // const resultsAsComponents = this.resetIfRequested();
     const isFetching = fetchStatus === FETCH_ONGOING;
     const fetchingStatus = (isFetching) ? <LoadingSpinner size={15} /> : null;
     return (
       <div className="async-search topic-search right">
         <SearchButton />
         <div className="fetching">{fetchingStatus}</div>
-        <AutoComplete
-          hintText={formatMessage(localMessages.searchHint)}
-          fullWidth
-          openOnFocus={false}
+        <Select
+          label={formatMessage(localMessages.searchHint)}
           onClick={this.resetIfRequested}
-          dataSource={resultsAsComponents}
-          onUpdateInput={this.handleUpdateInput}
-          onNewRequest={this.handleNewRequest}
-          maxSearchResults={10}
-          filter={() => true}
+          // TODO update this
+          // options={topicResults}
+          onChange={this.handleUpdateInput}
+          // onNewRequest={this.handleNewRequest}
         />
       </div>
     );

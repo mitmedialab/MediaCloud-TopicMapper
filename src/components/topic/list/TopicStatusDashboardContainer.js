@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withAsyncFetch from '../../common/hocs/AsyncContainer';
 import { fetchAdminTopicList } from '../../../actions/topicActions';
@@ -20,7 +21,7 @@ class TopicStatusDashboardContainer extends React.Component {
     selectedTopicState: 'error',
   };
 
-  handleTopicStateSelected = (event, index, value) => this.setState({ selectedTopicState: value });
+  handleTopicStateSelected = value => this.setState({ selectedTopicState: value });
 
   render() {
     const { topics } = this.props;
@@ -36,13 +37,12 @@ class TopicStatusDashboardContainer extends React.Component {
         </Row>
         <Row>
           <Col lg={12}>
-            <SelectField
-              floatingLabelText={formatMessage(localMessages.stateToShow)}
-              value={this.state.selectedTopicState}
-              onChange={this.handleTopicStateSelected}
+            <Select
+              label={formatMessage(localMessages.stateToShow)}
+              value={this.state.selectedTopicState || ''}
             >
-              {uniqueStates.map((state, index) => <MenuItem key={index} value={state} primaryText={state} />)}
-            </SelectField>
+              {uniqueStates.map((state, index) => <MenuItem key={index} value={state}><ListItemText onClick={() => this.handleTopicStateSelected(state)}>{state}</ListItemText></MenuItem>)}
+            </Select>
           </Col>
         </Row>
         <Row>

@@ -13,11 +13,6 @@ export const SORT_TOPIC_INFLUENTIAL_STORIES = 'SORT_TOPIC_INFLUENTIAL_STORIES';
 export const FETCH_TOPIC_TOP_STORIES = 'FETCH_TOPIC_TOP_STORIES';
 export const FETCH_TOPIC_ENGLISH_STORY_COUNTS = 'FETCH_TOPIC_ENGLISH_STORY_COUNTS';
 export const FETCH_TOPIC_UNDATEABLE_STORY_COUNTS = 'FETCH_TOPIC_UNDATEABLE_STORY_COUNTS';
-export const UPDATE_STORY = 'UPDATE_STORY';
-
-
-// pass in topic id and story id
-export const updateStory = createAsyncAction(UPDATE_STORY, api.storyUpdate, params => params);
 
 // pass in topic id and story id
 export const fetchTopicStoryInfo = createAsyncAction(FETCH_TOPIC_STORY_INFO, api.topicStoryInfo);

@@ -16,7 +16,7 @@ export const PICK_COLLECTION = 2;
 export const PICK_SOURCE = 3;
 
 // export const PICK_ADVANCED = 3;
-
+export const ACTION_MENU_ITEM_CLASS = 'action-icon-menu-item';
 
 export const COVERAGE_REQUIRED = 0.8;
 

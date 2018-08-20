@@ -18,6 +18,7 @@ export const SELECT_STORY = 'SELECT_STORY';
 export const RESET_STORY = 'RESET_STORY';
 export const FETCH_STORY = 'FETCH_STORY';
 export const FETCH_STORY_WORDS = 'FETCH_STORY_WORDS';
+export const UPDATE_STORY = 'UPDATE_STORY';
 
 // pass in stories id
 export const selectStory = createAction(SELECT_STORY, id => id);
@@ -27,3 +28,6 @@ export const fetchStory = createAsyncAction(FETCH_STORY, api.story);
 
 // pass in topic id and story id
 export const fetchStoryWords = createAsyncAction(FETCH_STORY_WORDS, api.storyWords);
+// pass in topic id and story id
+export const updateStory = createAsyncAction(UPDATE_STORY, api.storyUpdate, params => params);
+

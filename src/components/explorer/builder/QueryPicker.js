@@ -258,7 +258,7 @@ class QueryPicker extends React.Component {
                   style={{ marginTop: 30 }}
                   type="submit"
                   label={formatMessage(messages.search)}
-                  primary
+                  color="primary"
                   onTouchTap={this.saveAndSearch}
                 />
               </Col>

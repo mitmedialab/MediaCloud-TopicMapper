@@ -129,9 +129,9 @@ const FocusForm3DescribeContainer = (props) => {
         {content}
         <Row>
           <Col lg={12}>
-            <AppButton flat label={formatMessage(messages.previous)} onClick={() => goToStep(1)} />
+            <AppButton variant="outlined" color="secondary" label={formatMessage(messages.previous)} onClick={() => goToStep(1)} />
             &nbsp; &nbsp;
-            <AppButton type="submit" label={formatMessage(messages.next)} primary />
+            <AppButton type="submit" label={formatMessage(messages.next)} color="primary" />
           </Col>
         </Row>
       </form>
@@ -146,7 +146,7 @@ FocusForm3DescribeContainer.propTypes = {
   // form composition
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderSelectField: PropTypes.func.isRequired,
+  renderSelect: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string.isRequired,

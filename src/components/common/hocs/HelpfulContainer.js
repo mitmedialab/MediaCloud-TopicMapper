@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedHTMLMessage, injectIntl } from 'react-intl';
-import FlatButton from 'material-ui/FlatButton';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
 import messages from '../../../resources/messages';
 import { HelpButton } from '../IconButton';
+import AppButton from '../AppButton';
 
 /**
  * Use this with the JS Composition pattern to make a Container that has a help button.
@@ -36,14 +39,15 @@ function withHelp(contentTitleMsg, contentHTMLTextMsg, showHelpSidebar) {
       render() {
         const { formatMessage } = this.props.intl;
         const dialogActions = [
-          <FlatButton
-            label={formatMessage(messages.ok)}
+          <AppButton
             primary
+            label={formatMessage(messages.ok)}
             onClick={this.handleClose}
+            key="help-OK"
           />,
         ];
-        const helpButton = <HelpButton onClick={this.handleOpen} />;
-        let content = null;
+        const helpButton = <HelpButton color="lightgrey" onClick={this.handleOpen} />;
+        let content = <br />;
         if (this.state.contentMsg) {
           if (Array.isArray(this.state.contentMsg)) {
             content = this.state.contentMsg.map(msg => (msg ? <FormattedHTMLMessage key={msg.id} {...msg} /> : ''));
@@ -81,14 +85,15 @@ function withHelp(contentTitleMsg, contentHTMLTextMsg, showHelpSidebar) {
           <span className="helpful">
             {displayContent}
             <Dialog
-              title={dialogTitle}
-              actions={dialogActions}
-              modal={false}
               className="app-dialog"
               open={this.state.open}
-              onRequestClose={this.handleClose}
+              onClose={this.handleClose}
             >
-              {content}
+              <DialogTitle>{dialogTitle}</DialogTitle>
+              <DialogContent>
+                {content}
+              </DialogContent>
+              <DialogActions>{dialogActions}</DialogActions>
             </Dialog>
           </span>
         );

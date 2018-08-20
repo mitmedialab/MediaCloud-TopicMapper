@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 const localMessages = {
@@ -15,7 +15,7 @@ const ErrorTryAgain = (props) => {
   return (
     <div className="error-try-again">
       <p><FormattedMessage {...localMessages.errorCantLoad} /></p>
-      <FlatButton label={tryAgainMsg} primary onClick={onTryAgain} />
+      <Button variant="outlined" label={tryAgainMsg} color="primary" onClick={onTryAgain}>{tryAgainMsg}</Button>
     </div>
   );
 };
