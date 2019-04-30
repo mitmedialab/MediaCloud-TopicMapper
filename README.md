@@ -27,10 +27,10 @@ Node and npm:
  * install watchman for the testing (`brew install --HEAD watchman`)
 
 MongoDB:
-[Install MongoDb](https://docs.mongodb.com/manual/installation/).  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install mongodb`
+[Install MongoDb](https://docs.mongodb.com/manual/installation/).  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install mongodb`. Make sure you start the mongod server (follow [helpful instructions here] (https://treehouse.github.io/installation-guides/mac/mongo-mac.html)
 
 Redis:
-[Install Redis](http://redis.io/)  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install redis`
+[Install Redis](http://redis.io/)  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install redis`. Launch in the terminal with the command 'redis-server' or check [here] for more information (https://medium.com/@petehouston/install-and-config-redis-on-mac-os-x-via-homebrew-eb8df9a4f298)
 
 MemCache:
 On OSX, make sure to run `brew install libmemcached` otherwise you'll get an error about pylibmc failing to install (http://brew.sh)
