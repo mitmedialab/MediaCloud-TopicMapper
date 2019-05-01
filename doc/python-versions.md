@@ -38,3 +38,11 @@ is in your `.profile`):
 ```
 pyenv virtualenv 3.6.5 mc-web-tools
 ```
+
+
+Pycharm
+----------------
+should you decide to use Pycharm, make sure to set the Preferences->Python Interpreter by adding/pointing to your venv created above.
+<img href="./images/pycharmInterpreter.jpg" />
+Also, set up your configuration like so:
+<img href="./images/pycharmConfig.jpg" />
