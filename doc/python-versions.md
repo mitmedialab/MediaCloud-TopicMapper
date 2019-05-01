@@ -45,4 +45,4 @@ Pycharm
 should you decide to use Pycharm, make sure to set the Preferences->Python Interpreter by adding/pointing to your venv created above.
 <img src="./images/pycharmInterpreter.png" />
 Also, set up your configuration like so:
-<img src="./images/pycharmConfig.png" />
+<img src="./images/pycharmConfiguraiton.png" />
