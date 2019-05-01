@@ -39,7 +39,7 @@ On OSX, make sure to run `brew install libmemcached` otherwise you'll get an err
 Configuration
 ------------- 
 
-Copy `config/server.config.template` to `config/server.config` and fill in the required info there.
+Copy `config/app.config.template` to `config/app.config` and fill in the required info there.
 
 Running the Apps
 ----------------
