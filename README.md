@@ -40,6 +40,7 @@ Configuration
 ------------- 
 
 Copy `config/app.config.template` to `config/app.config` and fill in the required info there.
+Uncomment the Sentry_DSN line but you can leave as is for dev environments.
 
 Running the Apps
 ----------------
