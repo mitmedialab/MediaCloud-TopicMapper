@@ -82,7 +82,7 @@ MediaPickerSearchForm.propTypes = {
   initValues: PropTypes.object,
   submitting: PropTypes.bool,
   hintText: PropTypes.string,
-  children: PropTypes.object,
+  children: PropTypes.array,
   pristine: PropTypes.bool,
 };
 

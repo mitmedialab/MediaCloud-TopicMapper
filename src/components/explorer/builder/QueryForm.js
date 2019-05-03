@@ -89,16 +89,8 @@ class QueryForm extends React.Component {
       ...selected.collections,
     ];
     const currentQ = selected.q;
-    let mediaPicker = null;
     let mediaLabel = formatMessage(localMessages.SandC);
     if (isEditable) {
-      mediaPicker = (
-        <MediaPickerDialog
-          initMedia={selected.media ? selected.media : cleanedInitialValues.media}
-          onConfirmSelection={selections => onMediaChange(selections)}
-          setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
-        />
-      );
       mediaLabel = formatMessage(localMessages.selectSandC);
     }
     const queriesMissingMedia = this.evalAllQueriesForValidMedia();
@@ -140,7 +132,7 @@ class QueryForm extends React.Component {
                 </div>
               </Col>
               <Col lg={4}>
-                <div className="media-field-wrapper">
+                <div className="media-field-wrapper" ref={this.myRef} id="mediaPicker">
                   <div className="media-field-label query-field-label">
                     <span className="query-field-number">2</span>
                     <CopyAllComponent
@@ -161,7 +153,16 @@ class QueryForm extends React.Component {
                     title="title"
                     intro="intro"
                   />
-                  {mediaPicker}
+                  <div>
+                    {isEditable
+                    && (
+                      <MediaPickerDialog
+                        initMedia={selected.media ? selected.media : cleanedInitialValues.media}
+                        onConfirmSelection={selections => onMediaChange(selections)}
+                        setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
+                      />
+                    )}
+                  </div>
                   <div className="query-field-desc">
                     <FormattedMessage {...localMessages.selectSandCDesc} />
                     &nbsp;

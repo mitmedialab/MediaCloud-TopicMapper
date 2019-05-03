@@ -17,7 +17,7 @@ const localMessages = {
 };
 
 const MetadataPickerContainer = (props) => {
-  const { initialValues, label, name, tags, handleLoadOptions, renderAsyncAutocomplete, renderAutocomplete,
+  const { initialValues, label, name, tags, onChange, handleLoadOptions, renderAsyncAutocomplete, renderAutocomplete,
     async, disabled } = props;
   const { formatMessage } = props.intl;
   let properties;
@@ -52,6 +52,7 @@ const MetadataPickerContainer = (props) => {
           defaultValue={defaultValue}
           isClearable
           placeholder={formatMessage(localMessages.hintText, { label })}
+          onChange={onChange}
           {...properties}
         />
       </React.Fragment>
@@ -66,6 +67,7 @@ MetadataPickerContainer.propTypes = {
   initialValues: PropTypes.object,
   disabled: PropTypes.bool,
   async: PropTypes.bool,
+  onChange: PropTypes.func,
   // from compositional chain
   intl: PropTypes.object.isRequired,
   renderAutocomplete: PropTypes.func.isRequired,

@@ -3,13 +3,11 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { selectMedia, toggleMedia, selectMediaPickerQueryArgs, resetMediaPickerQueryArgs, resetMediaPickerSources, resetMediaPickerCollections } from '../../../actions/systemActions';
-import { PICK_COLLECTION, PICK_SOURCE, PICK_COUNTRY, PICK_FEATURED } from '../../../lib/explorerUtil';
+import { PICK_SOURCE_AND_COLLECTION, PICK_FEATURED } from '../../../lib/explorerUtil';
 import * as fetchConstants from '../../../lib/fetchConstants';
-import CountryCollectionSearchResultsContainer from './results/CountryCollectionSearchResultsContainer';
-import AllCollectionSearchResultsContainer from './results/AllCollectionSearchResultsContainer';
-import SourceSearchResultsContainer from './results/SourceSearchResultsContainer';
-import FeaturedFavoriteSearchResultsContainer from './results/FeaturedFavoriteSearchResultsContainer';
-import { TAG_SET_ABYZ_GEO_COLLECTIONS, VALID_COLLECTION_IDS } from '../../../lib/tagUtil';
+import AllMediaSearchResultsContainer from './results/AllMediaSearchResultsContainer';
+import FeaturedFavoriteGeoSearchResultsContainer from './results/FeaturedFavoriteGeoSearchResultsContainer';
+import { VALID_COLLECTION_IDS } from '../../../lib/tagUtil';
 
 class MediaPickerResultsContainer extends React.Component {
   componentWillMount() {
@@ -37,14 +35,11 @@ class MediaPickerResultsContainer extends React.Component {
     let whichList = {};
 
     switch (whichProps.selectedMediaQueryType) {
-      case PICK_COUNTRY:
+      /* case PICK_COUNTRY:
         whichList = whichProps.collectionResults;
-        break;
-      case PICK_COLLECTION:
+        break; */
+      case PICK_SOURCE_AND_COLLECTION:
         whichList = whichProps.collectionResults;
-        break;
-      case PICK_SOURCE:
-        whichList = whichProps.sourceResults;
         break;
       default:
         break;
@@ -78,32 +73,25 @@ class MediaPickerResultsContainer extends React.Component {
     const whichMedia = {};
     whichMedia.fetchStatus = null;
     switch (selectedMediaQueryType) {
-      case PICK_COUNTRY:
+      /* case PICK_COUNTRY:
         content = (
           <CountryCollectionSearchResultsContainer
             whichTagSet={TAG_SET_ABYZ_GEO_COLLECTIONS}
             onToggleSelected={handleToggleSelected}
           />
         );
-        break;
-      case PICK_COLLECTION:
+        break; */
+      case PICK_SOURCE_AND_COLLECTION:
         content = (
-          <AllCollectionSearchResultsContainer
+          <AllMediaSearchResultsContainer
             whichTagSet={VALID_COLLECTION_IDS}
-            onToggleSelected={handleToggleSelected}
-          />
-        );
-        break;
-      case PICK_SOURCE:
-        content = (
-          <SourceSearchResultsContainer
             onToggleSelected={handleToggleSelected}
           />
         );
         break;
       case PICK_FEATURED:
         content = (
-          <FeaturedFavoriteSearchResultsContainer
+          <FeaturedFavoriteGeoSearchResultsContainer
             whichTagSet={VALID_COLLECTION_IDS}
             handleMediaConcurrency={toggleConcurrency}
             onToggleSelected={handleToggleSelected}

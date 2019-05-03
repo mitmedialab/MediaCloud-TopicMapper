@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Modal from '@material-ui/core/Modal';
@@ -83,6 +84,7 @@ class MediaPickerDialog extends React.Component {
     const { initMedia, selectedMedia, handleSelection, lookupTimestamp } = this.props;
     const { formatMessage } = this.props.intl;
     let modalContent = null;
+    const containingEl = document.getElementById('mediaPicker') ? document.getElementById('mediaPicker') : document.getElementById('app');
     if (this.state.open) {
       modalContent = (
         <div>
@@ -120,13 +122,18 @@ class MediaPickerDialog extends React.Component {
     }
 
     return (
-      <div className="add-media">
-        <AppButton
-          onClick={() => this.handleModifyClick(initMedia)}
-          tooltip={formatMessage(localMessages.addMedia)}
-          label={localMessages.pickMedia}
-        />
-        {modalContent}
+      <div id="mediaPicker">
+        {ReactDOM.createPortal(
+          <div className="add-media">
+            <AppButton
+              onClick={() => this.handleModifyClick(initMedia)}
+              tooltip={formatMessage(localMessages.addMedia)}
+              label="Add Media"
+            />
+            {modalContent}
+          </div>,
+          containingEl
+        )}
       </div>
     );
   }
@@ -144,6 +151,7 @@ MediaPickerDialog.propTypes = {
   onConfirmSelection: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired,
   setQueryFormChildDialogOpen: PropTypes.func,
+  elId: PropTypes.object,
 };
 
 const mapStateToProps = state => ({

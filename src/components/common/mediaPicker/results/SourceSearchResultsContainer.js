@@ -7,7 +7,6 @@ import { selectMediaPickerQueryArgs, fetchMediaPickerSources } from '../../../..
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import SourceResultsTable from './SourceResultsTable';
 import AdvancedMediaPickerSearchForm from '../AdvancedMediaPickerSearchForm';
-import MediaPickerSearchForm from '../MediaPickerSearchForm';
 import LoadingSpinner from '../../LoadingSpinner';
 import { notEmptyString } from '../../../../lib/formValidators';
 import { ALL_MEDIA } from '../../../../lib/mediaUtil';
@@ -24,33 +23,36 @@ const localMessages = {
 const formSelector = formValueSelector('advanced-media-picker-search');
 
 class SourceSearchResultsContainer extends React.Component {
-  state = {
-    showAdvancedOptions: false,
-  }
-
-  toggleAdvancedOptions = (evt) => {
-    evt.preventDefault();
-    this.setState(prevState => ({ showAdvancedOptions: !prevState.showAdvancedOptions }));
-  }
-
-  updateMediaQuery(values) {
-    const { formQuery, updateMediaQuerySelection, updateAdvancedMediaQuerySelection, selectedMediaQueryType } = this.props;
+  updateAndSearchWithSelection(values, search) {
+    const { formQuery, mediaQuery, updateMediaQuerySelection, handleUpdateAndSearchWithSelection, selectedMediaQueryType } = this.props;
     const updatedQueryObj = Object.assign({}, values, { type: selectedMediaQueryType });
 
-    if (this.state.showAdvancedOptions) {
-      const formValues = formQuery['advanced-media-picker-search'];
-      updatedQueryObj.tags = [];
-      const metadataQueryFields = ['publicationCountry', 'publicationState', 'primaryLanguage', 'countryOfFocus', 'mediaType'];
-      metadataQueryFields.forEach((key) => {
-        if (formValues && key in formValues) {
-          updatedQueryObj.tags.push(formValues[key]);
-        }
-      });
-      if ('allMedia' in values) {
-        updatedQueryObj.tags.push(values.allMedia);
+    const formValues = formQuery['advanced-media-picker-search'];
+    const mediaValues = mediaQuery !== null && mediaQuery !== undefined ? mediaQuery : [];
+    updatedQueryObj.tags = [];
+    const metadataQueryFields = ['publicationCountry', 'publicationState', 'primaryLanguage', 'countryOfFocus'];
+
+    metadataQueryFields.forEach((key) => {
+      updatedQueryObj.tags[key] = [];
+      if (formValues && key in formValues) {
+        updatedQueryObj.tags[key].push(formValues[key]);
       }
-      this.setState(updatedQueryObj);
-      updateAdvancedMediaQuerySelection(updatedQueryObj);
+    });
+    // prepare media values with id so we treat all the data similarly
+    updatedQueryObj.tags.mediaType = [];
+    Object.keys(mediaValues).forEach((key) => {
+      if (mediaValues[key] === true) {
+        updatedQueryObj.tags.mediaType.push({ tags_id: key });
+      }
+    });
+
+    if (typeof values === 'object' && 'allMedia' in values) {
+      updatedQueryObj.tags.push(values.allMedia);
+    }
+    this.setState(updatedQueryObj);
+
+    if (search) {
+      handleUpdateAndSearchWithSelection(updatedQueryObj);
     } else {
       updateMediaQuerySelection(updatedQueryObj);
     }
@@ -61,29 +63,17 @@ class SourceSearchResultsContainer extends React.Component {
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
-    if (this.state.showAdvancedOptions) {
-      content = (
-        <div>
-          <AdvancedMediaPickerSearchForm
-            initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
-            onAdvancedSelection={val => this.updateMediaQuery(val)}
-            hintText={formatMessage(localMessages.hintText)}
-          />
-          <a href="#toggle" onClick={this.toggleAdvancedOptions} className="media-picker-search-advanced"><FormattedMessage {...localMessages.hideAdvancedOptions} /></a>
-        </div>
-      );
-    } else {
-      content = (
-        <div>
-          <MediaPickerSearchForm
-            initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
-            onSearch={val => this.updateMediaQuery(val)}
-            hintText={formatMessage(localMessages.hintText)}
-          />
-          <a href="#toggle" onClick={this.toggleAdvancedOptions} className="media-picker-search-advanced"><FormattedMessage {...localMessages.showAdvancedOptions} /></a>
-        </div>
-      );
-    }
+    content = (
+      <div>
+        <AdvancedMediaPickerSearchForm
+          initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
+          onMetadataSelection={val => this.updateAndSearchWithSelection(val)}
+          onSearch={val => this.updateAndSearchWithSelection(val, true)}
+          hintText={formatMessage(localMessages.hintText)}
+        />
+      </div>
+    );
+
     if (fetchStatus === FETCH_ONGOING) {
       resultContent = <LoadingSpinner />;
     } else if (sourceResults && (sourceResults.list && (sourceResults.list.length > 0 || (sourceResults.args && sourceResults.args.media_keyword)))) {
@@ -116,9 +106,12 @@ SourceSearchResultsContainer.propTypes = {
   selectedMediaQueryKeyword: PropTypes.string,
   sourceResults: PropTypes.object,
   formQuery: PropTypes.object,
+  mediaQuery: PropTypes.array,
+  selectedMetadata: PropTypes.object,
   // from dispatch
   updateMediaQuerySelection: PropTypes.func.isRequired,
-  updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
+  // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
+  handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -135,22 +128,39 @@ const mapStateToProps = state => ({
     'advanced-media-picker-search.mediaType',
     'advanced-media-picker-search.allMedia',
   ),
+  mediaQuery: formSelector(
+    state,
+    'advanced-media-picker-search.mediaType',
+  ),
+  selectedMetadata: state.system.metadata.selected,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateMediaQuerySelection: (values) => {
+  /* updateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(selectMediaPickerQueryArgs(values));
       dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword }));
     }
-  },
-  updateAdvancedMediaQuerySelection: (values) => {
-    if (values.mediaKeyword || (values.tags && values.tags.length > 0)) {
+  }, */
+  updateMediaQuerySelection: (values) => {
+    if (values && (notEmptyString(values.mediaKeyword) || (values.tags && values.tags.length > 0))) {
       if (values.allMedia) { // handle the "all media" placeholder selection
         ownProps.onToggleSelected({ id: ALL_MEDIA, label: ownProps.intl.formatMessage(localMessages.allMedia) });
       } else {
         dispatch(selectMediaPickerQueryArgs(values));
-        dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: values.tags.map(tag => tag.tags_id) }));
+        // dispatch(selectMetadata(values));
+      }
+    }
+  },
+  handleUpdateAndSearchWithSelection: (values) => {
+    if (values.mediaKeyword || values.tags) {
+      if (values.allMedia) { // handle the "all media" placeholder selection
+        ownProps.onToggleSelected({ id: ALL_MEDIA, label: ownProps.intl.formatMessage(localMessages.allMedia) });
+      } else {
+        dispatch(selectMediaPickerQueryArgs(values));
+        const tags = Object.values(values.tags).filter(t => t.length > 0).reduce((a, b) => a.concat(b), []).map(i => i.tags_id)
+          .join(',');
+        dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags }));
       }
     }
   },

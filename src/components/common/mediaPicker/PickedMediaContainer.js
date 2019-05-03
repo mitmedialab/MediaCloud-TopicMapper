@@ -3,16 +3,14 @@ import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { selectMediaPickerQueryArgs, selectMedia } from '../../../actions/systemActions';
-import { PICK_COLLECTION, PICK_SOURCE, PICK_COUNTRY, PICK_FEATURED } from '../../../lib/explorerUtil';
+import { PICK_SOURCE_AND_COLLECTION, PICK_FEATURED } from '../../../lib/explorerUtil';
 import SourceOrCollectionWidget from '../SourceOrCollectionWidget';
 // import SelectedMediaContainer from './SelectedMediaContainer';
 
 const localMessages = {
-  pickCountry: { id: 'system.mediaPicker.select.pickCountry', defaultMessage: 'Search Geographic Collections' },
-  pickCollections: { id: 'system.mediaPicker.select.pickCollections', defaultMessage: 'Search All Collections' },
-  pickSources: { id: 'system.mediaPicker.select.pickSources', defaultMessage: 'Search Sources' },
+  pickSAndC: { id: 'system.mediaPicker.select.pickSources', defaultMessage: 'Search Sources & Collections' },
   selectedMedia: { id: 'system.mediaPicker.selected.title', defaultMessage: 'Selected Media' },
-  pickFeatured: { id: 'system.mediaPicker.select.pickFeatured', defaultMessage: 'Featured & Starred' },
+  pickFeatured: { id: 'system.mediaPicker.select.pickFeatured', defaultMessage: 'Browse Featured & Starred' },
 };
 
 class PickedMediaContainer extends React.Component {
@@ -32,9 +30,7 @@ class PickedMediaContainer extends React.Component {
     ));
     const options = [
       { label: localMessages.pickFeatured, value: PICK_FEATURED },
-      { label: localMessages.pickCountry, value: PICK_COUNTRY },
-      { label: localMessages.pickCollections, value: PICK_COLLECTION },
-      { label: localMessages.pickSources, value: PICK_SOURCE },
+      { label: localMessages.pickSAndC, value: PICK_SOURCE_AND_COLLECTION },
     ];
     return (
       <div>

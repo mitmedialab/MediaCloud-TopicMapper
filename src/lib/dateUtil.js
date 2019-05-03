@@ -127,11 +127,14 @@ export function solrDateToMoment(solrDateString, strict = true) {
 export function storyPubDateToMoment(solrDateString, strict = true) {
   // need to trim date here because sometimes it has fractional seconds as a decimal and the
   // intl helper can't format this
-  return moment(solrDateString.substring(0, 19), DB_DATE_FORMAT, strict);
+  return moment(solrDateString.substring(0, DB_DATE_FORMAT.length), DB_DATE_FORMAT, strict);
 }
 
 export function postgresDateToMoment(postgresDataString, strict = true) {
-  return moment(postgresDataString, DB_DATE_FORMAT, strict);
+  if (postgresDataString) {
+    return moment(postgresDataString.substring(0, DB_DATE_FORMAT.length), DB_DATE_FORMAT, strict);
+  }
+  return null;
 }
 
 export function storyPubDateToTimestamp(solrDateString, strict = true) {

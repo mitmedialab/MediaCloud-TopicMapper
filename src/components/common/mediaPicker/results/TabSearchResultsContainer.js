@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Grid, Row } from 'react-flexbox-grid/lib';
 import CollectionResultsTable from './CollectionResultsTable';
 import StarredSearchResultsContainer from './StarredSearchResultsContainer';
+import CountryCollectionSearchResultsContainer from './CountryCollectionSearchResultsContainer';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import LoadingSpinner from '../../LoadingSpinner';
 import TabSelector from '../../TabSelector';
@@ -14,11 +15,12 @@ const localMessages = {
   hintText: { id: 'system.mediaPicker.collections.hint', defaultMessage: 'Search for collections by name' },
   noResults: { id: 'system.mediaPicker.collections.noResults', defaultMessage: 'No results. Try searching for issues like online news, health, blogs, conservative to see if we have collections made up of those types of sources.' },
   featured: { id: 'system.mediaPicker.collections.featured', defaultMessage: 'Featured Collections' },
-  favorited: { id: 'system.mediaPicker.collections.favorite', defaultMessage: 'Starred' },
+  favorited: { id: 'system.mediaPicker.collections.favorite', defaultMessage: 'Starred Collections' },
+  geographic: { id: 'system.mediaPicker.collections.favorite', defaultMessage: 'Geographic Collections' },
 };
 
 const VIEW_FAVORITES = 0;
-// const VIEW_FEATURED = 1;
+const VIEW_FEATURED = 1;
 
 class TabSearchResultsContainer extends React.Component {
   state = {
@@ -36,6 +38,7 @@ class TabSearchResultsContainer extends React.Component {
               tabLabels={[
                 formatMessage(localMessages.favorited),
                 formatMessage(localMessages.featured),
+                formatMessage(localMessages.geographic),
               ]}
               onViewSelected={index => this.setState({ selectedViewIndex: index })}
             />
@@ -59,10 +62,21 @@ class TabSearchResultsContainer extends React.Component {
           />
         </div>
       );
-    } else if (queryResults && (queryResults.featured)) {
+    } else if (this.state.selectedViewIndex === VIEW_FEATURED
+      && queryResults && (queryResults.featured)) {
       tabContent = (
         <div className="media-picker-tabbed-content-wrapper">
           <CollectionResultsTable
+            title={formatMessage(localMessages.featured)}
+            collections={queryResults.featured}
+            onToggleSelected={onToggleSelected}
+          />
+        </div>
+      );
+    } else if (queryResults && (queryResults.geographic)) {
+      tabContent = (
+        <div className="media-picker-tabbed-content-wrapper">
+          <CountryCollectionSearchResultsContainer
             title={formatMessage(localMessages.featured)}
             collections={queryResults.featured}
             onToggleSelected={onToggleSelected}

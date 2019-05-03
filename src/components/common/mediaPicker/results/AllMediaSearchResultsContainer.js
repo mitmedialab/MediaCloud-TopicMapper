@@ -2,9 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { selectMediaPickerQueryArgs, fetchMediaPickerCollections } from '../../../../actions/systemActions';
-import CollectionSearchResultsContainer from './CollectionSearchResultsContainer';
-import { notEmptyString } from '../../../../lib/formValidators';
+import TabSandCSearchResultsContainer from './TabSandCSearchResultsContainer';
 
 const localMessages = {
   title: { id: 'system.mediaPicker.collections.title', defaultMessage: 'Collections matching "{name}"' },
@@ -13,7 +11,7 @@ const localMessages = {
 };
 
 
-class AllCollectionSearchResultsContainer extends React.Component {
+class AllMediaSearchResultsContainer extends React.Component {
   updateMediaQuery(values) {
     const { updateMediaQuerySelection, selectedMediaQueryType } = this.props;
     const updatedQueryObj = Object.assign({}, values, { type: selectedMediaQueryType });
@@ -21,15 +19,19 @@ class AllCollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchStatus } = this.props;
+    const { selectedMediaQueryType, selectedMediaQueryKeyword, whichTagSet, collectionResults, sourceResults, onToggleSelected, fetchStatus } = this.props;
+    const queryResults = {
+      collections: collectionResults.list,
+      sources: sourceResults.list,
+    };
     return (
       <div>
-        <CollectionSearchResultsContainer
+        <TabSandCSearchResultsContainer
           fetchStatus={fetchStatus}
           onToggleSelected={onToggleSelected}
           selectedMediaQueryType={selectedMediaQueryType}
-          selectedMediaQueryKeyword={selectedMediaQueryKeyword}
-          collectionResults={collectionResults}
+          queryResults={queryResults}
+          whichTagSet={whichTagSet}
           initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
           onSearch={val => this.updateMediaQuery(val)}
           hintTextMsg={localMessages.hintText}
@@ -39,18 +41,18 @@ class AllCollectionSearchResultsContainer extends React.Component {
   }
 }
 
-AllCollectionSearchResultsContainer.propTypes = {
+AllMediaSearchResultsContainer.propTypes = {
   // form compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
   onToggleSelected: PropTypes.func.isRequired,
   whichTagSet: PropTypes.array,
-  // from dispatch
-  updateMediaQuerySelection: PropTypes.func.isRequired,
   // from state
+  updateMediaQuerySelection: PropTypes.func,
   selectedMediaQueryKeyword: PropTypes.string,
   selectedMediaQueryType: PropTypes.number,
   collectionResults: PropTypes.object,
+  sourceResults: PropTypes.object,
   fetchStatus: PropTypes.string,
 };
 
@@ -59,20 +61,12 @@ const mapStateToProps = state => ({
   selectedMediaQueryType: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.type : 0,
   selectedMediaQueryKeyword: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.mediaKeyword : null,
   collectionResults: state.system.mediaPicker.collectionQueryResults,
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateMediaQuerySelection: (values) => {
-    if (values && notEmptyString(values.mediaKeyword)) {
-      dispatch(selectMediaPickerQueryArgs(values));
-      dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: ownProps.whichTagSet }));
-    }
-  },
+  sourceResults: state.system.mediaPicker.sourceQueryResults,
 });
 
 export default
 injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(
-    AllCollectionSearchResultsContainer
+  connect(mapStateToProps)(
+    AllMediaSearchResultsContainer
   )
 );

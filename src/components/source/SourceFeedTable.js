@@ -7,7 +7,6 @@ import { EditButton } from '../common/IconButton';
 import TabSelector from '../common/TabSelector';
 import { PERMISSION_MEDIA_EDIT } from '../../lib/auth';
 import Permissioned from '../common/Permissioned';
-import { parseSolrShortDate } from '../../lib/dateUtil';
 
 const localMessages = {
   activeTabLabel: { id: 'source.feed.active', defaultMessage: 'Active ({num})' },
@@ -35,8 +34,9 @@ class SourceFeedTable extends React.Component {
       );
     }
 
-    const activeFeeds = feeds.filter(feed => feed.active);
-    const inactiveFeeds = feeds.filter(feed => !feed.active);
+    const sortedFeeds = feeds.sort((a, b) => b.lastNewStoryMoment - a.lastNewStoryMoment);
+    const activeFeeds = sortedFeeds.filter(f => f.active);
+    const inactiveFeeds = sortedFeeds.filter(f => !f.active);
 
     let tabFeeds;
     switch (this.state.selectedViewIndex) {
@@ -86,13 +86,13 @@ class SourceFeedTable extends React.Component {
                   <a href={feed.url}>{feed.url}</a>
                 </td>
                 <td>
-                  <FormattedDate value={parseSolrShortDate(feed.last_new_story_time)} />
+                  {feed.lastNewStoryMoment && <FormattedDate value={feed.lastNewStoryMoment} />}
                 </td>
                 <td>
-                  <FormattedDate value={parseSolrShortDate(feed.last_attempted_download_time)} />
+                  {feed.lastDownloadMoment && <FormattedDate value={feed.lastDownloadMoment} />}
                 </td>
                 <td>
-                  <FormattedDate value={parseSolrShortDate(feed.last_successful_download_time)} />
+                  {feed.lastSuccessfulDownloadMoment && <FormattedDate value={feed.lastSuccessfulDownloadMoment} />}
                 </td>
                 <td>
                   <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
