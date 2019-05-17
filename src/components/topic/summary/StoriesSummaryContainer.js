@@ -25,7 +25,7 @@ const localMessages = {
   title: { id: 'topic.summary.stories.title', defaultMessage: 'Top Stories' },
   descriptionIntro: { id: 'topic.summary.stories.help.title', defaultMessage: '<p>The top stories within this topic can suggest the main ways it is talked about.  Sort by different measures to get a better picture of a story\'s influence.</p>' },
   downloadNoFBData: { id: 'topic.summary.stories.download.noFB', defaultMessage: 'Download CSV with all stories' },
-  downloadTopN: { id: 'topic.summary.stories.download.1k', defaultMessage: `Download CSV with top ${TOP_N_DOWNLOAD} stories` },
+  downloadTopN: { id: 'topic.summary.stories.download.1k', defaultMessage: `Download CSV with top ${TOP_N_DOWNLOAD} stories (w/Reddit data)` },
   downloadWithFBData: { id: 'topic.summary.stories.download.withFB', defaultMessage: 'Download CSV with all stories & Facebook collection date (takes longer)' },
   downloadLinkCsv: { id: 'topic.summary.stories.download.downloadLinkCsv', defaultMessage: 'Download CSV of all story links' },
 };
@@ -45,7 +45,7 @@ class StoriesSummaryContainer extends React.Component {
 
   downloadCsvTopN = () => {
     const { filters, sort, topicId, notifyOfCsvDownload } = this.props;
-    const url = `/api/topics/${topicId}/stories.csv?${filtersAsUrlParams(filters)}&sort=${sort}&story_limit=${TOP_N_DOWNLOAD}`;
+    const url = `/api/topics/${topicId}/stories.csv?${filtersAsUrlParams(filters)}&sort=${sort}&story_limit=${TOP_N_DOWNLOAD}&reddit_submissions=1`;
     window.location = url;
     notifyOfCsvDownload(HELP_STORIES_CSV_COLUMNS);
   }

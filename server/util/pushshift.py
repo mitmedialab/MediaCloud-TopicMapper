@@ -6,7 +6,7 @@ import datetime as dt
 from server.cache import cache
 from server.util.api_helper import combined_split_and_normalized_counts
 
-ps_api = PushshiftAPI()
+ps_api = PushshiftAPI(rate_limit_per_minute=2500)
 
 DB_TIME_STRING = "%Y-%m-%d %H:%M:%S"
 
