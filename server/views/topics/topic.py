@@ -6,7 +6,7 @@ from operator import itemgetter
 
 import server.views.apicache as shared_apicache
 import server.views.topics.apicache as apicache
-from server import app, mc, executor
+from server import app, mc, executor, TOOL_API_KEY
 from server.auth import user_mediacloud_key, user_mediacloud_client, is_user_logged_in
 from server.util.request import api_error_handler
 from server.views.topics import access_public_topic
@@ -20,8 +20,12 @@ ARRAY_BASE_ONE = 1
 
 def _topic_seed_story_count(topic):
     try:
+        if access_public_topic(topic['topics_id']):
+            api_key = TOOL_API_KEY
+        else:
+            api_key = user_mediacloud_key()
         seed_query_count = shared_apicache.story_count(
-            user_mediacloud_key(),
+            api_key,
             q=concatenate_query_for_solr(solr_seed_query=topic['solr_seed_query'],
                                          media_ids=[m['media_id'] for m in topic['media']],
                                          tags_ids=[t['tags_id'] for t in topic['media_tags']]),
@@ -48,15 +52,19 @@ def _snapshot_foci_count_job(job):
     focal_sets = apicache.topic_focal_sets_list(job['user_mc_key'], job['topics_id'], snapshot['snapshots_id'])
     foci_count = sum([len(fs['foci']) for fs in focal_sets])
     snapshot['foci_count'] = foci_count
+    snapshot['foci_names'] = [{
+        'focal_set_name': fs['name'],
+        'foci_names': [f['name'] for f in fs['foci']]
+    } for fs in focal_sets ]
     return snapshot
 
 
-def _add_snapshot_foci_count(topics_id, snapshots):
+def _add_snapshot_foci_count(api_key, topics_id, snapshots):
     jobs = []
     for s in snapshots:
         job = {
             'topics_id': topics_id,
-            'user_mc_key': user_mediacloud_key(),
+            'user_mc_key': api_key,
             'snapshot': s,
         }
         jobs.append(job)
@@ -67,8 +75,10 @@ def _add_snapshot_foci_count(topics_id, snapshots):
 def _topic_snapshot_list(topic):
     if access_public_topic(topic['topics_id']):
         local_mc = mc
+        api_key = TOOL_API_KEY
     elif is_user_logged_in():
         local_mc = user_mediacloud_client()
+        api_key = user_mediacloud_key()
     else:
         return {}  # prob something smarter we can do here
     snapshots = local_mc.topicSnapshotList(topic['topics_id'])
@@ -80,7 +90,7 @@ def _topic_snapshot_list(topic):
     # seed_query story count
     topic['seed_query_story_count'] = _topic_seed_story_count(topic)
     # add foci_count for display
-    snapshots = _add_snapshot_foci_count(topic['topics_id'], snapshots)
+    snapshots = _add_snapshot_foci_count(api_key, topic['topics_id'], snapshots)
     snapshots = sorted(snapshots, key=lambda d: d['snapshot_date'])
     # extra stuff
     snapshot_status = mc.topicSnapshotGenerateStatus(topic['topics_id'])['job_states']  # need to know if one is running

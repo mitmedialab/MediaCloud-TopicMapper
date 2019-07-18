@@ -51,6 +51,7 @@ class QueryWordsResultsContainer extends React.Component {
           svgDownloadPrefix={`${slugifiedQueryLabel(selectedQuery.label)}-ngram-1`}
           textColor={selectedQuery.color}
           actionsAsLinksUnderneath
+          showTooltips
           hideGoogleWord2Vec
           selectedTerm={internalItemSelected ? internalItemSelected.word : ''}
         />

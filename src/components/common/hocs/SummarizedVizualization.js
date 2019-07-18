@@ -10,7 +10,7 @@ const localMessage = {
   hideDescription: { id: 'summarizedContainer.description.hide', defaultMessage: 'hide details' },
 };
 
-function withSummary(titleMessage, introMessage, detailedMessage, wide) {
+function withSummary(titleMessage, introMessage, detailedMessage, wide, useAltButton) {
   return (ChildComponent) => {
     class SummarizedVisualization extends React.Component {
       state = {
@@ -49,6 +49,9 @@ function withSummary(titleMessage, introMessage, detailedMessage, wide) {
               onClick={handleExplore}
             />
           );
+          if (useAltButton) {
+            detailsExploreContent = <div className="summarized-button">{handleExplore()}</div>; // actionButtonMenu
+          }
         }
 
         if (detailedMessage) { // only toggle extra text if there is any

@@ -99,8 +99,11 @@
 
   &.app-icon-help {
     background-color: rgba(0, 0, 0, 0.08);
+    width: 20px;
+    height: 20px;
+
     svg {
-      margin-top: 8px;
+      margin-top: 6px;
       margin-left: 1px;
       path, circle {
         fill: black;

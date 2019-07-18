@@ -19,8 +19,8 @@ const TopicPreviewContainer = (props) => {
 
     return (
       <Grid>
-        <h1>{currentStepText.title}</h1>
-        <p>{currentStepText.description}</p>
+        <h1 dangerouslySetInnerHTML={{ __html: currentStepText.title }} />
+        <p dangerouslySetInnerHTML={{ __html: currentStepText.description }} />
         { content }
         <br />
         <Row>

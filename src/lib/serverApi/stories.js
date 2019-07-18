@@ -40,3 +40,7 @@ export function storyOutlinks(id, storiesId, params) {
 export function storyRedditAttention(storiesId) {
   return createApiPromise(`/api/stories/${storiesId}/reddit-attention`);
 }
+
+export function storyImages(storiesId) {
+  return createApiPromise(`/api/stories/${storiesId}/images`);
+}

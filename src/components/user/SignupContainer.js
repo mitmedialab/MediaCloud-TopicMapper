@@ -22,6 +22,7 @@ const localMessages = {
   missingFullname: { id: 'user.missingName', defaultMessage: 'You need to enter your full name.' },
   missingPassword: { id: 'user.missingPassword', defaultMessage: 'You need to enter your password.' },
   missingNotes: { id: 'user.missingNotes', defaultMessage: 'You have to tell us a little about why you want to use Media Cloud.' },
+  missingConsent: { id: 'user.missingConsent', defaultMessage: 'You must agree to our Terms and Policies' },
   feedback: { id: 'user.signUp.feedback', defaultMessage: 'Successfully signed up.' },
   notesHint: { id: 'user.notes.hint', defaultMessage: 'Tell us a little about what you want to use Media Cloud for' },
   userAlreadyExists: { id: 'user.signUp.error.alreadyExists', defaultMessage: 'Sorry, but a user with that email already exists! Did you <a href="/#/request-password-reset">need to reset your password</a>?' },
@@ -41,7 +42,7 @@ class SignupContainer extends React.Component {
   }
 
   render() {
-    const { handleSubmit, handleSignupSubmission, pristine, submitting, renderTextField } = this.props;
+    const { handleSubmit, handleSignupSubmission, pristine, submitting, renderTextField, renderCheckbox } = this.props;
     const { formatMessage } = this.props.intl;
     return (
       <Grid>
@@ -111,6 +112,16 @@ class SignupContainer extends React.Component {
             </Col>
           </Row>
           <Row>
+            <Col lg={8}>
+              <Field
+                name="has_consented"
+                component={renderCheckbox}
+                fullWidth
+                label={messages.userConsent}
+              />
+            </Col>
+          </Row>
+          <Row>
             <Captcha onChange={() => this.passedCaptcha()} />
           </Row>
           <Row>
@@ -136,6 +147,7 @@ SignupContainer.propTypes = {
   redirect: PropTypes.string,
   handleSubmit: PropTypes.func.isRequired,
   renderTextField: PropTypes.func.isRequired,
+  renderCheckbox: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   // from state
@@ -183,6 +195,9 @@ function validate(values) {
   }
   if (stringsDoNotMatch(values.password, values.confirmPassword)) {
     errors.password = messages.passwordsMismatch;
+  }
+  if (!values.has_consented) {
+    errors.has_consented = localMessages.missingConsent;
   }
   if (emptyString(values.notes)) {
     errors.notes = localMessages.missingNotes;

@@ -10,6 +10,7 @@ import messages from '../../../resources/messages';
 import FavoriteTopicsContainer from './FavoriteTopicsContainer';
 import PersonalTopicsContainer from './PersonalTopicsContainer';
 import PublicTopicsContainer from './PublicTopicsContainer';
+import AdminAllTopicsContainer from './AdminAllTopicsContainer';
 import { getUserRoles, hasPermissions, PERMISSION_ADMIN } from '../../../lib/auth';
 
 const localMessages = {
@@ -44,7 +45,7 @@ class TopicListContainer extends React.Component {
         viewContent = <PublicTopicsContainer onSetFavorited={handleSetFavorited} />;
         break;
       case 3:
-        viewContent = <PersonalTopicsContainer onSetFavorited={handleSetFavorited} showAll />;
+        viewContent = <AdminAllTopicsContainer />;
         break;
       default:
         break;

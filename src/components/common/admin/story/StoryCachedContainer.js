@@ -6,6 +6,7 @@ import { FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { selectStory, fetchStory } from '../../../../actions/storyActions';
 import withAsyncData from '../../hocs/AsyncDataContainer';
 import { ReadItNowButton } from '../../IconButton';
+import HighlightedText from '../HighlightedText';
 
 const localMessages = {
   title: { id: 'story.cached.title', defaultMessage: 'Cached Story' },
@@ -14,7 +15,7 @@ const localMessages = {
   storyText: { id: 'story.cached.text', defaultMessage: 'Story Text' },
 };
 
-const StoryCachedContainer = ({ story }) => (
+const StoryCachedContainer = ({ story, location }) => (
   <Grid>
     <h1>{story.title}</h1>
     <h3><FormattedHTMLMessage {...localMessages.intro} values={{ publishDate: story.publish_date, ref: story.media.url, link: story.media.name, collectDate: story.collect_date }} /></h3>
@@ -24,7 +25,7 @@ const StoryCachedContainer = ({ story }) => (
     <h2><FormattedHTMLMessage {...localMessages.storyText} /></h2>
     <Row>
       <Col lg={12}>
-        {story.story_text}
+        <HighlightedText text={story.story_text} search={location.query.search.split(',')} />
       </Col>
     </Row>
   </Grid>
@@ -36,6 +37,7 @@ StoryCachedContainer.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   helpButton: PropTypes.node,
+  location: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -45,7 +47,7 @@ const mapStateToProps = state => ({
 
 
 const fetchAsyncData = (dispatch, { params }) => {
-  dispatch(selectStory(params.id));
+  dispatch(selectStory({ id: params.id }));
   dispatch(fetchStory(params.id, { text: true }));
 };
 

@@ -21,7 +21,7 @@ const localMessages = {
   nameError: { id: 'topic.form.detail.name.error', defaultMessage: 'Your topic needs a name.' },
   nameInUseError: { id: 'topic.form.detail.name.errorInUse', defaultMessage: 'That topic name is already taken. Please use a different one.' },
   descriptionError: { id: 'topic.form.detail.desciption.error', defaultMessage: 'Your topic need a description.' },
-  seedQueryError: { id: 'topic.form.detail.seedQuery.error', defaultMessage: 'You must give us a seed query to start this topic from.' },
+  seedQueryError: { id: 'topic.form.detail.seedQuery.error', defaultMessage: 'You must give us a seed query to start this topic form.' },
   createTopic: { id: 'topic.form.detail.create', defaultMessage: 'Create' },
   dateError: { id: 'topic.form.detail.date.error', defaultMessage: 'Please provide a date in YYYY-MM-DD format.' },
   startDateWarning: { id: 'explorer.queryBuilder.warning.startDate', defaultMessage: 'Start Date must be before End Date' },
@@ -159,7 +159,7 @@ function validate(values, props) {
     errors.description = localMessages.descriptionError;
   }
   if (emptyString(values.solr_seed_query)) {
-    errors.solr_seed_query = formatMessage(localMessages.seedQueryError);
+    errors.solr_seed_query = localMessages.seedQueryError;
   }
   if (invalidDate(values.start_date) || !isValidSolrDate(values.start_date)) {
     errors.start_date = localMessages.dateError;
@@ -179,23 +179,23 @@ function validate(values, props) {
   return errors;
 }
 
-const asyncValidate = (values, dispatch, props) => {
-  const { formatMessage } = props.intl;
+const asyncValidate = (values, dispatch) => (
   // verify topic name is unique
-  return dispatch(fetchTopicWithNameExists(values.name, values.topics_id))
+  dispatch(fetchTopicWithNameExists(values.name, values.topics_id))
     .then((results) => {
       if (results.nameInUse === true) {
-        const error = { name: formatMessage(localMessages.nameInUseError) }; // object
+        const error = { name: localMessages.nameInUseError }; // object
         throw error;
       }
-    });
-};
+    })
+);
 
 const reduxFormConfig = {
   form: 'topicForm',
   validate,
   asyncValidate,
   asyncBlurFields: ['name'],
+  asyncChangeFields: ['name'],
   // so the create wizard works
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,

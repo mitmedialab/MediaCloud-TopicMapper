@@ -33,7 +33,7 @@ import WordContainer from '../components/topic/words/WordContainer';
 import TopicPermissionsContainer from '../components/topic/permissions/TopicPermissionsContainer';
 import SnapshotBuilder from '../components/topic/snapshots/SnapshotBuilder';
 import InfluentialWordsContainer from '../components/topic/words/InfluentialWordsContainer';
-import TopicStatusDashboardContainer from '../components/topic/list/TopicStatusDashboardContainer';
+import AdminAllTopicsContainer from '../components/topic/list/AdminAllTopicsContainer';
 import TopicSearchContainer from '../components/topic/search/TopicSearchContainer';
 
 const topicRoutes = (
@@ -52,7 +52,7 @@ const topicRoutes = (
 
     <Route path="/topics/search" component={TopicSearchContainer} onEnter={requireAuth} />
 
-    <Route path="/topics/status" component={TopicStatusDashboardContainer} onEnter={requireAuth} />
+    <Route path="/topics/status" component={AdminAllTopicsContainer} onEnter={requireAuth} />
 
     <Route path="/topics/:topicId" component={TopicContainer} onEnter={requireAuth}>
       <Route path="/topics/:topicId/update" component={EditWizardTopicContainer} onEnter={requireAuth}>

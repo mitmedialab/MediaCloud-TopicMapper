@@ -10,19 +10,20 @@ const adminList = createAsyncReducer({
   },
   action: FETCH_ADMIN_TOPIC_LIST,
   handleSuccess: payload => ({
-    ...payload,
-    topics: addLatestStateToTopicsList(payload).map((t) => {
-      // mark the ones that are "exceeded stories" - these are noise
-      const updatedTopic = { ...t };
-      if (t.latestState === 'error') {
-        if (topicMessageSaysTooBig(t.latestState.message)) {
-          updatedTopic.latestState.state = 'error (too big)';
+    topics: addLatestStateToTopicsList(payload)
+      .map((t) => {
+        // mark the ones that are "exceeded stories" - these are noise
+        const updatedTopic = { ...t };
+        if (t.latestState === 'error') {
+          if (topicMessageSaysTooBig(t.latestState.message)) {
+            updatedTopic.latestState.state = 'error (too big)';
+          }
+          const mostRecentJobStatus = t.job_status[0];
+          updatedTopic.inErrorSince = mostRecentJobStatus && mostRecentJobStatus.last_updated ? mostRecentJobStatus.last_updated : t.latestState.state;
         }
-        const mostRecentJobStatus = t.job_status[0];
-        updatedTopic.inErrorSince = mostRecentJobStatus && mostRecentJobStatus.last_updated ? mostRecentJobStatus.last_updated : t.latestState.state;
-      }
-      return updatedTopic;
-    }),
+        return updatedTopic;
+      })
+      .sort((a, b) => b - a),
   }),
 });
 

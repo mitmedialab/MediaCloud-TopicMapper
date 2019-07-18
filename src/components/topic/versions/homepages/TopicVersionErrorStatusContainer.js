@@ -24,6 +24,9 @@ const TopicVersionErrorStatusContainer = ({ topic, goToCreateNewVersion, snapsho
     >
       <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
       <p><FormattedMessage {...localMessages.explanationText} /></p>
+
+      <img alt={intl.formatMessage(messages.error)} src="/static/img/kittens/kittens-error.gif" />
+
       <h2><FormattedMessage {...localMessages.whatNowTitle} /></h2>
       <p><FormattedMessage {...localMessages.whatNowText} /></p>
 

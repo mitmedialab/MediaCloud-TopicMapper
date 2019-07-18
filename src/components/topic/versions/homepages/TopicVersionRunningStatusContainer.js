@@ -27,6 +27,8 @@ const TopicVersionRunningStatusContainer = ({ subtitle, topic, snapshot, intl })
       </h2>
       <p><FormattedMessage {...localMessages.explanationText} values={{ seedStoryCount: intl.formatNumber(topic.seed_query_story_count) }} /></p>
 
+      <img alt={intl.formatMessage(localMessages.title)} src="/static/img/kittens/kittens-running.gif" />
+
       <LinkWithFilters to={`/topics/${topic.topics_id}/versions`}>
         <AppButton label={intl.formatMessage(localMessages.seeOtherVersions)} primary />
       </LinkWithFilters>

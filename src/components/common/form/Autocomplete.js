@@ -15,7 +15,6 @@ const customStyles = {
   },
   input: {
     display: 'flex',
-    padding: 0,
   },
   valueContainer: {
     display: 'flex',

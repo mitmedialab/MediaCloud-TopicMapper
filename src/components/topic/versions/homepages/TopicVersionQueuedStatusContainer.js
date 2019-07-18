@@ -11,7 +11,7 @@ const localMessages = {
   whatNowText: { id: 'version.queued.explanation2.text', defaultMessage: 'Does that query on the right look wrong? Did you not need this version of the topic anymore?  You can cancel it.' },
 };
 
-const TopicVersionQueuedStatusContainer = ({ topic, snapshot }) => (
+const TopicVersionQueuedStatusContainer = ({ topic, snapshot, intl }) => (
   <React.Fragment>
     <TopicVersionStatus
       subtitle={localMessages.title}
@@ -20,6 +20,8 @@ const TopicVersionQueuedStatusContainer = ({ topic, snapshot }) => (
     >
       <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
       <p><FormattedMessage {...localMessages.explanationText} /></p>
+
+      <img alt={intl.formatMessage(localMessages.title)} src="/static/img/kittens/kittens-queued.gif" />
 
       {/*
       <Permissioned onlyTopic={PERMISSION_TOPIC_WRITE}>

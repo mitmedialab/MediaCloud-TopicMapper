@@ -29,6 +29,7 @@ const localMessages = {
     defaultMessage: 'We have collected {total, plural, =0 {No stories} one {One story} other {{formattedTotal} stories}}.',
   },
   yAxisNormalizedTitle: { id: 'chart.storiesOverTime.series.yaxis', defaultMessage: 'percentage of stories' },
+  clickForDetails: { id: 'chart.storiesOverTime.clickForDetails', defaultMessage: 'Click node for details' },
 };
 
 function yAxisTitleByInterval(interval) {
@@ -101,13 +102,19 @@ class AttentionOverTimeChart extends React.Component {
           const pct = formatNumber(this.y * 100, { style: 'decimal', maximumFractionDigits: 2 });
           const seriesName = this.series.name ? formatMessage(localMessages.tooltipSeriesName, { name: this.series.name }) : '';
           const val = normalizeYAxis === true ? formatMessage(localMessages.normalizedTooltipText, { count: pct }) : formatMessage(localMessages.tooltipText, { count: rounded });
+          const clickForDetails = formatMessage(localMessages.clickForDetails);
           const thisDate = getVisDate(new Date(this.category));
           const nextDate = getVisDate(new Date(this.category + this.series.pointInterval));
           const intervalDays = this.series.pointInterval / SECS_PER_DAY;
           if (intervalDays > 1) {
             this.series.tooltipOptions.xDateFormat = `Date Range: ${thisDate} to ${nextDate}`;
           }
-          return (`${seriesName}<br/>${val}`);
+          // const date0 = new Date(this.x);
+          // handle clicking on last point
+          // const point1 = (this.index < (this.series.data.length - 1)) ? this.series.data[this.index + 1] : this;
+          // const date1 = new Date(point1.x);
+          // const dataFunction = () => onDataPointClick(date0, date1, this, this);
+          return (`${seriesName}<br/>${val}<br />${clickForDetails}`);
         },
       },
       yAxis: {

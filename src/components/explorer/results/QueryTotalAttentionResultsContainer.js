@@ -3,15 +3,18 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import withAsyncData from '../../common/hocs/AsyncDataContainer';
+import { fetchQuerySplitStoryCount, fetchDemoQuerySplitStoryCount, resetSentenceCounts } from '../../../actions/explorerActions';
 import withSummary from '../../common/hocs/SummarizedVizualization';
-import SVGAndCSVMenu from '../../common/SVGAndCSVMenu';
+import { DownloadButton } from '../../common/IconButton';
+import AppButton from '../../common/AppButton';
 import ActionMenu from '../../common/ActionMenu';
 import BubbleRowChart from '../../vis/BubbleRowChart';
-import { queryChangedEnoughToUpdate, postToCombinedDownloadUrl, downloadExplorerSvg, ensureSafeResults } from '../../../lib/explorerUtil';
+import { queryChangedEnoughToUpdate, postToDownloadUrl, ensureSafeResults } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
 import { FETCH_INVALID } from '../../../lib/fetchConstants';
+import withQueryResults from './QueryResultsSelector';
 
 const BUBBLE_CHART_DOM_ID = 'bubble-chart-story-total';
 
@@ -23,7 +26,8 @@ const localMessages = {
   helpDetails: { id: 'explorer.storyCount.help.details',
     defaultMessage: '<p>It is harder to determine how much of the media\'s attention your search got. If you want to dig into that, a good place to start is comparing your query to a search for everything from the sources and collections you are searching.  You can do this by searching for * in the same date range and media; that matches every story.</p>',
   },
-  downloadLabel: { id: 'explorer.attention.total.downloadLabel', defaultMessage: 'combined total attention' },
+  downloadOneCsv: { id: 'explorer.attention.total.downloadCsv', defaultMessage: 'Download all story URLs' },
+  downloadCsv: { id: 'explorer.attention.total.downloadCsv', defaultMessage: 'Download all story URLs for {name}' },
   viewNormalized: { id: 'explorer.attention.mode.viewNormalized', defaultMessage: 'View by Story Count (default)' },
   viewRegular: { id: 'explorer.attention.mode.viewRegular', defaultMessage: 'View by Story Percentage' },
 };
@@ -46,8 +50,12 @@ class QueryTotalAttentionResultsContainer extends React.Component {
     this.setState({ view: nextView });
   }
 
+  downloadCsv = (query) => {
+    postToDownloadUrl('/api/explorer/stories/samples.csv', query);
+  }
+
   render() {
-    const { results, queries } = this.props;
+    const { results, queries, selectedQuery } = this.props;
     const { formatNumber, formatMessage } = this.props.intl;
     let content = null;
 
@@ -73,6 +81,40 @@ class QueryTotalAttentionResultsContainer extends React.Component {
           fill: query.color,
         };
       });
+      let downloadOptimizer = null;
+      if (queries.length === 1) {
+        downloadOptimizer = (
+          <AppButton
+            variant="text"
+            className="action-menu-single-download"
+            onClick={() => this.downloadCsv(selectedQuery)}
+            aria-controls="action-menu"
+            aria-haspopup="true"
+            aria-owns="action-menu"
+            label={formatMessage(localMessages.downloadCsv, { name: selectedQuery.label })}
+            size="small"
+          />
+        );
+      } else {
+        downloadOptimizer = (
+          <ActionMenu actionTextMsg={messages.downloadOptions}>
+            {queries.map((q, idx) => (
+              <MenuItem
+                className="action-icon-menu-item"
+                onClick={() => this.downloadCsv(q)}
+                key={idx}
+              >
+                <ListItemText>
+                  <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />
+                </ListItemText>
+                <ListItemIcon>
+                  <DownloadButton />
+                </ListItemIcon>
+              </MenuItem>
+            ))}
+          </ActionMenu>
+        );
+      }
       content = (
         <div>
           <BubbleRowChart
@@ -82,13 +124,7 @@ class QueryTotalAttentionResultsContainer extends React.Component {
             width={650}
           />
           <div className="actions">
-            <ActionMenu actionTextMsg={messages.downloadOptions}>
-              <SVGAndCSVMenu
-                downloadCsv={() => postToCombinedDownloadUrl('/api/explorer/stories/count.csv', safeResults)}
-                downloadSvg={() => downloadExplorerSvg(formatMessage(localMessages.title), 'total-attention', BUBBLE_CHART_DOM_ID)}
-                label={formatMessage(localMessages.downloadLabel)}
-              />
-            </ActionMenu>
+            {downloadOptimizer}
             <ActionMenu actionTextMsg={messages.viewOptions}>
               <MenuItem
                 className="action-icon-menu-item"
@@ -122,6 +158,7 @@ QueryTotalAttentionResultsContainer.propTypes = {
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
+  selectedQuery: PropTypes.object.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   // from dispatch
@@ -136,13 +173,58 @@ const mapStateToProps = state => ({
   results: state.explorer.storySplitCount.results,
 });
 
-const fetchAsyncData = () => null;
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  handleExplore: () => {
+    if (ownProps.queries.length === 1) {
+      const q = ownProps.queries[0];
+      return (
+        <AppButton
+          variant="text"
+          className="action-menu-single-download"
+          onClick={() => postToDownloadUrl('/api/explorer/stories/samples.csv', q)}
+          aria-controls="action-menu"
+          aria-haspopup="true"
+          aria-owns="action-menu"
+          label={ownProps.intl.formatMessage(localMessages.downloadOneCsv, { name: q.label })}
+          size="small"
+        />
+      );
+    }
+    return (
+      <ActionMenu className="border-button" actionTextMsg={messages.downloadOptions}>
+        {ownProps.queries.map(q => (
+          <MenuItem
+            className="action-icon-menu-item"
+            onClick={() => postToDownloadUrl('/api/explorer/stories/samples.csv', q)}
+          >
+            <ListItemText>
+              <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />
+            </ListItemText>
+            <ListItemIcon>
+              <DownloadButton />
+            </ListItemIcon>
+          </MenuItem>
+        ))}
+      </ActionMenu>
+    );
+  },
+});
+
+
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  return Object.assign({}, stateProps, dispatchProps, ownProps, {
+    shouldUpdate: (nextProps) => { // QueryResultsSelector needs to ask the child for internal repainting
+      const { selectedTimePeriod } = stateProps;
+      return nextProps.selectedTimePeriod !== selectedTimePeriod;
+    },
+  });
+}
 
 export default
 injectIntl(
-  connect(mapStateToProps)(
-    withSummary(localMessages.title, localMessages.helpIntro, [localMessages.helpDetails, messages.countsVsPercentageHelp])(
-      withAsyncData(fetchAsyncData)(
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+    withSummary(localMessages.title, localMessages.helpIntro, [localMessages.helpDetails, messages.countsVsPercentageHelp], null, true)(
+      withQueryResults(resetSentenceCounts, fetchQuerySplitStoryCount, fetchDemoQuerySplitStoryCount)(
         QueryTotalAttentionResultsContainer
       )
     )

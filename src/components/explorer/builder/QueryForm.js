@@ -33,7 +33,7 @@ const localMessages = {
   SandC: { id: 'explorer.queryBuilder.sAndC', defaultMessage: 'Media' },
   color: { id: 'explorer.queryBuilder.color', defaultMessage: 'Choose a color' },
   dates: { id: 'explorer.queryBuilder.dates', defaultMessage: 'Enter dates' },
-  datesDesc: { id: 'explorer.queryBuilder.datesDesc', defaultMessage: 'Our database goes back to 2011, however the start date for different sources and collections can vary. Click on a source or collecton to learn more about when we added it.' },
+  datesDesc: { id: 'explorer.queryBuilder.datesDesc', defaultMessage: 'Enter your inclusive date range. Our database goes back to 2011, however the start date for different sources and collections can vary. Click on a source or collecton to learn more about when we added it.' },
   dateTo: { id: 'explorer.queryBuilder.dateTo', defaultMessage: 'to' },
   queryHelpTitle: { id: 'explorer.queryBuilder.queryHelp.title', defaultMessage: 'Building Query Strings' },
   queryHelpContent: { id: 'explorer.queryBuilder.queryHelp.content', defaultMessage: '<p>You can write boolean queries to search against out database. To search for a single word, just enter that word:</p><code>gender</code><p>You can also use boolean and phrase searches like this:</p><code>"gender equality" OR "gender equity"</code>' },
@@ -64,7 +64,7 @@ class QueryForm extends React.Component {
   evalAllQueriesForValidMedia = () => {
     const { queries, mediaUpdates } = this.props;
     const anyQueriesNoMedia = this.getAllActiveQueries(queries).filter(q => (q.uid !== mediaUpdates.uid) && q.media && q.media.length === 0).length; // if any query is missing media
-    const thisCurrentQueryFormNoMedia = mediaUpdates && (mediaUpdates.media === undefined || mediaUpdates.media.length === 0) && mediaUpdates.sources.length === 0 && mediaUpdates.collections.length === 0;
+    const thisCurrentQueryFormNoMedia = mediaUpdates && (mediaUpdates.media === undefined || mediaUpdates.media.length === 0) && (mediaUpdates.sources === undefined || mediaUpdates.sources.length === 0) && (mediaUpdates.collections === undefined || mediaUpdates.collections.length === 0);
     return anyQueriesNoMedia || thisCurrentQueryFormNoMedia;
   }
 
@@ -79,15 +79,26 @@ class QueryForm extends React.Component {
     if (initialValues.collections && initialValues.collections.length && initialValues.collections[0].tags_id === ALL_MEDIA) {
       cleanedInitialValues.media = [{ id: ALL_MEDIA, label: formatMessage(messages.allMedia) }];
     } else {
-      cleanedInitialValues.media = [ // merge intial sources and collections into one list for display with `renderFields`
-        ...initialValues.sources,
-        ...initialValues.collections,
-      ];
+      cleanedInitialValues.media = [];
+      if (initialValues.collections && initialValues.collections.length) {
+        cleanedInitialValues.media.concat( // merge intial sources and collections into one list for display with `renderFields`
+          ...initialValues.collections,
+        );
+      }
+      if (initialValues.sources && initialValues.sources.length) {
+        cleanedInitialValues.media.concat( // merge intial sources and collections into one list for display with `renderFields`
+          ...initialValues.sources,
+        );
+      }
     }
-    selected.media = [ // merge sources and collections into one list for display with `renderFields`
-      ...selected.sources,
-      ...selected.collections,
-    ];
+    selected.media = [];
+    if (selected.collections && selected.collections.length) {
+      selected.media = selected.media.concat(selected.collections);
+    }
+    if (selected.sources && selected.sources.length) {
+      selected.media = selected.media.concat(selected.sources);
+    } // merge into one list with `renderFields`
+
     const currentQ = selected.q;
     let mediaPicker = null;
     let mediaLabel = formatMessage(localMessages.SandC);

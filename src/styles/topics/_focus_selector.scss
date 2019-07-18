@@ -3,6 +3,8 @@
 .focus-selector-wrapper {
   position: relative;
   color: $white !important;
+  float: left;
+  width: 90%;
 
   .focus-selector {
       .selected-focus-details {
@@ -17,3 +19,18 @@
   }
   
 }
+
+.filter-selector.row {
+    .icon-button {
+      margin-top: 20px;
+    }
+    span.helpful {
+      .icon-button {
+        float: right;
+      }
+      button {
+        background-color: $material-grey200;
+        float: right; 
+      }
+    }
+  }

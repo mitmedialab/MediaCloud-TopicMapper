@@ -15,6 +15,7 @@ const localMessages = {
   emailError: { id: 'user.update.url.error', defaultMessage: 'You must have an email for this user.' },
   maxStoriesLabel: { id: 'user.update.maxStories', defaultMessage: 'Max Stories' },
   weeklyQuotaLabel: { id: 'user.update.quota', defaultMessage: 'Weekly Quota' },
+  hasConsented: { id: 'user.update.consented', defaultMessage: 'Has Consented' },
 };
 
 const UserDetailsForm = (props) => {
@@ -111,6 +112,16 @@ const UserDetailsForm = (props) => {
               component={renderTextField}
               fullWidth
               label={localMessages.isActiveLabel}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={6}>
+            <Field
+              name="has_consented"
+              component={renderCheckbox}
+              fullWidth
+              label={messages.user3rdPersonConsent}
             />
           </Col>
         </Row>

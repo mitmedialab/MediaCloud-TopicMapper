@@ -33,95 +33,103 @@ const localMessages = {
   createWithoutGenerating: { id: 'topic.create.withoutGenerating', defaultMessage: 'Create Without Generating' },
 };
 
-const TopicConfirmContainer = (props) => {
-  const { formValues, onStepChange, handleSubmit, pristine, selectedSnapshot, storyCount, submitting, currentStepText, mode, topicInfo, user, handleUpdateTopic, handleCreateTopic } = props;
-  const { formatMessage } = props.intl;
-  let sourcesAndCollections = [];
-  sourcesAndCollections = formValues.sourcesAndCollections.filter(s => s.media_id).map(s => s.media_id);
-  sourcesAndCollections.concat(formValues.sourcesAndCollections.filter(s => s.tags_id).map(s => s.tags_id));
-  let previousVersion = null;
-  if (mode === TOPIC_FORM_MODE_EDIT) {
-    previousVersion = (
-      <React.Fragment>
-        <Col lg={5}>
-          <SeedQuerySummary topic={topicInfo} snapshot={selectedSnapshot} faded />
-        </Col>
-        <Col lg={2}>
-          <span style={{ display: 'block', fontSize: '56px', marginTop: '120px', textAlign: 'center' }}>➡</span>
-        </Col>
-      </React.Fragment>
-    );
+class TopicConfirmContainer extends React.Component {
+  state = {
+    submitted: false, // use this to make sure we don't flash the submit again before forwarding
   }
-  const topicNewVersionContent = (
-    <SeedQuerySummary topic={formValues} seedQueryCount={storyCount} />
-  );
-  const finishStep = (formMode, startSpidering, values) => {
+
+  finishStep = (formMode, startSpidering, values) => {
+    const { storyCount, user, handleUpdateTopic, handleCreateTopic } = this.props;
+    this.setState({ submitted: true });
     const updatedValues = { ...values, startSpidering };
     if (formMode === TOPIC_FORM_MODE_EDIT) {
-      handleUpdateTopic(storyCount, user, updatedValues);
-    } else {
-      handleCreateTopic(storyCount, user, updatedValues);
+      return handleUpdateTopic(storyCount, user, updatedValues);
     }
+    return handleCreateTopic(storyCount, user, updatedValues);
   };
-  if (submitting) {
-    return (
-      <Grid className="topic-container">
-        <Row>
-          {previousVersion}
-          <Col lg={6}>
-            <h2>{currentStepText.savingTitle}</h2>
-            <p>{currentStepText.savingDesc}</p>
-            <LoadingSpinner />
-            {topicNewVersionContent}
+
+  render() {
+    const { formValues, onStepChange, handleSubmit, pristine, selectedSnapshot, storyCount, submitting, currentStepText, mode, topicInfo } = this.props;
+    const { formatMessage } = this.props.intl;
+    let sourcesAndCollections = [];
+    sourcesAndCollections = formValues.sourcesAndCollections.filter(s => s.media_id).map(s => s.media_id);
+    sourcesAndCollections.concat(formValues.sourcesAndCollections.filter(s => s.tags_id).map(s => s.tags_id));
+    let previousVersion = null;
+    if (mode === TOPIC_FORM_MODE_EDIT) {
+      previousVersion = (
+        <React.Fragment>
+          <Col lg={5}>
+            <SeedQuerySummary topic={topicInfo} snapshot={selectedSnapshot} faded />
           </Col>
-        </Row>
-      </Grid>
+          <Col lg={2}>
+            <span style={{ display: 'block', fontSize: '56px', marginTop: '120px', textAlign: 'center' }}>➡</span>
+          </Col>
+        </React.Fragment>
+      );
+    }
+    const topicNewVersionContent = (
+      <SeedQuerySummary topic={formValues} seedQueryCount={storyCount} />
+    );
+    if (submitting || this.state.submitted) {
+      return (
+        <Grid className="topic-container">
+          <Row>
+            {previousVersion}
+            <Col lg={6}>
+              <h2 dangerouslySetInnerHTML={{ __html: currentStepText.savingTitle }} />
+              <p dangerouslySetInnerHTML={{ __html: currentStepText.savingDesc }} />
+              <LoadingSpinner />
+              {topicNewVersionContent}
+            </Col>
+          </Row>
+        </Grid>
+      );
+    }
+    // haven't submitted yet
+    return (
+      <form className="create-topic" name="topicForm">
+        <Grid className="topic-container">
+          <Row>
+            <Col lg={12}>
+              <h2 dangerouslySetInnerHTML={{ __html: currentStepText.title }} />
+              <WarningNotice><FormattedMessage {...localMessages.state} /></WarningNotice>
+            </Col>
+          </Row>
+          <Row>
+            {previousVersion}
+            <Col lg={5}>
+              {topicNewVersionContent}
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12}>
+              <AppButton label={formatMessage(messages.previous)} onClick={() => onStepChange(mode, 2)} />
+              &nbsp; &nbsp;
+              { // if creating and a admin, they can create an empty one to let them work on subtopics before generating
+                (mode === TOPIC_FORM_MODE_CREATE) && (
+                <Permissioned onlyRole={PERMISSION_ADMIN}>
+                  <AppButton
+                    type="submit"
+                    disabled={pristine || submitting}
+                    label={localMessages.createWithoutGenerating}
+                    onClick={handleSubmit(values => this.finishStep(mode, false, values))}
+                  />
+                  &nbsp; &nbsp;
+                </Permissioned>
+                )}
+              <AppButton
+                disabled={pristine || submitting}
+                label={currentStepText.saveTopic}
+                onClick={handleSubmit(values => this.finishStep(mode, true, values))}
+                primary
+              />
+            </Col>
+          </Row>
+        </Grid>
+      </form>
     );
   }
-  // haven't submitted yet
-  return (
-    <form className="create-topic" name="topicForm">
-      <Grid className="topic-container">
-        <Row>
-          <Col lg={12}>
-            <h2>{currentStepText.title}</h2>
-            <WarningNotice><FormattedMessage {...localMessages.state} /></WarningNotice>
-          </Col>
-        </Row>
-        <Row>
-          {previousVersion}
-          <Col lg={5}>
-            {topicNewVersionContent}
-          </Col>
-        </Row>
-        <Row>
-          <Col lg={12}>
-            <AppButton label={formatMessage(messages.previous)} onClick={() => onStepChange(mode, 2)} />
-            &nbsp; &nbsp;
-            { // if creating and a admin, they can create an empty one to let them work on subtopics before generating
-              (mode === TOPIC_FORM_MODE_CREATE) && (
-              <Permissioned onlyRole={PERMISSION_ADMIN}>
-                <AppButton
-                  type="submit"
-                  disabled={pristine || submitting}
-                  label={localMessages.createWithoutGenerating}
-                  onClick={handleSubmit(values => finishStep(mode, false, values))}
-                />
-                &nbsp; &nbsp;
-              </Permissioned>
-              )}
-            <AppButton
-              disabled={pristine || submitting}
-              label={currentStepText.saveTopic}
-              onClick={handleSubmit(values => finishStep(mode, true, values))}
-              primary
-            />
-          </Col>
-        </Row>
-      </Grid>
-    </form>
-  );
-};
+}
 
 TopicConfirmContainer.propTypes = {
   // from parent

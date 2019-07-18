@@ -4,6 +4,7 @@ import nytThemes from './nytThemes';
 import info from './info';
 import words from './words';
 import reddit from './reddit';
+import images from './images';
 
 const rootReducer = combineReducers({
   reddit,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   nytThemes,
   info,
   words,
+  images,
 });
 
 export default rootReducer;

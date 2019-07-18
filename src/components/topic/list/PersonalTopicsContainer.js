@@ -11,16 +11,12 @@ const localMessages = {
   empty: { id: 'topics.personal.none', defaultMessage: 'You haven\'t created any topics yet. Explore the public topics, or click the "Create a New Topic" button above to make your own.' },
 };
 
-const userIsOwner = (owners, user) => owners.filter(topicUser => topicUser.email === user.email).length > 0;
-
-const topicsUserOwns = (topics, user) => topics.filter(topic => userIsOwner(topic.owners, user));
-
 const PersonalTopicsContainer = (props) => {
-  const { topics, onSetFavorited, onFetchAyncData, user, showAll } = props;
+  const { topics, onSetFavorited, onFetchAyncData } = props;
   return (
     <div className="personal-topics-list">
       <TopicPreviewList
-        topics={(showAll === true) ? topics : topicsUserOwns(topics, user)}
+        topics={topics}
         linkGenerator={t => `/topics/${t.topics_id}/summary`}
         onSetFavorited={(id, isFav) => { onSetFavorited(id, isFav); onFetchAyncData(); }}
         emptyMsg={localMessages.empty}
@@ -32,10 +28,8 @@ const PersonalTopicsContainer = (props) => {
 PersonalTopicsContainer.propTypes = {
   // from parent
   onSetFavorited: PropTypes.func,
-  showAll: PropTypes.bool,
   // from state
   topics: PropTypes.array,
-  user: PropTypes.object.isRequired,
   // from compositional chain
   intl: PropTypes.object.isRequired,
   onFetchAyncData: PropTypes.func.isRequired,

@@ -11,7 +11,7 @@ import messages from '../../../../resources/messages';
 const localMessages = {
   detailsSingular: { id: 'explorer.attention.drillDown.details', defaultMessage: 'Details for {date1}' },
   detailsRange: { id: 'explorer.attention.drillDown.details', defaultMessage: 'Details for {date1} to {date2}' },
-  sampleStories: { id: 'explorer.attention.drillDown.sampleStories', defaultMessage: 'Sample Stories' },
+  sampleSentences: { id: 'explorer.attention.drillDown.sampleSentences', defaultMessage: 'Sample Sentences' },
   topWords: { id: 'explorer.attention.drillDown.topWords', defaultMessage: 'Top Words' },
 };
 
@@ -38,7 +38,7 @@ const QueryAttentionOverTimeDrillDownDataCard = (props) => {
       </Row>
       <Row>
         <Col lg={6}>
-          <h3 style={{ color }}><FormattedMessage {...localMessages.sampleStories} /></h3>
+          <h3 style={{ color }}><FormattedMessage {...localMessages.sampleSentences} /></h3>
           <StorySentencePreview sentences={stories.slice(0, 8)} />
         </Col>
         <Col lg={6}>

@@ -16,7 +16,7 @@ export const fetchStoryNytThemes = createAsyncAction(FETCH_STORY_NYT_THEMES, api
 
 export const SELECT_STORY = 'SELECT_STORY';
 // pass in stories id
-export const selectStory = createAction(SELECT_STORY, id => id);
+export const selectStory = createAction(SELECT_STORY);
 export const RESET_STORY = 'RESET_STORY';
 
 export const resetStory = createAction(RESET_STORY);
@@ -35,3 +35,6 @@ export const updateStory = createAsyncAction(UPDATE_STORY, api.storyUpdate, para
 
 export const FETCH_STORY_REDDIT_ATTENTION = 'FETCH_STORY_REDDIT_ATTENTION';
 export const fetchStoryRedditAttention = createAsyncAction(FETCH_STORY_REDDIT_ATTENTION, api.storyRedditAttention);
+
+export const FETCH_STORY_IMAGES = 'FETCH_STORY_IMAGES';
+export const fetchStoryImages = createAsyncAction(FETCH_STORY_IMAGES, api.storyImages);

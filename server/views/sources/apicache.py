@@ -85,16 +85,16 @@ def split_story_count(user_mc_key, q='*', last_n_days=None):
     if last_n_days is not None:
         start_date = datetime.datetime.today()-datetime.timedelta(last_n_days)
         end_date = YESTERDAY
-        fq = mc.publish_date_query(start_date, end_date)
+        fq = mc.publish_date_query(start_date, end_date, True, True)
     else:
         fq = None
     results = _cached_split_story_counts(q, fq)
     if last_n_days is None:
         if len(results['counts']) > 0:
             # if we are getting ALL stories, make sure bad dates don't give us super old / future ones
-            start_date = max(MC_START_DATE, datetime.datetime.strpdate(results['counts'][0]['date'],
+            start_date = max(MC_START_DATE, datetime.datetime.strptime(results['counts'][0]['date'],
                                                                        mc.SENTENCE_PUBLISH_DATE_FORMAT))
-            end_date = min(YESTERDAY, datetime.datetime.strpdate(results['counts'][-1]['date'],
+            end_date = min(YESTERDAY, datetime.datetime.strptime(results['counts'][-1]['date'],
                                                                  mc.SENTENCE_PUBLISH_DATE_FORMAT))
     results['counts'] = add_missing_dates_to_split_story_counts(results['counts'], start_date, end_date)
     results['total_story_count'] = sum([r['count'] for r in results['counts']])

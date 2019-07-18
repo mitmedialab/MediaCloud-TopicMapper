@@ -15,7 +15,6 @@ import { assetUrl } from '../lib/assetUtil';
 import AppNoticesContainer from './common/header/AppNoticesContainer';
 
 const localMessages = {
-  supportOptions: { id: 'app.supportOptions', defaultMessage: 'Need help? Join our <a href="https://groups.io/g/mediacloud">discussion group</a> or email <a href="mailto:support@mediacloud.org">support@mediacloud.org</a>.' },
   privacyPolicy: { id: 'app.privacyPolicy', defaultMessage: 'Read our privacy policy.' },
   maintenance: { id: 'app.maintenance', defaultMessage: 'Sorry, we have taken our system down right now for maintenance' },
 };
@@ -79,7 +78,7 @@ class AppContainer extends React.Component {
                 <FormattedMessage {...messages.berkmanName} />
               </a>.
               <br />
-              <FormattedHTMLMessage {...localMessages.supportOptions} />
+              <FormattedHTMLMessage {...messages.supportOptions} />
               <br />
               <a href="https://mediacloud.org/privacy-policy"><FormattedHTMLMessage {...localMessages.privacyPolicy} /></a>
               <br />

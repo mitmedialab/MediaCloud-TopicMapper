@@ -23,7 +23,7 @@ const FocusForm1TechniqueContainer = (props) => {
   const { formatMessage } = props.intl;
   return (
     <Grid>
-      <form className="focus-create-setup" name="snapshotFocusForm" onSubmit={handleSubmit(finishStep.bind(this))}>
+      <form className="focus-create-setup" name="snapshotFocus" onSubmit={handleSubmit(finishStep.bind(this))}>
         <Row>
           <Col lg={10} md={10} sm={10}>
             <h1><FormattedMessage {...localMessages.title} /></h1>

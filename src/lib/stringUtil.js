@@ -1,3 +1,4 @@
+import LogicQueryParser from 'logic-query-parser';
 
 // Trim a string to a max length, adding '...' if it is too long
 export function trimToMaxLength(string, maxLength) {
@@ -42,4 +43,29 @@ export function intlIfObject(formatter, value) {
     return formatter(value);
   }
   return value; // it is some kind of null, so return it as is for caller to deal with (ie. render empty or cause error)
+}
+
+function extractStringsFromParseTree(node) {
+  let words = [];
+  if (node.lexeme.type === 'string') {
+    const str = node.lexeme.value.replace('*', ''); // remove any wildcards
+    words = [str];
+  } else {
+    if (node.left) {
+      words = words.concat(extractStringsFromParseTree(node.left));
+    }
+    if (node.right) {
+      words = words.concat(extractStringsFromParseTree(node.right));
+    }
+  }
+  return words;
+}
+
+export function extractWordsFromQuery(searchString) {
+  if (searchString) {
+    const binaryTree = LogicQueryParser.parse(searchString);
+    const strings = extractStringsFromParseTree(binaryTree);
+    return strings.join(',');
+  }
+  return null;
 }

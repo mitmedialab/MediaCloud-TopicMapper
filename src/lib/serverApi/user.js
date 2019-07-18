@@ -29,7 +29,7 @@ export function resetPassword(params) {
 }
 
 export function signupUser(params) {
-  const acceptedParams = acceptParams(params, ['email', 'password', 'fullName', 'notes']);
+  const acceptedParams = acceptParams(params, ['email', 'password', 'fullName', 'notes', 'has_consented']);
   return createPostingApiPromise('/api/user/signup', acceptedParams);
 }
 
@@ -50,6 +50,6 @@ export function deleteAccount(email) {
 }
 
 export function updateProfile(profile) {
-  const acceptedParams = acceptParams(profile, ['full_name', 'notes']);
+  const acceptedParams = acceptParams(profile, ['full_name', 'notes', 'has_consented']);
   return createPostingApiPromise('/api/user/update', acceptedParams);
 }

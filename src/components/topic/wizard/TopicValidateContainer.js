@@ -24,7 +24,7 @@ const localMessages = {
   usefulStory: { id: 'topic.modify.validate.randomStory', defaultMessage: 'Is this Relevant?' },
   prev: { id: 'topic.modify.warning.prev', defaultMessage: 'back to preview' },
   next: { id: 'topic.modify.warning.next', defaultMessage: 'review and confirm' },
-  warningIgnore: { id: 'topic.modify.warning.warningIgnore', defaultMessage: 'Ignore and {mode} Topic Anway' },
+  warningIgnore: { id: 'topic.modify.warning.warningIgnore', defaultMessage: 'Ignore and {mode} Topic Anyway' },
   warningOk: { id: 'topic.modify.warning.warningOk', defaultMessage: 'I\'ll edit my seed query' },
 };
 

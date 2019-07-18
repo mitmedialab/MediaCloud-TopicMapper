@@ -118,7 +118,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   handleStorySelection: (query, story) => {
     // we should select and fetch since that's the pattern, even if we have the story info
-    dispatch(selectStory(story.stories_id));
+    dispatch(selectStory({ id: story.stories_id, search: query.q }));
     dispatch(fetchStory(story.stories_id));
   },
 });

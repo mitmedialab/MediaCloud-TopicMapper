@@ -8,11 +8,14 @@ const localMessages = {
   title: { id: 'topic.jobs.list', defaultMessage: 'Detailed Job List (Admin only)' },
   versionNumber: { id: 'topic.jobs.versionNumber', defaultMessage: 'Version' },
   id: { id: 'topic.jobs.id', defaultMessage: 'Id' },
+  class: { id: 'topic.jobs.class', defaultMessage: 'Class' },
   status: { id: 'topic.jobs.status', defaultMessage: 'State' },
   noJobs: { id: 'topic.jobs.none', defaultMessage: 'No jobs yet.' },
   lastUpdated: { id: 'topic.jobs.lastUpdated', defaultMessage: 'Last Updated' },
   message: { id: 'topic.jobs.message', defaultMessage: 'Message' },
 };
+
+function classNameFromPackage(packagePath) { return (packagePath) ? packagePath.split('::').pop() : '?'; }
 
 const JobList = ({ jobs, highlightSnapshotId }) => (
   <React.Fragment>
@@ -24,6 +27,7 @@ const JobList = ({ jobs, highlightSnapshotId }) => (
           <tr>
             <th><FormattedMessage {...localMessages.versionNumber} /></th>
             <th><FormattedMessage {...localMessages.id} /></th>
+            <th><FormattedMessage {...localMessages.class} /></th>
             <th><FormattedMessage {...localMessages.status} /></th>
             <th><FormattedMessage {...localMessages.lastUpdated} /></th>
             <th><FormattedMessage {...localMessages.message} /></th>
@@ -39,6 +43,7 @@ const JobList = ({ jobs, highlightSnapshotId }) => (
               >
                 <td>{job.versionNumber}</td>
                 <td>{job.job_states_id}</td>
+                <td>{classNameFromPackage(job.class)}</td>
                 <td><span className={(job.state === 'error') ? 'warning' : ''}>{job.state}</span></td>
                 <td>
                   <FormattedDate value={postgresDateToMoment(job.last_updated, false)} />

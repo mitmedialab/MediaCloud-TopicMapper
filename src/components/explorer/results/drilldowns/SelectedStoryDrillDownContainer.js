@@ -2,18 +2,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import { Row, Col } from 'react-flexbox-grid/lib';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import { CloseButton } from '../../../common/IconButton';
-import AppButton from '../../../common/AppButton';
 import { resetStory } from '../../../../actions/storyActions';
 import DataCard from '../../../common/DataCard';
+import ActionMenu from '../../../common/ActionMenu';
 import StoryEntitiesContainer from '../../../common/story/StoryEntitiesContainer';
 import StoryNytThemesContainer from '../../../common/story/StoryNytThemesContainer';
 import messages from '../../../../resources/messages';
 import { urlToSource } from '../../../../lib/urlUtil';
 import { TAG_SET_NYT_THEMES } from '../../../../lib/tagUtil';
-import { trimToMaxLength } from '../../../../lib/stringUtil';
+import { trimToMaxLength, extractWordsFromQuery } from '../../../../lib/stringUtil';
 import { storyPubDateToTimestamp } from '../../../../lib/dateUtil';
 import Permissioned from '../../../common/Permissioned';
 import { PERMISSION_ADMIN } from '../../../../lib/auth';
@@ -25,7 +26,9 @@ const localMessages = {
   readThisStory: { id: 'drilldown.story.readThisStory', defaultMessage: 'Read This Story' },
   fullDescription: { id: 'explorer.story.fullDescription', defaultMessage: 'Published in {media} on {publishDate} in {language}' },
   published: { id: 'explorer.story.published', defaultMessage: 'Published in {media}' },
-  goToManageStory: { id: 'drilldown.inContext.title', defaultMessage: 'Manage Story...' },
+  adminOptions: { id: 'drilldown.adminOptions.title', defaultMessage: 'Admin Options...' },
+  goToManageStory: { id: 'drilldown.adminOptions.manageStory', defaultMessage: 'Manage Story' },
+  highlightedCachedText: { id: 'drilldown.adminOptions.highlightedCachedText', defaultMessage: 'Cached Text (highlighted)' },
 };
 
 class SelectedStoryDrillDownContainer extends React.Component {
@@ -54,7 +57,7 @@ class SelectedStoryDrillDownContainer extends React.Component {
   }
 
   render() {
-    const { selectedStory, storyInfo, handleClose, handleStoryManageClick } = this.props;
+    const { selectedStory, storyInfo, handleClose } = this.props;
     const { formatDate } = this.props.intl;
 
     let content = null;
@@ -66,10 +69,14 @@ class SelectedStoryDrillDownContainer extends React.Component {
               <Col lg={12}>
                 <div className="actions">
                   <Permissioned onlyRole={PERMISSION_ADMIN}>
-                    <AppButton
-                      onClick={() => handleStoryManageClick(selectedStory)}
-                      label={localMessages.goToManageStory}
-                    />
+                    <ActionMenu actionTextMsg={localMessages.adminOptions}>
+                      <MenuItem onClick={() => window.open(`/#/admin/story/${storyInfo.stories_id}/details`, '_blank')}>
+                        <ListItemText><FormattedMessage {...localMessages.goToManageStory} /></ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={() => window.open(`/#/admin/story/${storyInfo.stories_id}/cached?search=${extractWordsFromQuery(storyInfo.search)}`, '_blank')}>
+                        <ListItemText><FormattedMessage {...localMessages.highlightedCachedText} /></ListItemText>
+                      </MenuItem>
+                    </ActionMenu>
                   </Permissioned>
                   <CloseButton onClick={handleClose} />
                 </div>
@@ -141,7 +148,6 @@ SelectedStoryDrillDownContainer.propTypes = {
   selectedStory: PropTypes.number,
   // from dispatch
   handleClose: PropTypes.func.isRequired,
-  handleStoryManageClick: PropTypes.func.isRequired,
   // from context
   intl: PropTypes.object.isRequired,
 };
@@ -156,9 +162,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   handleClose: () => {
     dispatch(resetStory());
-  },
-  handleStoryManageClick: (storiesId) => {
-    dispatch(push(`admin/story/${storiesId}/details`)); // to admin page
   },
 });
 

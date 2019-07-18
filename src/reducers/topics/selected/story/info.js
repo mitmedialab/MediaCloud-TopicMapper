@@ -27,7 +27,7 @@ const info = createAsyncReducer({
     geocoderVersion: tagWithTagSetsId(payload.story_tags, TAG_SET_GEOCODER_VERSION),
     nytThemesVersion: tagWithTagSetsId(payload.story_tags, TAG_SET_NYT_THEMES_VERSION),
   }),
-  [SELECT_STORY]: payload => ({ id: payload }),
+  [SELECT_STORY]: payload => ({ ...payload }),
 });
 
 export default info;

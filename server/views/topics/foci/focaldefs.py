@@ -12,7 +12,7 @@ NEW_FOCAL_SET_PLACEHOLDER_ID = -1
 
 
 @app.route('/api/topics/<topics_id>/focus-definitions/update-or-create', methods=['POST'])
-@form_fields_required('focalSetDefinitionId', 'focusName', 'focusDescription', 'keywords')
+@form_fields_required('focusName', 'focusDescription', 'keywords')
 @flask_login.login_required
 @api_error_handler
 def topic_focus_definition_update_or_create(topics_id):

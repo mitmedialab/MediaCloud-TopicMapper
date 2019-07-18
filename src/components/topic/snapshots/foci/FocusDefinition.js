@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { DeleteButton, EditButton } from '../../../common/IconButton';
 import AppButton from '../../../common/AppButton';
 import messages from '../../../../resources/messages';
+import { filteredLinkTo } from '../../../util/location';
 
 const localMessages = {
   focusDelete: { id: 'focusDefinition.delete', defaultMessage: 'Delete this Subtopic' },
@@ -37,7 +38,7 @@ class FocusDefinition extends React.Component {
   }
 
   render() {
-    const { focusDefinition, topicId } = this.props;
+    const { focusDefinition, topicId, filters } = this.props;
     const { formatMessage } = this.props.intl;
     const dialogActions = [
       <AppButton
@@ -55,7 +56,7 @@ class FocusDefinition extends React.Component {
         <h3>
           {focusDefinition.name}
           <div className="controls">
-            <EditButton linkTo={`/topics/${topicId}/snapshot/foci/${focusDefinition.focus_definitions_id}/edit`} />
+            <EditButton linkTo={filteredLinkTo(`/topics/${topicId}/snapshot/foci/${focusDefinition.focus_definitions_id}/edit`, filters)} />
             <DeleteButton onClick={this.showDeleteDialog} tooltip={formatMessage(localMessages.focusDelete)} />
           </div>
         </h3>
@@ -92,6 +93,7 @@ FocusDefinition.propTypes = {
   topicId: PropTypes.number.isRequired,
   focusDefinition: PropTypes.object.isRequired,
   onDelete: PropTypes.func,
+  filters: PropTypes.object,
 };
 
 export default

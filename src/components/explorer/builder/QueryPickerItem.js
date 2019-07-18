@@ -118,49 +118,53 @@ class QueryPickerItem extends React.Component {
           />
         );
       }
+      const queryLabel = query.label;
+
+
       const collectionCount = query.collections ? query.collections.length : 0;
       const sourceCount = query.sources ? query.sources.length : 0;
       // const srcDesc = query.media;
       const totalMediaCount = collectionCount + sourceCount;
-      const queryLabel = query.label;
-      let oneSourceLabel = query.sources && query.sources[0] && query.sources[0].name ? query.sources[0].name : '';
-      const oneCollLabelOrNumber = query.collections[0] && query.collections[0].label ? query.collections[0].label : '';
-      const oneCollLabel = collectionCount === 1 ? oneCollLabelOrNumber : '';
-      oneSourceLabel = sourceCount === 1 ? oneSourceLabel : '';
+      if (totalMediaCount > 0) {
+        let oneSourceLabel = query.sources && query.sources[0] && query.sources[0].name ? query.sources[0].name : '';
+        const oneCollLabelOrNumber = query.collections[0] && query.collections[0].label ? query.collections[0].label : '';
+        const oneCollLabel = collectionCount === 1 ? oneCollLabelOrNumber : '';
+        oneSourceLabel = sourceCount === 1 ? oneSourceLabel : '';
 
-      const oneCollStatus = oneCollLabel;
-      subT = (
-        <div>
-          <span className="error"><FormattedMessage {...localMessages.emptyMedia} values={{ totalMediaCount }} /></span>
-          <br />{query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
-        </div>
-      );
+        const oneCollStatus = oneCollLabel;
+        subT = (
+          <div>
+            <span className="error"><FormattedMessage {...localMessages.emptyMedia} values={{ totalMediaCount }} /></span>
+            <br />{query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
+          </div>
+        );
 
-      if (sourceCount === 0 && collectionCount === 1) {
-        subT = (
-          <div className="query-info">
-            {displayLabel ? query.label : ''}
-            {oneCollStatus.length >= QUERY_LABEL_CHARACTER_LIMIT - 1 ? oneCollStatus.slice(0, QUERY_LABEL_CHARACTER_LIMIT).concat('...') : oneCollStatus}<br />
-            {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
-          </div>
-        );
-      } else if (collectionCount === 0 && sourceCount === 1) {
-        subT = (
-          <div className="query-info">
-            {displayLabel ? query.label : ''}
-            {oneSourceLabel.length >= QUERY_LABEL_CHARACTER_LIMIT - 1 ? oneSourceLabel.slice(0, QUERY_LABEL_CHARACTER_LIMIT).concat('...') : oneSourceLabel}<br />
-            {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
-          </div>
-        );
-      } else if (totalMediaCount > 0) {
-        subT = (
-          <div className="query-info">
-            {displayLabel ? query.label : ''}
-            {collectionCount > 0 ? <div><FormattedMessage {...localMessages.collectionsSummary} values={{ collectionCount, label: queryLabel }} /><br /></div> : ''}
-            {sourceCount > 0 ? <div><FormattedMessage {...localMessages.sourcesSummary} values={{ sourceCount, label: queryLabel }} /><br /> </div> : ''}
-            {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
-          </div>
-        );
+        if (sourceCount === 0 && collectionCount === 1) {
+          subT = (
+            <div className="query-info">
+              {displayLabel ? query.label : ''}
+              {oneCollStatus.length >= QUERY_LABEL_CHARACTER_LIMIT - 1 ? oneCollStatus.slice(0, QUERY_LABEL_CHARACTER_LIMIT).concat('...') : oneCollStatus}<br />
+              {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
+            </div>
+          );
+        } else if (collectionCount === 0 && sourceCount === 1) {
+          subT = (
+            <div className="query-info">
+              {displayLabel ? query.label : ''}
+              {oneSourceLabel.length >= QUERY_LABEL_CHARACTER_LIMIT - 1 ? oneSourceLabel.slice(0, QUERY_LABEL_CHARACTER_LIMIT).concat('...') : oneSourceLabel}<br />
+              {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
+            </div>
+          );
+        } else if (totalMediaCount > 0) {
+          subT = (
+            <div className="query-info">
+              {displayLabel ? query.label : ''}
+              {collectionCount > 0 ? <div><FormattedMessage {...localMessages.collectionsSummary} values={{ collectionCount, label: queryLabel }} /><br /></div> : ''}
+              {sourceCount > 0 ? <div><FormattedMessage {...localMessages.sourcesSummary} values={{ sourceCount, label: queryLabel }} /><br /> </div> : ''}
+              {query.startDate ? getShortDate(query.startDate) : ''} to {query.endDate ? getShortDate(query.endDate) : ''}
+            </div>
+          );
+        }
       }
     }
     const extraClassNames = (isSelected) ? 'selected' : '';

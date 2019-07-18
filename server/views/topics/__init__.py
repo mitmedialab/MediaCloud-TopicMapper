@@ -1,8 +1,9 @@
 import logging
 import datetime
+import mediacloud.api
 
 from server import mc
-from server.auth import is_user_logged_in, user_admin_mediacloud_client
+from server.auth import is_user_logged_in
 from server.util.csv import SOURCE_LIST_CSV_METADATA_PROPS
 
 logger = logging.getLogger(__name__)
@@ -59,14 +60,12 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids):
             query_tags_ids = " tags_id_media:({})".format(query_tags_ids)
             query += '(' + query_tags_ids + ')'
         query += ')'
-
-
     return query
 
 
 def concatenate_solr_dates(start_date, end_date):
-    user_mc = user_admin_mediacloud_client()
-    publish_date = user_mc.publish_date_query(datetime.datetime.strptime(start_date, '%Y-%m-%d').date(),
-                                              datetime.datetime.strptime(end_date, '%Y-%m-%d').date())
+    publish_date = mediacloud.api.MediaCloud.publish_date_query(
+        datetime.datetime.strptime(start_date, '%Y-%m-%d').date(),
+        datetime.datetime.strptime(end_date, '%Y-%m-%d').date(), True, True)
 
     return publish_date

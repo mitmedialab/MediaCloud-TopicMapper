@@ -20,16 +20,6 @@
 
     }
 
-    .about-topic {
-      display: inline-block;
-      .app-icon-help {
-        background-color: $topics-primary;
-        path, circle {
-          fill: white;
-        }
-      }
-    }
-
     .jumps {
       font-weight: bold;
       margin-left: 15px;

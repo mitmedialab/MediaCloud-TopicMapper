@@ -31,4 +31,26 @@ ul.tab-selector {
       border-bottom: 0px;
     }
   }
+
+  .summary {
+    .action-icon-menu {
+      float: none;
+    }
+    .summarized-button {
+      .action-icon-menu {
+        button {
+          border-radius: 4px;
+          color: $explorer-primary;
+          border: 1px solid rgba(0, 0, 0, 0.23);
+          padding: 5px 16px;
+        }
+      }
+      .action-menu-single-download {
+          border-radius: 4px;
+          color: $explorer-primary;
+          border: 1px solid rgba(0, 0, 0, 0.23);
+          padding: 5px 16px;
+      }
+    }
+  }
 }

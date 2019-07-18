@@ -36,6 +36,7 @@ def topic_admin_list():
     topics = user_mc.topicList(limit=500)['topics']
     # we also want snapshot info
     # topics = _add_snapshots_info_to_topics(topics)
+    topics = sorted(topics, key=lambda t: t['topics_id'], reverse=True)
     return jsonify(topics)
 
 

@@ -41,7 +41,7 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount }) => (
       </Grid>
     </div>
     <SampleSearchContainer />
-    { isLoggedIn && (
+    { !isLoggedIn && (
       <Grid>
         <Row>
           <Col lg={1} />

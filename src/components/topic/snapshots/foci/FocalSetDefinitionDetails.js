@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import { DeleteButton, AddButton } from '../../../common/IconButton';
 import FocusDefinition from './FocusDefinition';
+import { filtersAsUrlParams } from '../../../util/location';
 
 const localMessages = {
   focalSetAdd: { id: 'focalSets.delete', defaultMessage: 'Add another Subtopic to this Set' },
@@ -21,7 +22,7 @@ class FocalSetDefinitionDetails extends React.Component {
   }
 
   render() {
-    const { focalSetDefinition, onFocusDefinitionDelete, topicId } = this.props;
+    const { focalSetDefinition, onFocusDefinitionDelete, topicId, filters } = this.props;
     const { formatMessage } = this.props.intl;
     return (
       <div className="focal-set-definition-summary">
@@ -43,11 +44,14 @@ class FocalSetDefinitionDetails extends React.Component {
             <div className="controls">
               <AddButton
                 tooltip={formatMessage(localMessages.focalSetAdd)}
-                linkTo={`/topics/${topicId}/snapshot/foci/create?focalSetDefId=${focalSetDefinition.focal_set_definitions_id}&focalTechnique=${focalSetDefinition.focal_technique}`}
+                linkTo={`/topics/${topicId}/snapshot/foci/create?focalSetDefId=${focalSetDefinition.focal_set_definitions_id}&focalTechnique=${focalSetDefinition.focal_technique}&${filtersAsUrlParams(filters)}`}
               />
               <FormattedMessage {...localMessages.focalSetAdd} />
               <br />
-              <DeleteButton onClick={this.handleDelete} tooltip={formatMessage(localMessages.focalSetDelete)} />
+              <DeleteButton
+                onClick={this.handleDelete}
+                tooltip={formatMessage(localMessages.focalSetDelete)}
+              />
               <FormattedMessage {...localMessages.focalSetDelete} />
             </div>
           </Col>
@@ -56,9 +60,12 @@ class FocalSetDefinitionDetails extends React.Component {
           <Row key={`fs-${focusDef.focus_definitions_id}`}>
             <Col lg={12}>
               <FocusDefinition
+                focalSetDefinitionName={focalSetDefinition.name}
+                focalSetDefinitionDesc={focalSetDefinition.description}
                 topicId={topicId}
                 focusDefinition={focusDef}
                 onDelete={onFocusDefinitionDelete}
+                filters={filters}
               />
             </Col>
           </Row>
@@ -76,6 +83,7 @@ FocalSetDefinitionDetails.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onFocusDefinitionDelete: PropTypes.func.isRequired,
   topicId: PropTypes.number.isRequired,
+  filters: PropTypes.object.isRequired,
 };
 
 export default

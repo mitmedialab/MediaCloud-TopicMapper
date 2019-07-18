@@ -43,7 +43,7 @@ class JobDate extends React.Component {
                 <p>
                   <FormattedTime value={snapshot.snapshotDate} />
                   &nbsp;
-                  <FormattedDate value={snapshot.snapshotDate} />
+                  <FormattedDate value={snapshot.snapshotDate} month="short" year="numeric" day="numeric" />
                 </p>
               )}
               <code>{trimToMaxLength(snapshot.message || job.message, 600)}</code>

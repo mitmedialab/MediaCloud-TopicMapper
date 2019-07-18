@@ -89,7 +89,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 
 const fetchAsyncData = (dispatch, props) => {
-  dispatch(selectStory(props.storiesId));
+  dispatch(selectStory({ id: props.storiesId }));
   dispatch(fetchStory(props.topicId, props.storiesId));
   dispatch(fetchMetadataValuesForPrimaryLanguage(TAG_SET_PRIMARY_LANGUAGE));
 };

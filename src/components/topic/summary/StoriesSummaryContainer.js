@@ -16,55 +16,31 @@ import ActionMenu from '../../common/ActionMenu';
 import TopicStoryTable from '../TopicStoryTable';
 import messages from '../../../resources/messages';
 import { urlWithFilters, filtersAsUrlParams } from '../../util/location';
-import { HELP_STORIES_CSV_COLUMNS } from '../../../lib/helpConstants';
+import withTopicStoryDownload from '../TopicStoryDownloader';
 
 const NUM_TO_SHOW = 10;
-const TOP_N_DOWNLOAD = 2000;
 
 const localMessages = {
   title: { id: 'topic.summary.stories.title', defaultMessage: 'Top Stories' },
   descriptionIntro: { id: 'topic.summary.stories.help.title', defaultMessage: '<p>The top stories within this topic can suggest the main ways it is talked about.  Sort by different measures to get a better picture of a story\'s influence.</p>' },
-  downloadNoFBData: { id: 'topic.summary.stories.download.noFB', defaultMessage: 'Download CSV with all stories' },
-  downloadTopN: { id: 'topic.summary.stories.download.1k', defaultMessage: `Download CSV with top ${TOP_N_DOWNLOAD} stories (w/Reddit data)` },
-  downloadWithFBData: { id: 'topic.summary.stories.download.withFB', defaultMessage: 'Download CSV with all stories & Facebook collection date (takes longer)' },
-  downloadLinkCsv: { id: 'topic.summary.stories.download.downloadLinkCsv', defaultMessage: 'Download CSV of all story links' },
+  downloadTopStories: { id: 'topic.summary.stories.download.top', defaultMessage: 'Download Top Stories...' },
+  handleStoryLinkCsvDownload: { id: 'topic.summary.stories.download.handleStoryLinkCsvDownload', defaultMessage: 'Download CSV of all story links' },
 };
 
 class StoriesSummaryContainer extends React.Component {
   onChangeSort = (newSort) => {
     const { sortData } = this.props;
     sortData(newSort);
-  };
-
-  downloadCsvNoFBData = () => {
-    const { filters, sort, topicId, notifyOfCsvDownload } = this.props;
-    const url = `/api/topics/${topicId}/stories.csv?${filtersAsUrlParams(filters)}&sort=${sort}`;
-    window.location = url;
-    notifyOfCsvDownload(HELP_STORIES_CSV_COLUMNS);
   }
 
-  downloadCsvTopN = () => {
-    const { filters, sort, topicId, notifyOfCsvDownload } = this.props;
-    const url = `/api/topics/${topicId}/stories.csv?${filtersAsUrlParams(filters)}&sort=${sort}&story_limit=${TOP_N_DOWNLOAD}&reddit_submissions=1`;
-    window.location = url;
-    notifyOfCsvDownload(HELP_STORIES_CSV_COLUMNS);
-  }
-
-  downloadCsvWithFBData = () => {
-    const { filters, sort, topicId, notifyOfCsvDownload } = this.props;
-    const url = `/api/topics/${topicId}/stories.csv?${filtersAsUrlParams(filters)}&sort=${sort}&fbData=1`;
-    window.location = url;
-    notifyOfCsvDownload(HELP_STORIES_CSV_COLUMNS);
-  }
-
-  downloadLinkCsv = () => {
+  handleStoryLinkCsvDownload = () => {
     const { filters, sort, topicId } = this.props;
     const url = `/api/topics/${topicId}/stories/story-links.csv?${filtersAsUrlParams(filters)}&sort=${sort}`;
     window.location = url;
   }
 
   render() {
-    const { stories, sort, topicId, handleFocusSelected, user, showTweetCounts } = this.props;
+    const { stories, sort, topicId, handleFocusSelected, user, showTweetCounts, showTopicStoryDownloadDialog } = this.props;
     const isLoggedIn = hasPermissions(getUserRoles(user), PERMISSION_LOGGED_IN);
     return (
       <React.Fragment>
@@ -82,30 +58,10 @@ class StoriesSummaryContainer extends React.Component {
             <ActionMenu actionTextMsg={messages.downloadOptions}>
               <MenuItem
                 className="action-icon-menu-item"
-                id="topic-summary-top-stories-download"
-                onClick={this.downloadCsvNoFBData}
+                id="topic-summary-top-stories-download-dialog"
+                onClick={() => showTopicStoryDownloadDialog(sort, showTweetCounts)}
               >
-                <ListItemText><FormattedMessage {...localMessages.downloadNoFBData} /></ListItemText>
-                <ListItemIcon>
-                  <DownloadButton />
-                </ListItemIcon>
-              </MenuItem>
-              <MenuItem
-                className="action-icon-menu-item"
-                id="topic-summary-top-N-stories-download"
-                onClick={this.downloadCsvTopN}
-              >
-                <ListItemText><FormattedMessage {...localMessages.downloadTopN} /></ListItemText>
-                <ListItemIcon>
-                  <DownloadButton />
-                </ListItemIcon>
-              </MenuItem>
-              <MenuItem
-                className="action-icon-menu-item"
-                id="topic-summary-top-stories-download-with-facebook"
-                onClick={this.downloadCsvWithFBData}
-              >
-                <ListItemText><FormattedMessage {...localMessages.downloadWithFBData} /></ListItemText>
+                <ListItemText><FormattedMessage {...localMessages.downloadTopStories} /></ListItemText>
                 <ListItemIcon>
                   <DownloadButton />
                 </ListItemIcon>
@@ -113,9 +69,9 @@ class StoriesSummaryContainer extends React.Component {
               <MenuItem
                 className="action-icon-menu-item"
                 id="topic-summary-top-stories-download-links"
-                onClick={this.downloadLinkCsv}
+                onClick={this.handleStoryLinkCsvDownload}
               >
-                <ListItemText><FormattedMessage {...localMessages.downloadLinkCsv} /></ListItemText>
+                <ListItemText><FormattedMessage {...localMessages.handleStoryLinkCsvDownload} /></ListItemText>
                 <ListItemIcon>
                   <DownloadButton />
                 </ListItemIcon>
@@ -132,6 +88,7 @@ StoriesSummaryContainer.propTypes = {
   // from the composition chain
   intl: PropTypes.object.isRequired,
   notifyOfCsvDownload: PropTypes.func.isRequired,
+  showTopicStoryDownloadDialog: PropTypes.func.isRequired,
   // from parent
   topicId: PropTypes.number.isRequired,
   filters: PropTypes.object.isRequired,
@@ -181,7 +138,9 @@ injectIntl(
     withSummary(localMessages.title, localMessages.descriptionIntro, messages.storiesTableHelpText, true)(
       withCsvDownloadNotifyContainer(
         withFilteredAsyncData(fetchAsyncData, ['sort'])( // refetch data if sort property has changed
-          StoriesSummaryContainer
+          withTopicStoryDownload()(
+            StoriesSummaryContainer
+          )
         ),
       )
     )

@@ -64,7 +64,7 @@ export function fetchSystemUsers(params) {
 }
 
 export function updateSystemUser(userId, params) {
-  const acceptedParams = acceptParams(params, ['full_name', 'email', 'active', 'roles[]', 'notes', 'max_topic_stories', 'weekly_requests_limit']);
+  const acceptedParams = acceptParams(params, ['full_name', 'email', 'active', 'roles[]', 'notes', 'max_topic_stories', 'weekly_requests_limit', 'has_consented']);
   return createPostingApiPromise(`/api/admin/users/${userId}/update`, acceptedParams);
 }
 

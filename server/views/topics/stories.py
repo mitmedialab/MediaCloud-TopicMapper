@@ -3,6 +3,7 @@ from multiprocessing import Pool
 import flask_login
 from flask import jsonify, request, Response
 import mediacloud
+import concurrent.futures
 
 import server.util.csv as csv
 import server.util.tags as tag_util
@@ -93,20 +94,25 @@ def topic_stories(topics_id):
 def topic_stories_csv(topics_id):
     user_mc = user_admin_mediacloud_client()
     topic = user_mc.topic(topics_id)
-    story_limit = request.args['story_limit'] if 'story_limit' in request.args else None
-    reddit_submissions = (request.args['reddit_submissions'] == '1') if 'reddit_submissions' in request.args else False
-    include_fb_date = (request.args['fb_data'] == '1') if 'fb_data' in request.args else False
-    return stream_story_list_csv(user_mediacloud_key(), topic['name']+'-stories', topics_id,
+    story_limit = request.args['storyLimit'] if 'storyLimit' in request.args else None
+    story_tags = (request.args['storyTags'] == '1') if 'storyTags' in request.args else False
+    media_metadata = (request.args['mediaMetadata'] == '1') if 'mediaMetadata' in request.args else False
+    reddit_submissions = (request.args['redditData'] == '1') if 'redditData' in request.args else False
+    include_fb_date = (request.args['fbData'] == '1') if 'fbData' in request.args else False
+    return stream_story_list_csv(user_mediacloud_key(), topic,
                                  story_limit=story_limit, reddit_submissions=reddit_submissions,
-                                 include_fb_date=include_fb_date)
+                                 story_tags=story_tags, include_fb_date=include_fb_date,
+                                 media_metadata=media_metadata)
 
 
-def stream_story_list_csv(user_key, filename, topics_id, **kwargs):
-    user_mc = user_mediacloud_client(user_key)
-    topic = user_mc.topic(topics_id)
-    has_twitter_data = topic['ch_monitor_id'] is not None
+def stream_story_list_csv(user_key, topic, **kwargs):
+    filename = topic['name']+'-stories'
+    has_twitter_data = (topic['ch_monitor_id'] is not None) and (topic['ch_monitor_id'] != 0)
 
     # as_attachment = kwargs['as_attachment'] if 'as_attachment' in kwargs else True
+    include_media_metadata = ('media_metadata' in kwargs) and (kwargs['media_metadata'] is True)
+    include_story_tags = ('story_tags' in kwargs) and (kwargs['story_tags'] is True)
+    include_reddit_submissions = ('reddit_submissions' in kwargs) and (kwargs['reddit_submissions'] is True)
     include_fb_date = kwargs['fb_data'] if 'fb_data' in kwargs else False
     all_stories = []
     params = kwargs.copy()
@@ -120,7 +126,7 @@ def stream_story_list_csv(user_key, filename, topics_id, **kwargs):
     }
     params.update(merged_args)
 
-    story_count = apicache.topic_story_count(user_mediacloud_key(), topics_id,
+    story_count = apicache.topic_story_count(user_mediacloud_key(), topic['topics_id'],
                                              snapshots_id=params['snapshots_id'], timespans_id=params['timespans_id'],
                                              foci_id=params['foci_id'], q=params['q'])
     logger.info("Total stories to download: {}".format(story_count['count']))
@@ -135,17 +141,20 @@ def stream_story_list_csv(user_key, filename, topics_id, **kwargs):
 
     # determine which props the user actually wants to download
     props = [
-        'stories_id', 'publish_date', 'title', 'url', 'language', 'ap_syndicated',
-        'themes', 'subtopics',
-        'inlink_count', 'facebook_share_count',
-        # removed media metadata here because it takes too long to query for it
-        # 'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
+        'stories_id', 'publish_date', 'title', 'url', 'language', 'ap_syndicated', 'inlink_count',
+        'facebook_share_count',
     ]
     if has_twitter_data:
         props.append('simple_tweet_count')
+    if include_reddit_submissions:
+        props.append('reddit_submissions')
     if include_fb_date:
         props.append('facebook_collection_date')
+    if include_story_tags:
+        props += ['themes', 'subtopics']
     props += ['outlink_count', 'media_inlink_count', 'media_id', 'media_name', 'media_url']
+    if include_media_metadata:
+        props += ['media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type']
 
     if include_fb_date:
         all_fb_count = []
@@ -153,7 +162,7 @@ def stream_story_list_csv(user_key, filename, topics_id, **kwargs):
         link_id = 0
         local_mc = user_admin_mediacloud_client()
         while more_fb_count:
-            fb_page = local_mc.topicStoryListFacebookData(topics_id, limit=100, link_id=link_id)
+            fb_page = local_mc.topicStoryListFacebookData(topic['topics_id'], limit=100, link_id=link_id)
 
             all_fb_count = all_fb_count + fb_page['counts']
             if 'next' in fb_page['link_ids']:
@@ -172,7 +181,7 @@ def stream_story_list_csv(user_key, filename, topics_id, **kwargs):
     headers = {
         "Content-Disposition": "attachment;filename=" + timestamped_filename
     }
-    return Response(_topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **params),
+    return Response(_topic_story_list_by_page_as_csv_row(user_key, topic['topics_id'], props, **params),
                     mimetype='text/csv; charset=utf-8', headers=headers)
 
 
@@ -217,10 +226,9 @@ def _topic_story_link_list_by_page_as_csv_row(user_key, topics_id, props, **kwar
         'source_stories_id', 'source_publish_date', 'source_title', 'source_url', 'source_language',
         'source_ap_syndicated', 'source_inlink_count', 'source_outlink_count', 'ref_stories_id', 'ref_publish_date',
         'ref_title', 'ref_url', 'ref_language', 'ref_ap_syndicated', 'ref_inlink_count', 'ref_outlink_count'
-        # 'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
+        'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
     ]
     yield ','.join(spec_props) + '\n'  # first send the column names
-    story_count = 0
     link_id = 0
     more_pages = True
     while more_pages:
@@ -256,8 +264,9 @@ def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
     story_count = 0
     link_id = 0
     more_pages = True
+    yet_to_hit_story_limit = True
     has_story_limit = ('story_limit' in kwargs) and (kwargs['story_limit'] is not None)
-    while more_pages and ((has_story_limit is False) or (story_count < int(kwargs['story_limit']))):
+    while more_pages and ((not has_story_limit) or (has_story_limit and yet_to_hit_story_limit)):
         page = _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs)
         if 'next' in page['link_ids']:
             link_id = page['link_ids']['next']
@@ -270,6 +279,7 @@ def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
             row_string = ','.join(cleaned_row) + '\n'
             yield row_string
         story_count += len(page['stories'])
+        yet_to_hit_story_limit = has_story_limit and (story_count < int(kwargs['story_limit']))
 
 
 def _media_info_worker(info):
@@ -278,11 +288,14 @@ def _media_info_worker(info):
 
 # generator you can use to do something for each page of story results
 def _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs):
-    add_media_fields = False  # switch for including all the media metadata in each row (ie. story)
     media_lookup = {}
 
+    include_media_metadata = ('media_metadata' in kwargs) and (kwargs['media_metadata'] is True)
+    include_story_tags = ('story_tags' in kwargs) and (kwargs['story_tags'] is True)
+    include_reddit_submissions = ('reddit_submissions' in kwargs) and (kwargs['reddit_submissions'] is True)
+
     args = kwargs.copy()   # need to make sure invalid params don't make it to API call
-    optional_args = ['story_limit', 'reddit_submissions', 'include_fb_date']
+    optional_args = ['media_metadata', 'story_limit', 'reddit_submissions', 'story_tags', 'include_fb_date']
     for key in optional_args:
         if key in args:
             del args[key]
@@ -290,52 +303,49 @@ def _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs):
 
     if len(story_page['stories']) > 0:  # be careful to not construct malformed query if no story ids
 
-        story_ids = [str(s['stories_id']) for s in story_page['stories']]
-        stories_with_tags = apicache.story_list(user_key, 'stories_id:(' + " ".join(story_ids) + ")", args['limit'])
-
         # build a media lookup table in parallel so it is faster
-        if add_media_fields:
-            pool = Pool(processes=MEDIA_INFO_POOL_SIZE)
-            jobs = [{'user_key': user_key, 'media_id': s['media_id']} for s in story_page['stories']]
-            job_results = pool.map(_media_info_worker, jobs)  # blocks until they are all done
-            media_lookup = {j['media_id']: j for j in job_results}
-            pool.terminate()
+        if include_media_metadata:
+            with concurrent.futures.ProcessPoolExecutor() as executor:
+                jobs = [{'user_key': user_key, 'media_id': s['media_id']} for s in story_page['stories']]
+                job_results = executor.map(_media_info_worker, jobs)  # blocks until they are all done
+                media_lookup = {j['media_id']: j for j in job_results}
+
+        if include_story_tags:
+            story_ids = [str(s['stories_id']) for s in story_page['stories']]
+            stories_with_tags = apicache.story_list(user_key, 'stories_id:(' + " ".join(story_ids) + ")", args['limit'])
 
         # update story info for each story in the page, put it into the [stories] field, send updated page with
         # stories back
         for s in story_page['stories']:
 
             # add in media metadata to the story (from page-level cache built earlier)
-            if add_media_fields:
+            if include_media_metadata:
                 media = media_lookup[s['media_id']]
-
-                # add in foci/subtopic names
+                # add in media metadata items
                 for k, v in media['metadata'].items():
                     s['media_{}'.format(k)] = v['label'] if v is not None else None
 
             # build lookup for id => story for all stories in stories with tags (non topic results)
-            for st in stories_with_tags:
-
-                if s['stories_id'] == st['stories_id']:
-                    s.update(st)
-
-                    foci_names = [f['name'] for f in s['foci']]
-                    s['subtopics'] = ", ".join(foci_names)
-
-                    s['themes'] = ''
-                    story_tag_ids = [t['tags_id'] for t in s['story_tags']]
-                    if tag_util.NYT_LABELER_1_0_0_TAG_ID in story_tag_ids:
-                        story_tag_ids = [t['tag'] for t in s['story_tags']
-                                         if t['tag_sets_id'] == tag_util.NYT_LABELS_TAG_SET_ID]
-                        s['themes'] = ", ".join(story_tag_ids)
+            if include_story_tags:
+                for st in stories_with_tags:
+                    if s['stories_id'] == st['stories_id']:
+                        s.update(st)
+                        foci_names = [f['name'] for f in s['foci']]
+                        s['subtopics'] = ", ".join(foci_names)
+                        s['themes'] = ''
+                        story_tag_ids = [t['tags_id'] for t in s['story_tags']]
+                        if tag_util.NYT_LABELER_1_0_0_TAG_ID in story_tag_ids:
+                            story_tag_ids = [t['tag'] for t in s['story_tags']
+                                             if t['tag_sets_id'] == tag_util.NYT_LABELS_TAG_SET_ID]
+                            s['themes'] = ", ".join(story_tag_ids)
 
         # now add in reddit share data if requested
-        if ('reddit_submissions' in kwargs) and (kwargs['reddit_submissions'] is True):
+        if include_reddit_submissions:
             story_reddit_submissions = pushshift.reddit_url_submission_counts(story_page['stories'])
             for s in story_page['stories']:
                 s['reddit_submissions'] = story_reddit_submissions[s['stories_id']]
 
-    return story_page  # need links too
+    return story_page
 
 
 @app.route('/api/topics/<topics_id>/stories/counts-by-snapshot', methods=['GET'])

@@ -26,8 +26,8 @@ const localMessages = {
   descriptionDetail: { id: 'explorer.attention.lineChart.detail', defaultMessage: '<p>This chart includes one line for each query in your search. Each line charts the number of stories that matched your query per day in the sources and collections you have specified.</p><p>Roll over the line chart to see the stories per day in that period of time. Click the download button in the top right to download the raw counts in a CSV spreadsheet. Click the three lines in the top right of the chart to export the chart as an image file.</p>' },
   withKeywords: { id: 'explorer.attention.mode.withkeywords', defaultMessage: 'View Story Count (default)' },
   withoutKeywords: { id: 'explorer.attention.mode.withoutkeywords', defaultMessage: 'View Normalized Story Percentage' },
-  downloadCsv: { id: 'explorer.attention.downloadCsv', defaultMessage: 'Download { name } stories over time CSV' },
-  downloadAllCsv: { id: 'explorer.attention.downloadAllCsv', defaultMessage: 'Download all stories over time CSV' },
+  downloadCsv: { id: 'explorer.attention.downloadCsv', defaultMessage: 'Download { name } story count over time CSV' },
+  downloadAllCsv: { id: 'explorer.attention.downloadAllCsv', defaultMessage: 'Download all story counts over time CSV' },
 };
 
 const VIEW_NORMALIZED = 'VIEW_NORMALIZED';

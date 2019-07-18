@@ -157,7 +157,9 @@ def api_explorer_combined_story_split_count_csv():
     for idx in range(len(dates)):
         row = {'date': dates[idx]}
         for q in story_count_results:
-            row[q['label']] = q['by_date'][idx]['count']
+            row[q['label'] +'-count'] = q['by_date'][idx]['count']
+            row[q['label'] +'-total_count'] = q['by_date'][idx]['total_count']
+            row[q['label'] +'-ratio'] = q['by_date'][idx]['ratio']
         data.append(row)    
-    props = ['date'] + [q['label'] for q in queries]
+    props = ['date'] + [q['label']+ '-count' for q in queries] + [q['label']+ '-total_count' for q in queries] + [q['label']+ '-ratio' for q in queries]
     return csv.stream_response(data, props, filename)

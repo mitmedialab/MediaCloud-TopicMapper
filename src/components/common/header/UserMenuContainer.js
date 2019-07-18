@@ -5,7 +5,7 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import Menu from '@material-ui/core/Menu';
 import Divider from '@material-ui/core/Divider';
-import { withStyles } from '@material-ui/core/styles';
+// import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import { PERMISSION_LOGGED_IN, logout } from '../../../lib/auth';
@@ -14,6 +14,7 @@ import messages from '../../../resources/messages';
 import { PersonButton } from '../IconButton';
 import { defaultMenuOriginProps } from '../../util/uiUtil';
 
+/*
 const styles = {
   root: {
     borderColor: 'white',
@@ -22,6 +23,7 @@ const styles = {
     color: 'white',
   },
 };
+*/
 
 const localMessages = {
   apiConsole: { id: 'userMenu.apiConsole', defaultMessage: 'Api Console' },
@@ -42,7 +44,7 @@ class UserMenuContainer extends React.Component {
   };
 
   render() {
-    const { user, routeToUrl, classes } = this.props;
+    const { user, routeToUrl } = this.props;
     // gotta show login or logout correctly based on the user state
     let content;
     if (user.isLoggedIn) {
@@ -77,10 +79,6 @@ class UserMenuContainer extends React.Component {
       content = (
         <Button
           variant="outlined"
-          classes={{
-            root: classes.root, // class name, e.g. `classes-nesting-root-x`
-            label: classes.label, // class name, e.g. `classes-nesting-label-x`
-          }}
           className="user-login"
           onClick={() => routeToUrl('/login')}
         >
@@ -101,7 +99,6 @@ UserMenuContainer.propTypes = {
   user: PropTypes.object.isRequired,
   // from HOC chain
   intl: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
   // from dispatch
   routeToUrl: PropTypes.func.isRequired,
 };
@@ -119,8 +116,6 @@ const mapDispatchToProps = dispatch => ({
 export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps)(
-    withStyles(styles)(
-      UserMenuContainer
-    )
+    UserMenuContainer
   )
 );

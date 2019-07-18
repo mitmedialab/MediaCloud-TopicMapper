@@ -23,7 +23,7 @@ const addVersionNumberToJobs = (snapshots, jobStates) => {
 export const addLatestStateToTopic = (t) => {
   let latestState; // this acts as a psuedo-snapshot
   // if no jobs, use original topic state
-  if (t.job_states.length === 0) {
+  if (!t.job_states || t.job_states.length === 0) {
     latestState = {
       state: t.state,
       message: null,

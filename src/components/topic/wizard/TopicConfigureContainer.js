@@ -43,8 +43,8 @@ const TopicConfigureContainer = (props) => {
     <Grid>
       <Row>
         <Col lg={10}>
-          <h1>{currentStepText.title}</h1>
-          <p>{currentStepText.description}</p>
+          <h1 dangerouslySetInnerHTML={{ __html: currentStepText.title }} />
+          <p dangerouslySetInnerHTML={{ __html: currentStepText.description }} />
         </Col>
       </Row>
       <TopicForm

@@ -11,7 +11,7 @@ import FocalSetDefinitionSummary from './FocalSetDefinitionSummary';
 import { topicSnapshotSpider } from '../../../../actions/topicActions';
 import { PERMISSION_ADMIN } from '../../../../lib/auth';
 import Permissioned from '../../../common/Permissioned';
-import TabbedChip from '../../../common/TabbedChip';
+// import TabbedChip from '../../../common/TabbedChip';
 import { updateFeedback } from '../../../../actions/appActions';
 
 const localMessages = {
@@ -23,44 +23,59 @@ const localMessages = {
   worked: { id: 'focalSets.save.worked', defaultMessage: 'We started generating the version' },
 };
 
-const NewVersionFociComparisonContainer = ({ topicId, usingLatest, newDefinitions, latestVersionRunning, currentFocalSets, selectedSnapshot, focalSetDefinitions, handleNewVersionAndSpider }) => {
-  if (needsNewVersion(usingLatest, newDefinitions, latestVersionRunning)) {
-    return (
-      <React.Fragment>
-        <Row>
-          <Col lg={12}>
-            <h2><FormattedMessage {...localMessages.versionDiffTitle} /></h2>
-          </Col>
-        </Row>
-        <Row>
-          <Col lg={5}>
-            <FocalSetSummary focalSets={currentFocalSets} snapshot={selectedSnapshot} faded />
-          </Col>
-          <Col lg={2}>
-            <span style={{ display: 'block', fontSize: '56px', marginTop: '120px', textAlign: 'center' }}>➡</span>
-          </Col>
-          <Col lg={5}>
-            <FocalSetDefinitionSummary focalSetDefs={focalSetDefinitions} snapshot={selectedSnapshot} />
-            <AppButton
-              label={localMessages.createVersionAndStartSpider}
-              onClick={() => handleNewVersionAndSpider(topicId, null)}
-              primary
-            />
-            <TabbedChip warning message={localMessages.applyChanges} />
-            <Permissioned onlyRole={PERMISSION_ADMIN}>
-              <AppButton
-                label={localMessages.updateTopicVersionSubtopics}
-                onClick={() => handleNewVersionAndSpider(topicId, selectedSnapshot.snapshots_id)}
-              />
-              (admin only)
-            </Permissioned>
-          </Col>
-        </Row>
-      </React.Fragment>
-    );
+class NewVersionFociComparisonContainer extends React.Component {
+  state = {
+    submittingVersion: false,
+  };
+
+  onGenerateVersion = (topicId, snapshotId) => {
+    const { handleNewVersionAndSpider } = this.props;
+    this.setState({ submittingVersion: true });
+    handleNewVersionAndSpider(topicId, snapshotId);
   }
-  return '';
-};
+
+  render() {
+    const { topicId, usingLatest, newDefinitions, latestVersionRunning, currentFocalSets, selectedSnapshot, focalSetDefinitions } = this.props;
+    const submitting = this.state.submittingVersion;
+    if (needsNewVersion(usingLatest, newDefinitions, latestVersionRunning)) {
+      return (
+        <React.Fragment>
+          <Row>
+            <Col lg={12}>
+              <h2><FormattedMessage {...localMessages.versionDiffTitle} /></h2>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={5}>
+              <FocalSetSummary focalSets={currentFocalSets} snapshot={selectedSnapshot} faded />
+            </Col>
+            <Col lg={2}>
+              <span style={{ display: 'block', fontSize: '56px', marginTop: '120px', textAlign: 'center' }}>➡</span>
+            </Col>
+            <Col lg={5}>
+              <FocalSetDefinitionSummary focalSetDefs={focalSetDefinitions} snapshot={selectedSnapshot} />
+              <AppButton
+                label={localMessages.createVersionAndStartSpider}
+                onClick={() => this.onGenerateVersion(topicId, null)}
+                primary
+                disabled={submitting}
+              />
+              <Permissioned onlyRole={PERMISSION_ADMIN}>
+                <AppButton
+                  label={localMessages.updateTopicVersionSubtopics}
+                  onClick={() => this.onGenerateVersion(topicId, selectedSnapshot.snapshots_id)}
+                  disabled={submitting}
+                />
+                (admin only)
+              </Permissioned>
+            </Col>
+          </Row>
+        </React.Fragment>
+      );
+    }
+    return '';
+  }
+}
 
 NewVersionFociComparisonContainer.propTypes = {
   // from composition

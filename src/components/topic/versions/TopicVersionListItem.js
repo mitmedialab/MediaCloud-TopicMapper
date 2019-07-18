@@ -7,6 +7,7 @@ import { TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING, TOPIC_SNAPSH
 import LinkWithFilters from '../LinkWithFilters';
 import { trimToMaxLength } from '../../../lib/stringUtil';
 import TabbedChip from '../../common/TabbedChip';
+import TopicVersionReadySummary from './TopicVersionReadySummary';
 
 const localMessages = {
   versionNumber: { id: 'topic.versionNumber', defaultMessage: 'Version {number}' },
@@ -20,7 +21,6 @@ const localMessages = {
   runningDetailsAmostDone: { id: 'topic.state.runningDetailsAmostDone', defaultMessage: 'We are almost done generating this version.' },
   completed: { id: 'topic.state.running', defaultMessage: 'Ready to use' },
   completedAction: { id: 'topic.state.useVersion', defaultMessage: 'Use Version {number}' },
-  completedDetails: { id: 'topic.state.completedDetails', defaultMessage: 'Includes {total} stories ({discoveredPct} discovered) and {fociCount, plural,\n =0 {no subtopics}\n =1 {one subtopic}\n other {# subtopics}}.' },
   adminDetails: { id: 'topic.state.adminDetails', defaultMessage: '<br />Admin info: {jobCount} associated jobs' },
   error: { id: 'topic.state.running', defaultMessage: 'Failed' },
   createdNotQueued: { id: 'topic.state.createdNotQueued', defaultMessage: 'Created' },
@@ -69,7 +69,7 @@ const messageForVersionState = (snapshot) => {
   }
 };
 
-const detailsForVersionState = (snapshot, storyCounts, formatMessage, formatNumber) => {
+const detailsForVersionState = (snapshot, storyCounts) => {
   switch (snapshotOrJobState(snapshot)) {
     case TOPIC_SNAPSHOT_STATE_QUEUED:
       // this is a moment object so we can call this relative date helper
@@ -83,18 +83,7 @@ const detailsForVersionState = (snapshot, storyCounts, formatMessage, formatNumb
       if (!snapshot.isUsable) {
         return <FormattedMessage {...localMessages.runningDetailsAmostDone} />;
       }
-      return (
-        <React.Fragment>
-          <FormattedMessage
-            {...localMessages.completedDetails}
-            values={{
-              total: formatNumber(storyCounts.total),
-              discoveredPct: storyCounts.total === 0 ? '0%' : formatNumber(storyCounts.spidered / storyCounts.total, { style: 'percent', maximumFractionDigits: 0 }),
-              fociCount: snapshot.foci_count,
-            }}
-          />
-        </React.Fragment>
-      );
+      return <TopicVersionReadySummary storyCounts={storyCounts} snapshot={snapshot} />;
     case TOPIC_SNAPSHOT_STATE_RUNNING:
       return <FormattedMessage {...localMessages.runningDetails} />;
     case TOPIC_SNAPSHOT_STATE_ERROR:
@@ -130,7 +119,7 @@ const TopicVersionListItem = ({ version, intl, number, topicId, storyCounts, sel
             <FormattedHTMLMessage {...messageForVersionState(version)} />
             {selected && <TabbedChip message={localMessages.selected} />}
           </h2>
-          {detailsForVersionState(version, storyCounts, intl.formatMessage, intl.formatNumber)}
+          {detailsForVersionState(version, storyCounts)}
           {isAdmin && (
             <FormattedHTMLMessage
               {...localMessages.adminDetails}

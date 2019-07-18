@@ -9,6 +9,7 @@ const localMessages = {
   wordCloudStem: { id: 'wordcloud.rollover.stem', defaultMessage: 'Stem: {stem}' },
   worldCloudTerm: { id: 'wordcloud.rollover.stem', defaultMessage: 'Term: {term}' },
   wordCloudError: { id: 'wordcloud.error', defaultMessage: 'Sorry, but there aren\'t enough words to render a useful word cloud.' },
+  clickForDetails: { id: 'wordcloud.rollover.click', defaultMessage: 'Click word for details' },
 };
 
 const DEFAULT_WORD_COUNT = 100;
@@ -78,10 +79,10 @@ function drawViz(wrapperElement, {
   }
   // create a rollover tooltip helper
   const body = d3.select('body');
-  let tooltipDiv = body.select('.viz-tooltip.word-cloud-tooltip');
+  let tooltipDiv = body.select('.viz-tooltip.ordered-word-cloud-tooltip');
   if (tooltipDiv.empty()) {
     tooltipDiv = body.append('div')
-      .attr('class', 'viz-tooltip word-cloud-tooltip')
+      .attr('class', 'viz-tooltip ordered-word-cloud-tooltip')
       .style('opacity', 0);
   }
   // start layout calculations
@@ -130,10 +131,15 @@ function drawViz(wrapperElement, {
           tooltipHtml += formatMessage(localMessages.worldCloudTerm, { term: d.term });
           tooltipHtml += '<br />';
           tooltipHtml += formatMessage(localMessages.wordCloudCount, { count: formatNumber(d.count) });
+          tooltipHtml += '<br />';
+          tooltipHtml += formatMessage(localMessages.clickForDetails);
+          tooltipDiv.html(tooltipHtml);
+
           tooltipDiv.transition()
             .duration(200)
             .style('opacity', 0.9);
-          tooltipDiv.html(tooltipHtml)
+          tooltipDiv
+            .style('position', 'absolute')
             .style('left', `${d3.event.pageX}px`)
             .style('top', `${d3.event.pageY - 48}px`);
         }

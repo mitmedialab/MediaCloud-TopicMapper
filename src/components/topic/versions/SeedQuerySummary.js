@@ -8,7 +8,7 @@ import { urlToCollection, urlToSource } from '../../../lib/urlUtil';
 const localMessages = {
   title: { id: 'topic.info.title', defaultMessage: 'Version {versionNumber}: Seed Query' },
   newTitle: { id: 'topic.info.newTitle', defaultMessage: 'New Version: Seed Query' },
-  seedQueryCount: { id: 'topic.info.seedQueryCount', defaultMessage: 'Matches {storyCount} stories already in our database.' },
+  seedQueryCount: { id: 'topic.info.seedQueryCount', defaultMessage: 'Matches {storyCount} stories already in our database (including duplicates).' },
   willSpider: { id: 'topic.info.willSpider', defaultMessage: 'Links will be followed to find more stories ({rounds} rounds).' },
   willNotSpider: { id: 'topic.info.willNotSpider', defaultMessage: 'Links will <em>not</em> be followed to find more stories.' },
   dates: { id: 'topic.info.dates', defaultMessage: 'Dates:' },

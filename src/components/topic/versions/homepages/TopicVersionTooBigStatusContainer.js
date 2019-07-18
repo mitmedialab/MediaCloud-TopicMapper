@@ -42,6 +42,8 @@ const TopicVersionTooBigStatusContainer = ({ topic, goToCreateNewVersion, snapsh
       />
     </p>
 
+    <img alt={intl.formatMessage(localMessages.title)} src="/static/img/kittens/kittens-too-big.gif" />
+
     <Permissioned onlyTopic={PERMISSION_TOPIC_WRITE}>
       <h2><FormattedMessage {...localMessages.whatNowTitle} /></h2>
       <p><FormattedHTMLMessage {...localMessages.whatNowText} /></p>

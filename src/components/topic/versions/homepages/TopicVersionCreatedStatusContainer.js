@@ -27,6 +27,8 @@ const TopicVersionCreatedStatusContainer = ({ topic, onSnapshotGenerate, snapsho
       <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
       <p><FormattedMessage {...localMessages.explanationText} /></p>
 
+      <img alt={intl.formatMessage(localMessages.title)} src="/static/img/kittens/kittens-created.gif" />
+
       { /* only admins can add subtopics while the topic is waiting to start generating, and not on old versions  */ }
       <Permissioned onlyTopic={PERMISSION_ADMIN}>
         { snapshot.isLatest && (

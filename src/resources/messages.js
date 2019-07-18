@@ -21,7 +21,8 @@ const messages = {
   userLogout: { id: 'user.logout', defaultMessage: 'Logout' },
   unlimited: { id: 'user.unlimited', defaultMessage: 'Unlimited' },
   userProfile: { id: 'user.profile', defaultMessage: 'Profile' },
-
+  userConsent: { id: 'user.consent', defaultMessage: 'I have read and agree to Media Cloud\'s <a href="https://mediacloud.org/terms-of-use">Terms of Use</a> and <a href="https://mediacloud.org/privacy-policy">Privacy Policy</a>' },
+  user3rdPersonConsent: { id: 'user.consent', defaultMessage: 'User has read and agrees to Media Cloud\'s <a href="https://mediacloud.org/terms-of-use">Terms of Use</a> and <a href="https://mediacloud.org/privacy-policy">Privacy Policy</a>' },
   topicName: { id: 'topic.title.default', defaultMessage: 'Topic' },
   topicSnapshot: { id: 'topic.snapshot', defaultMessage: 'Snapshot' },
   topicTimespan: { id: 'topic.timespan', defaultMessage: 'Timespan' },
@@ -136,11 +137,12 @@ const messages = {
   },
   pubDateTableHelpTitle: { id: 'stories.help.publicationdate.title', defaultMessage: 'How We Guess Story Publication Dates' },
   pubDateTableHelpText: { id: 'stories.help.publicationdate.text',
-    defaultMessage: '<p>Guessing the date of publication for an arbitrary webpage is actually pretty hard. We guess dates from a variety of methods, using our custom built open source Date Guesser library. A things worth noting:<br /><ul><li>If we find a date, but are unsure if the date is reliable or not, it shows up in italics with a question mark after it. This could be situations like content that is embedded that has a date.</li><li>Some content is deemed undateable, like Wikipedia entries or webpages that don\'t look like news articles. We mark those as "Undateable".</li><li>If we are confident about the date, it shows up in normal text.</li><li>Sometimes we fallback to using the date of the first story that linked to it.</li></ul>You can click on a story to learn more about how we guessed the date it was published.</p>',
+    defaultMessage: '<p>Story dates sometimes come from structured sources that are easy to find (like an RSS feed), but other times we have discover and guess dates from unstructured HTML. Note that we assume timezones don\'t exist and just save whatever date we find into our database. Our advice - don\'t use it at any higher granularity than a day.</p><p>Guessing the date of publication for an arbitrary webpage is actually pretty hard. We guess dates from a variety of methods, using <a href="https://github.com/mitmedialab/date_guesser">our custom built open source Date Guesser library</a>. A few things worth noting:<br /><ul><li>If we find a date, but are unsure if the date is reliable or not, it shows up in italics with a question mark after it. This could be situations like content that is embedded that has a date.</li><li>Some content is deemed undateable, like Wikipedia entries or webpages that don\'t look like news articles. We mark those as "Undateable".</li><li>If we are confident about the date, it shows up in normal text.</li><li>Sometimes we fallback to using the date of the first story that linked to it.</li></ul>You can click on a story to learn more about how we guessed the date it was published.</p>',
   },
   heatMapHelpText: { id: 'heatmap.help.text',
     defaultMessage: '<p>The country map shows you an intensity of how often countries are the main focus of stories. This uses our <a href="https://cliff.mediacloud.org" target="_top">CLIFF-CLAVIN</a> geolocation engine to determine which countries each story is about (based on the places mentioned). The darker the color, the more a country was focused on. Note that this is using a sampling of the stories, not all of them. If you download a CSV of the results, the counts you see are also based on this sampling.</p><p>We have been tagging all english language stories with the places they mention since June 1, 2016.</p>',
   },
+  supportOptions: { id: 'app.supportOptions', defaultMessage: 'Need help? Join our <a href="https://support">discussion group</a> or fill out the  <a href="https://mediacloud.org/support-form">support form</a>.' },
   word: { id: 'word', defaultMessage: 'Word' },
   score: { id: 'score', defaultMessage: 'Score' },
   ok: { id: 'ok', defaultMessage: 'OK' },
@@ -258,7 +260,7 @@ const messages = {
   },
 
   entityHelpDetails: { id: 'explorer.entities.help.text',
-    defaultMessage: '<p>We identify people using <a href="https://nlp.stanford.edu/software/CRF-NER.shtml">Stanford\'s Named Entity Recognizer</a>. Every story is passed through out <a href="http://cliff.mediacloud.org" target="_top">CLIFF-CLAVIN engine</a> to extract all the entities.  Each story is then tagged with the people it mentions, the organizations it mentions, and the countries and states it is about.</p>',
+    defaultMessage: '<p>We identify people using <a href="https://nlp.stanford.edu/software/CRF-NER.shtml">Stanford\'s Named Entity Recognizer</a>. Every story is passed through out <a href="http://cliff.mediacloud.org" target="_top">CLIFF-CLAVIN engine</a> to extract all the entities.  Each story is then tagged with the people it mentions, the organizations it mentions, and the countries and states it is about. These results are are based on a sample of up to 5,000 stories.</p>',
   },
   rename: { id: 'explorer.dialog.rename', defaultMessage: 'Rename' },
 

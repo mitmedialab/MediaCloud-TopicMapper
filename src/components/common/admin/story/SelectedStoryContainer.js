@@ -15,7 +15,7 @@ import TagListContainer from './TagListContainer';
 import StoryEntitiesContainer from '../../story/StoryEntitiesContainer';
 import StoryNytThemesContainer from '../../story/StoryNytThemesContainer';
 import messages from '../../../../resources/messages';
-import { urlToTools } from '../../../../lib/urlUtil';
+import { urlToSource } from '../../../../lib/urlUtil';
 import { TAG_SET_NYT_THEMES } from '../../../../lib/tagUtil';
 import { trimToMaxLength } from '../../../../lib/stringUtil';
 import { storyPubDateToTimestamp } from '../../../../lib/dateUtil';
@@ -23,6 +23,7 @@ import Permissioned from '../../Permissioned';
 import { PERMISSION_ADMIN } from '../../../../lib/auth';
 import StatBar from '../../statbar/StatBar';
 import StoryRedditAttention from '../../story/StoryRedditAttention';
+import StoryImages from '../../story/StoryImages';
 
 const localMessages = {
   title: { id: 'admin.story.title', defaultMessage: 'Admin Story Details: ' },
@@ -98,7 +99,7 @@ class SelectedStoryContainer extends React.Component {
                 stats={[
                   { message: messages.sourceName,
                     data: (
-                      <a href={urlToTools(selectedStoryId)} target="_blank" rel="noopener noreferrer">
+                      <a href={urlToSource(selectedStory.media.media_id)} target="_blank" rel="noopener noreferrer">
                         {selectedStory.media_name || selectedStory.media.name}
                       </a>
                     ),
@@ -141,6 +142,11 @@ class SelectedStoryContainer extends React.Component {
             </Col>
             <Col lg={6}>
               <StoryRedditAttention storyId={selectedStory.stories_id} />
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12}>
+              <StoryImages storyId={selectedStory.stories_id} />
             </Col>
           </Row>
         </React.Fragment>

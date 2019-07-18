@@ -21,24 +21,31 @@ ACTIVATION_URL = AUTH_MANAGEMENT_DOMAIN + "/api/user/activate/confirm"
 PASSWORD_RESET_URL = AUTH_MANAGEMENT_DOMAIN + "/api/user/reset-password-request-receive"
 
 
+def merged_user_profile(user_results):
+    if not isinstance(user_results,dict):
+        user_results = user_results.get_properties()
+
+    user_email = user_results['profile']['email']
+    user_results["user"] = mc.userList(search=user_email)['users'][0]
+
+    merged_user_info = user_results['profile'].copy()  # start with x's keys and values
+    merged_user_info.update(user_results["user"])
+    if 'error' in user_results:
+        return json_error_response(user_results['error'], 401)
+    user = auth.create_and_cache_user(merged_user_info)
+    return user
+
+
 @app.route('/api/login', methods=['POST'])
 @form_fields_required('email', 'password')
-@api_error_handler 
+@api_error_handler
 def login_with_password():
     username = request.form["email"]
     logger.debug("login request from %s", username)
     password = request.form["password"]
     # try to log them in
     results = mc.authLogin(username, password)
-    user_email = results['profile']['email']
-    # grab other user info and merge
-    results["user"] = mc.userList(search=user_email)['users'][0]
-
-    merged_user_info = results['profile'].copy()  # start with x's keys and values
-    merged_user_info.update(results["user"])
-    if 'error' in results:
-        return json_error_response(results['error'], 401)
-    user = auth.create_and_cache_user(merged_user_info)
+    user = merged_user_profile(results)
     logger.debug("  succeeded - got a key (user.is_anonymous=%s)", user.is_anonymous)
     auth.login_user(user)
     return jsonify(user.get_properties())
@@ -47,24 +54,27 @@ def login_with_password():
 @app.route('/api/login-with-cookie')
 @api_error_handler
 def login_with_cookie():
-    user = flask_login.current_user
-    if user.is_anonymous:   # no user session
-        logger.debug("  login failed (%s)", user.is_anonymous)
+    cached_user = flask_login.current_user
+    if cached_user.is_anonymous:   # no user session
+        logger.debug("  login failed (%s)", cached_user.is_anonymous)
         return json_error_response("Login failed", 401)
+    user = merged_user_profile(cached_user)
     return jsonify(user.get_properties())
 
 
 @app.route('/api/user/signup', methods=['POST'])
-@form_fields_required('email', 'password', 'fullName', 'notes')
-@api_error_handler 
+@form_fields_required('email', 'password', 'fullName', 'notes', 'has_consented')
+@api_error_handler
 def signup():
     logger.debug("reg request from %s", request.form['email'])
     results = mc.authRegister(request.form['email'],
                               request.form['password'],
                               request.form['fullName'],
                               request.form['notes'],
-                              False,    # removing subscribe_to_newsletter option
-                              ACTIVATION_URL)
+                              False,
+                              ACTIVATION_URL,
+                              bool(request.form['has_consented'] == 'true') if 'has_consented' in request.form else False,
+                              )
     return jsonify(results)
 
 
@@ -188,19 +198,20 @@ def api_user_delete():
 
 
 @app.route('/api/user/update', methods=['POST'])
-@form_fields_required('full_name', 'notes')
+@form_fields_required('full_name', 'notes', 'has_consented')
 @api_error_handler
 @flask_login.login_required
 def api_user_update():
+    has_consented = request.form['has_consented'] == 'true'
     valid_params = {
         'full_name': request.form['full_name'],
         'notes': request.form['notes'],
+        'has_consented': has_consented
     }
-    user = flask_login.current_user
-    results = mc.userUpdate(user.profile['auth_users_id'], **valid_params)  # need to do this with the tool admin client
-    user_mc = user_mediacloud_client()
-    results['profile'] = user_mc.userProfile()
-    return jsonify(results)
+    cached_user = flask_login.current_user
+    results = mc.userUpdate(cached_user.profile['auth_users_id'], **valid_params)  # need to do this with the tool admin client
+    user = merged_user_profile(cached_user)
+    return jsonify(user.get_properties())
 
 
 @app.route('/api/user/download-data')

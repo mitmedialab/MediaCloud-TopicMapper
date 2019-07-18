@@ -3,7 +3,7 @@ from flask import jsonify, request
 import logging
 from mediacloud.error import MCException
 
-from server import app
+from server import app, TOOL_API_KEY
 from server.auth import is_user_logged_in, user_mediacloud_client, user_mediacloud_key, user_admin_mediacloud_client
 from server.util import tags as tag_util, csv as csv
 from server.util.request import api_error_handler
@@ -105,10 +105,10 @@ def story_words_csv(topics_id, stories_id):
 
 
 @app.route('/api/topics/<topics_id>/stories/<stories_id>/inlinks', methods=['GET'])
-@flask_login.login_required
+#@flask_login.login_required
 @api_error_handler
 def story_inlinks(topics_id, stories_id):
-    inlinks = apicache.topic_story_list(user_mediacloud_key(), topics_id,
+    inlinks = apicache.topic_story_list(TOOL_API_KEY, topics_id,
                                         link_to_stories_id=stories_id, limit=50)
     return jsonify(inlinks)
 

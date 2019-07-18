@@ -88,29 +88,27 @@ const TopicControlBar = ({ sideBarContent, topic, intl, selectedSnapshot, latest
                 </LinkWithFilters>
               </div>
             </Permissioned>
-            <Permissioned onlyTopic={PERMISSION_TOPIC_ADMIN}>
-              <div className="controlbar-item">
-                <LinkWithFilters
-                  to={`/topics/${topic.topics_id}/versions`}
-                  title={intl.formatMessage(localMessages.viewVersionLists)}
-                >
-                  <EditButton
-                    label={intl.formatMessage(localMessages.versionList)}
-                    id="modify-topic-permissions"
-                  />
-                  <b><FormattedMessage {...localMessages.versionList} /></b>
-                  {[TOPIC_SNAPSHOT_STATE_ERROR, TOPIC_SNAPSHOT_STATE_CREATED_NOT_QUEUED].includes(latestState.state) && (
-                    <TabbedChip error message={localMessages.latestNeedsAttention} />
-                  )}
-                  {[TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING].includes(latestState.state) && (
-                    <TabbedChip message={localMessages.latestRunning} />
-                  )}
-                  {(selectedSnapshot) && (selectedSnapshot.snapshots_id !== latestSnapshot.snapshots_id) && (selectedSnapshot.snapshots_id !== latestUsableSnapshot.snapshots_id)
-                    && (<TabbedChip warning message={localMessages.newerData} />)
-                  }
-                </LinkWithFilters>
-              </div>
-            </Permissioned>
+            <div className="controlbar-item">
+              <LinkWithFilters
+                to={`/topics/${topic.topics_id}/versions`}
+                title={intl.formatMessage(localMessages.viewVersionLists)}
+              >
+                <EditButton
+                  label={intl.formatMessage(localMessages.versionList)}
+                  id="modify-topic-permissions"
+                />
+                <b><FormattedMessage {...localMessages.versionList} /></b>
+                {[TOPIC_SNAPSHOT_STATE_ERROR, TOPIC_SNAPSHOT_STATE_CREATED_NOT_QUEUED].includes(latestState.state) && (
+                  <TabbedChip error message={localMessages.latestNeedsAttention} />
+                )}
+                {[TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING].includes(latestState.state) && (
+                  <TabbedChip message={localMessages.latestRunning} />
+                )}
+                {(selectedSnapshot) && (selectedSnapshot.snapshots_id !== latestSnapshot.snapshots_id) && (selectedSnapshot.snapshots_id !== latestUsableSnapshot.snapshots_id)
+                  && (<TabbedChip warning message={localMessages.newerData} />)
+                }
+              </LinkWithFilters>
+            </div>
             { filters.timespanId && selectedTimespan && (
               <div className="controlbar-item">
                 <a target="top" href={explorerUrl(topic, filters, selectedTimespan)}>

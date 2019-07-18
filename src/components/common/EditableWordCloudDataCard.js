@@ -313,7 +313,7 @@ class EditableWordCloudDataCard extends React.Component {
 
   render() {
     const { words, explore, onViewModeClick, width, height, maxFontSize, minFontSize, domId, actionsAsLinksUnderneath,
-      subHeaderContent, textAndLinkColor, textColor, linkColor, border, selectedTerm } = this.props;
+      subHeaderContent, textAndLinkColor, textColor, linkColor, border, selectedTerm, showTooltips } = this.props;
     let className = 'editable-word-cloud-datacard';
     let wordClickHandler = onViewModeClick;
     const tColor = textAndLinkColor || textColor || getBrandDarkColor();
@@ -352,6 +352,7 @@ class EditableWordCloudDataCard extends React.Component {
             onWordClick={wordClickHandler}
             domId={uniqueDomId}
             selectedTerm={selectedTerm}
+            showTooltips={showTooltips}
           />
         );
         break;
@@ -367,6 +368,7 @@ class EditableWordCloudDataCard extends React.Component {
             minFontSize={minFontSize}
             onWordClick={wordClickHandler}
             domId={uniqueDomId}
+            showTooltips={showTooltips}
           />
         );
         break;
@@ -446,6 +448,7 @@ EditableWordCloudDataCard.propTypes = {
   includeTopicWord2Vec: PropTypes.bool, // show an option to draw a word2vec map basde on w2v_x / w2v_y from topic-specific model
   hideGoogleWord2Vec: PropTypes.bool, // show an option to draw a word2vec map basde on w2v_x / w2v_y from GoogleNews model
   onViewModeClick: PropTypes.func.isRequired,
+  showTooltips: PropTypes.bool,
   onViewSampleSizeClick: PropTypes.func,
   initSampleSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   actionsAsLinksUnderneath: PropTypes.bool, // show the actions as links under the viz (ie. in a SummarizedVisualization card)

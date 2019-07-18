@@ -11,12 +11,11 @@ import { DownloadButton } from '../../common/IconButton';
 import DataCard from '../../common/DataCard';
 import LinkWithFilters from '../LinkWithFilters';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
-import withCsvDownloadNotifyContainer from '../../common/hocs/CsvDownloadNotifyContainer';
 import withHelp from '../../common/hocs/HelpfulContainer';
 import { pagedAndSortedLocation } from '../../util/location';
 import withPaging from '../../common/hocs/PagedContainer';
-import { HELP_STORIES_CSV_COLUMNS } from '../../../lib/helpConstants';
 import TopicPageTitle from '../TopicPageTitle';
+import withTopicStoryDownload from '../TopicStoryDownloader';
 
 const localMessages = {
   title: { id: 'topic.influentialStories.title', defaultMessage: 'Influential Stories' },
@@ -24,8 +23,8 @@ const localMessages = {
 };
 
 const InfluentialStoriesContainer = (props) => {
-  const { stories, filters, showTweetCounts, sort, topicId, previousButton, nextButton, helpButton,
-    sortData, notifyOfCsvDownload } = props;
+  const { stories, showTweetCounts, sort, topicId, previousButton, nextButton, helpButton,
+    sortData, showTopicStoryDownloadDialog } = props;
   const { formatMessage } = props.intl;
   return (
     <Grid>
@@ -36,11 +35,7 @@ const InfluentialStoriesContainer = (props) => {
             <div className="actions">
               <DownloadButton
                 tooltip={formatMessage(messages.download)}
-                onClick={() => {
-                  const url = `/api/topics/${topicId}/stories.csv?snapshotId=${filters.snapshotId}&timespanId=${filters.timespanId}&sort=${sort}`;
-                  window.location = url;
-                  notifyOfCsvDownload(HELP_STORIES_CSV_COLUMNS);
-                }}
+                onClick={() => showTopicStoryDownloadDialog(sort, showTweetCounts)}
               />
             </div>
             <h2>
@@ -77,6 +72,7 @@ InfluentialStoriesContainer.propTypes = {
   location: PropTypes.object.isRequired,
   notifyOfCsvDownload: PropTypes.func,
   filters: PropTypes.object.isRequired,
+  showTopicStoryDownloadDialog: PropTypes.func.isRequired,
   // from parent
   // from dispatch
   sortData: PropTypes.func.isRequired,
@@ -135,9 +131,9 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps)(
     withHelp(messages.storiesTableHelpTitle, messages.storiesTableHelpText)(
-      withCsvDownloadNotifyContainer(
-        withPaging(handlePageChange)(
-          withFilteredAsyncData(fetchAsyncData, ['sort', 'linkId'])(
+      withPaging(handlePageChange)(
+        withFilteredAsyncData(fetchAsyncData, ['sort', 'linkId'])(
+          withTopicStoryDownload()(
             InfluentialStoriesContainer
           )
         )

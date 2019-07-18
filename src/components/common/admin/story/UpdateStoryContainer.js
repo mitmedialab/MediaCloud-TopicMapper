@@ -93,7 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 const fetchAsyncData = (dispatch, { params }) => {
   dispatch(fetchMetadataValuesForPrimaryLanguage(TAG_SET_PRIMARY_LANGUAGE));
-  dispatch(selectStory(params.id));
+  dispatch(selectStory({ id: params.id }));
   dispatch(fetchStory(params.id));
 };
 

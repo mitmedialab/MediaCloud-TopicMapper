@@ -122,7 +122,7 @@ const FocusForm3DescribeContainer = (props) => {
   }
   return (
     <Grid>
-      <form className="focus-create-details" name="snapshotFocusForm" onSubmit={handleSubmit(finishStep.bind(this))}>
+      <form className="focus-create-details" name="snapshotFocus" onSubmit={handleSubmit(finishStep.bind(this))}>
         <Row>
           <Col lg={10}>
             <h1><FormattedMessage {...localMessages.title} /></h1>

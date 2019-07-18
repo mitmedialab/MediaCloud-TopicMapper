@@ -7,51 +7,31 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppButton from './AppButton';
 import { intlIfObject } from '../../lib/stringUtil';
+import messages from '../../resources/messages';
 
-class ConfirmationDialog extends React.Component {
-  handleOk = () => {
-    const { onOk } = this.props;
-    onOk();
-  }
-
-  handleCancel = () => {
-    const { onCancel } = this.props;
-    onCancel();
-  }
-
-  render() {
-    const { open, title, children, okText } = this.props;
-    const { formatMessage } = this.props.intl;
-    const actions = [
+const ConfirmationDialog = ({ open, title, children, okText, onCancel, onOk, intl }) => (
+  <Dialog
+    className="app-dialog"
+    open={open}
+    onClose={onCancel}
+  >
+    <DialogTitle>{intlIfObject(intl.formatMessage, title)}</DialogTitle>
+    <DialogContent>
+      {children}
+    </DialogContent>
+    <DialogActions>
       <AppButton
-        key={1}
-        label="Cancel"
-        onClick={this.handleCancel}
-      />,
+        label={messages.cancel}
+        onClick={onCancel}
+      />
       <AppButton
-        key={2}
-        label={intlIfObject(formatMessage, okText)}
+        label={intlIfObject(intl.formatMessage, okText)}
         primary
-        onClick={this.handleOk}
-      />,
-    ];
-    return (
-      <div>
-        <Dialog
-          className="app-dialog"
-          open={open}
-          onClose={this.handleCancel}
-        >
-          <DialogTitle>{intlIfObject(formatMessage, title)}</DialogTitle>
-          <DialogContent>
-            {children}
-          </DialogContent>
-          <DialogActions>{actions}</DialogActions>
-        </Dialog>
-      </div>
-    );
-  }
-}
+        onClick={onOk}
+      />
+    </DialogActions>
+  </Dialog>
+);
 
 ConfirmationDialog.propTypes = {
   // from composition

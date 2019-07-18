@@ -34,7 +34,7 @@ export default function user(state = INITIAL_STATE, action) {
       return Object.assign({}, state, {
         fetchStatus: fetchConstants.FETCH_SUCCEEDED,
         isLoggedIn: passwordLoginWorked,
-        isAdmin: action.payload.profile.roles.filter(r => r.role === 'admin').length > 0,
+        isAdmin: passwordLoginWorked ? action.payload.profile.roles.filter(r => r.role === 'admin').length > 0 : false,
         ...action.payload,
       });
     case reject(LOGIN_WITH_PASSWORD):

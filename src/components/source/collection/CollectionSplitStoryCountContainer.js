@@ -30,8 +30,8 @@ const localMessages = {
   introText: { id: 'chart.storiesOverTime.totalCount',
     defaultMessage: 'We have collected {total, plural, =0 {No stories} one {One story} other {{formattedTotal} stories}} from sources in the "{collectionName}" collection in the last year.',
   },
-  regularlyCollectedStories: { id: 'explorer.attention.series.regular', defaultMessage: 'Regularly Collected Stories over the last year (default)' },
-  allStories: { id: 'explorer.attention.series.allstories', defaultMessage: 'All Stories' },
+  regularlyCollectedStories: { id: 'explorer.attention.series.regular', defaultMessage: 'Regularly collected stories over the last year (default)' },
+  allStories: { id: 'explorer.attention.series.allstories', defaultMessage: 'All stories over the last year' },
 };
 
 class CollectionSplitStoryCountContainer extends React.Component {

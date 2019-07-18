@@ -1,6 +1,214 @@
 {
   "releases": [
     {
+      "date": "2019-7-5",
+      "version": "v3.11.2",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Downloading topic story lists works again, with new options",
+          "details": "Now you can specify the size of the download, the sort order, and anny optional metadata you want to add.  The basic download with nothing is faster now too."
+        }
+      ]
+    },
+    {
+      "date": "2019-6-27",
+      "version": "v3.11.1",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics" ],
+          "type": "Fixed",
+          "note": "Web app version numbers fixed"
+        }
+      ]
+    },
+    {
+      "date": "2019-6-27",
+      "version": "v3.11.0",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics" ],
+          "type": "New",
+          "note": "Highlight words matching queries (admin only)"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic created-not-queued now properly rendering"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Kitten GIFS have returned!"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic status dashboard now properly appearing"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Link to manage stories is correct"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Story stats for selected subtopic now appear in Stats tab"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic Queued date now properly formatted"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Document and increase explorer tag count size on Entity tab"
+        }
+      ]
+    },
+    {
+      "date": "2019-6-7",
+      "version": "v3.10.10.1",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "Fixed",
+          "note": "Consent form was broken"
+        }
+      ]
+    },
+    {
+      "date": "2019-6-6",
+      "version": "v3.10.10",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "Fixed",
+          "note": "Inclusive start and end dates",
+          "details": "Across queries, we include the entire day's worth of stories encompassing 12 AM on the start date through 11:59:59 PM on the end date"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "See subtopic information in version list"
+        },
+        {
+          "apps": [ "topics"],
+          "type": "Fixed",
+          "note": "Better error feedback in create topic, including duplicate topic name"
+        },
+        {
+          "apps": [ "topics"],
+          "type": "Fixed",
+          "note": "Better visual feedback that a user has started a topic version"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Copy All works correctly for query terms, media and dates"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Total Attention has a new download all story URLs button"
+        }
+      ]
+    },
+    {
+      "date": "2019-5-24",
+      "version": "v3.10.9",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "Fixed",
+          "note": "Double login was occurring",
+          "details": "We updated the user cache with the new consent information"
+        }
+      ]
+    },
+    {
+      "date": "2019-5-24",
+      "version": "v3.10.8",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "See top images for Topic stories",
+          "details": "We now parse images out of a story you look at in Topic Mapper and show you the top image, with links to all of them (using the <a href=\"https://newspaper.readthedocs.io/en/latest/\">Newspaper3k library</a>)"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Don't show login form when logged in already"
+        },
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "Fixed",
+          "note": "Show error message if your password is wrong"
+        },
+        {
+          "apps": [ "topics"],
+          "type": "Fixed",
+          "note": "More fixes to subtopic editing"
+        }
+      ]
+    },
+    {
+      "date": "2019-5-24",
+      "version": "v3.10.7",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Generate New Version update",
+          "details": "Provide more visual feedback for user after Generate New Version button is clicked"
+        }
+      ]
+    },
+    {
+      "date": "2019-5-23",
+      "version": "v3.10.6",
+      "notes": [
+        {
+          "apps": [ "topics", "explorer", "tools", "sources" ],
+          "type": "New",
+          "note": "Consent Policy"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Cannot rename subtopics",
+          "details": "Renaming subtopics now correctly works and should notify the need to generate another new version."
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Total Attention download",
+          "details": "Now you can download all stories per query"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Attention Download All",
+          "details": "Now you can download all stories in a merged format by date"
+        }
+      ]
+    },
+    {
+      "date": "2019-5-17",
+      "version": "v3.10.5",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "Viewing historical collection attention works again"
+        }
+      ]
+    },
+    {
       "date": "2019-5-15",
       "version": "v3.10.4",
       "notes": [
