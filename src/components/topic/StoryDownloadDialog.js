@@ -136,8 +136,6 @@ const StoryDownloadDialog = (props) => {
               />
             </Col>
           </Row>
-          { // we still need to solve the rate limiting problem before enabling this
-          /*
           <Row>
             <Col lg={12}>
               <Field
@@ -149,7 +147,6 @@ const StoryDownloadDialog = (props) => {
               />
             </Col>
           </Row>
-          */ }
           <Row>
             <Col lg={12}>
               <Field

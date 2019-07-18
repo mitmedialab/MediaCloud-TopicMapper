@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import Pool
 import flask_login
 from flask import jsonify, request, Response
 import mediacloud
@@ -267,7 +266,7 @@ def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
     yet_to_hit_story_limit = True
     has_story_limit = ('story_limit' in kwargs) and (kwargs['story_limit'] is not None)
     while more_pages and ((not has_story_limit) or (has_story_limit and yet_to_hit_story_limit)):
-        page = _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs)
+        page = _topic_story_page(user_key, topics_id, link_id, **kwargs)
         if 'next' in page['link_ids']:
             link_id = page['link_ids']['next']
         else:
@@ -287,7 +286,7 @@ def _media_info_worker(info):
 
 
 # generator you can use to do something for each page of story results
-def _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs):
+def _topic_story_page(user_key, topics_id, link_id, **kwargs):
     media_lookup = {}
 
     include_media_metadata = ('media_metadata' in kwargs) and (kwargs['media_metadata'] is True)
