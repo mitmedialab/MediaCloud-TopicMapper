@@ -3,6 +3,7 @@ import flask_login
 from flask import jsonify, request, Response
 import mediacloud
 import concurrent.futures
+import datetime as dt
 
 import server.util.csv as csv
 import server.util.tags as tag_util
@@ -180,7 +181,7 @@ def stream_story_list_csv(user_key, topic, **kwargs):
     headers = {
         "Content-Disposition": "attachment;filename=" + timestamped_filename
     }
-    return Response(_topic_story_list_by_page_as_csv_row(user_key, topic['topics_id'], props, **params),
+    return Response(_topic_story_list_by_page_as_csv_row(user_key, topic, props, **params),
                     mimetype='text/csv; charset=utf-8', headers=headers)
 
 
@@ -258,7 +259,7 @@ def _topic_story_link_list_by_page_as_csv_row(user_key, topics_id, props, **kwar
 
 
 # generator you can use to handle a long list of stories row by row (one row per story)
-def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
+def _topic_story_list_by_page_as_csv_row(user_key, topic, props, **kwargs):
     yield ','.join(props) + '\n'  # first send the column names
     story_count = 0
     link_id = 0
@@ -266,7 +267,7 @@ def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
     yet_to_hit_story_limit = True
     has_story_limit = ('story_limit' in kwargs) and (kwargs['story_limit'] is not None)
     while more_pages and ((not has_story_limit) or (has_story_limit and yet_to_hit_story_limit)):
-        page = _topic_story_page(user_key, topics_id, link_id, **kwargs)
+        page = _topic_story_page(user_key, topic, link_id, **kwargs)
         if 'next' in page['link_ids']:
             link_id = page['link_ids']['next']
         else:
@@ -286,7 +287,7 @@ def _media_info_worker(info):
 
 
 # generator you can use to do something for each page of story results
-def _topic_story_page(user_key, topics_id, link_id, **kwargs):
+def _topic_story_page(user_key, topic, link_id, **kwargs):
     media_lookup = {}
 
     include_media_metadata = ('media_metadata' in kwargs) and (kwargs['media_metadata'] is True)
@@ -298,7 +299,7 @@ def _topic_story_page(user_key, topics_id, link_id, **kwargs):
     for key in optional_args:
         if key in args:
             del args[key]
-    story_page = apicache.topic_story_list_by_page(user_key, topics_id, link_id=link_id, **args)
+    story_page = apicache.topic_story_list_by_page(user_key, topic['topics_id'], link_id=link_id, **args)
 
     if len(story_page['stories']) > 0:  # be careful to not construct malformed query if no story ids
 
@@ -340,7 +341,10 @@ def _topic_story_page(user_key, topics_id, link_id, **kwargs):
 
         # now add in reddit share data if requested
         if include_reddit_submissions:
-            story_reddit_submissions = pushshift.reddit_url_submission_counts(story_page['stories'])
+            story_reddit_submissions = pushshift.reddit_url_submission_counts(story_page['stories'],
+                                                                              dt.datetime.strptime(topic['start_date'], "%Y-%m-%d"),
+                                                                              dt.datetime.strptime(topic['end_date'], "%Y-%m-%d"))
+
             for s in story_page['stories']:
                 s['reddit_submissions'] = story_reddit_submissions[s['stories_id']]
 

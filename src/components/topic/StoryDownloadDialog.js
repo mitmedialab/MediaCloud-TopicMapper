@@ -18,7 +18,7 @@ const localMessages = {
   storyCount: { id: 'topic.story.download.storyCount', defaultMessage: 'Download' },
   storyTags: { id: 'topic.story.download.storyTags', defaultMessage: 'Include themes and subtopics?' },
   facebookDates: { id: 'topic.story.download.facebookDates', defaultMessage: 'Include the date we collected Facebook share data?' },
-  redditData: { id: 'topic.story.download.redditData', defaultMessage: 'Include live Reddit submission counts?' },
+  redditData: { id: 'topic.story.download.redditData', defaultMessage: 'Include Reddit submission counts (respecting topic dates)?' },
   mediaMetadata: { id: 'topic.story.download.mediaMetadata', defaultMessage: 'Include metadata about the media sources?' },
   options: { id: 'topic.story.download.options', defaultMessage: 'Options' },
   optionsDetails: { id: 'topic.story.download.optionsDetails', defaultMessage: 'Select any additional data you want to innclude in your download (beyond the basic story info).  Each item you add will make the download slower.' },

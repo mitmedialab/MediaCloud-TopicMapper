@@ -30,3 +30,4 @@ config/app.config
 *.ipynb
 src/components/explorer/results/drilldowns/WordInContextDrillDownContainer.js
 .cache-loader
+dump.rdb
