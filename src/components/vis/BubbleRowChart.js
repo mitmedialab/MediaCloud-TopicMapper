@@ -175,7 +175,8 @@ function drawViz(wrapperElement, {
       .attr('x', d => d.x)
       .attr('y', d => (asPercentage ? d.y + options.maxBubbleRadius + 20 : d.y + d.scaledRadius + 20))
       .attr('text-anchor', 'middle')
-      .attr('fill', d => `${d.belowTextColor} !important` || '')
+      .attr('fill', d => `${d.belowTextColor} !important`)
+//    .attr('fill', d => `${d.belowTextColor} !important` || '')
       .attr('font-family', 'Lato, Helvetica, sans')
       .attr('font-size', '10spx')
       .text(d => (d.belowText ? d.belowText : ''));
