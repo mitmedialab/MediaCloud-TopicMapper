@@ -157,7 +157,8 @@ function drawViz(wrapperElement, {
       .attr('x', d => d.x)
       .attr('y', d => d.y + 4)
       .attr('text-anchor', 'middle')
-      .attr('fill', d => `${d.centerTextColor} !important` || '')
+      .attr('fill', d => d.centerTextColor ? `${d.centerTextColor} !important` : '')
+//    .attr('fill', d => `${d.centerTextColor} !important` || '')
       .attr('font-family', 'Lato, Helvetica, sans')
       .attr('font-size', '10px')
       .text(d => (d.centerText ? d.centerText : ''));
@@ -166,7 +167,8 @@ function drawViz(wrapperElement, {
       .attr('x', d => d.x)
       .attr('y', d => (asPercentage ? d.y - options.maxBubbleRadius - 12 : d.y - d.scaledRadius - 12))
       .attr('text-anchor', 'middle')
-      .attr('fill', d => `${d.aboveTextColor} !important` || '')
+      .attr('fill', d => d.aboveTextColor ? `${d.aboveTextColor} !important` : '')
+//    .attr('fill', d => `${d.aboveTextColor} !important` || '')
       .attr('font-family', 'Lato, Helvetica, sans')
       .attr('font-size', '10px')
       .text(d => (d.aboveText ? d.aboveText : ''));
