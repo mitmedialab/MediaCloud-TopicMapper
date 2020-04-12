@@ -1,6 +1,8 @@
 import logging
 import datetime
 import mediacloud.api
+import re
+
 
 from server import mc
 from server.auth import is_user_logged_in
@@ -40,16 +42,57 @@ def access_public_topic(topics_id):
     return False
 
 
-# TODO: Tigrat eto use mediapicker.concate!
+def _parse_media_ids(args):
+    media_ids = []
+    if 'sources[]' in args:
+        src = args['sources[]']
+        if isinstance(src, str):
+            media_ids = src.split(',')
+            media_ids = " ".join([str(m) for m in media_ids])
+            src = re.sub(r'\[*\]*', '', str(src))
+            if len(src) == 0:
+                media_ids = []
+            media_ids = src.split(',') if len(src) > 0 else []
+        else:
+            media_ids = src
+    return media_ids
+
+
+def _parse_collection_ids(args):
+    collection_ids = []
+    if 'collections[]' in args:
+        coll = args['collections[]']
+        if isinstance(coll, str):
+            tags_ids = coll.split(',')
+            tags_ids = " ".join([str(m) for m in tags_ids])
+            coll = re.sub(r'\[*\]*', '', str(tags_ids))
+            if len(coll) == 0:
+                collection_ids = []
+            else:
+                collection_ids = coll.split(',')  # make a list
+        else:
+            collection_ids = coll
+
+    return collection_ids
+
+
+# TODO: Migrate eto use mediapicker.concate!
 # helper for topic preview queries
-def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids):
-    query = '({})'.format(solr_seed_query)
+def concatenate_query_for_solr(solr_seed_query=None, media_ids=None, tags_ids=None):
+    query = ''
+    if solr_seed_query not in [None,'']:
+        query = '({})'.format(solr_seed_query)
 
     if len(media_ids) > 0 or len(tags_ids) > 0:
-        query += " AND ("
+        if solr_seed_query not in [None,'']:
+            query += " AND ("
+        else:
+            query += "(*) AND ("
         # add in the media sources they specified
         if len(media_ids) > 0:
+            media_ids = media_ids.split(',') if isinstance(media_ids, str) else media_ids
             query_media_ids = " ".join(map(str, media_ids))
+            query_media_ids = re.sub(r'\[*\]*', '', str(query_media_ids))
             query_media_ids = " media_id:({})".format(query_media_ids)
             query += '(' + query_media_ids + ')'
 
@@ -57,7 +100,9 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids):
             query += " OR "
         # add in the collections they specified
         if len(tags_ids) > 0:
+            tags_ids = tags_ids.split(',') if isinstance(tags_ids, str) else tags_ids
             query_tags_ids = " ".join(map(str, tags_ids))
+            query_tags_ids = re.sub(r'\[*\]*', '', str(query_tags_ids))
             query_tags_ids = " tags_id_media:({})".format(query_tags_ids)
             query += '(' + query_tags_ids + ')'
         query += ')'

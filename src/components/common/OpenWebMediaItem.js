@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedHTMLMessage } from 'react-intl';
+import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { DeleteButton } from './IconButton';
 import { stringifyTags } from '../../lib/explorerUtil';
 import { emptyString } from '../../lib/formValidators';
+import { urlToSource, urlToCollection } from '../../lib/urlUtil';
 
 const localMessages = {
   searchFull: { id: 'explorer.mediaPicker.search', defaultMessage: 'Custom Collection<br /> &nbsp;Name: "{keyword}" <br /> {values}' },
@@ -12,10 +13,10 @@ const localMessages = {
 
 };
 
-const OpenWebMediaItem = ({ object, onDelete, onClick, link, formatMessage }) => {
+const OpenWebMediaItem = ({ object, onDelete, intl }) => {
   const isSearch = object.customColl === true;
   const isCollection = object.tags_id !== undefined;
-  if (!isSearch && !object.selected) return null;
+  // if (!isSearch && !object.selected) return null;
 
   let typeClass = 'source';
   let objectId = object.media_id;
@@ -28,7 +29,7 @@ const OpenWebMediaItem = ({ object, onDelete, onClick, link, formatMessage }) =>
   } else if (isSearch) {
     typeClass = 'search';
     objectId = 'custom'; //  maybe create a unique id
-    metadataSearch = stringifyTags(object.tags, formatMessage);
+    metadataSearch = stringifyTags(object.tags, intl.formatMessage);
     if (metadataSearch.length > 0 && object.mediaKeyword) {
       metadataSearch = <FormattedHTMLMessage {...localMessages.searchFull} values={{ keyword: object.mediaKeyword, values: metadataSearch }} />;
     } else if (emptyString(object.mediaKeyword) || object.mediaKeyword === '*') {
@@ -38,11 +39,17 @@ const OpenWebMediaItem = ({ object, onDelete, onClick, link, formatMessage }) =>
     }
   }
   // link the text if there is a click handler defined
+  let url = null;
+  if (object.tags_id) {
+    url = urlToCollection(object.tags_id);
+  } else if (object.media_id) {
+    url = urlToSource(object.media_id);
+  } else { // it is a search, no link for now (TODO: link to saved search in sources advanced search results
+    url = null;
+  }
   let text;
-  if (link) {
-    text = (<a href={link} target="_blank" rel="noopener noreferrer">{name}</a>);
-  } else if (onClick) {
-    text = (<a href="#" onClick={onClick}>{name}</a>);
+  if (url) {
+    text = (<a href={url} target="_blank" rel="noopener noreferrer">{name}</a>);
   } else {
     text = name;
   }
@@ -61,10 +68,7 @@ const OpenWebMediaItem = ({ object, onDelete, onClick, link, formatMessage }) =>
 OpenWebMediaItem.propTypes = {
   object: PropTypes.object.isRequired,
   onDelete: PropTypes.func,
-  onClick: PropTypes.func,
-  children: PropTypes.node,
-  formatMessage: PropTypes.func.isRequired,
-  link: PropTypes.string,
+  intl: PropTypes.object,
 };
 
-export default OpenWebMediaItem;
+export default injectIntl(OpenWebMediaItem);

@@ -61,7 +61,7 @@ class StoryContainer extends React.Component {
     open: false,
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { refetchAsyncData } = this.props;
     if (nextProps.storiesId !== this.props.storiesId) {
       refetchAsyncData(nextProps);

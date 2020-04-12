@@ -76,11 +76,10 @@ def api_collections_name_exists():
     Check if source with name/url exists already
     :return: boolean indicating if source with this name exists or not (case insensive check)
     """
-    mc = user_mediacloud_client()
     search_str = request.args['searchStr']
     tags_id = int(request.args['id']) if 'id' in request.args else None
-    matching_collections = mc.tagList(name_like=search_str)[:MAX_SOURCES]
-    if id:
+    matching_collections = collection_search(search_str, False, VALID_COLLECTION_TAG_SETS_IDS)[:MAX_SOURCES]
+    if tags_id:
         matching_collections_names = [s['label'].lower().strip() for s in matching_collections
                                       if s['tags_id'] != tags_id]
     else:

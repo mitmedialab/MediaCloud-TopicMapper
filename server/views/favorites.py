@@ -4,6 +4,7 @@ import flask_login
 from server import app, user_db
 from server.util.request import api_error_handler
 from server.auth import user_mediacloud_client, user_name
+
 logger = logging.getLogger(__name__)
 
 

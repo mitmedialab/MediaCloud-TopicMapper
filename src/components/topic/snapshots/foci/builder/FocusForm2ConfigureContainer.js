@@ -4,12 +4,13 @@ import { formValueSelector } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import EditKeywordSearchContainer from './keywordSearch/EditKeywordSearchContainer';
+import EditSearchContainer from './search/EditSearchContainer';
 import EditRetweetPartisanshipContainer from './retweetPartisanship/EditRetweetPartisanshipContainer';
 import EditTopCountriesContainer from './topCountries/EditTopCountriesContainer';
 import EditNytThemeContainer from './nyttheme/EditNytThemeContainer';
 import EditMediaTypeContainer from './mediaType/EditMediaTypeContainer';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../../lib/focalTechniques';
 import messages from '../../../../../resources/messages';
 
 const formSelector = formValueSelector('snapshotFocus');
@@ -21,6 +22,17 @@ const FocusForm2ConfigureContainer = (props) => {
     case FOCAL_TECHNIQUE_BOOLEAN_QUERY:
       content = (
         <EditKeywordSearchContainer
+          topicId={topicId}
+          initialValues={initialValues}
+          onPreviousStep={handlePreviousStep}
+          onNextStep={handleNextStep}
+          location={location}
+        />
+      );
+      break;
+    case FOCAL_TECHNIQUE_MEDIA_SEARCH:
+      content = (
+        <EditSearchContainer
           topicId={topicId}
           initialValues={initialValues}
           onPreviousStep={handlePreviousStep}

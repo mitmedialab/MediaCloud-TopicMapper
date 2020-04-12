@@ -1,26 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import SwaggerUi, { presets } from 'swagger-ui';
+import SwaggerUi from 'swagger-ui-react';
+import 'swagger-ui-react/swagger-ui.css';
 
 class SwaggerContainer extends Component {
   componentDidMount() {
-    const { specUrl, user } = this.props;
+    const { user } = this.props;
+    console.log(user.key);
+    /*
     const swaggerUi = SwaggerUi({
       dom_id: '#swagger-wrapper',
       url: specUrl,
-      presets: [presets.apis],
       onComplete: () => {
         if (user.isLoggedIn) {
           swaggerUi.preauthorizeApiKey('key', user.key);
         }
       },
-    });
+    }); */
   }
 
   render() {
+    const { specUrl, user } = this.props;
     return (
-      <div id="swagger-wrapper" />
+      <SwaggerUi
+        id="swagger-wrapper"
+        url={specUrl}
+        onComplete={(swaggerUi) => {
+          if (user.isLoggedIn) {
+            swaggerUi.preauthorizeApiKey('key', user.key);
+          }
+        }}
+      />
     );
   }
 }

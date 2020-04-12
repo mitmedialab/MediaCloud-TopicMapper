@@ -1,6 +1,441 @@
 {
   "releases": [
     {
+      "date": "2020-03-18",
+      "version": "v3.13.11",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Fix display & download of topic SVG link maps"
+        }
+      ]
+    },{
+      "date": "2020-03-17",
+      "version": "v3.13.10",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Add links to auto-generated topic link maps"
+        }
+      ]
+    },{
+      "date": "2020-02-28",
+      "version": "v3.13.9",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Saving keyword-based subtopics works again"
+        }
+      ]
+    },{
+      "date": "2020-02-24",
+      "version": "v3.13.8",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources" ],
+          "type": "Fix",
+          "note": "Plumbing work on cache-related problems"
+        }
+      ]
+    },{
+      "date": "2020-02-20",
+      "version": "v3.13.7",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fix",
+          "note": "Searching by All Media (not advised) and downloading stories now works"
+        }
+      ]
+    },{
+      "date": "2020-02-11",
+      "version": "v3.13.6",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "New",
+          "note": "Initial podcast support as feed type"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic top story for fb and all media correctly downloads."
+        }
+      ]
+    },
+    {
+      "date": "2020-01-24",
+      "version": "v3.13.5",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Admins can see extracted quotes (via Stanford CoreNLP)"
+        }
+      ]
+    },
+    {
+      "date": "2020-01-22",
+      "version": "v3.13.4",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "Admins can now create new sources with just a URL."
+        }
+      ]
+    },
+    {
+      "date": "2020-01-19",
+      "version": "v3.13.3",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Editing multiple queries works again."
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic top story list works again."
+        }
+      ]
+    },
+    {
+      "date": "2020-01-17",
+      "version": "v3.13.2",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic creation previews are accurate again."
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Clicking on attention chart in Explorer works again."
+        }
+      ]
+    },
+    {
+      "date": "2020-01-16",
+      "version": "v3.13.1",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Media sources subtopic now available."
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Query items do not collapse incorrectly"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Can copy query to all queries"
+        }
+      ]
+    },
+    {
+      "date": "2020-01-09",
+      "version": "v3.13.0",
+      "notes": [
+        {
+          "apps": [ "topics", "explorer" ],
+          "type": "New",
+          "note": "Solr syntax highlighting in Explorer editor and Topic seed query text area."
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Drill-down and top-story label now available on attention chart"
+        },
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "New",
+          "note": "Updated JS libraries"
+        },
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "New",
+          "note": "Updated Highcharts"
+        },
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "New",
+          "note": "Admin: release notes validation"
+        }
+      ]
+    },
+    {
+      "date": "2020-01-06",
+      "version": "v3.12.24",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Download for entities and organizations works again"
+        }
+      ]
+    },
+    {
+      "date": "2020-01-02",
+      "version": "v3.12.23",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "You can edit topic dates while creating a new version again"
+        },
+        {
+          "apps": [ "explorer", "topics" ],
+          "type": "Fixed",
+          "note": "Clicking on collection or source names works again"
+        }
+      ]
+    },
+    {
+      "date": "2019-12-19",
+      "version": "v3.12.22",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "Removing sources from collections works again"
+        }
+      ]
+    },
+    {
+      "date": "2019-12-16",
+      "version": "v3.12.21",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Topic story links CSV now includes media_id"
+        },
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "Fixed",
+          "note": "The API test console works again"
+        }
+      ]
+    },
+    {
+      "date": "2019-12-09",
+      "version": "v3.12.20",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Entities in Explorer show up again"
+        }
+      ]
+    },
+    {
+      "date": "2019-12-06",
+      "version": "v3.12.19",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Explorer sample story download button works again"
+        }
+      ]
+    },
+    {
+      "date": "2019-12-02",
+      "version": "v3.12.18",
+      "notes": [
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "Fixed",
+          "note": "The consent form works more consistently now"
+        },
+        {
+          "apps": [ "topics", "tools", "sources", "explorer" ],
+          "type": "New",
+          "note": "Added some basic automated testing for better platform robustness"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-19",
+      "version": "v3.12.17",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "You can create topics again"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-14",
+      "version": "v3.12.16",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic permissions page loads again"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "More fixes to Topic story list CSV download"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Better checks on running multiple Topics at same time"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-13",
+      "version": "v3.12.15",
+      "notes": [
+        {
+          "apps": [ "topics", "tools", "explorer", "sources" ],
+          "type": "Fixed",
+          "note": "Better support for notifying users when we are in maintenance mode"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-12",
+      "version": "v3.12.14",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "More work on fixing various topic CSV download"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-12",
+      "version": "v3.12.13",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "The collection source represetation bubble chart works again"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "The topic version history page works again"
+        }
+      ]
+    },
+    {
+      "date": "2019-11-08",
+      "version": "v3.12.12",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fixed",
+          "note": "Topic story inlink and outlink CSV files work again"
+        }
+      ]
+    }, {
+      "date": "2019-11-07",
+      "version": "v3.12.11",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics" ],
+          "type": "Fixed",
+          "note": "CSV download of story URLs works again"
+        },
+        {
+          "apps": [ "tools", "explorer", "sources", "topics" ],
+          "type": "Fixed",
+          "note": "More work on login and page reloads"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Faster Explorer story URL CSV download (removed media metadata)"
+        }
+      ]
+    }, {
+      "date": "2019-11-06",
+      "version": "v3.12.10",
+      "notes": [
+        {
+          "apps": [ "tools", "explorer", "sources", "topics" ],
+          "type": "Fixed",
+          "note": "Resolves some more registration and login issues"
+        }
+      ]
+    }, {
+      "date": "2019-11-06",
+      "version": "v3.12.9",
+      "notes": [
+        {
+          "apps": [ "tools", "explorer", "sources", "topics" ],
+          "type": "Fixed",
+          "note": "Registration fixes"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Revert back to Pew 2017 collection for default searches",
+          "details": "The Pew 2018 data has a lot of sources that cover entertainment and sports, and omits a lot of major news sources. For now we are reverting default searches back to the Pew 2017 data, while we investigate more."
+        }
+      ]
+    },{
+      "date": "2019-10-31",
+      "version": "v3.12.8",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "MediaPicker metadata checkboxes fixed"
+        }
+      ]
+    },{
+      "date": "2019-10-29",
+      "version": "v3.12.7",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "Fixed",
+          "note": "Login bug fixed"
+        }
+      ]
+    },{
+      "date": "2019-10-02",
+      "version": "v3.12.6",
+      "notes": [
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "New",
+          "note": "Remove system-level maintenance warning for week of Oct 7"
+        }
+      ]
+    },{
+      "date": "2019-10-02",
+      "version": "v3.12.5",
+      "notes": [
+        {
+          "apps": [ "explorer"],
+          "type": "New",
+          "note": "Explorer searches now default to the 2018 Pew Top Sources collection"
+        },
+        {
+          "apps": [ "explorer", "topics", "sources", "tools" ],
+          "type": "New",
+          "note": "System-level maintenance warning for week of Oct 7"
+        }
+      ]
+    },{
       "date": "2019-9-10",
       "version": "v3.12.4",
       "notes": [
@@ -500,7 +935,7 @@
     {
       "date": "2019-1-31",
       "version": "v3.8.4",
-      "notes": [    
+      "notes": [
         {
           "apps": [ "sources" ],
           "type": "Fixed",
@@ -832,7 +1267,7 @@
         {
           "apps": [ "sources" ],
           "type": "Fixed",
-          "note": "Show correct source coverage stats.", 
+          "note": "Show correct source coverage stats.",
           "details": "Our calculation of geographic and theme coverage was undercounting due to a bug."
         },
         {
@@ -1599,7 +2034,7 @@
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Re-organized topic homepage to load faster."
-        }        
+        }
       ]
     },
     {
@@ -1810,63 +2245,63 @@
       "date": "2018-03-19",
       "version": "v2.6.0",
       "notes": [
-        { 
+        {
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Media stories/inlinks/outlinks are downloadable again."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "New",
           "note": "Allow you to copy keywords/date/media to all queries."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Return more results while searching for sources."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Faster langauge results when comparing multiple queries."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Better cursor when clicking a day on the attention over time chart."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Force short query names so the UI doesn't wrap weirdly."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Consistent text when renaming queries."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Better summaries on the little query tabs about sources/collections."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "When you add a new query it copies the date from the last one."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Lets you edit query names after adding new queries."
-        }        
+        }
       ]
     },
     {
       "date": "2018-03-16",
       "version": "v2.5.1",
       "notes": [
-        { 
+        {
           "apps": ["sources"],
           "type": "Fixed",
           "note": "Users can save new collections again."
@@ -1877,75 +2312,75 @@
       "date": "2018-03-12",
       "version": "v2.5.0",
       "notes": [
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Click on a point on the attention chart to see more details.",
           "details": "This replicates a New we used to have on the Dashboard tool.  Click a data point on an Explorer attention chart and you'll see a sample of stories and a word cloud for just that time period.  This can help you identify what happened on a specific day."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Comparative word cloud now reloads after new search is run."
         },
-        { 
+        {
           "apps": ["explorer", "topics"],
           "type": "New",
           "note": "Theme charts are now normalized so they aren't misleading.",
           "details": "Sometimes the bubbles were really big, even though the number of stories with a certain theme were quite small.  We're now showing these as a ratio on top of a grey circle that represents the total number of stories, so you won't be misled by a big bubble only showing a small quantity.  This also helps compare theme results across different Explorer searches."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Theme downloads now work for multiple queries."
         },
-        { 
+        {
           "apps": ["explorer", "topics", "sources"],
           "type": "New",
           "note": "New release notes menu and webpage to show recent changes."
         },
-        { 
+        {
           "apps": ["sources"],
           "type": "New",
           "note": "Created <a href=\"https://github.com/mitmedialab/MediaCloud-Web-Tools/blob/master/doc/collections-csv-data-dictonary.md\">a data-dictionary</a> to document the collections CSV file format."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "New",
           "note": "You can now search in all Media Cloud sources, even though this is a bad idea.",
           "details": "Our collection of media sources is closely aligned with topics we have researched before, and doesn't represent a balanced list of media sources that represent the media ecosystem online. For instance, because we have done deep research on gender and reproductive rights, we have an over-representation of blogs and media outlets that cover those issues. The same is true for public health and international development. You should try to avoid searching all sources. Click 'Add Media' and pick some specific sources, or country-based collections to localize your search and get more representative results."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Maps and entity lists now work for larger topics."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Fixed reloading explorer results pages."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Save search button now works in Firefox."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Better handling of unicode file names."
         },
-        { 
+        {
           "apps": ["sources"],
           "type": "Fixed",
           "note": "Reduce jumpiness of source search autocomplete."
         },
-        { 
+        {
           "apps": ["sources"],
           "type": "Fixed",
           "note": "Listing geographic collections and metadata is much faster."
         },
-        { 
+        {
           "apps": ["sources"],
           "type": "Fixed",
           "note": "Fixeded link to Sources app on the Tools page."
@@ -1956,7 +2391,7 @@
       "date": "2018-03-04",
       "version": "v2.4.10",
       "notes": [
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Download files without popups."
@@ -1967,33 +2402,33 @@
       "date": "2018-03-04",
       "version": "v2.4.9",
       "notes": [
-        { 
+        {
           "apps": ["explorer"],
           "note": "Show top themes results.",
           "type": "New",
           "details": "These themes can help you identify the types of narratives the media is telling about your query. This is based on a transfer-learning model we built with the Google News word2vec model and the New York Times annotated corpus."
         },
-        { 
+        {
           "apps": ["sources"],
           "type": "Fixed",
           "note": "Show more results on advanced search."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Better feedback when creating topics."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Correctly handle searches using \"quoted phrases\"."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Use more consistent names for downloaded files."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Show more inlinks and outlinks on story details page."
@@ -2004,7 +2439,7 @@
       "date": "2018-03-02",
       "version": "v2.4.8",
       "notes": [
-        { 
+        {
           "apps": ["explorer"],
           "type": "Fixed",
           "note": "Fixed bug that wouldn't let you edit dates sometimes."
@@ -2015,7 +2450,7 @@
       "date": "2018-02-27",
       "version": "v2.4.7",
       "notes": [
-        { 
+        {
           "apps": ["explorer"],
           "type": "New",
           "note": "More columns in story list CSV download."
@@ -2026,7 +2461,7 @@
       "date": "2018-02-26",
       "version": "v2.4.6",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Show better high level error messages."
@@ -2037,7 +2472,7 @@
       "date": "2018-02-23",
       "version": "v2.4.5",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Password reset works again."
@@ -2048,7 +2483,7 @@
       "date": "2018-02-26",
       "version": "v2.4.4",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Better signup errors."
@@ -2059,7 +2494,7 @@
       "date": "2018-02-16",
       "version": "v2.4.3",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Work on cache errors some folks are seeing."
@@ -2070,7 +2505,7 @@
       "date": "2018-02-15",
       "version": "v2.4.2",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Work on cache errors some folks are seeing."
@@ -2081,7 +2516,7 @@
       "date": "2018-02-14",
       "version": "v2.4.1",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "Fixed",
           "note": "Better nav-bar links between the tools."
@@ -2092,41 +2527,41 @@
       "date": "2018-02-14",
       "version": "v2.4.0",
       "notes": [
-        { 
+        {
           "apps": ["topics", "explorer", "sources"],
           "type": "New",
           "note": "Single sign on! Once you log in, you're logged into all the tools."
         },
-        { 
+        {
           "apps": ["topics", "sources", "explorer"],
           "type": "New",
           "note": "New homepages for all the tools.",
           "details": "We did some user testing and have a new approach to the homepages. Hopefully this design clears up what each tool is for."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "New",
           "note": "Create subtopics by media type.",
           "details": "You can now automatically divide up a topic based on the type of each media the stories are published by. Use this to compare print vs. online coverage, for instance.  We have this information for lots of sources (from <a href=\"http://abyznewslinks.com\">abyznewslinks.com</a>), but definitely not all sources."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "Fixed",
           "note": "Use the new media picker when creating topics."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "New",
           "note": "Link to let you query the a topic in the Dashboard.",
           "details": "Find this new link on the control bar on your topic's summary page."
         },
-        { 
+        {
           "apps": ["explorer"],
           "type": "New",
           "note": "Support empty searches.",
           "details": "These automatically turn into a \"wildcard\" search - ie. a search for \"*\"."
         },
-        { 
+        {
           "apps": ["topics"],
           "type": "New",
           "note": "Show tweet counts on story tables (if twitter data available)",
@@ -2136,5 +2571,5 @@
     }
 
   ]
-     
+
 }

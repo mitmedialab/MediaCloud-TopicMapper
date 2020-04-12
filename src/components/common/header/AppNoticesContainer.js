@@ -13,7 +13,7 @@ const localMessages = {
 };
 
 class AppNoticesContainer extends React.Component {
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { notices } = this.props;
     // if there any new notices, scroll to top so user can see them
     if (nextProps.notices.length > notices.length) {

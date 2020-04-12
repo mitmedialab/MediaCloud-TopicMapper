@@ -4,7 +4,8 @@ import flask_login
 import mediacloud.error
 
 from server import app, mc
-from server.auth import user_mediacloud_client
+import server.views.apicache as base_apicache
+from server.auth import user_mediacloud_client, user_mediacloud_key
 from server.util.request import form_fields_required, api_error_handler, json_error_response, arguments_required
 from server.util.stringutil import ids_from_comma_separated_str
 from server.util.tags import US_COLLECTIONS
@@ -36,8 +37,7 @@ def _topic_query_from_request():
 @api_error_handler
 def api_topics_preview_split_story_count():
     solr_query, fq = _topic_query_from_request()
-    user_mc = user_mediacloud_client()
-    results = user_mc.storyCount(solr_query=solr_query, solr_filter=fq, split=True)
+    results = base_apicache.story_count(user_mediacloud_key(), solr_query, fq, split=True)
     total_stories = 0
     for c in results['counts']:
         total_stories += c['count']
@@ -51,8 +51,7 @@ def api_topics_preview_split_story_count():
 @api_error_handler
 def api_topics_preview_story_count():
     solr_query, fq = _topic_query_from_request()
-    user_mc = user_mediacloud_client()
-    story_count_result = user_mc.storyCount(solr_query=solr_query, solr_filter=fq)
+    story_count_result = base_apicache.story_count(user_mediacloud_key(), solr_query, fq)
     # maybe check admin role before we run this?
     return jsonify(story_count_result)  # give them back new data, so they can update the client
 
@@ -63,9 +62,8 @@ def api_topics_preview_story_count():
 @api_error_handler
 def api_topics_preview_story_sample():
     solr_query, fq = _topic_query_from_request()
-    user_mc = user_mediacloud_client()
     num_stories = request.form['rows']
-    story_count_result = user_mc.storyList(solr_query=solr_query, solr_filter=fq, sort=user_mc.SORT_RANDOM, rows=num_stories)
+    story_count_result = base_apicache.story_list(user_mediacloud_key(), solr_query, fq, sort=mc.SORT_RANDOM, rows=num_stories)
     return jsonify(story_count_result)
 
 
@@ -75,8 +73,7 @@ def api_topics_preview_story_sample():
 @api_error_handler
 def api_topics_preview_word_count():
     solr_query, fq = _topic_query_from_request()
-    user_mc = user_mediacloud_client()
-    word_count_result = user_mc.wordCount(solr_query=solr_query, solr_filter=fq)
+    word_count_result = base_apicache.word_count(user_mediacloud_key(), solr_query, fq)
     return jsonify(word_count_result)  # give them back new data, so they can update the client
 
 
@@ -96,7 +93,7 @@ def topic_create():
         'is_logogram': request.form['is_logogram'] if 'is_logogram' in request.form else None,
         'ch_monitor_id': request.form['ch_monitor_id'] if len(request.form['ch_monitor_id']) > 0 and request.form['ch_monitor_id'] != 'null' else None,
         'max_iterations': request.form['max_iterations'] if 'max_iterations' in request.form else None,
-        'max_stories': request.form['max_stories'] if 'max_stories' in request.form and request.form['max_stories'] != 'null' else flask_login.current_user.profile['max_topic_stories'],
+        'max_stories': request.form['max_stories'] if 'max_stories' in request.form and request.form['max_stories'] != 'null' else flask_login.current_user.profile['limits']['max_topic_stories'],
     }
 
     # parse out any sources and collections, or custom collections to add

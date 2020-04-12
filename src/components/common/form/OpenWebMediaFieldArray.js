@@ -4,9 +4,8 @@ import { injectIntl } from 'react-intl';
 import { reduxForm, FieldArray, Field, propTypes } from 'redux-form';
 import withIntlForm from '../hocs/IntlForm';
 import OpenWebMediaItem from '../OpenWebMediaItem';
-import { urlToSource, urlToCollection } from '../../../lib/urlUtil';
 
-const renderCollectionSelector = ({ allowRemoval, fields, meta, onDelete, formatMessage }) => (
+const renderCollectionSelector = ({ allowRemoval, fields, meta, onDelete }) => (
   <div>
     {fields.map((name, index) => (
       <Field
@@ -21,9 +20,8 @@ const renderCollectionSelector = ({ allowRemoval, fields, meta, onDelete, format
           } else {
             tempObj = info.input.value;
           }
-          const sourceOrCollectionUrl = tempObj.tag_set_name === 'collection' ? urlToCollection(tempObj.id) : urlToSource(tempObj.id);
           return (
-            <OpenWebMediaItem object={tempObj} onDelete={handleDelete} link={sourceOrCollectionUrl} formatMessage={formatMessage} />
+            <OpenWebMediaItem object={tempObj} onDelete={handleDelete} />
           );
         }}
       />
@@ -38,11 +36,10 @@ renderCollectionSelector.propTypes = {
   allowRemoval: PropTypes.bool,
   validate: PropTypes.func,
   onDelete: PropTypes.func,
-  formatMessage: PropTypes.func.isRequired,
 };
 
 const OpenWebMediaFieldArray = (props) => {
-  const { fieldName, initialValues, allowRemoval, onDelete, formatMessage } = props;
+  const { fieldName, initialValues, allowRemoval, onDelete } = props;
   return (
     <div className="explorer-source-collection-form">
       <FieldArray
@@ -53,7 +50,6 @@ const OpenWebMediaFieldArray = (props) => {
         component={renderCollectionSelector}
         initialValues={initialValues}
         onDelete={onDelete}
-        formatMessage={formatMessage}
       />
     </div>
   );
@@ -66,7 +62,6 @@ OpenWebMediaFieldArray.propTypes = {
   selected: PropTypes.object,
   allowRemoval: PropTypes.bool,
   fieldName: PropTypes.string,
-  formatMessage: PropTypes.func.isRequired,
   // valid: PropTypes.bool,  not using - but this is helpful to determine if validation is getting
   onDelete: PropTypes.func,
 };

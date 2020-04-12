@@ -21,7 +21,6 @@ const localMessages = {
   pCountryOfFocusSuggestion: { id: 'search.advanced.pCountryOfFocusTip', defaultMessage: 'about place {count}' },
   pMediaType: { id: 'search.advanced.pMediaType', defaultMessage: 'media type {count}' },
   search: { id: 'system.mediaPicker.select.search', defaultMessage: 'Search' },
-  allMedia: { id: 'system.mediaPicker.select.allMedia', defaultMessage: 'Search All Media (not advised)' },
 };
 
 class AdvancedMediaPickerSearchForm extends React.Component {
@@ -78,15 +77,8 @@ class AdvancedMediaPickerSearchForm extends React.Component {
     onQueryUpdateSelection(mode, { ...input, name, mediaKeyword: searchStr });
   }
 
-
-  handleSearchAll = (mode, allMedia) => {
-    const { onQueryUpdateSelection } = this.props;
-    this.setMetaClick(ALL_MEDIA);
-    onQueryUpdateSelection({ allMedia }, { allMedia });
-  }
-
   render() {
-    const { initialValues, renderTextField, renderCheckbox } = this.props;
+    const { initialValues, renderTextField } = this.props;
     const { formatMessage } = this.props.intl;
     const backgroundColorStyle = mode => (mode === this.state.mode ? 'lightgray' : 'white');
     const mediaType = this.state.mode === TAG_SET_MEDIA_TYPE ? (
@@ -215,18 +207,6 @@ class AdvancedMediaPickerSearchForm extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col lg={6}>
-              <Field
-                name="allMedia"
-                component={renderCheckbox}
-                fullWidth
-                label={localMessages.allMedia}
-                helpertext={localMessages.allMedia}
-                onChange={(event, newValue) => this.handleSearchAll(ALL_MEDIA, newValue)}
-              />
-            </Col>
-          </Row>
-          <Row>
             <Col lg={2}>
               <AppButton
                 style={{ marginTop: 30 }}
@@ -253,7 +233,6 @@ AdvancedMediaPickerSearchForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   renderTextField: PropTypes.func.isRequired,
-  renderCheckbox: PropTypes.func.isRequired,
   hintText: PropTypes.string,
   // from parent
   onSearch: PropTypes.func,

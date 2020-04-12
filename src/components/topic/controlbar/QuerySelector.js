@@ -16,11 +16,11 @@ class QuerySelector extends React.Component {
     value: '',
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setState({ value: this.props.query || '' });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { query } = this.props;
     if (nextProps.query !== query) {
       // if filters are open and user deletes chip, gotta remove the query here

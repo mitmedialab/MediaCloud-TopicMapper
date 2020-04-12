@@ -56,8 +56,8 @@ function withHelp(contentTitleMsg, contentHTMLTextMsg, showHelpSidebar) {
             key="help-OK"
           />,
         ];
-        const helpButton = <HelpButton color="lightgrey" onClick={this.handleOpen} />;
-        let content = <br />;
+        let helpButton = <HelpButton color="lightgrey" onClick={this.handleOpen} />;
+        let content = '';
         if (this.state.customContent !== undefined) {
           content = this.state.customContent;
         } else if (this.state.contentMsg) {
@@ -66,6 +66,9 @@ function withHelp(contentTitleMsg, contentHTMLTextMsg, showHelpSidebar) {
           } else {
             content = <FormattedHTMLMessage {...this.state.contentMsg} />;
           }
+        } else {
+          // no content to show yet, so don't include a button
+          helpButton = null;
         }
         let displayContent;
         if (showHelpSidebar) {

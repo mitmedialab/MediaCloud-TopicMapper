@@ -2,7 +2,6 @@ import logging
 import json
 from flask import jsonify, request, Response
 import flask_login
-from multiprocessing import Pool
 
 from server import app, TOOL_API_KEY
 from server.views import WORD_COUNT_DOWNLOAD_NUM_WORDS, WORD_COUNT_DOWNLOAD_SAMPLE_SIZE
@@ -87,7 +86,9 @@ def media_stories(topics_id, media_id):
 @flask_login.login_required
 def media_stories_csv(topics_id, media_id):
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-stories', topics_id,
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-stories', topic,
                                  media_id=media_id, timespans_id=timespans_id, q=q)
 
 
@@ -129,7 +130,9 @@ def all_media_inlinks(topics_id, media_id):
 @flask_login.login_required
 def media_inlinks_csv(topics_id, media_id):
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-inlinks', topics_id,
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-inlinks', topic,
                                  link_to_media_id=media_id, timespans_id=timespans_id, q=q)
 
 
@@ -171,7 +174,9 @@ def all_media_outlinks(topics_id, media_id):
 @flask_login.login_required
 def media_outlinks_csv(topics_id, media_id):
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-outlinks', topics_id,
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'media-'+media_id+'-outlinks', topic,
                                  link_from_media_id=media_id, timespans_id=timespans_id, q=q)
 
 
@@ -180,8 +185,7 @@ def media_outlinks_csv(topics_id, media_id):
 def get_topic_media_links_csv(topics_id):
     user_mc = user_mediacloud_client()
     topic = user_mc.topic(topics_id)
-    # page through results for timespand
-    return stream_media_link_list_csv(user_mediacloud_key(), topic['name'] + '-stories', topics_id)
+    return stream_media_link_list_csv(user_mediacloud_key(), topic['name'] + '-media-links', topics_id)
 
 
 def stream_media_link_list_csv(user_mc_key, filename, topics_id, **kwargs):
@@ -206,7 +210,7 @@ def stream_media_link_list_csv(user_mc_key, filename, topics_id, **kwargs):
 
 
 def _media_info_worker(info):
-    return base_apicache.media(info['key'], info['media_id'])
+    return base_apicache.get_media_with_key(info['key'], info['media_id'])
 
 
 # generator you can use to handle a long list of stories row by row (one row per story)
@@ -252,7 +256,7 @@ def _stream_media_list_csv(user_mc_key, filename, topics_id, **kwargs):
     try:
 
         while more_media:
-            page = apicache.topic_media_list(user_mediacloud_key(), topics_id, **params)
+            page = apicache.topic_media_list(user_mc_key, topics_id, **params)
             media_list = page['media']
 
             all_media = all_media + media_list

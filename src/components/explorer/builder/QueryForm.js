@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { reduxForm, Field, propTypes, formValueSelector } from 'redux-form';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/solr/solr';
 import withIntlForm from '../../common/hocs/IntlForm';
 import AppButton from '../../common/AppButton';
 import withHelp from '../../common/hocs/HelpfulContainer';
@@ -15,7 +18,7 @@ import MediaHelpDialog from '../../common/help/MediaHelpDialog';
 import SavedSearchControls from './SavedSearchControls';
 import { emptyString, validDate } from '../../../lib/formValidators';
 import { isStartDateAfterEndDate, isValidSolrDate } from '../../../lib/dateUtil';
-import { KEYWORD, MEDIA, DATES } from '../../../lib/explorerUtil';
+import { KEYWORD, MEDIA, DATES, getQFromCodeMirror } from '../../../lib/explorerUtil';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
 import messages from '../../../resources/messages';
 
@@ -60,7 +63,7 @@ class QueryForm extends React.Component {
     childDialogOpen: false,
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected !== this.props.selected) {
       // this.textInputRef.saveRef(); comment out b/c this was only a focus setting anyway (that wasn't working very well)
     }
@@ -79,22 +82,16 @@ class QueryForm extends React.Component {
     return anyQueriesNoMedia || thisCurrentQueryFormNoMedia;
   }
 
-  focusQueryInputField = () => {
-    // commented out because this is throwing a JS error on the console
-    /*
-    if (input) {
-      setTimeout(() => {
-        // input.focus();
-      }, 100);
-    }
-    */
-  };
-
   render() {
-    const { initialValues, onWillSearch, renderTextFieldWithFocus, isEditable, selected, buttonLabel, onMediaDelete, onDateChange, onLoadSearches, onDeleteSearch, savedSearches, searchNickname, onSaveSearch,
-      submitting, handleSubmit, onSave, onMediaChange, renderTextField, onCopyAll } = this.props;
+    const { initialValues, onWillSearch, isEditable, selected, buttonLabel, onMediaDelete, onDateChange,
+      onDeleteSearch, onLoadSearches, savedSearches, searchNickname, onSaveSearch,
+      submitting, handleSubmit, onSave, onMediaChange, renderSolrTextField, renderTextField, /* renderTextFieldWithFocus, */
+      onCopyAll } = this.props;
     const { formatMessage } = this.props.intl;
-    const cleanedInitialValues = JSON.parse(JSON.stringify(initialValues));
+    const cleanedInitialValues = JSON.parse(JSON.stringify({
+      ...initialValues,
+      q: getQFromCodeMirror(initialValues.q), // handle CodeMirror object or string
+    }));
     if (cleanedInitialValues.disabled === undefined) {
       cleanedInitialValues.disabled = false;
     }
@@ -117,7 +114,10 @@ class QueryForm extends React.Component {
         cleanedInitialValues.media = cleanedInitialValues.media.concat(initialValues.searches);
       }
     }
-    const selectedCopy = JSON.parse(JSON.stringify(selected));
+    const selectedCopy = JSON.parse(JSON.stringify({
+      ...selected,
+      q: getQFromCodeMirror(selected.q), // handle CodeMirror object or string
+    }));
     selectedCopy.media = [];
     if (selectedCopy.collections && selectedCopy.collections.length) {
       selectedCopy.media = selectedCopy.media.concat(selectedCopy.collections);
@@ -166,10 +166,10 @@ class QueryForm extends React.Component {
                     rows={3}
                     rowsMax={4}
                     fullWidth
+                    // onChange={this.focusSelect}
+                    // component={renderTextFieldWithFocus}
+                    component={renderSolrTextField}
                     ref={(input) => { this.textInputRef = input; }}
-                    inputRef={this.focusQueryInputField}
-                    saveRef={this.focusQueryInputField}
-                    component={renderTextFieldWithFocus}
                   />
                 </div>
                 <div className="query-field-desc">
@@ -201,7 +201,6 @@ class QueryForm extends React.Component {
                     initialValues={selectedCopy || cleanedInitialValues}
                     title="title"
                     intro="intro"
-                    formatMessage={formatMessage}
                   />
                   <div>
                     {isEditable
@@ -294,8 +293,9 @@ QueryForm.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   renderTextField: PropTypes.func.isRequired,
+  renderSolrTextField: PropTypes.func.isRequired,
+  // renderTextFieldWithFocus: PropTypes.func.isRequired,
   renderSelect: PropTypes.func.isRequired,
-  renderTextFieldWithFocus: PropTypes.func.isRequired,
   searchNickname: PropTypes.string.isRequired,
   savedSearches: PropTypes.array,
 
@@ -313,7 +313,7 @@ QueryForm.propTypes = {
   onCopyAll: PropTypes.func.isRequired,
   onMediaDelete: PropTypes.func.isRequired,
   onDateChange: PropTypes.func.isRequired,
-  // from setState
+  // from state
   queries: PropTypes.array,
   // from form helper
   updateQuery: PropTypes.func,
@@ -359,9 +359,13 @@ function warn(values, props) {
     && (!values.media || !values.media.length)) {
     warnings.media = { _warning: formatMessage(localMessages.noMediaSpecified) };
   }
-  if (emptyString(values.q)) {
-    const errString = formatMessage(localMessages.queryStringError, { name: values.label });
-    warnings.q = { _warning: errString };
+  // first time through text is a form field, then a codemirror object
+  if (values.q) {
+    const queryText = (typeof values.q === 'string') ? values.q : getQFromCodeMirror(values.q);
+    if (emptyString(queryText)) {
+      const errString = formatMessage(localMessages.queryStringError, { name: values.label });
+      warnings.q = { _warning: errString };
+    }
   }
   return warnings;
 }

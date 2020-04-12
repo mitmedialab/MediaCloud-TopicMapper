@@ -1,0 +1,110 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://api.mediacloud.org/api/v2'
+    variables: {}
+    description: The Media Cloud API Server
+info:
+  description: You can fetch data from Media Cloud via our web-based API.
+  version: 2.0.0
+  title: Media Cloud API
+  termsOfService: ''
+  contact:
+    email: support@mediacloud.org
+    name: Media Cloud Support
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+tags:
+  - name: System
+    description: Read-only commands to learn about the state of the Media Cloud system.
+  - name: Stories
+    description: Query story-level information.
+  - name: Media
+    description: Query information about the media sources in our database.
+paths:
+  /stats/list:
+    get:
+      summary: 'Return basic summary stats about total sources, stories, feeds, etc processed by Media Cloud'
+      description: ''
+      parameters: []
+      operationId: getStats
+      responses:
+        200:
+          description: OK
+      tags:
+        - System
+  '/media/single/{media_id}':
+    get:
+      summary: Data about a media source in our system
+      description: ''
+      parameters:
+        - name: media_id
+          schema:
+            type: integer
+          in: path
+          required: true
+          description: ID of media to return
+      responses:
+        200:
+          description: OK
+      operationId: getMediaById
+      tags:
+        - Media
+  /stories_public/count:
+    get:
+      summary: ''
+      description: ''
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: q ("query") parameter which is passed directly to Solr
+        - name: fq
+          in: query
+          required: false
+          schema:
+            type: string
+          description: fq ("filter query") parameter which is passed directly to Solr
+          allowEmptyValue: true
+        - name: split
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 'if set to 1 or true, split the counts into date ranges'
+          allowEmptyValue: true
+        - name: split_period
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - day
+              - week
+              - month
+              - year
+          description: 'return counts for these date periods: day, week, month, year'
+          allowEmptyValue: true
+      operationId: ''
+      responses:
+        200:
+          description: OK
+      tags:
+        - Stories
+externalDocs:
+  description: ''
+  url: 'https://github.com/berkmancenter/mediacloud/tree/master/doc/api_2_0_spec'
+components:
+  schemas: {}
+  requestBodies: {}
+  securitySchemes:
+    key:
+      type: apiKey
+      name: key
+      in: query
+  links: {}
+  callbacks: {}
+security:
+  - key: []

@@ -24,6 +24,7 @@ import { PERMISSION_ADMIN } from '../../../../lib/auth';
 import StatBar from '../../statbar/StatBar';
 import StoryRedditAttention from '../../story/StoryRedditAttention';
 import StoryImages from '../../story/StoryImages';
+import StoryQuoteTable from '../../story/StoryQuoteTable';
 
 const localMessages = {
   title: { id: 'admin.story.title', defaultMessage: 'Admin Story Details: ' },
@@ -35,15 +36,13 @@ const localMessages = {
   viewCachedHtml: { id: 'admin.story.details.viewCachedHtml', defaultMessage: 'View Cached HTML (admin only)' },
   downloadAllTagsCsv: { id: 'admin.story.details.downloadTagsCsv', defaultMessage: 'Download all Story Tags' },
   storyOptions: { id: 'admin.story.details.storyOptions', defaultMessage: 'Story Options' },
+  storyExtrasTitle: { id: 'admin.story.extras.title', defaultMessage: 'Other Custom Story Info' },
+  storyExtrasDetails: { id: 'admin.story.extras.details', defaultMessage: 'Below is some extra info about this story that we\'ve pulled from other services, but isn\'t saved or searchable within our system.' },
 };
 
 class SelectedStoryContainer extends React.Component {
   goToUpdateUrl = (storyId) => {
     window.location = `admin/story/${storyId}/update`;
-  }
-
-  goToCachedUrl = (storyId) => {
-    window.location = `/admin/story/${storyId}/cached`;
   }
 
   downloadCsv = (storyId) => {
@@ -140,13 +139,26 @@ class SelectedStoryContainer extends React.Component {
             <Col lg={6}>
               <TagListContainer story={selectedStory} />
             </Col>
+          </Row>
+          <Row>
             <Col lg={6}>
+              <h1><FormattedMessage {...localMessages.storyExtrasTitle} /></h1>
+              <p><FormattedMessage {...localMessages.storyExtrasDetails} /></p>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12}>
               <StoryRedditAttention storyId={selectedStory.stories_id} />
             </Col>
           </Row>
           <Row>
             <Col lg={12}>
               <StoryImages storyId={selectedStory.stories_id} />
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12}>
+              <StoryQuoteTable storyId={selectedStory.stories_id} />
             </Col>
           </Row>
         </>
@@ -182,7 +194,7 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-const fetchAsyncData = (dispatch, { id }) => dispatch(fetchStory(id));
+const fetchAsyncData = (dispatch, { id }) => dispatch(fetchStory(id, { text: true }));
 
 export default
 injectIntl(

@@ -45,3 +45,9 @@ SESSION_REDIS_URL = redis://localhost/0
 
 # Service: URL to Redis store for the cache (shared across apps)
 CACHE_REDIS_URL = redis://localhost/1
+
+# If the app is in maintenance mode and shouldn't allow any queries and use
+MAINTENANCE_MODE = 0
+
+# Service: The URL to an install of the stanford corenlp
+CORENLP_URL = http://stanford-corenlp-server:9000

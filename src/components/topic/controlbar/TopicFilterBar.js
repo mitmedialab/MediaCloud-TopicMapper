@@ -23,7 +23,7 @@ const localMessages = {
 };
 
 class TopicFilterBar extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { setSideBarContent, handleFilterToggle, handleFocusSelected, handleQuerySelected } = this.props;
     const { formatMessage } = this.props.intl;
 

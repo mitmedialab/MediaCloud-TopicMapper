@@ -11,6 +11,7 @@ import MediaPickerDialog from '../../common/mediaPicker/MediaPickerDialog';
 import OpenWebMediaFieldArray from '../../common/form/OpenWebMediaFieldArray';
 import { emptyString, invalidDate, validDate } from '../../../lib/formValidators';
 import { isStartDateAfterEndDate, isValidSolrDate } from '../../../lib/dateUtil';
+import { topicQueryAsString } from '../../util/topicUtil';
 import { fetchTopicWithNameExists } from '../../../actions/topicActions';
 import { assetUrl } from '../../../lib/assetUtil';
 
@@ -96,7 +97,6 @@ class TopicForm extends React.Component {
             <div className="media-field-wrapper">
               {mediaLabel}
               <OpenWebMediaFieldArray
-                formatMessage={formatMessage}
                 title={title}
                 intro={intro}
                 className="query-field"
@@ -161,9 +161,6 @@ function validate(values, props) {
   if (emptyString(values.description)) {
     errors.description = localMessages.descriptionError;
   }
-  if (emptyString(values.solr_seed_query)) {
-    errors.solr_seed_query = localMessages.seedQueryError;
-  }
   if (invalidDate(values.start_date) || !isValidSolrDate(values.start_date)) {
     errors.start_date = localMessages.dateError;
   }
@@ -173,8 +170,17 @@ function validate(values, props) {
   if (validDate(values.start_date) && validDate(values.end_date) && isStartDateAfterEndDate(values.start_date, values.end_date)) {
     errors.start_date = { _error: formatMessage(localMessages.startDateWarning) };
   }
+  // first time through solr_seed_query is a form field, then a codemirror object
+  if (values.solr_seed_query) {
+    const queryText = topicQueryAsString(values.solr_seed_query);
+    if (emptyString(queryText)) {
+      const errString = formatMessage(localMessages.seedQueryError, { name: values.label });
+      errors.solr_seed_query = { _warning: errString };
+    }
+  }
+
   // not triggered if empty so we have to force a check
-  if ((values.name && values.solr_seed_query && !values.sourcesAndCollections) || (values.sourcesAndCollections && values.sourcesAndCollections.length < 1)) {
+  if ((values.name && !values.sourcesAndCollections) || (values.sourcesAndCollections && values.sourcesAndCollections.length < 1)) {
     // errors.sourcesAndCollections = localMessages.sourceCollectionsError;
     const msg = formatMessage(localMessages.sourceCollectionsError);
     errors.sourcesAndCollections = { _error: msg };

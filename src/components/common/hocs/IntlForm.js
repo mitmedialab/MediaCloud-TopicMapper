@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedHTMLMessage, injectIntl } from 'react-intl';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/solr/solr';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
@@ -30,6 +34,26 @@ function withIntlForm(Component) {
         }
       });
       return intlCustom;
+    };
+
+    renderSolrTextField = ({ input, ...custom }) => {
+      const codeMirrorOptions = {
+        mode: 'solr',
+        lineWrapping: true,
+      };
+      const intlCustom = this.intlCustomProps(custom);
+      if (intlCustom && intlCustom.helpertext !== undefined) {
+        intlCustom.helperText = intlCustom.helpertext;
+      }
+      const queryText = (typeof input.value === 'string') ? input.value : input.value.getValue();
+      return (
+        <CodeMirror
+          options={codeMirrorOptions}
+          {...input}
+          {...intlCustom}
+          value={queryText}
+        />
+      );
     };
 
     renderTextField = ({ input, meta: { touched, error, asyncValidating }, ...custom }) => {
@@ -82,7 +106,7 @@ function withIntlForm(Component) {
                 className="form-field-checkbox"
                 label={this.intlIfObject(label)}
                 checked={checked}
-                onChange={() => input.onChange(!checked)}
+                onChange={() => input.onChange(!checked, input)} // should set input.value to the toggle but it doesn't always
                 disabled={this.intlIfObject(disabled)}
               />
             )}
@@ -93,7 +117,7 @@ function withIntlForm(Component) {
       );
     };
 
-    renderSelect = ({ input, label, name, meta: { touched, error }, children, ...custom }) => {
+    renderSelect = ({ input, label, name, fullWidth, meta: { touched, error }, children, ...custom }) => {
       const intlCustom = this.intlCustomProps(custom);
       return (
         <>
@@ -104,6 +128,7 @@ function withIntlForm(Component) {
             {...input}
             onChange={event => input.onChange(event.target.value)}
             {...intlCustom}
+            fullWidth
           >
             {children}
           </Select>
@@ -142,6 +167,7 @@ function withIntlForm(Component) {
         renderNewAutoComplete: this.renderNewAutoComplete,
         renderAutocomplete: this.renderAutocomplete,
         renderAsyncAutocomplete: this.renderAsyncAutocomplete,
+        renderSolrTextField: this.renderSolrTextField,
       };
       return (
         <Component {...this.props} {...helpers} />

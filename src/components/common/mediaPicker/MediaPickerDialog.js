@@ -28,13 +28,13 @@ class MediaPickerDialog extends React.Component {
     open: false,
   };
 
-  componentWillMount() { // only called on intial parent load -eg not when dialog pops up
+  UNSAFE_componentWillMount() { // only called on intial parent load -eg not when dialog pops up
     if (this.state.open) {
       window.scrollTo(0, 0);
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // select the media so we fill the reducer with the previously selected media
     const { initMedia, handleInitialSelectionOfMedia } = this.props;
     if (JSON.stringify(initMedia) !== JSON.stringify(nextProps.initMedia)) {

@@ -74,6 +74,9 @@ div [data-reactroot] {
         max-height: 282px;
         overflow: scroll;
 
+        .select-media-options {
+          left: 150px;
+        }
         .media-widget {
         }
 

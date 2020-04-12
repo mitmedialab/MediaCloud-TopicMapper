@@ -21,7 +21,7 @@ const localMessages = {
 };
 
 class FocusBuilderWizard extends React.Component {
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     const { startStep, goToStep } = this.props;
     goToStep(startStep || 0);
   }

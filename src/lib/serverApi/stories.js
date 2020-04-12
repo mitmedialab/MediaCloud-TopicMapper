@@ -44,3 +44,7 @@ export function storyRedditAttention(storiesId) {
 export function storyImages(storiesId) {
   return createApiPromise(`/api/stories/${storiesId}/images`);
 }
+
+export function storyQuotes(storiesId) {
+  return createApiPromise(`/api/stories/${storiesId}/quotes`);
+}

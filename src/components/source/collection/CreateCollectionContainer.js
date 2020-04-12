@@ -22,12 +22,12 @@ const localMessages = {
 };
 
 class CreateCollectionContainer extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { saveParamsToStore } = this.props;
     saveParamsToStore(this.props, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.location.query.src !== this.props.location.query.src
       || nextProps.location.query.coll !== this.props.location.query.coll
       || nextProps.location.query.search !== this.props.location.query.search) {

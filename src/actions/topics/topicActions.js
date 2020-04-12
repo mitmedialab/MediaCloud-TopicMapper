@@ -36,7 +36,6 @@ export const filterByTimespan = createAction(TOPIC_FILTER_BY_TIMESPAN, id => id)
 // pass in focusId
 export const TOPIC_FILTER_BY_FOCUS = 'TOPIC_FILTER_BY_FOCUS';
 export const filterByFocus = createAction(TOPIC_FILTER_BY_FOCUS, id => id);
-
 // pass in query str
 export const TOPIC_FILTER_BY_QUERY = 'TOPIC_FILTER_BY_QUERY';
 export const filterByQuery = createAction(TOPIC_FILTER_BY_QUERY, str => str);

@@ -48,12 +48,14 @@ const PermissionsList = ({ renderTextField, renderSelect, intl: { formatMessage 
               placeholder={formatMessage(localMessages.emailFieldHint)}
             />
           </Col>
-          <Col lg={3}>
-            <Field name={`${permission}.permission`} component={renderSelect} label={localMessages.permission}>
+          <Col lg={2}>
+            <Field fullWidth name={`${permission}.permission`} component={renderSelect} label={localMessages.permission}>
               <MenuItem key={PERMISSION_TOPIC_READ} value={PERMISSION_TOPIC_READ}><FormattedMessage {...localMessages.read} /></MenuItem>
               <MenuItem key={PERMISSION_TOPIC_WRITE} value={PERMISSION_TOPIC_WRITE}><FormattedMessage {...localMessages.write} /></MenuItem>
               <MenuItem key={PERMISSION_TOPIC_ADMIN} value={PERMISSION_TOPIC_ADMIN}><FormattedMessage {...localMessages.admin} /></MenuItem>
             </Field>
+          </Col>
+          <Col lg={1}>
             <DeleteButton onClick={() => fields.remove(index)} />
           </Col>
         </Row>
@@ -93,7 +95,7 @@ const TopicPermissionsContainer = (props) => {
             onSubmit={handleSubmit(values => handleUpdate(topicId, values.permissions))}
           >
             <Row>
-              <Col lg={12} md={12} sm={12}>
+              <Col lg={12}>
                 <FieldArray name="permissions" component={HocPermissionsList} />
               </Col>
             </Row>
@@ -156,14 +158,16 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 function validate(values) {
   const errors = {};
   const permissionArrayErrors = [];
-  values.permissions.forEach((permission, index) => {
-    const permissionErrors = {};
-    if (invalidEmail(permission.email)) {
-      permissionErrors.email = localMessages.emailError;
-    }
-    permissionArrayErrors[index] = permissionErrors;
-  });
-  errors.permissions = permissionArrayErrors;
+  if (values.permissions) {
+    values.permissions.forEach((permission, index) => {
+      const permissionErrors = {};
+      if (invalidEmail(permission.email)) {
+        permissionErrors.email = localMessages.emailError;
+      }
+      permissionArrayErrors[index] = permissionErrors;
+    });
+    errors.permissions = permissionArrayErrors;
+  }
   return errors;
 }
 

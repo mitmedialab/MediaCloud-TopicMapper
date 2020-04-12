@@ -1,95 +1,86 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import LinkWithFilters from '../LinkWithFilters';
 import { fetchTopicMapFiles } from '../../../actions/topicActions';
+import messages from '../../../resources/messages';
 
 const localMessages = {
-  title: { id: 'topic.summary.mapDownload.title', defaultMessage: 'Download Link and Word Maps' },
-  helpIntro: { id: 'topic.summary.mapDownload.help.intro', defaultMessage: '<p>Anayzing the content in this topic as a network can help reveal clusters of content all using the same narrative.  Links Maps show which media sources are linking to each other.  Word Maps show which sources use the same words when talking about this topic.' },
-  helpText: { id: 'topic.summary.mapDownload.help.details', defaultMessage: '<p>When you visit this page for the first time, we start a background process to generate the word map.  This word map is based on the top 100 words from the top 50 sources.  We will be making this system more versatile in the future, but for now this was the quickest way to integrate support.  The map is unique for each snapshot/focus/timespan trio; so if you change to a different timespan a new map will be generated.  These maps are saved, so you won\'t have to generate them more than once.</p>' },
-  generating: { id: 'topic.summary.mapDownload.generating', defaultMessage: 'Your map is {status}. This can take a while. Please reload this page in a few minutes to see if it is ready.' },
-  unknownStatus: { id: 'topic.summary.mapDownload.unknownStatus', defaultMessage: 'We\'re not sure what is up with this file. Sorry!' },
-  downloadText: { id: 'topic.summary.mapDownload.download.text', defaultMessage: 'Download a text file of the words used by each source' },
-  downloadGexf: { id: 'topic.summary.mapDownload.download.gexf', defaultMessage: 'Download a .gexf file to use in Gephi' },
-  downloadJson: { id: 'topic.summary.mapDownload.download.json', defaultMessage: 'Download a .json file to analyze with Python' },
-  wordMap: { id: 'topic.summary.mapDownload.wordMap.header', defaultMessage: 'Word Map' },
-  wordMapDescription: { id: 'topic.summary.mapDownload.wordMap.wordMapDescription', defaultMessage: 'This is a network graph with two types of nodes - words and media sources.  The top media sources by inlink are included. Sources are linked to each other through words, clustering sources together based on the language they use.' },
-  linkMap: { id: 'topic.summary.mapDownload.linkMap.header', defaultMessage: 'Link Map' },
-  linkMapDownload: { id: 'topic.summary.mapDownload.linkMap.download', defaultMessage: 'Generate a .gexf link map.' },
-  unsupported: { id: 'topic.summary.mapDownload.unsupported', defaultMessage: 'Sorry, but we can\'t generate link maps or word maps when you are using a query filter.  Remove your "{q}" query filter if you want to generate these maps.' },
+  title: { id: 'topic.summary.mapDownload.title', defaultMessage: 'Download Link Maps' },
+  helpIntro: { id: 'topic.summary.mapDownload.help.intro', defaultMessage: '<p>Anayzing the content in this topic as a network can help reveal clusters of content all using the same narrative.  Links Maps show how media sources are linking to each other.' },
+  helpTextDetails: { id: 'topic.summary.mapDownload.help.details', defaultMessage: '<p>Link maps are generated automatically by our system. If you don\'t see any here, make a small change and create a new version. That new version will include link maps for each timespan automatically.</p>' },
+  none: { id: 'topic.summary.mapDownload.none', defaultMessage: '<p><b>No maps available for this timespan.</b></p>' },
+  unsupported: { id: 'topic.summary.mapDownload.unsupported', defaultMessage: 'Sorry, but we can\'t generate link maps when you are using a query filter.  Remove your "{q}" query filter if you want to generate these maps.' },
+  link: { id: 'topic.summary.mapDownload.link', defaultMessage: '{type} - in {format} format ({size}MB) - ' },
 };
 
+export const urlToMediaMap = (topicId, timespanId, mmf) => `/api/topics/${topicId}/map-files/${mmf.timespan_maps_id}?timespanId=${timespanId}`;
+
 const DownloadMapContainer = (props) => {
-  const { topicId, filters, wordMapStatus } = props;
+  const { topicId, filters, mediaMapFiles, intl } = props;
   let content;
   if (filters.q) {
     // maps generated with a q filter are not what people expect them to be, so don't support it
     content = (<FormattedMessage {...localMessages.unsupported} values={{ q: filters.q }} />);
-  } else {
-    let wordMapContent;
-    switch (wordMapStatus) {
-      case 'rendered':
-        wordMapContent = (
-          <ul>
-            <li>
-              <a href={`/api/topics/${topicId}/map-files/wordMap.gexf?timespanId=${filters.timespanId}`}>
-                <FormattedMessage {...localMessages.downloadGexf} />
-              </a>
-            </li>
-            <li>
-              <a href={`/api/topics/${topicId}/map-files/wordMap.json?timespanId=${filters.timespanId}`}>
-                <FormattedMessage {...localMessages.downloadJson} />
-              </a>
-            </li>
-            <li>
-              <a href={`/api/topics/${topicId}/map-files/wordMap.txt?timespanId=${filters.timespanId}`}>
-                <FormattedMessage {...localMessages.downloadText} />
-              </a>
-            </li>
-          </ul>
-        );
-        break;
-      default:
-        wordMapContent = <FormattedMessage {...localMessages.generating} values={{ status: wordMapStatus }} />;
-        break;
-    }
+  } else if (mediaMapFiles.length === 0) {
     content = (
       <>
-        <h3><FormattedMessage {...localMessages.linkMap} />:</h3>
-        <p><LinkWithFilters to={`/topics/${topicId}/link-map`}><FormattedMessage {...localMessages.linkMapDownload} /></LinkWithFilters></p>
-        <h3><FormattedMessage {...localMessages.wordMap} />:</h3>
-        <p><FormattedMessage {...localMessages.wordMapDescription} /></p>
-        {wordMapContent}
+        <FormattedHTMLMessage {...localMessages.none} />
+        <FormattedHTMLMessage {...localMessages.helpTextDetails} />
       </>
     );
+  } else {
+    content = (
+      <ul>
+        {mediaMapFiles.map(mmf => (
+          <li key={mmf.timespan_maps_id}>
+            <FormattedMessage
+              {...localMessages.link}
+              values={{
+                type: mmf.options.color_by,
+                format: mmf.format,
+                size: intl.formatNumber(mmf.content_length / 1000000, { maximumFractionDigits: 2 }),
+              }}
+            />
+            &nbsp; &nbsp;
+            <a href={urlToMediaMap(topicId, filters.timespanId, mmf)}><FormattedMessage {...messages.download} /></a>
+            &nbsp; &nbsp;
+            {(mmf.format === 'gexf') && (
+              <LinkWithFilters to={`/topics/${topicId}/media-map/${mmf.timespan_maps_id}`}>
+                <FormattedMessage {...messages.view} />
+              </LinkWithFilters>
+            )}
+            {(mmf.format === 'svg') && (
+              <a href={`${urlToMediaMap(topicId, filters.timespanId, mmf)}&download=0`} target="_new">
+                <FormattedMessage {...messages.view} />
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
   }
-  return (
-    <>
-      {content}
-    </>
-  );
+  return content;
 };
 
 DownloadMapContainer.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
-  topicId: PropTypes.number.isRequired,
   filters: PropTypes.object.isRequired,
   // from state
+  topicId: PropTypes.number.isRequired,
   fetchStatus: PropTypes.string.isRequired,
-  linkMapStatus: PropTypes.string,
-  wordMapStatus: PropTypes.string,
+  mediaMapFiles: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
+  topicId: state.topics.selected.id,
   fetchStatus: state.topics.selected.summary.mapFiles.fetchStatus,
-  linkMapStatus: state.topics.selected.summary.mapFiles.linkMap,
-  wordMapStatus: state.topics.selected.summary.mapFiles.wordMap,
+  mediaMapFiles: state.topics.selected.summary.mapFiles.timespan_maps,
 });
 
 const fetchAsyncData = (dispatch, props) => {
@@ -99,7 +90,7 @@ const fetchAsyncData = (dispatch, props) => {
 export default
 injectIntl(
   connect(mapStateToProps)(
-    withSummary(localMessages.title, localMessages.helpIntro, localMessages.helpText)(
+    withSummary(localMessages.title, localMessages.helpIntro, localMessages.helpTextDetails)(
       withFilteredAsyncData(fetchAsyncData)(
         DownloadMapContainer
       )

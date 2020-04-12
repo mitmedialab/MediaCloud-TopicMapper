@@ -1,0 +1,101 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "releases"
+  ],
+  "properties": {
+    "releases": {
+      "$id": "#/properties/releases",
+      "type": "array",
+      "title": "The Releases Schema",
+      "items": {
+        "$id": "#/properties/releases/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "date",
+          "notes",
+          "version"
+        ],
+        "properties": {
+          "date": {
+            "$id": "#/properties/releases/items/properties/date",
+            "type": "string",
+            "title": "The Date Schema",
+            "default": "",
+            "examples": [
+              "2020-01-06"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "notes": {
+            "$id": "#/properties/releases/items/properties/notes",
+            "type": "array",
+            "title": "The Notes Schema",
+            "items": {
+              "$id": "#/properties/releases/items/properties/notes/items",
+              "type": "object",
+              "title": "The Items Schema",
+              "required": [
+                "apps",
+                "note",
+                "type"
+              ],
+              "properties": {
+                "apps": {
+                  "$id": "#/properties/releases/items/properties/notes/items/properties/apps",
+                  "type": "array",
+                  "title": "The Apps Schema",
+                  "items": {
+                    "$id": "#/properties/releases/items/properties/notes/items/properties/apps/items",
+                    "type": "string",
+                    "title": "The Items Schema",
+                    "default": "",
+                    "examples": [
+                      "topics"
+                    ],
+                    "pattern": "^(.*)$"
+                  }
+                },
+                "note": {
+                  "$id": "#/properties/releases/items/properties/notes/items/properties/note",
+                  "type": "string",
+                  "title": "The Note Schema",
+                  "default": "",
+                  "examples": [
+                    "Download for entities and organizations works again"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "type": {
+                  "$id": "#/properties/releases/items/properties/notes/items/properties/type",
+                  "type": "string",
+                  "title": "The Type Schema",
+                  "default": "",
+                  "examples": [
+                    "Fixed"
+                  ],
+                  "pattern": "^(.*)$"
+                }
+              }
+            }
+          },
+          "version": {
+            "$id": "#/properties/releases/items/properties/version",
+            "type": "string",
+            "title": "The Version Schema",
+            "default": "",
+            "examples": [
+              "v3.12.24"
+            ],
+            "pattern": "^(.*)$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { Col } from 'react-flexbox-grid/lib';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { fetchQueryPerDateTopWords, fetchDemoQueryPerDateTopWords, fetchQueryPerDateSampleStories,
   fetchDemoQueryPerDateSampleStories, resetQueriesPerDateTopWords, resetQueriesPerDateSampleStories,
   resetSentenceDataPoint } from '../../../../actions/explorerActions';
 import withAsyncData from '../../../common/hocs/AsyncDataContainer';
-import QueryAttentionOverTimeDrillDownDataCard from './QueryAttentionOverTimeDrillDownDataCard';
+import CloseableDataCard from '../../../common/CloseableDataCard';
+import StorySentencePreview from '../../../common/StorySentencePreview';
+import OrderedWordCloud from '../../../vis/OrderedWordCloud';
+
+const localMessages = {
+  sampleSentences: { id: 'explorer.attention.drillDown.sampleSentences', defaultMessage: 'Sample Sentences' },
+  topWords: { id: 'explorer.attention.drillDown.topWords', defaultMessage: 'Top Words' },
+  topStories: { id: 'explorer.attention.drillDown.topStories', defaultMessage: 'Top Stories' },
+  detailsSingular: { id: 'explorer.attention.drillDown.details', defaultMessage: 'Details for {date1}' },
+  detailsRange: { id: 'explorer.attention.drillDown.details', defaultMessage: 'Details for {date1} to {date2}' },
+};
 
 class QueryAttentionOverTimeDrillDownContainer extends React.Component {
   constructor(props) {
@@ -30,17 +41,34 @@ class QueryAttentionOverTimeDrillDownContainer extends React.Component {
   }
 
   render() {
-    const { words, handleClose, stories, dataPoint } = this.props;
+    const { words, handleClose, sentences, dataPoint } = this.props;
     let content = <span />;
-    // don't bother if datapoint is empty
-    // if (dataPoint && words && words.length > 0 && stories !== undefined) {
     if (dataPoint) {
+      const date1 = dataPoint.start_date;
+      const date2 = dataPoint.end_date;
+      const dateTitle = dataPoint.dayGap ? <h2><FormattedMessage {...localMessages.detailsSingular} values={{ date1 }} /></h2> : <h2><FormattedMessage {...localMessages.detailsRange} values={{ date1, date2 }} /></h2>;
+      const hexToRGBArray = clr => clr.match(/[A-Za-z0-9]{2}/g).map(v => parseInt(v, 16));
+      const rgbColor = dataPoint.color ? hexToRGBArray(dataPoint.color) : '#000000';
       content = (
         <div className="drill-down" ref={this.rootRef}>
-          <QueryAttentionOverTimeDrillDownDataCard
-            info={dataPoint}
-            words={words}
-            stories={stories}
+          <CloseableDataCard
+            title={dateTitle}
+            content={(
+              <>
+                { sentences && (
+                  <Col lg={6}>
+                    <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.sampleSentences} /></h3>
+                    <StorySentencePreview sentences={sentences.slice(0, 8)} />
+                  </Col>
+                )}
+                { words && (
+                  <Col lg={6}>
+                    <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.topWords} /></h3>
+                    <OrderedWordCloud words={words} textColor={`rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`} />
+                  </Col>
+                )}
+              </>
+            )}
             onClose={handleClose}
           />
         </div>
@@ -61,14 +89,14 @@ QueryAttentionOverTimeDrillDownContainer.propTypes = {
   fetchStatus: PropTypes.array.isRequired,
   dataPoint: PropTypes.object,
   words: PropTypes.array,
-  stories: PropTypes.array,
+  sentences: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
   fetchStatus: [state.explorer.storiesPerDateRange.fetchStatus, state.explorer.topWordsPerDateRange.fetchStatus],
   dataPoint: state.explorer.storySplitCount.dataPoint,
   words: state.explorer.topWordsPerDateRange.results,
-  stories: state.explorer.storiesPerDateRange.results,
+  sentences: state.explorer.storiesPerDateRange.results,
 });
 
 const mapDispatchToProps = dispatch => ({

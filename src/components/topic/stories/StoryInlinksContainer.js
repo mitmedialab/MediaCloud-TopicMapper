@@ -8,6 +8,7 @@ import withHelp from '../../common/hocs/HelpfulContainer';
 import messages from '../../../resources/messages';
 import TopicStoryTable from '../TopicStoryTable';
 import DataCard from '../../common/DataCard';
+import TopicPropTypes from '../TopicPropTypes';
 import { DownloadButton } from '../../common/IconButton';
 
 const localMessages = {
@@ -42,7 +43,6 @@ StoryInlinksContainer.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   helpButton: PropTypes.node.isRequired,
-  filters: PropTypes.object.isRequired,
   // from parent
   storiesId: PropTypes.number.isRequired,
   topicId: PropTypes.number.isRequired,
@@ -50,12 +50,14 @@ StoryInlinksContainer.propTypes = {
   fetchStatus: PropTypes.string.isRequired,
   inlinkedStories: PropTypes.array.isRequired,
   showTweetCounts: PropTypes.bool,
+  filters: TopicPropTypes.filters.isRequired,
 };
 
 const mapStateToProps = state => ({
   fetchStatus: state.topics.selected.story.inlinks.fetchStatus,
   inlinkedStories: state.topics.selected.story.inlinks.stories,
   showTweetCounts: Boolean(state.topics.selected.info.ch_monitor_id),
+  filters: state.topics.selected.filters,
 });
 
 const fetchAsyncData = (dispatch, props) => {

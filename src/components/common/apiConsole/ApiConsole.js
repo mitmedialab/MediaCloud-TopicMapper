@@ -24,7 +24,7 @@ const ApiConsole = props => (
     <hr />
     <Row>
       <Col lg={12}>
-        <SwaggerContainer specUrl="/static/api-spec.json" />
+        <SwaggerContainer specUrl="/static/api-spec.yml" />
       </Col>
     </Row>
   </Grid>

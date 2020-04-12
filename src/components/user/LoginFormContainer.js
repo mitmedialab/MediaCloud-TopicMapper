@@ -11,7 +11,7 @@ const localMessages = {
 };
 
 class LoginContainer extends React.Component {
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.isLoggedIn) {
       this.context.router.push('/home');
     }

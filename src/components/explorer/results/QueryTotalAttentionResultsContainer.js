@@ -34,6 +34,7 @@ const localMessages = {
 
 const VIEW_NORMALIZED = 'VIEW_NORMALIZED';
 const VIEW_REGULAR = 'VIEW_REGULAR';
+const DOWNLOAD_PATH = '/api/explorer/stories/all-story-urls.csv';
 
 class QueryTotalAttentionResultsContainer extends React.Component {
   state = {
@@ -51,7 +52,7 @@ class QueryTotalAttentionResultsContainer extends React.Component {
   }
 
   downloadCsv = (query) => {
-    postToDownloadUrl('/api/explorer/stories/samples.csv', query);
+    postToDownloadUrl(DOWNLOAD_PATH, query);
   }
 
   render() {
@@ -181,7 +182,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         <AppButton
           variant="text"
           className="action-menu-single-download"
-          onClick={() => postToDownloadUrl('/api/explorer/stories/samples.csv', q)}
+          onClick={() => postToDownloadUrl(DOWNLOAD_PATH, q)}
           aria-controls="action-menu"
           aria-haspopup="true"
           aria-owns="action-menu"
@@ -192,10 +193,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
     return (
       <ActionMenu className="border-button" actionTextMsg={messages.downloadOptions}>
-        {ownProps.queries.map(q => (
+        {ownProps.queries.map((q, idx) => (
           <MenuItem
             className="action-icon-menu-item"
-            onClick={() => postToDownloadUrl('/api/explorer/stories/samples.csv', q)}
+            onClick={() => postToDownloadUrl(DOWNLOAD_PATH, q)}
+            key={idx}
           >
             <ListItemText>
               <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />

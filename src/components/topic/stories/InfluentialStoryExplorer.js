@@ -5,7 +5,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import moment from 'moment';
 import * as d3 from 'd3';
 import dc from 'dc';
-import crossfilter from 'crossfilter';
+import crossfilter from 'crossfilter2';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import messages from '../../../resources/messages';
 import { googleFavIconUrl, storyDomainName } from '../../../lib/urlUtil';
@@ -34,7 +34,7 @@ class InfluentialStoryExplorer extends React.Component {
     this.renderDC(selectedTimespan);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { selectedTimespan } = this.props;
     if ((nextProps.selectedTimespan) && (nextProps.selectedTimespan !== selectedTimespan)) {
       // we need these dates to render the charts right, cause some dates are outside this range
@@ -95,7 +95,7 @@ class InfluentialStoryExplorer extends React.Component {
     const facebookShareChart = dc.barChart('#facebook-share-chart');
     const inlinkChart = dc.barChart('#inlink-chart');
     // load the data up
-    d3.csv(this.csvFileUrl(), (data) => {
+    d3.csv(this.csvFileUrl()).then((data) => {
       this.showLoading(false);
       // set up some binning
       const maxFacebookShares = d3.max(data.map(d => d.facebook_share_count));
@@ -170,13 +170,13 @@ class InfluentialStoryExplorer extends React.Component {
         .renderHorizontalGridLines(true);
       // show how many stories are included
       storyCount
-        .dimension(ndx)
-        .group(all);
+        .crossfilter(ndx)
+        .groupAll(all);
       // and set up the story table
       TopicStoryTable
         .dimension(publishDateDimension)
         .size(50)
-        .group((d) => {
+        .section((d) => {
           let monthStr = null;
           if (d.publishDate !== null) { // ignore undateable ones
             const format = d3.format('02d');
@@ -184,7 +184,7 @@ class InfluentialStoryExplorer extends React.Component {
           }
           return monthStr;
         })
-        .showGroups(false)
+        .showSections(false)
         .columns([
           d => ((d.publishDate === null) ? STORY_PUB_DATE_UNDATEABLE : moment(d.publishDate).format('MMM D, YYYY')),
           d => `<img className="google-icon" src=${googleFavIconUrl(d.domain)} alt=${d.domain} />`,

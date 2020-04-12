@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 import uuidv4 from 'uuid/v4';
-import { trimToMaxLength } from './stringUtil';
+import { trimToMaxLength, queryAsString } from './stringUtil';
 import { notEmptyString } from './formValidators';
 import { downloadViaFormPost } from './apiUtil';
 import { downloadSvg } from '../components/util/svg';
@@ -9,7 +9,7 @@ import messages from '../resources/messages';
 
 export const DEFAULT_SOURCES = '';
 
-export const DEFAULT_COLLECTION = 186572516;
+export const DEFAULT_COLLECTION = 58722749;
 
 export const DEFAULT_COLLECTION_OBJECT_ARRAY = [{ id: DEFAULT_COLLECTION, tags_id: DEFAULT_COLLECTION, label: 'U.S. Top Online News 2017' }];
 
@@ -35,6 +35,8 @@ export const RIGHT = 1;
 export function serializeQueriesForUrl(queries) {
   return encodeURIComponent(JSON.stringify(queries));
 }
+
+export const getQFromCodeMirror = queryAsString;
 
 export const metadataQueryFields = new Set([PUBLICATION_COUNTRY, PUBLICATION_STATE, PRIMARY_LANGUAGE, COUNTRY_OF_FOCUS, MEDIA_TYPE]);
 
@@ -109,7 +111,8 @@ export function generateQueryParamObject(query, skipEncoding) {
     startDate: query.startDate,
     endDate: query.endDate,
     sources: query.sources && query.sources.length > 0 ? query.sources.map(s => (s.id ? s.id : s)) : [], // id field or the id itself
-    collections: query.collections && query.collections.length > 0 ? query.collections.map(s => (s.id ? s.id : s)) : [],
+    // handle an object or an id, and also make sure to screen out -1 (placeholder for ALL_MEDIA)
+    collections: query.collections && query.collections.length > 0 ? query.collections.map(c => (c.id ? c.id : c)).filter(c => c > 0) : [],
     searches: query.searches && query.searches.length > 0 ? serializeSearchTags(query.searches) : [],
   };
 }
@@ -252,12 +255,13 @@ export function queryChangedEnoughToUpdate(queries, nextQueries, results, nextRe
   return false; // if both results and queries are empty, don't update
 }
 
-// TODO: implement this logic from Dashboard
+// TODO: implement more useful logic from Dashboard
 export const autoMagicQueryLabel = (query) => {
-  if (query.q.length === 0) {
-    return '(all stories)';
+  const queryString = queryAsString(query.q);
+  if (queryString.length === 0) {
+    return '(all stories)'; // TODO: intl this by passingin formatMessage
   }
-  return trimToMaxLength(query.q, QUERY_LABEL_AUTOMAGIC_DISPLAY_LIMIT);
+  return trimToMaxLength(queryString, QUERY_LABEL_AUTOMAGIC_DISPLAY_LIMIT);
 };
 
 // This handles downloading a single query (samples or user-generated) for you.  To handle quotes and utf and such, we do this

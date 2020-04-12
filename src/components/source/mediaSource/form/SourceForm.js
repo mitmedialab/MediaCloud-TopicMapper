@@ -72,16 +72,19 @@ function validate(values) {
   return errors;
 }
 
-const asyncValidate = (values, dispatch) => (
-  // verify topic name is unique (should we check URL too?)
-  dispatch(fetchSourceWithNameExists(values.name, values.id))
-    .then((results) => {
-      if (results.nameInUse === true) {
-        const error = { name: localMessages.nameInUseError };
-        throw error;
-      }
-    })
-);
+const asyncValidate = (values, dispatch) => {
+  if (values.name) { // only check if the user entered a name
+    // verify media source name is unique (should we check URL too?)
+    return dispatch(fetchSourceWithNameExists({ searchStr: values.name, id: values.id }))
+      .then((results) => {
+        if (results.nameInUse === true) {
+          const error = { name: localMessages.nameInUseError };
+          throw error;
+        }
+      });
+  }
+  return Promise.resolve();
+};
 
 const reduxFormConfig = {
   form: 'sourceForm',

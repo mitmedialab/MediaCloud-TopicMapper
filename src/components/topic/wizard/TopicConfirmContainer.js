@@ -17,7 +17,7 @@ import { TOPIC_FORM_MODE_CREATE, TOPIC_FORM_MODE_EDIT } from './TopicForm';
 import SeedQuerySummary from '../versions/SeedQuerySummary';
 import Permissioned from '../../common/Permissioned';
 import { PERMISSION_ADMIN } from '../../../lib/auth';
-import { formatTopicPreviewQuery } from '../../util/topicUtil';
+import { formatTopicPreviewQuery, topicQueryAsString } from '../../util/topicUtil';
 
 const localMessages = {
   name: { id: 'topic.create.confirm.name', defaultMessage: 'Name' },
@@ -40,11 +40,11 @@ class TopicConfirmContainer extends React.Component {
   }
 
   finishStep = (formMode, startSpidering, values) => {
-    const { storyCount, user, handleUpdateTopic, handleCreateTopic } = this.props;
+    const { selectedTopicId, storyCount, user, handleUpdateTopic, handleCreateTopic } = this.props;
     this.setState({ submitted: true });
     const updatedValues = { ...values, startSpidering };
     if (formMode === TOPIC_FORM_MODE_EDIT) {
-      return handleUpdateTopic(storyCount, user, updatedValues);
+      return handleUpdateTopic(selectedTopicId, storyCount, user, updatedValues);
     }
     return handleCreateTopic(storyCount, user, updatedValues);
   };
@@ -149,6 +149,7 @@ TopicConfirmContainer.propTypes = {
   user: PropTypes.object.isRequired,
   formValues: PropTypes.object.isRequired,
   selectedSnapshot: PropTypes.object,
+  selectedTopicId: PropTypes.number,
   // from dispatch
   storyCount: PropTypes.number,
 };
@@ -158,6 +159,7 @@ const mapStateToProps = state => ({
   storyCount: state.topics.modify.preview.matchingStoryCounts.count,
   user: state.user,
   selectedSnapshot: state.topics.selected ? state.topics.selected.snapshots.selected : null,
+  selectedTopicId: state.topics.selected ? state.topics.selected.id : null,
 });
 
 export const createNewSpideredVersion = (topicId, dispatch, formatMessage) => {
@@ -214,7 +216,7 @@ const formValuesForSubmission = (values) => {
     ...queryInfo,
     name: values.name,
     description: values.description,
-    solr_seed_query: queryInfo.q,
+    solr_seed_query: topicQueryAsString(queryInfo.q),
     max_iterations: values.max_iterations,
     ch_monitor_id: values.ch_monitor_id === undefined ? '' : values.ch_monitor_id,
     is_public: values.is_public ? 1 : 0,
@@ -238,13 +240,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
     return null;
   },
-  handleUpdateTopic: (storyCount, user, values) => {
+  handleUpdateTopic: (topicId, storyCount, user, values) => {
     if (((storyCount > MIN_RECOMMENDED_STORIES) && (storyCount < MAX_RECOMMENDED_STORIES))
       || user.isAdmin) { // min/max limits dont apply to admin users
       // figure out the new seed query values
       const queryInfo = formValuesForSubmission(values);
-      queryInfo.topic_id = values.topics_id; // this is an update, so add in existing topics_id
-      return dispatch(updateTopicSeedQuery(queryInfo.topics_id, { ...queryInfo }))
+      queryInfo.topic_id = topicId; // this is an update, so add in existing topics_id
+      return dispatch(updateTopicSeedQuery(topicId, { ...queryInfo }))
         .then(results => finishTopic(results, dispatch, ownProps.intl, values.startSpidering));
     }
     if (!user.isAdmin) {

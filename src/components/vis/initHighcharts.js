@@ -1,14 +1,18 @@
-import ReactHighcharts from 'react-highcharts';
-import highchartsTreemap from 'highcharts-treemap';
-import highchartsExporting from 'highcharts/modules/exporting';
+import Highcharts from 'highcharts';
+import HighchartsTreemap from 'highcharts/modules/treemap';
+import HighchartsExporting from 'highcharts/modules/exporting';
+import HighchartsAnnotations from 'highcharts/modules/annotations';
+import HighchartsMap from 'highcharts/modules/map';
 
 let hasBeenInitialized = false;
 
 // wrapper to make sure we only initialize the highcharts component once
 function initHighcharts() {
   if (!hasBeenInitialized) {
-    highchartsTreemap(ReactHighcharts.Highcharts);
-    highchartsExporting(ReactHighcharts.Highcharts);
+    HighchartsTreemap(Highcharts);
+    HighchartsExporting(Highcharts);
+    HighchartsAnnotations(Highcharts);
+    HighchartsMap(Highcharts);
     hasBeenInitialized = true;
   }
 }

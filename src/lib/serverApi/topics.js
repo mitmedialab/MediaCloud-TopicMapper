@@ -21,7 +21,7 @@ export function topicSummary(topicId) {
 }
 
 export function topicTopStories(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'linkId']);
+  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'linkId', 'sources[]', 'collections[]']);
   return createApiPromise(`/api/topics/${topicId}/stories`, acceptedParams);
 }
 
@@ -127,8 +127,7 @@ export function updateOrCreateFocusDefinition(topicId, params) {
   const acceptedParams = acceptParams(params, [
     'foci_id',
     'focalSetName', 'focalSetDescription', 'focalTechnique',
-    'focusName', 'focusDescription', 'focalSetDefinitionId', 'keywords',
-  ]);
+    'focusName', 'focusDescription', 'focalSetDefinitionId', 'keywords', 'sources[]', 'collections[]']);
   return createPostingApiPromise(`/api/topics/${topicId}/focus-definitions/update-or-create`, acceptedParams);
 }
 
@@ -228,12 +227,12 @@ export function updateTopicSettings(topicId, params) {
 
 export function topicMapFiles(topicId, params) {
   const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/map-files`, acceptedParams);
+  return createApiPromise(`/api/topics/${topicId}/map-files/list`, acceptedParams);
 }
 
-export function fetchCustomMap(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'color_field', 'num_media', 'include_weights', 'num_links_per_medium']);
-  return createApiPromise(`/api/topics/${topicId}/map-files/fetchCustomMap`, acceptedParams);
+export function topicMediaMapFile(topicId, params) {
+  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'timespan_maps_id']);
+  return createApiPromise(`/api/topics/${topicId}/map-files/${acceptedParams.timespan_maps_id}`, acceptedParams);
 }
 
 export function fetchTopicSearchResults(searchStr, params) {
@@ -385,4 +384,9 @@ export function topicUpdateSeedQuery(topicId, params) {
 
 export function topicSnapshotCreate(topicId) {
   return createPostingApiPromise(`/api/topics/${topicId}/snapshots/create`);
+}
+
+export function topicTopStoriesOnDates(topicId, params) {
+  const acceptedParams = acceptParams(params, ['startTimestamp', 'endTimestamp', 'snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'selectedTimespanId']);
+  return createApiPromise(`/api/topics/${topicId}/stories/top-on-dates`, acceptedParams);
 }

@@ -23,9 +23,7 @@ const withAttentionAggregation = (ChildComponent, defaultTimePeriod) => {
     }
 
     saveStateAndReorder = (newTimePeriod) => {
-      // const { handleTimePeriodClick } = this.props;
       this.setState({ selectedTimePeriod: newTimePeriod });
-      // handleTimePeriodClick(this.state.selectedTimePeriod);
     }
 
     render() {

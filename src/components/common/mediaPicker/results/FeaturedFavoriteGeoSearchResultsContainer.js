@@ -15,11 +15,11 @@ const localMessages = {
 
 
 class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // PICK_FEATURED
     if (nextProps.selectedMediaQueryType !== this.props.selectedMediaQueryType) {
       this.updateMediaQuery({ type: nextProps.selectedMediaQueryType });

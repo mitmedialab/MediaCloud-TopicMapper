@@ -3,7 +3,7 @@
   "description": "A suite of web-based research support tools for the Media Cloud system",
   "scripts": {
     "dokku": {
-      "predepploy": "./release-tasks.sh"
+      "predepploy": "./scripts/release-tasks.sh"
     }
   }
 }

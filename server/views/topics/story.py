@@ -9,7 +9,7 @@ from server.util import tags as tag_util, csv as csv
 from server.util.request import api_error_handler
 from server.views import WORD_COUNT_DOWNLOAD_NUM_WORDS, WORD_COUNT_DOWNLOAD_SAMPLE_SIZE
 from server.views.topics import apicache as apicache
-from server.views.topics.stories import _cached_geoname, logger, stream_story_list_csv
+from server.views.topics.stories import _cached_geoname, stream_story_list_csv
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def story(topics_id, stories_id):
             if tag['tag_sets_id'] == tag_util.GEO_TAG_SET:
                 geonames_id = int(tag['tag'][9:])
                 try:
-                    tag['geoname'] = _cached_geoname(geonames_id)
+                    tag['geoname'] = _cached_geoname(geonames_id, language)
                 except Exception as e:
                     # query to CLIFF failed :-( handle it gracefully
                     logger.exception(e)
@@ -105,7 +105,7 @@ def story_words_csv(topics_id, stories_id):
 
 
 @app.route('/api/topics/<topics_id>/stories/<stories_id>/inlinks', methods=['GET'])
-#@flask_login.login_required
+@flask_login.login_required
 @api_error_handler
 def story_inlinks(topics_id, stories_id):
     inlinks = apicache.topic_story_list(TOOL_API_KEY, topics_id,
@@ -116,7 +116,9 @@ def story_inlinks(topics_id, stories_id):
 @app.route('/api/topics/<topics_id>/stories/<stories_id>/inlinks.csv', methods=['GET'])
 @flask_login.login_required
 def story_inlinks_csv(topics_id, stories_id):
-    return stream_story_list_csv(user_mediacloud_key(), 'story-'+stories_id+'-inlinks', topics_id,
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'story-'+stories_id+'-inlinks', topic,
                                  link_to_stories_id=stories_id)
 
 
@@ -131,5 +133,7 @@ def story_outlinks(topics_id, stories_id):
 @app.route('/api/topics/<topics_id>/stories/<stories_id>/outlinks.csv', methods=['GET'])
 @flask_login.login_required
 def story_outlinks_csv(topics_id, stories_id):
-    return stream_story_list_csv(user_mediacloud_key(), 'story-'+stories_id+'-outlinks', topics_id,
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'story-'+stories_id+'-outlinks', topic,
                                  link_from_stories_id=stories_id)

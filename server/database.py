@@ -17,7 +17,7 @@ class AppDatabase:
         self._conn = MongoClient(db_uri)[self._db_name]
 
     def check_connection(self):
-        return self._conn.test.insert({'dummy': 'test'})
+        return self._conn.test.insert_one({'dummy': 'test'})
 
 
 class UserDatabase(AppDatabase):

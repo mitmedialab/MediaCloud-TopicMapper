@@ -24,7 +24,7 @@ class AdvancedSearchContainer extends React.Component {
     this.state = { queryStr: defaultQueryStr, tags: [] };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { urlQueryString } = this.props;
     if (nextProps.urlQueryString !== urlQueryString) {
       this.state = { queryStr: nextProps.urlQueryString, tags: [] };

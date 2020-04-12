@@ -33,7 +33,7 @@ const MetadataCheckboxSelector = ({ filter, initialValues, renderCheckbox, onCha
                     ...info.input,
                     ...fieldObject,
                     value: fieldObject.selected,
-                    onChange: (newValue) => onChange({ ...info.input, ...fieldObject, value: newValue }),
+                    onChange: newValue => onChange({ ...info.input, ...fieldObject, value: newValue }),
                   },
                 })}
               </div>

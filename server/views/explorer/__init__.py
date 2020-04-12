@@ -93,7 +93,7 @@ def _parse_collection_ids(args):
             tags_ids = args['collections']
     else:
         tags_ids = DEFAULT_COLLECTION_IDS
-    return tags_ids
+    return [tid for tid in tags_ids if int(tid) > 0] # handle the case that "all media non-collection collection" is represented by '-1
 
 
 REDDIT_SOURCE = 1254159  # a placeholder source to mark searching Reddit's biggest news-related subs

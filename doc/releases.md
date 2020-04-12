@@ -17,7 +17,7 @@ git remote add prod-sources dokku@my.server.edu:mc-sources
 git remote add prod-explorer dokku@my.server.edu:mc-explorer
 ```
 
-Building and Purshing a Release
+Building and Pushing a Release
 -------------------------------
 
 1. Make or enter release branch such as 3.5.x, and create a milestone if we don't have one (ie. v3.5.1)

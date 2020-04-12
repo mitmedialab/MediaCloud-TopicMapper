@@ -14,6 +14,7 @@ function hasConsented() {
 
 // We need to restrict some routes to only users that are logged in
 export function requireAuth(nextState, replace) {
+  // if not logged in, bounce them to login screen
   if (!isLoggedIn()) {
     replace({
       pathname: '/login',
@@ -21,10 +22,11 @@ export function requireAuth(nextState, replace) {
     });
     return false;
   }
+  // if not consented (but yes logged in), bounce them to consent before moving on
   if (!hasConsented()) {
-    if (nextState.location.pathname !== '/user/consent') { // from login or other
+    if (nextState.location.pathname !== '/user/consent') {
       replace({
-        pathname: '/login',
+        pathname: '/user/consent',
         state: { nextPathname: nextState.location.pathname },
       });
     }

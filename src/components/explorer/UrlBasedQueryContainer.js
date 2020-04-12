@@ -31,7 +31,7 @@ function composeUrlBasedQueryContainer() {
         queryInStore: false,
       };
 
-      componentWillMount() {
+      UNSAFE_componentWillMount() {
         const { location } = this.props;
         // if from homepage, allow automagic, if from URL, do not...
         const autoMagic = location.query.auto === 'true';
@@ -40,7 +40,7 @@ function composeUrlBasedQueryContainer() {
         this.updateQueriesFromLocation(location, autoMagic);
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const { location, lastSearchTime, updateUrl, isLoggedIn } = this.props;
         // console.log('new props');
         // if URL has been updated by hand, reparse and store

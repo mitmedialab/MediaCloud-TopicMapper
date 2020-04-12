@@ -5,6 +5,7 @@ import info from './info';
 import words from './words';
 import reddit from './reddit';
 import images from './images';
+import quotes from './quotes';
 
 const rootReducer = combineReducers({
   reddit,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   info,
   words,
   images,
+  quotes,
 });
 
 export default rootReducer;

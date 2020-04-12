@@ -21,12 +21,14 @@ const AppHeader = (props) => {
           <Col lg={12}>
             <h1>
               {titleContent}
-              <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-                <FavoriteToggler
-                  isFavorited={isFavorite}
-                  onSetFavorited={isFavNow => onSetFavorited(isFavNow)}
-                />
-              </Permissioned>
+              {(isFavorite !== undefined) && (
+                <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
+                  <FavoriteToggler
+                    isFavorited={isFavorite}
+                    onSetFavorited={isFavNow => onSetFavorited(isFavNow)}
+                  />
+                </Permissioned>
+              )}
             </h1>
             <p className="sub-title">{subTitle}</p>
           </Col>
@@ -39,7 +41,7 @@ const AppHeader = (props) => {
 AppHeader.propTypes = {
   // from parent
   title: PropTypes.string.isRequired,
-  isFavorite: PropTypes.bool,
+  isFavorite: PropTypes.bool, // optional so we can be a bit more resilient to potential future uses
   onSetFavorited: PropTypes.func,
   subTitle: PropTypes.string,
   link: PropTypes.oneOfType([

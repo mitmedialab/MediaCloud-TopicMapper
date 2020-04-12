@@ -101,10 +101,12 @@ def query_wordcount(q, fq, ngram_size=1, num_words=WORD_COUNT_UI_NUM_WORDS, samp
     # add in word2vec results
     words = [w['term'] for w in word_data]
     # and now add in word2vec model position data
-    google_word2vec_data = apicache.word2vec_google_2d(words)
-    for i in range(len(google_word2vec_data)):
-        word_data[i]['google_w2v_x'] = google_word2vec_data[i]['x']
-        word_data[i]['google_w2v_y'] = google_word2vec_data[i]['y']
+    if len(words) > 0:
+        google_word2vec_data = apicache.word2vec_google_2d(words)
+        for i in range(len(google_word2vec_data)):
+            word_data[i]['google_w2v_x'] = google_word2vec_data[i]['x']
+            word_data[i]['google_w2v_y'] = google_word2vec_data[i]['y']
+
     return word_data
 
 

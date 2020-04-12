@@ -3,7 +3,7 @@ import React from 'react';
 import { FormattedHTMLMessage, injectIntl } from 'react-intl';
 import messages from '../../../resources/messages';
 import OpenWebMediaItem from '../../common/OpenWebMediaItem';
-import { urlToCollection, urlToSource } from '../../../lib/urlUtil';
+import { topicQueryAsString } from '../../util/topicUtil';
 
 const localMessages = {
   title: { id: 'topic.info.title', defaultMessage: 'Version {versionNumber}: Seed Query' },
@@ -36,7 +36,7 @@ const SeedQuerySummary = ({ seedQueryCount, topic, snapshot, intl, faded }) => {
       </p>
       <p>
         <b><FormattedHTMLMessage {...messages.topicQueryProp} /></b>
-        <code>{topic.solr_seed_query}</code>
+        <code>{topicQueryAsString(topic.solr_seed_query)}</code>
       </p>
       <p>
         <b><FormattedHTMLMessage {...localMessages.dates} /></b>
@@ -47,24 +47,12 @@ const SeedQuerySummary = ({ seedQueryCount, topic, snapshot, intl, faded }) => {
       </p>
       <p>
         <b><FormattedHTMLMessage {...messages.topicSourceCollectionsProp} /></b>
-        {sourcesAndCollections.map((o, idx) => {
-          let link = null;
-          if (o.tags_id) {
-            link = urlToCollection(o.tags_id);
-          } else if (o.media_id) {
-            link = urlToSource(o.media_id);
-          } else { // it is a search, no link for now (TODO: link to saved search in sources advanced search results
-            link = null;
-          }
-          return (
-            <OpenWebMediaItem
-              key={o.id || o.tags_id || o.media_id || idx}
-              object={o}
-              link={link}
-              formatMessage={intl.formatMessage}
-            />
-          );
-        })}
+        {sourcesAndCollections.map((o, idx) => (
+          <OpenWebMediaItem
+            key={o.id || o.tags_id || o.media_id || idx}
+            object={o}
+          />
+        ))}
       </p>
     </div>
   );

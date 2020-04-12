@@ -17,9 +17,9 @@ const localMessages = {
 const MAX_STORIES = 100000;
 
 const InfluentialStoryExplorerContainer = (props) => {
-  const { counts, topicId, filters, selectedTimespan } = props;
+  const { totalStories, topicId, filters, selectedTimespan } = props;
   let content = null;
-  if (counts.count > MAX_STORIES) {
+  if (totalStories > MAX_STORIES) {
     content = (
       <p>
         <FormattedMessage {...localMessages.error} />
@@ -59,14 +59,14 @@ InfluentialStoryExplorerContainer.propTypes = {
   topicId: PropTypes.number.isRequired,
   selectedTimespan: PropTypes.object,
   fetchStatus: PropTypes.string.isRequired,
-  counts: PropTypes.object,
+  totalStories: PropTypes.number,
 };
 
 const mapStateToProps = state => ({
   topicId: state.topics.selected.id,
   selectedTimespan: state.topics.selected.timespans.selected,
   fetchStatus: state.topics.selected.summary.storyTotals.fetchStatus,
-  counts: state.topics.selected.summary.storyTotals.counts.total, // total
+  totalStories: state.topics.selected.summary.storyTotals.counts.total, // total
 });
 
 const fetchAsyncData = (dispatch, props) => {

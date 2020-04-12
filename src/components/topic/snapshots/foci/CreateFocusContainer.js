@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { push } from 'react-router-redux';
 import { reset } from 'redux-form';
 import FocusBuilderWizard from './builder/FocusBuilderWizard';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../lib/focalTechniques';
 import { submitFocusUpdateOrCreate, setTopicNeedsNewSnapshot, createRetweetFocalSet, createTopCountriesFocalSet, createNytThemeFocalSet, createMediaTypeFocalSet } from '../../../../actions/topicActions';
 import { LEVEL_ERROR } from '../../../common/Notice';
 import { updateFeedback, addNotice } from '../../../../actions/appActions';
@@ -69,14 +69,24 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   submitDone: (topicId, formValues, queryData) => {
-    let saveData = null;
+    let saveData = { ...formValues };
     const nameAlreadyExists = queryData.focalSetDefinitions.filter(fc => fc.name === formValues.focalSetName);
     if (nameAlreadyExists.length > 0) {
       return dispatch(addNotice({ level: LEVEL_ERROR, message: ownProps.intl.formatMessage(localMessages.duplicateName) }));
     }
     switch (formValues.focalTechnique) {
+      case FOCAL_TECHNIQUE_MEDIA_SEARCH:
       case FOCAL_TECHNIQUE_BOOLEAN_QUERY:
-        return dispatch(submitFocusUpdateOrCreate(topicId, formValues))
+        let collections = [];
+        let sources = [];
+        if (formValues.media) {
+          // if there are media options on the form (ie. a MEDIA_SEARCH) then respect them
+          collections = formValues.media.filter(obj => obj.tags_id).map(s => s.tags_id);
+          sources = formValues.media.filter(obj => obj.media_id).map(s => s.media_id);
+        }
+        saveData['collections[]'] = collections;
+        saveData['sources[]'] = sources;
+        return dispatch(submitFocusUpdateOrCreate(topicId, saveData))
           .then((results) => {
             if (results.length === 1) {
               const focusSavedMessage = ownProps.intl.formatMessage(localMessages.booleanFocusSaved);

@@ -11,14 +11,14 @@ class FaqItem extends React.Component {
     showAnswer: false,
   };
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     const { expanded } = this.props;
     if (expanded) {
       this.setState({ showAnswer: expanded });
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.expanded) {
       this.setState({ showAnswer: nextProps.expanded });
     }

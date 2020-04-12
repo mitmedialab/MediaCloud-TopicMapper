@@ -42,24 +42,24 @@ class QueryAttentionOverTimeResultsContainer extends React.Component {
     this.setState({ view: nextView });
   }
 
-  handleDataPointClick = (date0, date1, evt, origin) => {
+  handleDataPointClick = (startDate, endDate, evt, chartObj, point0x, point1x, pointValue) => {
     const { isLoggedIn, selectDataPoint, queries, onShowLoginDialog } = this.props;
     if (isLoggedIn) {
-      const { name } = origin.series;
+      const { name } = chartObj.series;
       const currentQueryOfInterest = queries.filter(qry => qry.label === name)[0];
       const dayGap = 1; // TODO: harcoded for now because we are always showing daily results
       // date calculations for span/range
-      const clickedQuery = {
+      const dataPoint = {
         q: currentQueryOfInterest.q,
-        start_date: solrFormat(date0),
-        color: origin.series.color,
+        start_date: solrFormat(startDate),
+        color: chartObj.series.color,
         dayGap,
         sources: currentQueryOfInterest.sources.map(s => s.media_id),
         collections: currentQueryOfInterest.collections.map(c => c.tags_id),
         searches: serializeSearchTags(currentQueryOfInterest.searches), // for each query, go prep searches
       };
-      clickedQuery.end_date = solrFormat(oneDayLater(date1), true);
-      selectDataPoint(clickedQuery);
+      dataPoint.end_date = solrFormat(oneDayLater(endDate), true);
+      selectDataPoint({ dataPoint, point0x, pointValue });
     } else {
       onShowLoginDialog();
     }

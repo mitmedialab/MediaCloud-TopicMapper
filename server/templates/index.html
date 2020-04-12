@@ -15,6 +15,7 @@
   <script type="text/javascript">
     document.appConfig = {};
     document.appConfig.cookieDomain = '{{ cookie_domain }}';
+    document.appConfig.maintenanceMode = {{ maintenance_mode }};
   </script>
   {{ stylesheet_tag("common_css") | safe }}
   {{ stylesheet_tag("app_css") | safe }}
@@ -23,7 +24,7 @@
 <body>
 
   <script src="{{  url_for('static', filename='app-config.js') }}"></script>
-  
+
   <div id="app"></div>
 
   <canvas id="canvas" style="display:none"></canvas>  <!-- hack for IE font sizing tricks -->

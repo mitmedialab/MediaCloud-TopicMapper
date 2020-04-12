@@ -38,7 +38,7 @@ class QuerySampleStoriesResultsContainer extends React.Component {
   }
 
   downloadCsv = (query) => {
-    postToDownloadUrl('/api/explorer/stories/samples.csv', query);
+    postToDownloadUrl('/api/explorer/stories/all-story-urls.csv', query);
   }
 
   render() {

@@ -59,10 +59,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     const metadataTagFormKeys = ['publicationCountry', 'publicationState', 'primaryLanguage', 'countryOfFocus', 'mediaType'];
     const infoToSave = {
       url: values.url,
-      name: values.name,
+      name: nullOrUndefined(values.name) ? '' : values.name,
       editor_notes: nullOrUndefined(values.editor_notes) ? '' : values.editor_notes,
       public_notes: nullOrUndefined(values.public_notes) ? '' : values.public_notes,
-      monitored: values.monitored,
+      monitored: nullOrUndefined(values.monitored) ? false : values.monitored,
     };
     metadataTagFormKeys.forEach((key) => { // the metdata tags are encoded in individual properties on the form
       if (key in values) {

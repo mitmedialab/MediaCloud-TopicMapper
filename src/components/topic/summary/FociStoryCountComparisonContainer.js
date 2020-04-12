@@ -3,7 +3,8 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import DataCard from '../../common/DataCard';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import initHighcharts from '../../vis/initHighcharts';
@@ -89,7 +90,7 @@ const FociStoryCountComparisonContainer = (props) => {
   return (
     <DataCard>
       <h2><FormattedMessage {...localMessages.title} /></h2>
-      <ReactHighcharts config={config} />
+      <HighchartsReact highcharts={Highcharts} options={config} />
     </DataCard>
   );
 };

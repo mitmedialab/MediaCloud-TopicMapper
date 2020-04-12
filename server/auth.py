@@ -1,8 +1,7 @@
 import datetime
 import logging
 import flask_login
-from flask_login import current_user
-import mediacloud
+import mediacloud.api
 
 from server import user_db, login_manager
 
@@ -78,9 +77,9 @@ def load_user(userid):
 
 
 def is_user_logged_in():
-    if current_user == None:
+    if flask_login.current_user is None:
         return False
-    return current_user.is_authenticated
+    return flask_login.current_user.is_authenticated
 
 
 def login_user(user):
@@ -90,17 +89,16 @@ def login_user(user):
 
 
 def user_has_auth_role(role):
-    return current_user.has_auth_role(role)
+    return flask_login.current_user.has_auth_role(role)
 
 
 def user_is_admin():
     return user_has_auth_role('admin')
 
 
-def create_and_cache_user(profile):
+def create_user(profile):
     user = User(profile)
     user.create_in_db_if_needed()
-    #User.cached[user.id] = user
     logger.debug("  added to user cache %s", user.id)
     return user
 
@@ -110,12 +108,12 @@ def load_from_db_by_username(username):
 
 
 def user_name():
-    return current_user.name
+    return flask_login.current_user.name
 
 
 def user_mediacloud_key():
     # Return the IP-restricted API token for this user from the cookie (note: this is the server IP)
-    return current_user.profile['api_key']
+    return flask_login.current_user.profile['api_key']
 
 
 def user_admin_mediacloud_client(user_mc_key=None):

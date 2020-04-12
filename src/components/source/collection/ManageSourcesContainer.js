@@ -75,7 +75,7 @@ class ManageSourcesContainer extends React.Component {
     selectedViewIndex: 0,
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { collectionId, fetchData } = this.props;
     if ((nextProps.collectionId !== collectionId)) {
       fetchData(nextProps.collectionId);

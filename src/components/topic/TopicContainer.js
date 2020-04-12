@@ -19,7 +19,6 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import { parseId } from '../../lib/numberUtil';
 import withFilteredUrlMaintenance from './versions/FilteredUrlMaintainer';
 
-
 const pickDefaultTimespan = (dispatch, timespanList) => {
   // async handler after promise returns - pick the first timespan as the default (this is the overall one)
   let defaultTimespanId;

@@ -72,7 +72,7 @@ cliff = None
 try:
     cliff = Cliff(config.get('CLIFF_URL'))
 except KeyError as e:
-    logger.warn("no CLIFF connection")
+    logger.warning("no CLIFF connection")
 
 NYT_THEME_LABELLER_URL = config.get('NYT_THEME_LABELLER_URL')
 
@@ -95,6 +95,7 @@ def is_dev_mode():
 def is_prod_mode():
     return server_mode == SERVER_MODE_PROD
 
+
 webpack = Webpack()
 mail = Mail()
 
@@ -112,7 +113,7 @@ def create_app():
         sentry_dsn = config.get('SENTRY_DSN')
         Sentry(my_app, dsn=sentry_dsn)
     except ConfigException as ce:
-        logger.warn(ce)
+        logger.warning(ce)
     # set up webpack
     if is_dev_mode():
         manifest_path = '../build/manifest.json'
@@ -161,7 +162,7 @@ def create_app():
     # set up thread pooling
     my_app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
     my_app.config['EXECUTOR_MAX_WORKERS'] = 20
-    #app.config['EXECUTOR_TYPE'] = 'thread' # valid options - 'thread' (default) or 'process'
+    # app.config['EXECUTOR_TYPE'] = 'thread' # valid options - 'thread' (default) or 'process'
     # set up user login
     cookie_domain = config.get('COOKIE_DOMAIN')
     my_app.config['SESSION_COOKIE_NAME'] = "mc_session"
@@ -190,7 +191,14 @@ executor = Executor(app)
 @app.route('/')
 def index():
     logger.debug("homepage request")
-    return render_template('index.html', cookie_domain=config.get('COOKIE_DOMAIN'))
+    try:
+        maintenance_mode = config.get('MAINTENANCE_MODE')
+    except ConfigException:
+        maintenance_mode = 0
+    return render_template('index.html',
+                           cookie_domain=config.get('COOKIE_DOMAIN'),
+                           maintenance_mode=maintenance_mode)
+
 
 # now load in the appropriate view endpoints, after the app has been initialized
 import server.views.user

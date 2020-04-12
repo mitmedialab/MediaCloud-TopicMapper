@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactHighmaps from 'react-highcharts/dist/ReactHighmaps';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import initHighcharts from './initHighcharts';
 import { getBrandDarkColor } from '../../styles/colors';
+import { highchartsRobinsonLowRes } from '../../lib/mapUtil';
 
 initHighcharts();
 
-const maps = require('./world-eckert3-lowres');
+// const map = require('./world-eckert3-lowres');
 
 const DEFAULT_BACKGROUND_COLOR = '#FFFFFF';
 
@@ -31,6 +33,8 @@ class GeoChart extends React.Component {
     const config = {
       // Initiate the chart
       chart: {
+        type: 'map',
+        map: highchartsRobinsonLowRes,
         backgroundColor: backgroundColor || DEFAULT_BACKGROUND_COLOR,
       },
       title: {
@@ -62,7 +66,6 @@ class GeoChart extends React.Component {
       },
       series: [{
         data,
-        mapData: maps,
         joinBy: 'iso-a2',
         name: formatMessage(localMessages.seriesName),
         allowPointSelect: true,
@@ -131,7 +134,7 @@ class GeoChart extends React.Component {
           },
         };
       }
-      content = React.createElement(ReactHighmaps, { config });
+      content = <HighchartsReact options={config} highcharts={Highcharts} constructorType="mapChart" />;
     }
     return content;
   }

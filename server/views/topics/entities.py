@@ -55,5 +55,5 @@ def entities_csv(topics_id, type_entity):
     tag_type = CLIFF_PEOPLE if type_entity == 'people' else CLIFF_ORGS
     top_tag_counts = topic_tag_counts(user_mediacloud_key(), topics_id, tag_type)
     data = process_tags_for_coverage(topics_id, top_tag_counts)
-    return csv.stream_response(top_tag_counts, ENTITY_DOWNLOAD_COLUMNS,
+    return csv.stream_response(data['entities'], ENTITY_DOWNLOAD_COLUMNS,
                                'topic-{}-entities-{}'.format(topics_id, type))

@@ -25,7 +25,7 @@ const ItemSlider = (props) => {
       nextArrow={nextButton}
       prevArrow={previousButton}
       style={{
-        width: 80,
+        width: '100%',
         height: 100,
         margin: 10,
         padding: 10,

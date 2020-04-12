@@ -1,6 +1,6 @@
 from server import mc, TOOL_API_KEY
 from server.cache import cache
-from server.auth import user_mediacloud_client, user_admin_mediacloud_client
+from server.auth import user_mediacloud_client, user_admin_mediacloud_client, user_mediacloud_key
 from server.views.explorer import dates_as_filter_query
 import server.util.wordembeddings as wordembeddings
 from server.util.api_helper import combined_split_and_normalized_counts, add_missing_dates_to_split_story_counts
@@ -127,18 +127,18 @@ def _cached_total_story_count(api_key, q, fq):
 
 
 def random_story_list(q, fq, limit):
-    return story_list_page(q, fq, stories_per_page=limit, sort=mc.SORT_RANDOM)
+    return story_list_page(user_mediacloud_key(), q, fq, stories_per_page=limit, sort=mc.SORT_RANDOM)
 
 
-def story_list_page(q, fq, last_processed_stories_id=None, stories_per_page=1000, sort=mc.SORT_PROCESSED_STORIES_ID):
-    return _cached_story_list_page(base_cache.api_key(), q, fq, last_processed_stories_id, stories_per_page, sort)
+def story_list_page(api_key, q, fq, last_processed_stories_id=None, stories_per_page=1000, sort=mc.SORT_PROCESSED_STORIES_ID):
+    return _cached_story_list_page(api_key, q, fq, last_processed_stories_id, stories_per_page, sort)
 
 
 @cache.cache_on_arguments()
 def _cached_story_list_page(api_key, q, fq, last_processed_stories_id, stories_per_page, sort):
     # be user-specific in this cache to be careful about permissions on stories
     # api_key passed in just to make this a user-level cache
-    local_client = base_cache.mc_client()
+    local_client = user_mediacloud_client(api_key)
     return local_client.storyList(q, fq, last_processed_stories_id=last_processed_stories_id, rows=stories_per_page,
                                   sort=sort)
 

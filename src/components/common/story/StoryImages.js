@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import { fetchStoryImages } from '../../../actions/storyActions';
 import withAsyncData from '../hocs/AsyncDataContainer';
-import withHelp from '../hocs/HelpfulContainer';
 import DataCard from '../DataCard';
 import { trimToMaxLength } from '../../../lib/stringUtil';
 
@@ -40,7 +39,6 @@ const StoryImages = ({ topImage, allImages }) => (
 StoryImages.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
-  helpButton: PropTypes.node.isRequired,
   // from parent
   storyId: PropTypes.number.isRequired,
   // from state
@@ -60,10 +58,8 @@ const fetchAsyncData = (dispatch, { storyId }) => dispatch(fetchStoryImages(stor
 export default
 injectIntl(
   connect(mapStateToProps)(
-    withHelp(localMessages.helpTitle, localMessages.helpIntro)(
-      withAsyncData(fetchAsyncData, ['storyId'])(
-        StoryImages
-      )
+    withAsyncData(fetchAsyncData, ['storyId'])(
+      StoryImages
     )
   )
 );

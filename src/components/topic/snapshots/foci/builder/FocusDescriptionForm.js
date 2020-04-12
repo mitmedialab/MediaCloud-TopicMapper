@@ -27,7 +27,7 @@ const localMessages = {
 };
 
 class FocusDescriptionForm extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { change, focalTechnique, initialValues, keywords } = this.props;
     const { formatMessage } = this.props.intl;
     // set smart-looking default focus name/description based on the focal technique currently selected

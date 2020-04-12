@@ -18,15 +18,12 @@ import { downloadSvg } from '../../util/svg';
 
 const localMessages = {
   chartTitle: { id: 'collection.summary.sourceRepresentation.chart.title', defaultMessage: 'Sentences By Source' },
-  title: { id: 'collection.summary.sourceRepresentation.title', defaultMessage: 'Source Representation' },
-  helpTitle: { id: 'collection.summary.sourceRepresentation.help.title', defaultMessage: 'About Source Representation' },
+  title: { id: 'collection.summary.sourceRepresentation.title', defaultMessage: 'Recent Source Representation' },
+  helpTitle: { id: 'collection.summary.sourceRepresentation.help.title', defaultMessage: 'About Recent Source Representation' },
   helpText: { id: 'collection.summary.sourceRepresentation.help.text',
-    defaultMessage: '<p>This visualization gives you a sense of how much content each source contributes to this collection.  Each source is a circle.  The larger and darker the circle, the more stories it has in this collection.  Rollover one to see the actual number of stories. Click the source to learn more about it.</p><p>For performance reasons, these percentages are based on a sample of 5000 stories from this collection.  Our tests show that this sampling provides accurate results.</p>',
+    defaultMessage: '<p>This visualization gives you a sense of how much content each source contributes to this collection.  Each source is a circle.  The larger and darker the circle, the more stories it has in this collection.  Rollover one to see the actual number of stories. Click the source to learn more about it.</p><p>For performance reasons, these percentages are based on a sample of 500 stories over the last 90 days from this collection.</p>',
   },
   cantShow: { id: 'collection.summary.sourceRepresentation.cantShow', defaultMessage: 'Sorry, this collection has too many sources for us to compute a map of how much content each source contributes to it.' },
-  overallSeries: { id: 'collection.bubble.series.overall', defaultMessage: 'Overall' },
-  bubbleChartTitle: { id: 'collection.bubble.bubbleChart.title', defaultMessage: 'Total Bubble Representation' },
-  lineChartTitle: { id: 'collection.bubble.lineChart.title', defaultMessage: 'Bubble Representation' },
 };
 
 const BUBBLE_CHART_DOM_ID = 'source-representation-bubble-chart';

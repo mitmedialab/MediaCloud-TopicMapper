@@ -38,3 +38,6 @@ export const fetchStoryRedditAttention = createAsyncAction(FETCH_STORY_REDDIT_AT
 
 export const FETCH_STORY_IMAGES = 'FETCH_STORY_IMAGES';
 export const fetchStoryImages = createAsyncAction(FETCH_STORY_IMAGES, api.storyImages);
+
+export const FETCH_STORY_QUOTES = 'FETCH_STORY_QUOTES';
+export const fetchStoryQuotes = createAsyncAction(FETCH_STORY_QUOTES, api.storyQuotes);

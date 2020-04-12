@@ -18,6 +18,7 @@ import AppNoticesContainer from './common/header/AppNoticesContainer';
 const localMessages = {
   privacyPolicy: { id: 'app.privacyPolicy', defaultMessage: 'Read our privacy policy.' },
   maintenance: { id: 'app.maintenance', defaultMessage: 'Sorry, we have taken our system down right now for maintenance' },
+  construction: { id: 'app.construction', defaultMessage: 'Notice, we will be performing system-level maintenance Oct 7-8 2019. Expect interruptions in service.' },
 };
 
 class AppContainer extends React.Component {
@@ -25,7 +26,7 @@ class AppContainer extends React.Component {
     open: false,
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedback } = this.props;
     if (nextProps.feedback.message !== feedback.message) {
       this.setState({ open: true });
@@ -40,7 +41,17 @@ class AppContainer extends React.Component {
     const { children, feedback, name } = this.props;
 
     let content = children;
-    if (document.appConfig.online === false) {
+    /* const construction = (
+      <div style={{ textAlign: 'center' }}>
+        <WarningNotice>
+          <br />
+          <FormattedMessage {...localMessages.construction} /><br />
+          <img alt="under-constrction" src={assetUrl('/static/img/under-construction.gif')} />
+        </WarningNotice>
+      </div>
+    );
+    */
+    if (document.appConfig.maintenanceMode === 1) {
       content = (
         <div className="maintenance">
           <Row center="lg">

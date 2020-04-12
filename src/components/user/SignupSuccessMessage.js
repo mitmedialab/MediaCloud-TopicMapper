@@ -17,7 +17,7 @@ const SignupSuccessMessage = () => (
         <Col lg={12}>
           <h1><FormattedMessage {...localMessages.click} /></h1>
           <p><FormattedMessage {...localMessages.emailCheck} /></p>
-          <p><Link to="/resend-activation"><FormattedMessage {...localMessages.sendAgain} /></Link></p>
+          <p><Link to="/user/resend-activation"><FormattedMessage {...localMessages.sendAgain} /></Link></p>
         </Col>
       </Row>
     </Grid>

@@ -15,9 +15,9 @@ import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil
 import { notEmptyString } from '../../../../lib/formValidators';
 
 const localMessages = {
-  fullTitle: { id: 'system.mediaPicker.sources.title', defaultMessage: 'Sources matching<br /> "{keyword}" and {tags}' },
-  mTitle: { id: 'system.mediaPicker.sources.title', defaultMessage: 'Sources matching<br />"{keyword}"' },
-  tTitle: { id: 'system.mediaPicker.sources.title', defaultMessage: 'Sources matching<br />{tags}' },
+  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: 'Top Sources matching<br /> "{keyword}" and {tags}' },
+  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: 'Top Sources matching<br />"{keyword}"' },
+  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: 'Top Sources matching<br />{tags}' },
   hintText: { id: 'system.mediaPicker.sources.hint', defaultMessage: 'Search sources by name or url' },
   noResults: { id: 'system.mediaPicker.sources.noResults', defaultMessage: 'No results. Try searching for the name or URL of a specific source to see if we cover it, like Washington Post, Hindustan Times, or guardian.co.uk.' },
   showAdvancedOptions: { id: 'system.mediaPicker.sources.showAdvancedOptions', defaultMessage: 'Show Advanced Options' },
@@ -31,13 +31,13 @@ const localMessages = {
 const formSelector = formValueSelector('advanced-media-picker-search');
 
 class SourceSearchResultsContainer extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { selectedMediaQueryType, updateMediaQuerySelection } = this.props;
     this.correlateSelection(this.props);
     updateMediaQuerySelection({ type: selectedMediaQueryType, tags: {} }); // clear out previous selections
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selectedMedia !== this.props.selectedMedia
       // if the results have changed from a keyword entry, we need to update the UI
       || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {

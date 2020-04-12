@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import initHighcharts from './initHighcharts';
 
 const DEFAULT_HEIGHT = 320;
@@ -46,7 +47,7 @@ const PieChart = (props) => {
   };
   return (
     <div className="pie-chart">
-      <ReactHighcharts config={config} />
+      <HighchartsReact highcharts={Highcharts} options={config} />
     </div>
   );
 };

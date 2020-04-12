@@ -323,7 +323,9 @@ def _tag_set_info(user_mc_key, tag_sets_id):
 @flask_login.login_required
 @api_error_handler
 def api_collection_source_representation(collection_id):
-    source_representation = apicache.collection_source_representation(user_mediacloud_key(), collection_id)
+    source_representation = apicache.collection_source_representation(user_mediacloud_key(), collection_id,
+                                                                      sample_size=500,
+                                                                      fq="publish_date:[NOW-90DAY TO NOW]")
     return jsonify({'sources': source_representation})
 
 
@@ -333,7 +335,9 @@ def api_collection_source_representation(collection_id):
 def api_collection_source_representation_csv(collection_id):
     user_mc = user_mediacloud_client()
     info = user_mc.tag(collection_id)
-    source_representation = apicache.collection_source_representation(user_mediacloud_key(), collection_id)
+    source_representation = apicache.collection_source_representation(user_mediacloud_key(), collection_id,
+                                                                      sample_size=500,
+                                                                      fq="publish_date:[NOW-90DAY TO NOW]")
     props = ['media_id', 'media_name', 'media_url', 'stories', 'sample_size', 'story_pct']
     filename = info['label'] + "-source sentence counts.csv"
     return csv.stream_response(source_representation, props, filename)

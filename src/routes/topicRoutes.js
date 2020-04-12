@@ -75,7 +75,7 @@ const topicRoutes = (
           <Route path="/topics/:topicId/attention" component={AttentionContainer} onEnter={requireAuth} />
           <Route path="/topics/:topicId/words" component={InfluentialWordsContainer} onEnter={requireAuth} />
           <Route path="/topics/:topicId/words/:word" component={WordContainer} onEnter={requireAuth} />
-          <Route path="/topics/:topicId/link-map" component={LinkMapContainer} onEnter={requireAuth} />
+          <Route path="/topics/:topicId/media-map/:mediaMapId" component={LinkMapContainer} onEnter={requireAuth} />
         </Route>
       </Route>
 

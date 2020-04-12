@@ -159,6 +159,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_ids=
         if len(media_ids) > 0:
             media_ids = media_ids.split(',') if isinstance(media_ids, str) else media_ids
             query_media_ids = " ".join([str(m) for m in media_ids])
+            query_media_ids = re.sub(r'\[*\]*', '', str(query_media_ids))
             query_media_ids = " media_id:({})".format(query_media_ids)
             query += '('+query_media_ids+')'
 
@@ -170,6 +171,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_ids=
         if len(tags_ids) > 0:
             tags_ids = tags_ids.split(',') if isinstance(tags_ids, str) else tags_ids
             query_tags_ids = " ".join([str(t) for t in tags_ids])
+            query_tags_ids = re.sub(r'\[*\]*', '', str(query_tags_ids))
             query_tags_ids = " tags_id_media:({})".format(query_tags_ids)
             if len(custom_ids) == 0:
                 query += '('+query_tags_ids+')'
@@ -189,6 +191,8 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_ids=
 
 
 def custom_collection_as_solr_query(custom_ids_str):
+    if (custom_ids_str is None) or (len(custom_ids_str) is 0):
+        return ''
     custom_ids_dict = json.loads(custom_ids_str)
     query_custom_ids = ''
     for sets_of_tags in custom_ids_dict:  # for each custom collections
@@ -200,7 +204,7 @@ def custom_collection_as_solr_query(custom_ids_str):
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
                 custom_sets.append(custom_id_set_string)
             elif len(tag_grp) == 1:
-                custom_id_set_string = re.sub('\[*\]*', '', str(tag_grp))
+                custom_id_set_string = re.sub(r'\[*\]*', '', str(tag_grp))
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
                 custom_sets.append(custom_id_set_string)
         query_custom_ids = " AND ".join(custom_sets)  # AND the metadata sets together

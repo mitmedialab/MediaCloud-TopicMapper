@@ -26,7 +26,7 @@ class TopicListContainer extends React.Component {
     selectedViewIndex: 0,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
   }
 
   render() {

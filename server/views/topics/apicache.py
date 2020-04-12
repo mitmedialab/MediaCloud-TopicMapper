@@ -98,9 +98,7 @@ def _cached_story_list(user_mc_key, q, rows):
 
 
 def topic_story_list(user_mc_key, topics_id, **kwargs):
-    '''
-    Return sorted story list based on filters.
-    '''
+    # Return sorted story list based on filters.
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     merged_args = {
         'snapshots_id': snapshots_id,
@@ -137,7 +135,7 @@ def topic_story_list_by_page(user_mc_key, topics_id, link_id, **kwargs):
 def _cached_topic_story_list_page(user_mc_key, topics_id, link_id, **kwargs):
     # be user-specific in this cache to be careful about permissions on stories
     # api_key passed in just to make this a user-level cache
-    local_mc = base_cache.mc_client(user_mc_key)
+    local_mc = user_mediacloud_client(user_mc_key)
     return local_mc.topicStoryList(topics_id, link_id=link_id, **kwargs)
 
 
@@ -148,7 +146,7 @@ def topic_story_link_list_by_page(user_mc_key, topics_id, link_id, **kwargs):
 @cache.cache_on_arguments()
 def _cached_topic_story_link_list_page(user_mc_key, topics_id, link_id, **kwargs):
     # api_key passed in just to make this a user-level cache
-    local_mc = base_cache.mc_client(user_mc_key)
+    local_mc = user_mediacloud_client(user_mc_key)
     return local_mc.topicStoryLinks(topics_id, link_id=link_id, **kwargs)
 
 
@@ -159,7 +157,7 @@ def topic_media_link_list_by_page(user_mc_key, topics_id, link_id, **kwargs):
 @cache.cache_on_arguments()
 def _cached_topic_media_link_list_page(user_mc_key, topics_id, link_id, **kwargs):
     # api_key passed in just to make this a user-level cache
-    local_mc = base_cache.mc_client(user_mc_key)
+    local_mc = user_mediacloud_client(user_mc_key)
     return local_mc.topicMediaLinks(topics_id, link_id=link_id, **kwargs)
 
 
@@ -188,14 +186,16 @@ def topic_word_counts(user_mc_key, topics_id, **kwargs):
     word_data = cached_topic_word_counts(user_mc_key, topics_id, **merged_args)
     words = [w['term'] for w in word_data]
     # and now add in word2vec model position data
-    google_word2vec_data = _cached_word2vec_google_2d_results(words)
-    for i in range(len(google_word2vec_data)):
-        word_data[i]['google_w2v_x'] = google_word2vec_data[i]['x']
-        word_data[i]['google_w2v_y'] = google_word2vec_data[i]['y']
-    topic_word2vec_data = _word2vec_topic_2d_results(topics_id, snapshots_id, words)
-    for i in range(len(topic_word2vec_data)):
-        word_data[i]['w2v_x'] = topic_word2vec_data[i]['x']
-        word_data[i]['w2v_y'] = topic_word2vec_data[i]['y']
+    if len(words) > 0:
+        google_word2vec_data = _cached_word2vec_google_2d_results(words)
+        for i in range(len(google_word2vec_data)):
+            word_data[i]['google_w2v_x'] = google_word2vec_data[i]['x']
+            word_data[i]['google_w2v_y'] = google_word2vec_data[i]['y']
+        topic_word2vec_data = _word2vec_topic_2d_results(topics_id, snapshots_id, words)
+        for i in range(len(topic_word2vec_data)):
+            word_data[i]['w2v_x'] = topic_word2vec_data[i]['x']
+            word_data[i]['w2v_y'] = topic_word2vec_data[i]['y']
+
     return word_data
 
 
@@ -324,9 +324,7 @@ def cached_topic_timespan_list(user_mc_key, topics_id, snapshots_id=None, foci_i
 
 
 def topic_tag_coverage(topics_id, tags_id):
-    '''
-    Useful for seeing how many stories in the topic are tagged with a specific tag
-    '''
+    # Useful for seeing how many stories in the topic are tagged with a specific tag
     if isinstance(tags_id, list):   # doesn't repect duck-typing, but quick fix
         tags_id_str = "({})".format(" ".join([str(tid) for tid in tags_id]))
     else:
@@ -437,7 +435,6 @@ def add_to_user_query(query_to_add):
     return "({}) AND ({})".format(q_from_request, query_to_add)
 
 
-
 '''
 For cross-subtopic analysis within a subtopic set, we need to identify the timespan that has the same date
 range in each subtopic within the set.  This helper does that annoying work for you. 
@@ -473,3 +470,23 @@ def is_timespans_match(timespan1, timespan2):
             and (timespan1['end_date'] == timespan2['end_date']) \
             and (timespan1['period'] == timespan2['period'])
     return match
+
+
+def topic_media_map_list(topics_id, timespans_id):
+    return _cached_topic_media_map_list(user_mediacloud_key(), topics_id, timespans_id)
+
+
+@cache.cache_on_arguments()
+def _cached_topic_media_map_list(user_mc_key, topics_id, timespans_id):
+    user_mc = user_mediacloud_client(user_mc_key)
+    return user_mc.topicMediaMapList(topics_id, timespans_id=timespans_id)
+
+
+def topic_media_map(topics_id, timespan_maps_id, file_format):
+    return _cached_topic_media_map(user_mediacloud_key(), topics_id, timespan_maps_id, file_format)
+
+
+@cache.cache_on_arguments()
+def _cached_topic_media_map(user_mc_key, topics_id, timespan_maps_id, file_format):
+    user_mc = user_mediacloud_client(user_mc_key)
+    return user_mc.topicMediaMapDownload(topics_id, timespan_maps_id, file_format)

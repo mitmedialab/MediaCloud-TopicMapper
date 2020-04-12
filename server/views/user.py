@@ -21,18 +21,20 @@ ACTIVATION_URL = AUTH_MANAGEMENT_DOMAIN + "/api/user/activate/confirm"
 PASSWORD_RESET_URL = AUTH_MANAGEMENT_DOMAIN + "/api/user/reset-password-request-receive"
 
 
-def merged_user_profile(user_results):
-    if not isinstance(user_results,dict):
+def _create_user_session(user_results):
+    if not isinstance(user_results, dict):
         user_results = user_results.get_properties()
 
-    user_email = user_results['profile']['email']
-    user_results["user"] = mc.userList(search=user_email)['users'][0]
+    # HACK: the API used to return this as true/false, but not returns it as 1 or 0, so we change it to
+    # boolean here so we don't have to change front-end JS logic
+    user_results['profile']['has_consented'] = (user_results['profile']['has_consented'] is 1) or \
+                                               (user_results['profile']['has_consented'] is True)
 
     merged_user_info = user_results['profile'].copy()  # start with x's keys and values
-    merged_user_info.update(user_results["user"])
+
     if 'error' in user_results:
         return json_error_response(user_results['error'], 401)
-    user = auth.create_and_cache_user(merged_user_info)
+    user = auth.create_user(merged_user_info)
     return user
 
 
@@ -45,7 +47,7 @@ def login_with_password():
     password = request.form["password"]
     # try to log them in
     results = mc.authLogin(username, password)
-    user = merged_user_profile(results)
+    user = _create_user_session(results)
     logger.debug("  succeeded - got a key (user.is_anonymous=%s)", user.is_anonymous)
     auth.login_user(user)
     return jsonify(user.get_properties())
@@ -58,7 +60,7 @@ def login_with_cookie():
     if cached_user.is_anonymous:   # no user session
         logger.debug("  login failed (%s)", cached_user.is_anonymous)
         return json_error_response("Login failed", 401)
-    user = merged_user_profile(cached_user)
+    user = _create_user_session(cached_user)
     return jsonify(user.get_properties())
 
 
@@ -71,7 +73,6 @@ def signup():
                               request.form['password'],
                               request.form['fullName'],
                               request.form['notes'],
-                              False,
                               ACTIVATION_URL,
                               bool(request.form['has_consented'] == 'true') if 'has_consented' in request.form else False,
                               )
@@ -202,15 +203,21 @@ def api_user_delete():
 @api_error_handler
 @flask_login.login_required
 def api_user_update():
-    has_consented = request.form['has_consented'] == 'true'
+    has_consented = request.form['has_consented'] if 'has_consented' in request.form else False
+    if has_consented == 'null':
+        has_consented = False
     valid_params = {
         'full_name': request.form['full_name'],
         'notes': request.form['notes'],
         'has_consented': has_consented
     }
     cached_user = flask_login.current_user
-    results = mc.userUpdate(cached_user.profile['auth_users_id'], **valid_params)  # need to do this with the tool admin client
-    user = merged_user_profile(cached_user)
+    # need to update user with the tool admin client, because user doesn't have permission to do this themselves
+    results = mc.userUpdate(cached_user.profile['auth_users_id'], **valid_params)
+    user_mc = user_mediacloud_client()
+    updated_user = user_mc.userProfile()
+    cached_user.profile = updated_user
+    user = _create_user_session(cached_user)
     return jsonify(user.get_properties())
 
 

@@ -30,7 +30,7 @@ def topic_update(topics_id):
                                                           and request.form['ch_monitor_id'] != 'null'
                                                           and len(request.form['ch_monitor_id']) > 0 else None,
         'max_iterations': request.form['max_iterations'] if 'max_iterations' in request.form else None,
-        'max_stories': request.form['max_stories'] if 'max_stories' in request.form and request.form['max_stories'] != 'null' else current_user.profile['max_topic_stories'],
+        'max_stories': request.form['max_stories'] if 'max_stories' in request.form and request.form['max_stories'] != 'null' else current_user.profile['limits']['max_topic_stories'],
         'twitter_topics_id': request.form['twitter_topics_id'] if 'twitter_topics_id' in request.form else None
     }
     # parse out any sources and collections to add

@@ -13,6 +13,7 @@ import topEntitiesOrgs from './topEntitiesOrgs';
 import mapFiles from './mapFiles';
 import word2vec from './word2vec';
 import word2vecTimespans from './word2vecTimespans';
+import attentionDrillDownStories from './attentionDrillDownStories';
 
 const summaryReducer = combineReducers({
   topStories,
@@ -29,6 +30,7 @@ const summaryReducer = combineReducers({
   mapFiles,
   word2vec,
   word2vecTimespans,
+  attentionDrillDownStories,
 });
 
 export default summaryReducer;

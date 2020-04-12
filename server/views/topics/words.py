@@ -7,7 +7,7 @@ from server.views import WORD_COUNT_DOWNLOAD_NUM_WORDS, WORD_COUNT_SAMPLE_SIZE, 
     WORD_COUNT_UI_NUM_WORDS
 import server.util.csv as csv
 from server.util.request import api_error_handler, arguments_required, filters_from_args, json_error_response
-from server.auth import user_mediacloud_key, is_user_logged_in
+from server.auth import user_mediacloud_key, is_user_logged_in, user_mediacloud_client
 from server.views.topics.attention import stream_topic_split_story_counts_csv
 from server.views.topics.stories import stream_story_list_csv
 import server.views.topics.apicache as apicache
@@ -143,7 +143,9 @@ def topic_word_stories(topics_id, word):
 @flask_login.login_required
 @api_error_handler
 def topic_word_stories_csv(topics_id, word):
-    return stream_story_list_csv(user_mediacloud_key(), 'word-'+word+'-stories', topics_id)
+    user_mc = user_mediacloud_client()
+    topic = user_mc.topic(topics_id)
+    return stream_story_list_csv(user_mediacloud_key(), 'word-'+word+'-stories', topic)
 
 
 @app.route('/api/topics/<topics_id>/words/<word>/words', methods=['GET'])

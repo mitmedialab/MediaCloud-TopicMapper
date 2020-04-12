@@ -7,6 +7,9 @@ const storySplitCount = createIndexedAsyncReducer({
   initialState: ({
     counts: [],
     selectedTimePeriod: PAST_DAY,
+    dataPoint: null,
+    startTimetsamp: null,
+    storyCount: null,
   }),
   action: FETCH_QUERY_SPLIT_STORY_COUNT,
   handleSuccess: payload => ({
@@ -16,7 +19,9 @@ const storySplitCount = createIndexedAsyncReducer({
     ratio: payload.results.total / payload.results.normalized_total,
   }),
   [SELECT_DATA_POINT]: payload => ({
-    dataPoint: payload,
+    dataPoint: payload.dataPoint,
+    startTimestamp: payload.point0x,
+    storyCount: payload.pointValue,
   }),
   [RESET_SELECTED_DATA_POINT]: () => ({
     dataPoint: null,

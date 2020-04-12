@@ -8,7 +8,7 @@ const HighlightedText = ({ text, search }) => {
     return text;
   }
   if (text === undefined) { // just being extra safe here
-    return '';
+    return 'No text :-(';
   }
   const regex = new RegExp(`(${search.join('|')})`, 'gi');
   const parts = text.split(regex);

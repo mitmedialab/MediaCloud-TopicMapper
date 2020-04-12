@@ -1,0 +1,87 @@
+@import '../_constants';
+
+.drill-down {
+  border-bottom: 1px solid $material-grey300;
+  padding-bottom: 50px;
+
+  .query-story-drill-down {
+    h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .datacard {
+    background-color: $material-grey300;
+
+    &.story-entities-container,
+    &.story-themes-container,
+    &.stat {
+      border: 1px solid $material-grey400;
+      padding: 20px;
+      margin-top: 25px;
+      margin-right: 0px;
+      em {
+        font-size: 20px;
+      }
+    }
+
+    &.stat {
+      margin-top: 0px;
+    }
+
+  }
+
+  .story-sentence-preview-item {
+    margin: 20px 0px 0px 0px;
+    border-left: solid 1px $material-grey500;
+    padding-left: 10px;
+
+    h3 {
+      margin: 0px;
+    }
+    h4 {
+      margin: 0px 0px 10px 0px;
+      font-size: 14px;
+      font-style: italic;
+      a {
+        font-weight: normal;
+        small {
+          font-weight: normal;
+          display: inline-block;
+          margin-left: 5px;
+        }
+        img {
+          margin-right: 5px;
+        }
+      }
+    }
+    p {
+      font-size: 16px;
+      margin: 5px 0px 5px 0px;
+    }
+  }
+
+  .icon-button-close {
+    float: right;
+  }
+
+  .query-attention-drilldown-title {
+
+  }
+
+  .selected {
+    fill: $explorer-primary !important;
+  }
+
+  .word-tree {
+    svg {
+      g {
+        rect {
+          fill: $material-grey300 !important;
+        }
+      }
+    }
+  }
+
+}

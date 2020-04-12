@@ -248,11 +248,11 @@ def source_create():
 
     ]
     source_to_create = {
-        'name': name,
+        'name': name if (name != 'null' and len(name) > 0) else url,
         'url': url,
         'editor_notes': editor_notes,
         'public_notes': public_notes,
-        'is_monitored': monitored,
+        'is_monitored': (monitored == 'true'),
         'tags_ids': tag_ids_to_add
     }
     result = user_mc.mediaCreate([source_to_create])[0]  # need just the first entry, since we only create one

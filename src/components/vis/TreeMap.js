@@ -2,7 +2,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import initHighcharts from './initHighcharts';
 import { getBrandDarkColor, getBrandDarkerColor } from '../../styles/colors';
 import { intlIfObject } from '../../lib/stringUtil';
@@ -71,7 +72,7 @@ const TreeMap = ({ title, data, onLeafClick, intl, domId, tooltipMessage }) => {
   }
   return (
     <div className="tree-map" id={domId}>
-      <ReactHighcharts config={config} />
+      <HighchartsReact highcharts={Highcharts} options={config} />
     </div>
   );
 };

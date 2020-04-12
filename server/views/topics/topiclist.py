@@ -3,7 +3,8 @@ import logging
 from flask import jsonify, request
 
 from server import app, user_db, mc
-from server.auth import user_mediacloud_client, user_name, user_admin_mediacloud_client, is_user_logged_in
+from server.auth import user_mediacloud_client, user_name, user_admin_mediacloud_client, is_user_logged_in,\
+    user_is_admin
 from server.util.request import form_fields_required, arguments_required, api_error_handler
 
 logger = logging.getLogger(__name__)
@@ -56,6 +57,10 @@ def topic_favorites():
 @flask_login.login_required
 @api_error_handler
 def does_user_have_a_running_topic():
+    # save a costly set of paging queries when the user is admin
+    if user_is_admin():
+        return jsonify([])
+    # non-admin, so do the real check
     user_mc = user_mediacloud_client()
     queued_and_running_topics = []
     more_topics = True

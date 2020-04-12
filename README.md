@@ -35,6 +35,8 @@ Redis:
 MemCache:
 On OSX, make sure to run `brew install libmemcached` otherwise you'll get an error about pylibmc failing to install (http://brew.sh)
  
+Multi-platform setup:
+Coming soon
 
 Configuration
 ------------- 

@@ -18,11 +18,11 @@ const localMessages = {
 
 
 class CollectionSearchResultsContainer extends React.Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selectedMedia !== this.props.selectedMedia
       // if the results have changed from a keyword entry, we need to update the UI
       || (nextProps.collectionResults && nextProps.collectionResults.lastFetchSuccess !== this.props.collectionResults.lastFetchSuccess)) {

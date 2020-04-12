@@ -1,8 +1,8 @@
 import logging
-from multiprocessing import Pool
 import flask_login
 from flask import jsonify, request, Response
 import mediacloud
+import mediacloud.error
 import concurrent.futures
 
 import server.util.csv as csv
@@ -10,12 +10,12 @@ import server.util.tags as tag_util
 import server.views.topics.apicache as apicache
 import server.views.apicache as base_apicache
 import server.util.pushshift as pushshift
+import server.util.dates as dates
 from server import app, cliff, TOOL_API_KEY
-from server.auth import is_user_logged_in
-from server.auth import user_mediacloud_key, user_admin_mediacloud_client, user_mediacloud_client
+from server.auth import is_user_logged_in, user_mediacloud_key, user_admin_mediacloud_client, user_mediacloud_client
 from server.cache import cache
-from server.util.request import api_error_handler
-from server.views.topics import access_public_topic
+from server.util.request import api_error_handler, filters_from_args
+from server.views.topics import access_public_topic, concatenate_query_for_solr, _parse_collection_ids, _parse_media_ids
 from server.util.tags import TAG_SPIDERED_STORY
 
 logger = logging.getLogger(__name__)
@@ -40,8 +40,16 @@ def story_counts(topics_id):
         local_key = user_mediacloud_key()
     else:
         return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
-    total = apicache.topic_story_count(local_key, topics_id, timespans_id=None, snapshots_id=None, q=None, foci_id=None)
-    filtered = apicache.topic_story_count(local_key, topics_id)
+    query = request.form['keywords'] if 'keywords' in request.form else ''
+    #for preview information in subtopics and platforms - scope by media source info
+    collections = _parse_collection_ids(request.args)
+    sources = _parse_media_ids(request.args)
+    merged_args = {}
+    if ((sources not in [None, ''] and len(sources) > 0) or collections not in [None, ''] and len(collections) > 0):
+        query = concatenate_query_for_solr(query, sources, collections)
+        merged_args = {'q': query }
+    filtered = apicache.topic_story_count(local_key, topics_id, **merged_args)
+    total = apicache.topic_story_count(local_key, topics_id, timespans_id=None, snapshots_id=None, foci_id=None, q=None)
     return jsonify({'counts': {'count': filtered['count'], 'total': total['count']}})
 
 
@@ -82,7 +90,15 @@ def topic_stories(topics_id):
         stories = apicache.topic_story_list(TOOL_API_KEY, topics_id, snapshots_id=None, timespans_id=None,
                                             foci_id=None, q=None)
     elif is_user_logged_in():
-        stories = apicache.topic_story_list(user_mediacloud_key(), topics_id)
+        query = request.form['keywords'] if 'keywords' in request.form else ''
+        # for preview information in subtopics and platforms - scope by media source info
+        collections = _parse_collection_ids(request.args)
+        sources = _parse_media_ids(request.args)
+        merged_args = {}
+        if (sources not in [None, ''] and len(sources) > 0) or collections not in [None, ''] and len(collections) > 0:
+            query = concatenate_query_for_solr(query, sources, collections)
+            merged_args = {'q': query}
+        stories = apicache.topic_story_list(user_mediacloud_key(), topics_id, **merged_args)
     else:
         return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
 
@@ -99,14 +115,14 @@ def topic_stories_csv(topics_id):
     media_metadata = (request.args['mediaMetadata'] == '1') if 'mediaMetadata' in request.args else False
     reddit_submissions = (request.args['redditData'] == '1') if 'redditData' in request.args else False
     include_fb_date = (request.args['fbData'] == '1') if 'fbData' in request.args else False
-    return stream_story_list_csv(user_mediacloud_key(), topic,
+    return stream_story_list_csv(user_mediacloud_key(), "stories", topic,
                                  story_limit=story_limit, reddit_submissions=reddit_submissions,
-                                 story_tags=story_tags, include_fb_date=include_fb_date,
+                                 story_tags=story_tags, fb_data=include_fb_date,
                                  media_metadata=media_metadata)
 
 
-def stream_story_list_csv(user_key, topic, **kwargs):
-    filename = topic['name']+'-stories'
+def stream_story_list_csv(user_key, filename, topic, **kwargs):
+    filename = topic['name'] + '-' + filename
     has_twitter_data = (topic['ch_monitor_id'] is not None) and (topic['ch_monitor_id'] != 0)
 
     # as_attachment = kwargs['as_attachment'] if 'as_attachment' in kwargs else True
@@ -117,16 +133,17 @@ def stream_story_list_csv(user_key, topic, **kwargs):
     all_stories = []
     params = kwargs.copy()
 
+    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     merged_args = {
-        'snapshots_id': request.args['snapshotId'],
-        'timespans_id': request.args['timespanId'],
-        'foci_id': request.args['focusId'] if 'focusId' in request.args else None,
-        'q': request.args['q'] if 'q' in request.args else None,
+        'timespans_id': timespans_id,
+        'snapshots_id': snapshots_id,
+        'foci_id': foci_id,
+        'q': q,
         'sort': request.args['sort'] if 'sort' in request.args else None,
     }
     params.update(merged_args)
 
-    story_count = apicache.topic_story_count(user_mediacloud_key(), topic['topics_id'],
+    story_count = apicache.topic_story_count(user_key, topic['topics_id'],
                                              snapshots_id=params['snapshots_id'], timespans_id=params['timespans_id'],
                                              foci_id=params['foci_id'], q=params['q'])
     logger.info("Total stories to download: {}".format(story_count['count']))
@@ -160,7 +177,7 @@ def stream_story_list_csv(user_key, topic, **kwargs):
         all_fb_count = []
         more_fb_count = True
         link_id = 0
-        local_mc = user_admin_mediacloud_client()
+        local_mc = user_mediacloud_client(user_key)
         while more_fb_count:
             fb_page = local_mc.topicStoryListFacebookData(topic['topics_id'], limit=100, link_id=link_id)
 
@@ -190,23 +207,24 @@ def stream_story_list_csv(user_key, topic, **kwargs):
 def get_topic_story_links_csv(topics_id):
     user_mc = user_mediacloud_client()
     topic = user_mc.topic(topics_id)
-    return stream_story_link_list_csv(user_mediacloud_key(), topic['name'] + '-stories', topics_id)
+    return stream_story_link_list_csv(user_mediacloud_key(), topic['name'] + '-story-links', topics_id)
 
 
 def stream_story_link_list_csv(user_key, filename, topics_id, **kwargs):
     params = kwargs.copy()
+    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     merged_args = {
-        'snapshots_id': request.args['snapshotId'],
-        'timespans_id': request.args['timespanId'],
-        'foci_id': request.args['focusId'] if 'foci_id' in request.args else None,
+        'snapshots_id': snapshots_id,
+        'timespans_id': timespans_id,
+        'foci_id': foci_id
     }
     params.update(merged_args)
     if 'q' in params:
         params['q'] = params['q'] if 'q' not in [None, '', 'null', 'undefined'] else None
-    params['limit'] = 100  # an arbitrary value to let us page through with big topics
+    params['limit'] = 500  # an arbitrary value based on testing to let us page through with big topics
 
     props = [
-        'stories_id', 'publish_date', 'title', 'url', 'language', 'ap_syndicated',
+        'stories_id', 'media_id', 'publish_date', 'title', 'url', 'language', 'ap_syndicated',
         'inlink_count', 'outlink_count'
         # 'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
     ]
@@ -223,39 +241,48 @@ def stream_story_link_list_csv(user_key, filename, topics_id, **kwargs):
 def _topic_story_link_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
     local_mc = user_admin_mediacloud_client(user_key)
     spec_props = [
-        'source_stories_id', 'source_publish_date', 'source_title', 'source_url', 'source_language',
-        'source_ap_syndicated', 'source_inlink_count', 'source_outlink_count', 'ref_stories_id', 'ref_publish_date',
-        'ref_title', 'ref_url', 'ref_language', 'ref_ap_syndicated', 'ref_inlink_count', 'ref_outlink_count'
-        'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
+        'source_stories_id', 'source_media_id', 'source_publish_date', 'source_title', 'source_url', 'source_language',
+        'source_ap_syndicated', 'source_inlink_count', 'source_outlink_count',
+        'ref_stories_id', 'ref_media_id', 'ref_publish_date', 'ref_title', 'ref_url', 'ref_language',
+        'ref_ap_syndicated', 'ref_inlink_count', 'ref_outlink_count',
+        # 'media_pub_country', 'media_pub_state', 'media_language', 'media_about_country', 'media_media_type'
     ]
     yield ','.join(spec_props) + '\n'  # first send the column names
     link_id = 0
     more_pages = True
     while more_pages:
+        # fetch one page of the links, which only include story ids
         story_link_page = apicache.topic_story_link_list_by_page(user_key, topics_id, link_id=link_id, **kwargs)
-
+        # now get the full story info by combining the story ids into a one big list
         story_src_ids = [str(s['source_stories_id']) for s in story_link_page['links']]
         story_ref_ids = [str(s['ref_stories_id']) for s in story_link_page['links']]
-        story_src_ids = story_src_ids + story_ref_ids
-
-        stories_info_list = local_mc.topicStoryList(topics_id, stories_id=story_src_ids)
-
+        page_story_ids = list(set(story_src_ids + story_ref_ids))
+        # note: ideally this would use the stories_id argument to pass them in, but that isn't working :-(
+        stories_info_list = apicache.topic_story_list_by_page(user_key, topics_id, stories_id=page_story_ids,
+                                                              link_id=None, limit=kwargs['limit'])
+        # now add in the story info to each row from the links results, so story info is there along with the stories_id
         for s in story_link_page['links']:
             for s_info in stories_info_list['stories']:
                 if s['source_stories_id'] == s_info['stories_id']:
                     s['source_info'] = s_info
                 if s['ref_stories_id'] == s_info['stories_id']:
                     s['ref_info'] = s_info
-
-        if 'next' in story_link_page['link_ids']:
-            link_id = story_link_page['link_ids']['next']
-        else:
-            more_pages = False
-            for s in story_link_page['links']:
+        # now that we have all the story info, stream this page of info the user
+        for s in story_link_page['links']:
+            try:
                 cleaned_source_info = csv.dict2row(props, s['source_info'])
                 cleaned_ref_info = csv.dict2row(props, s['ref_info'])
                 row_string = ','.join(cleaned_source_info) + ',' + ','.join(cleaned_ref_info) + '\n'
                 yield row_string
+            except KeyError as ke:
+                yield "error getting story info on link from {} to {}\n".format(s['ref_stories_id'],
+                                                                                s['source_stories_id'])
+                logger.exception(ke)
+        # figure out if we have more pages to process or not
+        if 'next' in story_link_page['link_ids']:
+            link_id = story_link_page['link_ids']['next']
+        else:
+            more_pages = False
 
 
 # generator you can use to handle a long list of stories row by row (one row per story)
@@ -283,7 +310,7 @@ def _topic_story_list_by_page_as_csv_row(user_key, topics_id, props, **kwargs):
 
 
 def _media_info_worker(info):
-    return base_apicache.get_media(info['user_key'], info['media_id'])
+    return base_apicache.get_media_with_key(info['user_key'], info['media_id'])
 
 
 # generator you can use to do something for each page of story results
@@ -306,7 +333,8 @@ def _topic_story_page_with_media(user_key, topics_id, link_id, **kwargs):
         # build a media lookup table in parallel so it is faster
         if include_media_metadata:
             with concurrent.futures.ProcessPoolExecutor() as executor:
-                jobs = [{'user_key': user_key, 'media_id': s['media_id']} for s in story_page['stories']]
+                media_ids = set([s['media_id'] for s in story_page['stories']])
+                jobs = [{'user_key': user_key, 'media_id': mid} for mid in media_ids]
                 job_results = executor.map(_media_info_worker, jobs)  # blocks until they are all done
                 media_lookup = {j['media_id']: j for j in job_results}
 
@@ -379,3 +407,17 @@ def story_counts_by_snapshot(topics_id):
         seeded = total - spidered
         counts[s['snapshots_id']] = {'total': total, 'spidered': spidered, 'seeded': seeded}
     return jsonify(counts)
+
+
+@app.route('/api/topics/<topics_id>/stories/top-on-dates', methods=['GET'])
+@flask_login.login_required
+@api_error_handler
+def top_by_date(topics_id):
+    # we have to query by timespan instead of date, because topicStoryList doesn't support the `fq` param
+    weekly_timespans_id = request.args['selectedTimespanId']
+    # this will read all filters, and limit and sort from request automatically, so we have to override the timespans_id
+    top_stories = apicache.topic_story_list(user_mediacloud_key(), topics_id, timespans_id=weekly_timespans_id)
+    results = {
+        'stories': top_stories['stories']
+    }
+    return jsonify(results)

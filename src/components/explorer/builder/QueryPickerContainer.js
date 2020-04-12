@@ -17,8 +17,9 @@ import { selectQuery, updateQuery, addCustomQuery, loadUserSearches, saveUserSea
 import { AddQueryButton } from '../../common/IconButton';
 import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { autoMagicQueryLabel, KEYWORD, DATES, MEDIA,
-  DEFAULT_COLLECTION_OBJECT_ARRAY, replaceCurlyQuotes, uniqueQueryId, LEFT, prepSearches } from '../../../lib/explorerUtil';
+  DEFAULT_COLLECTION_OBJECT_ARRAY, replaceCurlyQuotes, uniqueQueryId, LEFT, prepSearches, getQFromCodeMirror } from '../../../lib/explorerUtil';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
+import { queryAsString } from '../../../lib/stringUtil';
 
 const localMessages = {
   mainTitle: { id: 'explorer.querypicker.mainTitle', defaultMessage: 'Query List' },
@@ -40,6 +41,7 @@ class QueryPickerContainer extends React.Component {
     const updatedQuery = {
       ...selected,
       ...formQuery,
+      q: queryAsString(formQuery.q),
       color: newColorInfo.value,
     };
     updateCurrentQuery(updatedQuery, 'color');
@@ -52,6 +54,7 @@ class QueryPickerContainer extends React.Component {
     const updatedMedia = {
       ...selected,
       ...formQuery,
+      q: queryAsString(formQuery.q),
     };
     const updatedSources = formQuery.media.filter(m => m.id !== toBeDeletedObj.id && (m.type === 'source' || m.media_id));
     const updatedCollections = formQuery.media.filter(m => m.id !== toBeDeletedObj.id && (m.type === 'collection' || m.tags_id));
@@ -68,6 +71,7 @@ class QueryPickerContainer extends React.Component {
     const updatedQuery = {
       ...selected,
       ...formQuery,
+      q: queryAsString(formQuery.q),
     };
     if (sourceAndCollections.filter(m => m.id === ALL_MEDIA).length === 0) {
       const updatedSources = sourceAndCollections.filter(m => m.type === 'source' || m.media_id);
@@ -153,7 +157,9 @@ class QueryPickerContainer extends React.Component {
       ...formQuery,
       color: selected.color,
     };
-    updatedQuery.q = replaceCurlyQuotes(updatedQuery.q);
+    // handle a text query, or a codemirror object
+    const queryText = (typeof updatedQuery.q === 'string') ? updatedQuery.q : updatedQuery.q.getValue();
+    updatedQuery.q = replaceCurlyQuotes(queryText);
     updateCurrentQuery(updatedQuery, 'label');
   }
 
@@ -186,7 +192,8 @@ class QueryPickerContainer extends React.Component {
     }
 
     if (propertyName === 'q') {
-      const cleanedQ = replaceCurlyQuotes(newValue);
+      const queryText = (typeof newValue === 'string') ? newValue : newValue.getValue();
+      const cleanedQ = replaceCurlyQuotes(queryText);
       updatedQuery.q = cleanedQ;
       if (updatedQuery.autoNaming) { // no longer auto-name query if the user has intentionally changed it
         updatedQuery.label = cleanedQ;
@@ -415,7 +422,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     // formQuery
     let newValues = null;
     if (whichFilter === KEYWORD) {
-      newValues = { q: currentFormValues.q };
+      const q = { q: (typeof currentFormValues.q === 'string') ? currentFormValues.q : getQFromCodeMirror(currentFormValues.q) };
+      newValues = q;
     } else if (whichFilter === DATES) {
       newValues = { startDate: currentFormValues.startDate, endDate: currentFormValues.endDate };
     } else if (whichFilter === MEDIA) {

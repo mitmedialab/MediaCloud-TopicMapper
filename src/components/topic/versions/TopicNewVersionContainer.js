@@ -10,7 +10,6 @@ import PageTitle from '../../common/PageTitle';
 import AppButton from '../../common/AppButton';
 import BackLinkingControlBar from '../BackLinkingControlBar';
 import messages from '../../../resources/messages';
-import { FETCH_SUCCEEDED } from '../../../lib/fetchConstants';
 import { WarningNotice } from '../../common/Notice';
 import LinkWithFilters from '../LinkWithFilters';
 
@@ -20,7 +19,7 @@ const localMessages = {
   createNewVersionDesc: { id: 'topics.createNewVersion.desc', defaultMessage: 'Change the search terms, dates, or media sources and collections. Once you save your changes, we start building a new version with stories that match your new seed query and follow new links to discover more stories.' },
   addNewSubtopics: { id: 'topics.addNewSubtopics', defaultMessage: 'Add or Modify Subtopics' },
   addNewSubtopicsDesc: { id: 'topics.addNewSubtopics.desc', defaultMessage: 'Slice and dice your topic into subtopics to support comparative analysis. You can create subtopics with a growing list of techniques; allowing you to group stories by simple boolean queries, the country of focus, the themes included, and more.' },
-  cannotUpdateTopic: { id: 'topic.modify.cannotUpdate', defaultMessage: 'Another topic of your\'s is Generating. You can only run one at a time, so you can\'t change this topic until that one finished.' },
+  cannotUpdateTopic: { id: 'topic.modify.cannotUpdate', defaultMessage: 'Another topic of yours is generating. You can only run one at a time, so you can\'t change this topic until that one finished.' },
 };
 
 const TopicNewVersionContainer = props => (
@@ -77,21 +76,17 @@ const mapStateToProps = state => ({
   filters: state.topics.selected.filters,
   topicInfo: state.topics.selected.info,
   topicId: state.topics.selected.id,
-  // if they are an admin the async doesn't need to run
-  fetchStatus: state.user.isAdmin ? FETCH_SUCCEEDED : state.topics.modify.userRunningTopicStatus.fetchStatus,
+  fetchStatus: state.topics.modify.userRunningTopicStatus.fetchStatus,
   allowedToRun: state.topics.modify.userRunningTopicStatus.allowed, // non-admin users can only run one at a time
-  isAdmin: state.user.isAdmin,
 });
 
 const mapDispatchToProps = dispatch => ({
   goToUrl: url => dispatch(push(url)),
 });
 
-const fetchAsyncData = (dispatch, { isAdmin }) => {
-  // non-admin users can only run one topic at a time
-  if (!isAdmin) {
-    dispatch(fetchUserQueuedAndRunningTopics());
-  }
+const fetchAsyncData = (dispatch) => {
+  // will return empty set for admin users
+  dispatch(fetchUserQueuedAndRunningTopics());
 };
 
 export default

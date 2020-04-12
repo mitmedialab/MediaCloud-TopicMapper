@@ -31,7 +31,7 @@ class Word2VecTimespanPlayer extends React.Component {
     this.state = { currentTimespanIndex: (initialIndex !== -1) ? initialIndex : 0, currentPeriodList, selectedPeriod, isPlaying };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { timespanEmbeddings, initialTimespan } = this.props;
     // prevent calling set state on unmounted component
     this.pauseSlideShow();
