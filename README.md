@@ -35,6 +35,72 @@ Redis:
 MemCache:
 On OSX, make sure to run `brew install libmemcached` otherwise you'll get an error about pylibmc failing to install (http://brew.sh)
  
+
+
+Linux Ubuntu setup:
+ * find the most recent version nodejs package available:
+
+```bash
+$ apt list nodejs
+Listing... Done
+nodejs/eoan 10.15.2~dfsg-2ubuntu1 amd64
+nodejs/eoan 10.15.2~dfsg-2ubuntu1 i386
+$ apt list npm
+Listing... Done
+npm/eoan,eoan 5.8.0+ds6-4 all
+```
+
+Currently the package manager will give us node v10.15.2 and  npm v5.8.0, and this might be new enough. If you want something newer then go to npmjs.org for a newer version. No, developers will want to enter by this door: https://github.com/npm/cli. Choose the link 'Super Easy Install -- npm is bundled with node.' and get to https://nodejs.org/en/download/ . Choose the 'Linux Binaries (x64)' link and get node v12.16.2 (as I write this).
+
+But enough of this, let's use the Ubuntu package:
+
+```bash
+$ sudo apt-get install -y nodejs
+..
+$ nodejs -v
+v10.15.2
+$ sudo apt-get install -y npm
+..
+..
+$ npm -v
+5.8.0
+```
+
+ * MongoDB:
+
+```bash
+$ sudo apt-get install -y mongodb
+..
+$ mongo --version
+MongoDB shell version v3.6.8
+$ mongos --version
+mongos version v3.6.8
+```
+
+ * Redis
+
+```
+$ sudo apt-get install -y redis
+..
+$ redis-server -v
+Redis server v=5.0.5 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=8babad91eba747dd
+```
+
+ * memcache
+
+```
+$ sudo apt-get install -y memcached python3-pylibmc
+..
+Setting up python3-pylibmc (1.5.2-1build3) ...
+..
+$ memcached --version
+memcached 1.5.10
+
+```
+
+
+
+
 Multi-platform setup:
 Coming soon
 
