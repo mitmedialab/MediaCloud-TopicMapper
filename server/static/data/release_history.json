@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "date": "2020-03-26",
+      "version": "v3.13.12",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Speed up display and download of topic link maps"
+        }
+      ]
+    },{
       "date": "2020-03-18",
       "version": "v3.13.11",
       "notes": [
