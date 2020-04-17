@@ -1,7 +1,7 @@
 Using Ubuntu for development
 ============================
 
-
+This page is on using Ubuntu for front-end development. Ubuntu for back-end development is discussed elsewhere.
 
 Nodejs setup
 ------------
@@ -27,7 +27,7 @@ DISTRO=linux-x64
 export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 ```
 
-Update your profile and test
+Update your profile and test that npm is installed:
 
 ```
 $ . ~/.profile
@@ -57,11 +57,76 @@ $ npm version
 }
 ```
 
+Install all the modules in the package.json file (needs a good internet connection):
+```
+$ cd MediaCloud-Web-Tools
+$ npm install
+```
+
+https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+https://github.com/nodesource/distributions
 
 
 
+Webpack
+-------
+With node and npm installed you will have a choice of webpack commands: 
+ * `npm run topics-dev`
+ * `npm run sources-dev`
+ * `npm run explorer-dev`
+ * `npm run tools-dev`
 
-Nodejs from packages
+ * `npm run topics-release`
+ * `npm run sources-release`
+ * `npm run explorer-release`
+ * `npm run tools-release`
+ 
+ * `npm run test-acceptance`
+ * `npm run requirements-check`
+ * `npm run postinstall`
+
+MongoDB
+-------
+
+```bash
+$ sudo apt-get install -y mongodb
+..
+$ mongo --version
+MongoDB shell version v3.6.8
+$ mongos --version
+mongos version v3.6.8
+```
+
+Redis
+-----
+
+```
+$ sudo apt-get install -y redis
+..
+$ redis-server -v
+Redis server v=5.0.5 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=8babad91eba747dd
+```
+
+memcache
+--------
+
+```
+$ sudo apt-get install -y memcached python3-pylibmc
+..
+Setting up python3-pylibmc (1.5.2-1build3) ...
+..
+$ memcached --version
+memcached 1.5.10
+
+```
+
+Configuration
+-------------
+Now return to the main README file and see the Configuration section.
+
+
+
+Nodejs from packages (not recommended)
 --------------------
 
 Alternately, you can try to use the Ubuntu packages.
@@ -90,37 +155,3 @@ $ sudo apt-get install -y npm
 $ npm -v
 5.8.0
 ```
-
- * MongoDB:
-
-```bash
-$ sudo apt-get install -y mongodb
-..
-$ mongo --version
-MongoDB shell version v3.6.8
-$ mongos --version
-mongos version v3.6.8
-```
-
- * Redis
-
-```
-$ sudo apt-get install -y redis
-..
-$ redis-server -v
-Redis server v=5.0.5 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=8babad91eba747dd
-```
-
- * memcache
-
-```
-$ sudo apt-get install -y memcached python3-pylibmc
-..
-Setting up python3-pylibmc (1.5.2-1build3) ...
-..
-$ memcached --version
-memcached 1.5.10
-
-```
-
-
