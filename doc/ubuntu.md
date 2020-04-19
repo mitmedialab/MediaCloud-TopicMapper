@@ -66,6 +66,26 @@ $ npm install
 https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 https://github.com/nodesource/distributions
 
+Yarn v.s. NPM
+-------------
+
+Npm can give you problems if your internet access is not perfect. Npm install does many connections, and one failure sets you back to zero. This and other reasons made me go with yarn at https://yarnpkg.com/ . Simple installation instructions are at https://classic.yarnpkg.com/en/docs/install#debian-stable . Note that this installation also causes the installation of the nodejs Ubuntu packages that we don't want, but this is harmless because our newer nodejs is at the head of PATH.
+
+Now we can install packages:
+```
+$ yarn install
+```
+
+fsevents problem
+----------------
+The fsevents module is Mac OSX specific, it is only relevant on Mac OS, it does not compile on Linux or Windows. Yarn appears to try and compile it even on incompatible operating system. This is a waste of time as it's always going to fail.
+https://github.com/yarnpkg/yarn/issues/2051
+
+We currently have a fsevents dependency in package-lock.json, so let's move it aside by renaming it to something harmless:
+```
+$ mv package-lock{,.old}.json
+```
+
 
 
 Webpack
