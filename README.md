@@ -26,7 +26,7 @@ Node and npm:
  * `npm install` to install all the package dependencies (as specified in the `package.json`)
 
 MongoDB:
-[Install MongoDb](https://docs.mongodb.com/manual/installation/).  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install mongodb`
+[Install MongoDb](https://docs.mongodb.com/manual/administration/install-community/).
 
 Redis:
 [Install Redis](http://redis.io/)  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install redis`
