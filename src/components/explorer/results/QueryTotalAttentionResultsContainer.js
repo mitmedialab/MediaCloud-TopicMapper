@@ -29,7 +29,6 @@ const localMessages = {
   },
   downloadOneCsv: { id: 'explorer.attention.total.downloadCsv', defaultMessage: 'Download all story URLs' },
   downloadCsv: { id: 'explorer.attention.total.downloadCsv', defaultMessage: 'Download all story URLs for {name}' },
-  downloadSvg: { id: 'explorer.attention.total.downloadSvg', defaultMessage: 'Download SVG' },
   viewNormalized: { id: 'explorer.attention.mode.viewNormalized', defaultMessage: 'View by Story Count (default)' },
   viewRegular: { id: 'explorer.attention.mode.viewRegular', defaultMessage: 'View by Story Percentage' },
 };
@@ -105,7 +104,7 @@ class QueryTotalAttentionResultsContainer extends React.Component {
             onClick={() => downloadSvg('attention-bubble', BUBBLE_CHART_DOM_ID)}
           >
             <ListItemText>
-              <FormattedMessage {...localMessages.downloadSvg} />
+              <FormattedMessage {...messages.downloadSVG} />
             </ListItemText>
             <ListItemIcon>
               <DownloadButton />
