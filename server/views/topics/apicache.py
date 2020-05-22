@@ -438,7 +438,7 @@ def add_to_user_query(query_to_add):
 def matching_timespans_in_foci(topics_id, timespan_to_match, foci):
     """
     For cross-subtopic analysis within a subtopic set, we need to identify the timespan that has the same date
-    range in each subtopic within the set.  This helper does that annoying work for you. 
+    range in each subtopic within the set.  This helper does that annoying work for you.
     """
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     timespans = []

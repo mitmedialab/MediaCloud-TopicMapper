@@ -126,11 +126,6 @@ export function topicMapFiles(topicId, params) {
   return createApiPromise(`/api/topics/${topicId}/map-files/list`, acceptedParams);
 }
 
-export function topicMediaMapFile(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'timespan_maps_id']);
-  return createApiPromise(`/api/topics/${topicId}/map-files/${acceptedParams.timespan_maps_id}`, acceptedParams);
-}
-
 export function topicTimespanFiles(topicId, params) {
   const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
   return createApiPromise(`/api/topics/${topicId}/timespan-files/list`, acceptedParams);

@@ -15,7 +15,6 @@ import StoryContainer from '../components/topic/stories/StoryContainer';
 import StoryUpdateContainer from '../components/topic/stories/StoryUpdateContainer';
 import StoryCachedContainer from '../components/common/admin/story/StoryCachedContainer';
 import MediaContainer from '../components/topic/media/MediaContainer';
-import LinkMapContainer from '../components/topic/maps/LinkMapContainer';
 import CreateFocusContainer from '../components/topic/snapshots/foci/CreateFocusContainer';
 import EditFocusContainer from '../components/topic/snapshots/foci/EditFocusContainer';
 import ManageFocalSetsContainer from '../components/topic/snapshots/foci/ManageFocalSetsContainer';
@@ -75,7 +74,6 @@ const topicRoutes = (
           <Route path="/topics/:topicId/attention" component={AttentionContainer} onEnter={requireAuth} />
           <Route path="/topics/:topicId/words" component={InfluentialWordsContainer} onEnter={requireAuth} />
           <Route path="/topics/:topicId/words/:word" component={WordContainer} onEnter={requireAuth} />
-          <Route path="/topics/:topicId/media-map/:mediaMapId" component={LinkMapContainer} onEnter={requireAuth} />
         </Route>
       </Route>
 
