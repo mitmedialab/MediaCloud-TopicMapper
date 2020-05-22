@@ -9,14 +9,14 @@ const localMessages = {
   helpTextDetails: { id: 'topic.summary.mapDownload.help.details', defaultMessage: '<p>Link maps are generated automatically by our system. If you don\'t see any here, make a small change and create a new version. That new version will include link maps for each timespan automatically.</p>' },
   none: { id: 'topic.summary.mapDownload.none', defaultMessage: '<p><b>No maps available for this timespan.</b></p>' },
   unsupported: { id: 'topic.summary.mapDownload.unsupported', defaultMessage: 'Sorry, but we can\'t generate link maps when you are using a query filter.  Remove your "{q}" query filter if you want to generate these maps.' },
-  link: { id: 'topic.summary.mapDownload.link', defaultMessage: ' in {format} format ({size}MB)' },
+  link: { id: 'topic.summary.mapDownload.link', defaultMessage: ' in {format} format' },
   // user-friendly names for different type of maps
   rename_partisan_retweet: { id: 'topic.summary.partisan_retweet.name', defaultMessage: 'Colored by US partisanship' },
   rename_community: { id: 'topic.summary.community.name', defaultMessage: 'Colored by community detection' },
 };
 
 const DownloadMapFiles = (props) => {
-  const { filters, files, intl } = props;
+  const { filters, files } = props;
   let content;
   if (filters.q) {
     // maps generated with a q filter are not what people expect them to be, so don't support it
@@ -40,7 +40,6 @@ const DownloadMapFiles = (props) => {
                 values={{
                   type: mmf.options.color_by,
                   format: mmf.format,
-                  size: intl.formatNumber(mmf.content_length / 1000000, { maximumFractionDigits: 2 }),
                 }}
               />
             </a>
