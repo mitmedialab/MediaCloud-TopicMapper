@@ -13,7 +13,7 @@ const RecentNewsItem = props => (
       </Col>
       <Col lg={8}>
         <SanitizedHTML html={props.item.note} />
-        <SanitizedHTML html={props.item.details} />
+        {props.item.details && <SanitizedHTML className="news-details" html={props.item.details} />}
       </Col>
       <Col lg={1}>
         <span className="item-app-list">
