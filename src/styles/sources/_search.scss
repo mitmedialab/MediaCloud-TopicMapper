@@ -1,11 +1,88 @@
-.source-search {
-    position: relative;
-    font-weight: normal;
-    
-    .icon-button {
-        float: right;
-        position: absolute;
-        right: 25px;
-        top: 10px;
+@import '../_constants';
+
+.select-media-sources {
+
+    .select-media-sidebar-sources {
+      float: left;
+      width: 230px;
+      position: fixed;
+      border-right: 1px solid $material-grey400;
+      height: 100%;
+
+      .select-media-menu {
+        .select-media-option {
+          padding: 30px;
+          border-bottom: 1px solid $material-grey400;
+          h3 {
+            margin: 0px;
+            padding: 0px;
+            font-size: 20px;
+            font-weight: normal;
+          }
+          &.selected {
+            background-color: $material-grey200 !important;
+          }
+          &:hover {
+            background-color: $material-grey400 !important;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .select-media-selected-list {
+        padding: 30px;
+        max-height: 282px;
+        overflow: scroll;
+
+        .select-media-options {
+          left: 150px;
+        }
+        .media-widget {
+        }
+
+      }
+
+      .select-media-ok-button {
+        margin-left: 30px;
+      }
+
+      .app-button {
+        margin-right: 10px;
+      }
+
+    }
+
+    .select-media-content-sources {
+      margin-left: 230px;
+      padding: 30px;
+      min-height: 100%;
+      overflow-y: scroll;
+
+      .metadata-detail-search {
+        position: relative;
+        transform: translate(0, 0) !important;
+        z-index: 10009;
+      }
+      div[type=data-reactroot] { 
+        z-index: 10009;
+      }
+
+      .select-media-container {
+        background-color: $white !important;
+
+        .media-picker-type-instruction {
+          margin-top:15px;
+          font-size: 16px !important;
+        }
+        .media-picker-type-button {
+          margin-top:-5px;
+          font-size: 16px !important;
+        }
+        .media-picker-search-advanced {
+          display: block;
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+       }
     }
 }

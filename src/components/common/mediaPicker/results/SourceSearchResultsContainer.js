@@ -3,10 +3,11 @@ import React from 'react';
 import { injectIntl, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
-import { Col } from 'react-flexbox-grid/lib';
+import { Row, Col } from 'react-flexbox-grid/lib';
 import { selectMediaPickerQueryArgs, fetchMediaPickerSources, selectMediaCustomColl } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import withHelp from '../../hocs/HelpfulContainer';
+import withPaging from '../../hocs/PagedContainer';
 import SourceResultsTable from './SourceResultsTable';
 import AdvancedMediaPickerSearchForm from '../AdvancedMediaPickerSearchForm';
 import LoadingSpinner from '../../LoadingSpinner';
@@ -121,9 +122,9 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   updateAndSearchWithSelection = (values) => {
-    const { handleUpdateAndSearchWithSelection } = this.props;
+    const { pageThroughSources } = this.props;
     const updatedQueryObj = this.processQuery(values);
-    handleUpdateAndSearchWithSelection(updatedQueryObj);
+    pageThroughSources(updatedQueryObj);
   }
 
   correlateSelection(whichProps) {
@@ -148,7 +149,7 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, previousButton, nextButton } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
@@ -222,6 +223,11 @@ class SourceSearchResultsContainer extends React.Component {
       <div>
         {content}
         {resultContent}
+        <Row>
+          <Col lg={12}>
+            {previousButton} {nextButton}
+          </Col>
+        </Row>
       </div>
     );
   }
@@ -247,8 +253,13 @@ SourceSearchResultsContainer.propTypes = {
   formQuery: PropTypes.object,
   mediaQuery: PropTypes.array,
   helpButton: PropTypes.node.isRequired,
+  // from hoc
+  previousButton: PropTypes.node,
+  nextButton: PropTypes.node,
+  links: PropTypes.object,
   // from dispatch
   // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
+  pageThroughSources: PropTypes.func.isRequired,
   handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
   handleSelectMediaCustomColl: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
@@ -272,6 +283,7 @@ const mapStateToProps = state => ({
     'allMedia',
     'advancedSearchQueryString',
   ),
+  links: state.system.mediaPicker.sourceQueryResults.linkId,
 });
 
 // tags holds metadata search tags
@@ -285,7 +297,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       }
     }
   },
-  handleUpdateAndSearchWithSelection: (values) => {
+  handleUpdateAndSearchWithSelection: (values, linkId) => {
     if (values.mediaKeyword || values.tags) {
       let tags = null;
       if (!values.allMedia) { // handle the "all media" placeholder selection
@@ -300,7 +312,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         });
         tags = selectedTags.filter(t => t.length > 0).join(',');
       }
-      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags) }));
+      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId }));
     }
   },
   handleSelectMediaCustomColl: (values) => {
@@ -308,11 +320,29 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 });
 
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  return { ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    pageThroughSources: (values) => {
+      if (stateProps.links !== undefined) {
+        dispatchProps.handleUpdateAndSearchWithSelection(values, stateProps.links);
+      } else {
+        dispatchProps.handleUpdateAndSearchWithSelection({ ...values, linkId: 0 });
+      }
+    },
+  };
+}
+
+const handlePageChange = (dispatch, { values, tags }, links) => dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: links }));
+
 export default
 injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(
     withHelp(localMessages.customCollTitle, localMessages.customCollDef)(
-      SourceSearchResultsContainer
+      withPaging(handlePageChange)(
+        SourceSearchResultsContainer
+      )
     )
   )
 );

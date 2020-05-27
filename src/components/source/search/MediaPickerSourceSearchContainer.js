@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Grid, Col } from 'react-flexbox-grid/lib';
+import { Grid } from 'react-flexbox-grid/lib';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PickedMediaContainer from '../../common/mediaPicker/PickedMediaContainer';
@@ -57,18 +57,14 @@ class MediaPickerSourceSearchContainer extends React.Component {
   render() {
     return (
       <Grid>
-        <Col lg={2}>
-          <div className="select-media-dialog-inner">
-            <div className="select-media-sidebar">
-              <PickedMediaContainer viewOnly selectedMedia={[]} />
-            </div>
+        <div className="select-media-sources">
+          <div className="select-media-sidebar-sources">
+            <PickedMediaContainer viewOnly selectedMedia={[]} />
           </div>
-        </Col>
-        <Col lg={8}>
-          <div className="select-media-content">
+          <div className="select-media-content-sources">
             <MediaPickerResultsContainer viewOnly selectedMedia={[]} />
           </div>
-        </Col>
+        </div>
       </Grid>
     );
   }

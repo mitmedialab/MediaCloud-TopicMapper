@@ -12,12 +12,12 @@ export function fetchMediaPickerFeaturedCollections() {
   return createApiPromise('/api/mediapicker/collections/featured');
 }
 export function fetchMediaPickerCollections(params) {
-  const acceptedParams = acceptParams(params, ['media_keyword', 'which_set']);
+  const acceptedParams = acceptParams(params, ['media_keyword', 'which_set', 'linkId']);
   return createApiPromise('/api/mediapicker/collections/search', acceptedParams);
 }
 
 export function fetchMediaPickerSources(params) {
-  const acceptedParams = acceptParams(params, ['media_keyword', 'tags']);
+  const acceptedParams = acceptParams(params, ['media_keyword', 'tags', 'linkId']);
   return createApiPromise('/api/mediapicker/sources/search', acceptedParams);
 }
 

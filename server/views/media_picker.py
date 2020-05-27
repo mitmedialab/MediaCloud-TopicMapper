@@ -15,7 +15,7 @@ import server.views.apicache as base_api_cache
 from server.auth import user_has_auth_role, ROLE_MEDIA_EDIT
 from server.util.tags import VALID_COLLECTION_TAG_SETS_IDS
 from server.views.sources import FEATURED_COLLECTION_LIST
-from server.views.media_search import collection_search, media_search
+from server.views.media_search import collection_search, media_search, media_search_with_page
 from server.util.request import api_error_handler, arguments_required
 from server.util.tags import cached_media_with_tag_page
 
@@ -34,6 +34,7 @@ def api_mediapicker_source_search():
     search_str = request.args['media_keyword']
     cleaned_search_str = None if search_str == '*' else search_str
     querying_all_media = False
+    link_id = request.args['link_id'] if 'link_id' in request.args else 0
     try:
         if int(request.args['tags']) == int(ALL_MEDIA):
             querying_all_media = True
@@ -58,12 +59,13 @@ def api_mediapicker_source_search():
         tags_id_3 = tag_ids_by_set[2] if len(tag_ids_by_set) > 2 else None
         tags_id_4 = tag_ids_by_set[3] if len(tag_ids_by_set) > 3 else None
         tags_id_5 = tag_ids_by_set[4] if len(tag_ids_by_set) > 4 else None
-        matching_sources = media_search(search_str=cleaned_search_str, fq=tags_fq, tags_id_1=tags_id_1,
+        matching_sources, last_media_id = media_search_with_page(search_str=cleaned_search_str, fq=tags_fq, tags_id_1=tags_id_1,
                                         tags_id_2=tags_id_2, tags_id_3=tags_id_3, tags_id_4=tags_id_4,
-                                        tags_id_5=tags_id_5)
+                                        tags_id_5=tags_id_5,
+                                        link_id=link_id)
     else:
-        matching_sources = media_search(search_str=cleaned_search_str, fq=tags_fq)
-    return jsonify({'list': matching_sources})
+        matching_sources = media_search_with_page(search_str=cleaned_search_str, fq=tags_fq, link_id=link_id)
+    return jsonify({'list': matching_sources, 'link_id': last_media_id})
 
 
 def collection_details_worker(info):

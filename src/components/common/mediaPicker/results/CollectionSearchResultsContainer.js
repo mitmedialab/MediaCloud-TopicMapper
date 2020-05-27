@@ -4,6 +4,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import CollectionResultsTable from './CollectionResultsTable';
 import MediaPickerSearchForm from '../MediaPickerSearchForm';
+import withPaging from '../../hocs/PagedContainer';
 import { selectMediaPickerQueryArgs, fetchMediaPickerCollections } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import LoadingSpinner from '../../LoadingSpinner';
@@ -97,6 +98,10 @@ CollectionSearchResultsContainer.propTypes = {
   selectedMedia: PropTypes.array,
   whichTagSet: PropTypes.array,
   hintTextMsg: PropTypes.object,
+  // from hoc
+  previousButton: PropTypes.node,
+  nextButton: PropTypes.node,
+  links: PropTypes.object,
   // from state
   selectedMediaQueryKeyword: PropTypes.string,
   selectedMediaQueryType: PropTypes.number,
@@ -112,20 +117,40 @@ const mapStateToProps = state => ({
   selectedMediaQueryType: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.type : 0,
   selectedMediaQueryKeyword: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.mediaKeyword : null,
   collectionResults: state.system.mediaPicker.collectionQueryResults,
+  links: state.system.mediaPicker.collectionQueryResults.linkId,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateMediaQuerySelection: (values) => {
+  updateMediaQuerySelection: (values, linkId) => {
     if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(selectMediaPickerQueryArgs(values));
-      dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type }));
+      dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId }));
     }
   },
 });
 
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  return { ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    pageThroughSources: (values) => {
+      if (stateProps.links !== undefined) {
+        dispatchProps.updateMediaQuerySelection(values, stateProps.links);
+      } else {
+        dispatchProps.updateMediaQuerySelection({ ...values, linkId: 0 });
+      }
+    },
+  };
+}
+
+
+const handlePageChange = (dispatch, { values, tags }) => dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: values.linkIds }));
+
 export default
 injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(
-    CollectionSearchResultsContainer
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+    withPaging(handlePageChange)(
+      CollectionSearchResultsContainer
+    )
   )
 );
