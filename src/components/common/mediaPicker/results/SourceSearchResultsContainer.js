@@ -148,7 +148,7 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
@@ -207,10 +207,11 @@ class SourceSearchResultsContainer extends React.Component {
       resultContent = (
         <div className="source-search-results">
           <h2>{ conditionalTitle }</h2>
-          { addCustomButton }
+          { !viewOnly && addCustomButton }
           <SourceResultsTable
             sources={sourceResults.list}
             onToggleSelected={onToggleSelected}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -250,6 +251,7 @@ SourceSearchResultsContainer.propTypes = {
   // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
   handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
   handleSelectMediaCustomColl: PropTypes.func.isRequired,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

@@ -69,7 +69,7 @@ class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
 
   render() {
     const { selectedMediaQueryType, featured, favoritedCollections, favoritedSources,
-      onToggleSelected, fetchStatus } = this.props;
+      onToggleSelected, fetchStatus, viewOnly } = this.props;
     const queryResults = {
       featured: featured.list,
       favoritedCollections: favoritedCollections.list,
@@ -87,6 +87,7 @@ class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
           onSearch={val => this.updateMediaQuery(val)}
           hintTextMsg={localMessages.hintText}
           handleMediaConcurrency={this.props.handleMediaConcurrency}
+          viewOnly={viewOnly}
         />
       </div>
     );
@@ -110,6 +111,7 @@ FeaturedFavoriteGeoSearchResultsContainer.propTypes = {
   favoritedSources: PropTypes.object,
   fetchStatus: PropTypes.array.isRequired,
   displayResults: PropTypes.bool,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

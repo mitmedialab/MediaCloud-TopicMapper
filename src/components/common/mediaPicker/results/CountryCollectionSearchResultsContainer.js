@@ -22,7 +22,7 @@ class CountryCollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchCountryStatus } = this.props;
+    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchCountryStatus, viewOnly } = this.props;
     return (
       <CollectionSearchResultsContainer
         fetchStatus={fetchCountryStatus}
@@ -35,6 +35,7 @@ class CountryCollectionSearchResultsContainer extends React.Component {
         onSearch={val => this.updateMediaQuery(val)}
         hintTextMsg={localMessages.countrySearchHintText}
         handleMediaConcurrency={this.props.handleMediaConcurrency}
+        viewOnly={viewOnly}
       />
     );
   }
@@ -54,6 +55,7 @@ CountryCollectionSearchResultsContainer.propTypes = {
   selectedMediaQueryType: PropTypes.number,
   collectionResults: PropTypes.object,
   fetchCountryStatus: PropTypes.string,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

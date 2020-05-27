@@ -45,7 +45,7 @@ class PickedMediaContainer extends React.Component {
   };
 
   render() {
-    const { selectedMediaQueryType, selectedMedia, handleUnselectMedia, handleClearAll } = this.props;
+    const { selectedMediaQueryType, selectedMedia, handleUnselectMedia, handleClearAll, viewOnly } = this.props;
     const options = [
       { label: localMessages.pickFeatured, value: PICK_FEATURED },
       { label: localMessages.pickSAndC, value: PICK_SOURCE_AND_COLLECTION },
@@ -74,6 +74,21 @@ class PickedMediaContainer extends React.Component {
         </div>
       );
     }
+    const selectedMediaContent = (
+      <div className="select-media-selected-list">
+        <FormattedMessage {...localMessages.selectedMedia} />
+        <IconButton className="select-media-options" onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
+        { allMedia }
+        {selectedMedia.map(obj => (
+          <OpenWebMediaItem
+            key={obj.id || obj.tags_id || obj.media_id || obj.tag_sets_id || obj.tags.name}
+            object={obj}
+            onDelete={() => handleUnselectMedia(obj)}
+          />
+        ))}
+        { warningInfo }
+      </div>
+    );
 
     return (
       <div>
@@ -96,19 +111,7 @@ class PickedMediaContainer extends React.Component {
             </a>
           ))}
         </div>
-        <div className="select-media-selected-list">
-          <FormattedMessage {...localMessages.selectedMedia} />
-          <IconButton className="select-media-options" onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
-          { allMedia }
-          {selectedMedia.map(obj => (
-            <OpenWebMediaItem
-              key={obj.id || obj.tags_id || obj.media_id || obj.tag_sets_id || obj.tags.name}
-              object={obj}
-              onDelete={() => handleUnselectMedia(obj)}
-            />
-          ))}
-          { warningInfo }
-        </div>
+        { !viewOnly && selectedMediaContent }
       </div>
     );
   }
@@ -124,6 +127,7 @@ PickedMediaContainer.propTypes = {
   updateMediaQueryArgsSelection: PropTypes.func.isRequired,
   handleUnselectMedia: PropTypes.func.isRequired,
   handleClearAll: PropTypes.func.isRequired,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

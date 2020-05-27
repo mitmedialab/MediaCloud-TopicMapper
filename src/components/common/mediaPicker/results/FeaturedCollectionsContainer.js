@@ -14,7 +14,7 @@ const localMessages = {
 };
 
 const FeaturedCollectionsContainer = (props) => {
-  const { fetchStatus, collections, onToggleSelected, selectedMediaQueryType } = props;
+  const { fetchStatus, collections, onToggleSelected, viewOnly, selectedMediaQueryType } = props;
   const { formatMessage } = props.intl;
   if (fetchStatus !== fetchConstants.FETCH_SUCCEEDED) {
     return <LoadingSpinner />;
@@ -25,6 +25,7 @@ const FeaturedCollectionsContainer = (props) => {
       collections={collections}
       onToggleSelected={onToggleSelected}
       selectedMediaQueryType={selectedMediaQueryType}
+      viewOnly={viewOnly}
     />
   );
 };
@@ -37,6 +38,7 @@ FeaturedCollectionsContainer.propTypes = {
   // from store
   fetchStatus: PropTypes.string,
   collections: PropTypes.array,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

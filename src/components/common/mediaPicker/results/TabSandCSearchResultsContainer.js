@@ -23,7 +23,7 @@ class TabSandCSearchResultsContainer extends React.Component {
   };
 
   render() {
-    const { queryResults, onToggleSelected, handleMediaConcurrency, updateMediaQuerySelection, fetchStatus, whichTagSet, selectedMediaQueryKeyword } = this.props;
+    const { queryResults, onToggleSelected, handleMediaConcurrency, updateMediaQuerySelection, fetchStatus, whichTagSet, selectedMediaQueryKeyword, viewOnly } = this.props;
     const { formatMessage } = this.props.intl;
     const tabs = (
       <div className="media-picker-results-container">
@@ -56,6 +56,7 @@ class TabSandCSearchResultsContainer extends React.Component {
             initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword, tags: {} } }}
             hintTextMsg={localMessages.hintText}
             handleMediaConcurrency={handleMediaConcurrency}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -68,6 +69,7 @@ class TabSandCSearchResultsContainer extends React.Component {
             onToggleSelected={onToggleSelected}
             handleMediaConcurrency={handleMediaConcurrency}
             updateMediaQuerySelection={updateMediaQuerySelection}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -103,6 +105,7 @@ TabSandCSearchResultsContainer.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]).isRequired,
+  viewOnly: PropTypes.bool,
 };
 
 export default

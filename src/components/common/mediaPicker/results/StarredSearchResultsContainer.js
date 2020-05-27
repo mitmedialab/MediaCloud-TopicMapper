@@ -15,7 +15,7 @@ const localMessages = {
 
 
 const StarredSearchResultsContainer = (props) => {
-  const { favoritedCollections, favoritedSources, onToggleSelected, fetchStatus } = props;
+  const { favoritedCollections, favoritedSources, onToggleSelected, viewOnly, fetchStatus } = props;
   const { formatMessage } = props.intl;
   let content = null;
   if (fetchStatus === FETCH_ONGOING) {
@@ -28,11 +28,13 @@ const StarredSearchResultsContainer = (props) => {
           title={formatMessage(localMessages.collTitle, { name: '' })}
           collections={favoritedCollections}
           onToggleSelected={onToggleSelected}
+          viewOnly={viewOnly}
         />
         <SourceResultsTable
           title={formatMessage(localMessages.sourceTitle, { name: '' })}
           sources={favoritedSources}
           onToggleSelected={onToggleSelected}
+          viewOnly={viewOnly}
         />
       </div>
     );
@@ -54,6 +56,7 @@ StarredSearchResultsContainer.propTypes = {
   favoritedCollections: PropTypes.array,
   favoritedSources: PropTypes.array,
   fetchStatus: PropTypes.string,
+  viewOnly: PropTypes.bool,
 };
 
 

@@ -15,7 +15,7 @@ const localMessages = {
 const INCLUDE_SOURCE_COUNTS = false;
 
 const CollectionResultsTable = (props) => {
-  const { title, collections, onToggleSelected } = props;
+  const { title, collections, onToggleSelected, viewOnly } = props;
   let content = null;
   let mediaCountHeader;
   if (INCLUDE_SOURCE_COUNTS) {
@@ -45,7 +45,7 @@ const CollectionResultsTable = (props) => {
                 <td>{c.tag_set_label}</td>
                 <td>{c.description}</td>
                 {mediaCountValue}
-                <td>{actionContent}</td>
+                <td>{ !viewOnly && actionContent}</td>
               </tr>
             );
           })}
@@ -70,6 +70,7 @@ CollectionResultsTable.propTypes = {
   title: PropTypes.string,
   collections: PropTypes.array,
   onToggleSelected: PropTypes.func,
+  viewOnly: PropTypes.bool,
 };
 
 export default

@@ -29,7 +29,7 @@ class TabSearchResultsContainer extends React.Component {
   };
 
   render() {
-    const { queryResults, onToggleSelected, fetchStatus } = this.props;
+    const { queryResults, onToggleSelected, fetchStatus, viewOnly } = this.props;
     const { formatMessage } = this.props.intl;
     const tabs = (
       <div className="media-picker-results-container">
@@ -60,6 +60,7 @@ class TabSearchResultsContainer extends React.Component {
             favoritedCollections={queryResults.favoritedCollections}
             favoritedSources={queryResults.favoritedSources}
             onToggleSelected={onToggleSelected}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -71,6 +72,7 @@ class TabSearchResultsContainer extends React.Component {
             title={formatMessage(localMessages.featured)}
             collections={queryResults.featured}
             onToggleSelected={onToggleSelected}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -83,6 +85,7 @@ class TabSearchResultsContainer extends React.Component {
             collections={queryResults.featured}
             onToggleSelected={onToggleSelected}
             handleMediaConcurrency={this.props.handleMediaConcurrency}
+            viewOnly={viewOnly}
           />
         </div>
       );
@@ -116,6 +119,7 @@ TabSearchResultsContainer.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]).isRequired,
+  viewOnly: PropTypes.bool,
 };
 
 export default

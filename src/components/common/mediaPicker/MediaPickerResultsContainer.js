@@ -75,7 +75,7 @@ class MediaPickerResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, toggleConcurrency, updateMediaQuerySelection, handleToggleSelected } = this.props;
+    const { viewOnly, selectedMediaQueryType, toggleConcurrency, updateMediaQuerySelection, handleToggleSelected } = this.props;
     let content = null;
     const whichMedia = {};
     whichMedia.fetchStatus = null;
@@ -95,6 +95,7 @@ class MediaPickerResultsContainer extends React.Component {
             onToggleSelected={handleToggleSelected}
             handleMediaConcurrency={toggleConcurrency}
             updateMediaQuerySelection={updateMediaQuerySelection}
+            viewOnly={viewOnly}
           />
         );
         break;
@@ -104,6 +105,7 @@ class MediaPickerResultsContainer extends React.Component {
             whichTagSet={VALID_COLLECTION_IDS}
             handleMediaConcurrency={toggleConcurrency}
             onToggleSelected={handleToggleSelected}
+            viewOnly={viewOnly}
           />
         );
         break;
@@ -131,6 +133,7 @@ MediaPickerResultsContainer.propTypes = {
   collectionResults: PropTypes.object,
   sourceResults: PropTypes.object,
   selectedMedia: PropTypes.array,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

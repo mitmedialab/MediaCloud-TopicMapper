@@ -19,7 +19,7 @@ class AllMediaSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, selectedMediaQueryKeyword, updateMediaQuerySelection, handleMediaConcurrency, whichTagSet, collectionResults, sourceResults, onToggleSelected, fetchStatus } = this.props;
+    const { selectedMediaQueryType, selectedMediaQueryKeyword, updateMediaQuerySelection, handleMediaConcurrency, whichTagSet, collectionResults, sourceResults, onToggleSelected, fetchStatus, viewOnly } = this.props;
     const queryResults = {
       collections: collectionResults.list,
       sources: sourceResults.list,
@@ -37,6 +37,7 @@ class AllMediaSearchResultsContainer extends React.Component {
           hintTextMsg={localMessages.hintText}
           handleMediaConcurrency={handleMediaConcurrency}
           updateMediaQuerySelection={updateMediaQuerySelection}
+          viewOnly={viewOnly}
         />
       </div>
     );
@@ -57,6 +58,7 @@ AllMediaSearchResultsContainer.propTypes = {
   collectionResults: PropTypes.object,
   sourceResults: PropTypes.object,
   fetchStatus: PropTypes.string,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

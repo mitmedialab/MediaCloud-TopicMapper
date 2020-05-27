@@ -52,7 +52,7 @@ class CollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, updateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg } = this.props;
+    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, updateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     if (fetchStatus === FETCH_ONGOING) {
@@ -64,6 +64,7 @@ class CollectionSearchResultsContainer extends React.Component {
           title={formatMessage(localMessages.title, { name: selectedMediaQueryKeyword })}
           collections={collectionResults.list}
           onToggleSelected={onToggleSelected}
+          viewOnly={viewOnly}
         />
       );
     } else if (initCollections) {
@@ -89,7 +90,7 @@ CollectionSearchResultsContainer.propTypes = {
   // form compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
-  onToggleSelected: PropTypes.func.isRequired,
+  onToggleSelected: PropTypes.oneOf([PropTypes.func.isRequired, PropTypes.bool]),
   handleMediaConcurrency: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string,
@@ -102,6 +103,7 @@ CollectionSearchResultsContainer.propTypes = {
   collectionResults: PropTypes.object,
   initCollections: PropTypes.object,
   updateMediaQuerySelection: PropTypes.func.isRequired,
+  viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

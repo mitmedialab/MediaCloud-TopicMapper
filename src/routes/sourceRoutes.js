@@ -7,7 +7,7 @@ import SourceDetailsContainer from '../components/source/mediaSource/SourceDetai
 import CollectionDetailsContainer from '../components/source/collection/CollectionDetailsContainer';
 import CollectionContentHistory from '../components/source/collection/CollectionContentHistory';
 import CreateCollectionContainer from '../components/source/collection/CreateCollectionContainer';
-import AdvancedSearchContainer from '../components/source/search/AdvancedSearchContainer';
+import MediaPickerSourceSearchContainer from '../components/source/search/MediaPickerSourceSearchContainer';
 import SelectCollectionContainer from '../components/source/collection/SelectCollectionContainer';
 import EditCollectionContainer from '../components/source/collection/EditCollectionContainer';
 import ManageSourcesContainer from '../components/source/collection/ManageSourcesContainer';
@@ -39,7 +39,7 @@ const sourceRoutes = (
 
     <Route component={PageWrapper}>
       <Route path="/about" component={About} />
-      <Route path="/search" component={AdvancedSearchContainer} onEnter={requireAuth} />
+      <Route path="/search" component={MediaPickerSourceSearchContainer} onEnter={requireAuth} />
       <Route path="/favorites" component={FavoritedContainer} onEnter={requireAuth} />
     </Route>
 

@@ -13,7 +13,7 @@ const localMessages = {
 };
 
 const SourceResultsTable = (props) => {
-  const { title, sources, onToggleSelected } = props;
+  const { title, sources, onToggleSelected, viewOnly } = props;
   let content = null;
   if (sources.length > 0) {
     content = (
@@ -35,7 +35,7 @@ const SourceResultsTable = (props) => {
                 <td>{s.url}</td>
                 <td className="numeric"><FormattedNumber value={Math.round(s.num_stories_90)} /></td>
                 <td className="numeric"><FormattedDate value={parseSolrShortDate(s.start_date)} /></td>
-                <td>{actionContent}</td>
+                <td>{ !viewOnly && actionContent}</td>
               </tr>
             );
           })}
@@ -60,6 +60,7 @@ SourceResultsTable.propTypes = {
   title: PropTypes.string,
   sources: PropTypes.array,
   onToggleSelected: PropTypes.func,
+  viewOnly: PropTypes.bool,
 };
 
 export default
