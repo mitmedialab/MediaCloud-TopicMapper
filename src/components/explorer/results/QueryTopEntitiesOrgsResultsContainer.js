@@ -30,12 +30,13 @@ class QueryTopEntitiesOrgsResultsContainer extends React.Component {
   }
 
   render() {
-    const { results, queries, handleEntitySelection, selectedTabIndex, tabSelector } = this.props;
+    const { results, queries, selectedQuery, handleEntitySelection, selectedTabIndex, tabSelector } = this.props;
     const { formatNumber } = this.props.intl;
     let content = null;
-    if (results) {
-      const rawData = (results[selectedTabIndex] && results[selectedTabIndex].results) ? results[selectedTabIndex].results.slice(0, ENTITY_DISPLAY_TOP_TEN) : [];
-      const coverageRatio = results[selectedTabIndex] ? results[selectedTabIndex].coverage_percentage : 0;
+    const selectedResults = results[selectedQuery.uid];
+    if (selectedResults) {
+      const rawData = selectedResults.results.slice(0, ENTITY_DISPLAY_TOP_TEN);
+      const coverageRatio = selectedResults.coverage_percentage;
       if (coverageRatio > COVERAGE_REQUIRED) {
         content = (
           <div>
@@ -86,16 +87,18 @@ class QueryTopEntitiesOrgsResultsContainer extends React.Component {
 }
 
 QueryTopEntitiesOrgsResultsContainer.propTypes = {
+  // from parent
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
+  selectedQuery: PropTypes.object.isRequired,
+  lastSearchTime: PropTypes.number.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   handleEntitySelection: PropTypes.func.isRequired,
   selectedTabIndex: PropTypes.number.isRequired,
   tabSelector: PropTypes.object.isRequired,
   // from state
-  lastSearchTime: PropTypes.number.isRequired,
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
   fetchStatus: PropTypes.string.isRequired,
 };
 

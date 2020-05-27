@@ -36,7 +36,7 @@ class FocusSelectorContainer extends React.Component {
   }
 
   render() {
-    const { foci, selectedFocus, onFocusSelected, helpButton } = this.props;
+    const { foci, selectedFocus, onFocusSelected } = this.props;
     return (
       <span>
         <FocusSelector
@@ -44,7 +44,6 @@ class FocusSelectorContainer extends React.Component {
           foci={foci}
           onFocusSelected={onFocusSelected}
         />
-        {helpButton}
       </span>
     );
   }
@@ -61,7 +60,6 @@ FocusSelectorContainer.propTypes = {
   // from state
   // from context
   setCustomContent: PropTypes.func.isRequired,
-  helpButton: PropTypes.node.isRequired,
   foci: PropTypes.array.isRequired,
   selectedFocus: PropTypes.object,
 };

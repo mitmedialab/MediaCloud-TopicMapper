@@ -10,12 +10,10 @@ import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { selectMedia, fetchMedia } from '../../../actions/topicActions';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
-import MediaInlinkContainer from './MediaInlinkContainer';
-import MediaOutlinkContainer from './MediaOutlinkContainer';
+import TopicStoriesContainer from '../provider/TopicStoriesContainer';
+import TopicCountOverTimeContainer from '../provider/TopicCountOverTimeContainer';
 import { updateFeedback } from '../../../actions/appActions';
-import MediaStoriesContainer from './MediaStoriesContainer';
-import MediaSplitStoryCountContainer from './MediaSplitStoryCountContainer';
-import MediaWordsContainer from './MediaWordsContainer';
+import TopicWordCloudContainer from '../provider/TopicWordCloudContainer';
 import messages from '../../../resources/messages';
 import { RemoveButton, ReadItNowButton } from '../../common/IconButton';
 import ComingSoon from '../../common/ComingSoon';
@@ -50,7 +48,7 @@ class MediaContainer extends React.Component {
   };
 
   render() {
-    const { media, topicId, mediaId, filters, topicName } = this.props;
+    const { media, mediaId, filters } = this.props;
     const { formatMessage, formatNumber } = this.props.intl;
     const dialogActions = [
       <Button
@@ -124,27 +122,33 @@ class MediaContainer extends React.Component {
           </Row>
           <Row>
             <Col lg={12}>
-              <MediaSplitStoryCountContainer topicId={topicId} mediaId={mediaId} />
+              <TopicCountOverTimeContainer titleMsg={messages.attention} uid="media" extraQueryClause={`media_id:${mediaId}`} />
             </Col>
           </Row>
           <Row>
             <Col lg={12} md={12} sm={12}>
-              <MediaStoriesContainer topicId={topicId} mediaId={mediaId} />
+              <TopicStoriesContainer titleMsg={messages.stories} uid="media" extraQueryClause={`media_id:${mediaId}`} />
             </Col>
           </Row>
           <Row>
             <Col lg={12} md={12} sm={12}>
-              <MediaInlinkContainer topicId={topicId} mediaId={mediaId} topicName={topicName} />
+              <TopicStoriesContainer extraArgs={{ linkToMediaId: mediaId }} titleMsg={messages.inlinks} uid="inlinking" />
             </Col>
           </Row>
           <Row>
             <Col lg={12} md={12} sm={12}>
-              <MediaOutlinkContainer topicId={topicId} mediaId={mediaId} topicName={topicName} />
+              <TopicStoriesContainer extraArgs={{ linkFromMediaId: mediaId }} titleMsg={messages.outlinks} uid="outlinked" />
             </Col>
           </Row>
           <Row>
             <Col lg={12}>
-              <MediaWordsContainer topicId={topicId} mediaId={mediaId} topicName={topicName} />
+              <TopicWordCloudContainer
+                title={messages.topWords}
+                svgName={`media-${mediaId}`}
+                extraQueryClause={`media_id:${mediaId}`}
+                width={720}
+                uid="media"
+              />
             </Col>
           </Row>
           <Row>
@@ -173,7 +177,6 @@ MediaContainer.propTypes = {
   filters: PropTypes.object.isRequired,
   fetchStatus: PropTypes.string.isRequired,
   topicId: PropTypes.number.isRequired,
-  topicName: PropTypes.string.isRequired,
   media: PropTypes.object.isRequired,
   mediaId: PropTypes.number.isRequired,
 };
@@ -181,7 +184,6 @@ MediaContainer.propTypes = {
 const mapStateToProps = (state, ownProps) => ({
   fetchStatus: state.topics.selected.mediaSource.info.fetchStatus,
   topicId: state.topics.selected.id,
-  topicName: state.topics.selected.info.name,
   media: state.topics.selected.mediaSource.info,
   mediaId: parseInt(ownProps.params.mediaId, 10),
 });

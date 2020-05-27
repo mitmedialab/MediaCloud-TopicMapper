@@ -9,15 +9,12 @@ const localMessages = {
 };
 const TopicVersionInfo = (props) => {
   const { topicInfo } = props;
-  const { formatMessage } = props.intl;
   let sourcesAndCollections = topicInfo.media ? [...topicInfo.media] : [];
   sourcesAndCollections = topicInfo.media_tags ? [...sourcesAndCollections, ...topicInfo.media_tags] : sourcesAndCollections;
 
   return (
     <>
       <p>
-        <b><FormattedMessage {...messages.topicPublicProp} /></b>: { topicInfo.is_public ? formatMessage(messages.yes) : formatMessage(messages.no) }
-        <br />
         <b><FormattedMessage {...messages.topicStartDateProp} /></b>: {topicInfo.start_date}
         <br />
         <b><FormattedMessage {...messages.topicEndDateProp} /></b>: {topicInfo.end_date}

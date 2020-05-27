@@ -9,8 +9,6 @@ import ActionMenu from '../../common/ActionMenu';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import { fetchTopicStoryCounts } from '../../../actions/topicActions';
-import Permissioned from '../../common/Permissioned';
-import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import BubbleRowChart from '../../vis/BubbleRowChart';
 import { DownloadButton } from '../../common/IconButton';
 import { topicDownloadFilename } from '../../util/topicUtil';
@@ -61,19 +59,17 @@ const StoryTotalsSummaryContainer = (props) => {
   return (
     <>
       {content}
-      <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-        <div className="actions">
-          <ActionMenu actionTextMsg={messages.downloadOptions}>
-            <MenuItem
-              className="action-icon-menu-item"
-              onClick={() => downloadSvg(`${topicDownloadFilename(topicName, filters)}-filtered-story-count`, BUBBLE_CHART_DOM_ID)}
-            >
-              <ListItemText><FormattedMessage {...messages.downloadSVG} /></ListItemText>
-              <ListItemIcon><DownloadButton /></ListItemIcon>
-            </MenuItem>
-          </ActionMenu>
-        </div>
-      </Permissioned>
+      <div className="actions">
+        <ActionMenu actionTextMsg={messages.downloadOptions}>
+          <MenuItem
+            className="action-icon-menu-item"
+            onClick={() => downloadSvg(`${topicDownloadFilename(topicName, filters)}-filtered-story-count`, BUBBLE_CHART_DOM_ID)}
+          >
+            <ListItemText><FormattedMessage {...messages.downloadSVG} /></ListItemText>
+            <ListItemIcon><DownloadButton /></ListItemIcon>
+          </MenuItem>
+        </ActionMenu>
+      </div>
     </>
   );
 };

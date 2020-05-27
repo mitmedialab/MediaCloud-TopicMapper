@@ -31,3 +31,11 @@ export function getCurrentVersionFromSnapshot(topicInfo, currentSnapshotId) {
 export function getTotalVersions(topicInfo) {
   return topicInfo.snapshots.list.length;
 }
+
+export const isUrlSharingFocalSet = (focalSet) => (focalSet.name === 'URL Sharing');
+
+export const hasAUrlSharingFocalSet = (focalSets) => {
+  const urlSharingFocalSets = focalSets.map(fs => isUrlSharingFocalSet(fs));
+  const hasOne = urlSharingFocalSets.reduce((combined, current) => combined || current, false);
+  return hasOne;
+};

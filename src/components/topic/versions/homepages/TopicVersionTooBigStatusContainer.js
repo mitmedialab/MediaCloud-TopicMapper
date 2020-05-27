@@ -24,10 +24,11 @@ export const storyCountFromJobMessage = (jobMessage) => {
   return null;
 };
 
-const TopicVersionTooBigStatusContainer = ({ topic, goToCreateNewVersion, snapshot, intl }) => (
+const TopicVersionTooBigStatusContainer = ({ topic, goToCreateNewVersion, snapshot, intl, focalSets }) => (
   <TopicVersionStatus
     subtitle={localMessages.title}
     topic={topic}
+    focalSets={focalSets}
     snapshot={snapshot}
   >
     <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
@@ -64,6 +65,7 @@ TopicVersionTooBigStatusContainer.propTypes = {
   topic: PropTypes.object,
   filters: PropTypes.object,
   snapshot: PropTypes.object,
+  focalSets: PropTypes.array,
   goToCreateNewVersion: PropTypes.func,
   // from context
   intl: PropTypes.object.isRequired,

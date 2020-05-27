@@ -12,6 +12,7 @@ import AppButton from '../../common/AppButton';
 import ActionMenu from '../../common/ActionMenu';
 import BubbleRowChart from '../../vis/BubbleRowChart';
 import { queryChangedEnoughToUpdate, postToDownloadUrl, ensureSafeResults } from '../../../lib/explorerUtil';
+import { downloadSvg } from '../../util/svg';
 import messages from '../../../resources/messages';
 import { FETCH_INVALID } from '../../../lib/fetchConstants';
 import withQueryResults from './QueryResultsSelector';
@@ -56,8 +57,8 @@ class QueryTotalAttentionResultsContainer extends React.Component {
   }
 
   render() {
-    const { results, queries, selectedQuery } = this.props;
-    const { formatNumber, formatMessage } = this.props.intl;
+    const { results, queries } = this.props;
+    const { formatNumber } = this.props.intl;
     let content = null;
 
     const safeResults = ensureSafeResults(queries, results);
@@ -82,40 +83,35 @@ class QueryTotalAttentionResultsContainer extends React.Component {
           fill: query.color,
         };
       });
-      let downloadOptimizer = null;
-      if (queries.length === 1) {
-        downloadOptimizer = (
-          <AppButton
-            variant="text"
-            className="action-menu-single-download"
-            onClick={() => this.downloadCsv(selectedQuery)}
-            aria-controls="action-menu"
-            aria-haspopup="true"
-            aria-owns="action-menu"
-            label={formatMessage(localMessages.downloadCsv, { name: selectedQuery.label })}
-            size="small"
-          />
-        );
-      } else {
-        downloadOptimizer = (
-          <ActionMenu actionTextMsg={messages.downloadOptions}>
-            {queries.map((q, idx) => (
-              <MenuItem
-                className="action-icon-menu-item"
-                onClick={() => this.downloadCsv(q)}
-                key={idx}
-              >
-                <ListItemText>
-                  <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />
-                </ListItemText>
-                <ListItemIcon>
-                  <DownloadButton />
-                </ListItemIcon>
-              </MenuItem>
-            ))}
-          </ActionMenu>
-        );
-      }
+      const downloadOptimizer = (
+        <ActionMenu actionTextMsg={messages.downloadOptions}>
+          {queries.map((q, idx) => (
+            <MenuItem
+              className="action-icon-menu-item"
+              onClick={() => this.downloadCsv(q)}
+              key={`csv-download-${idx}`}
+            >
+              <ListItemText>
+                <FormattedMessage {...localMessages.downloadCsv} values={{ name: q.label }} />
+              </ListItemText>
+              <ListItemIcon>
+                <DownloadButton />
+              </ListItemIcon>
+            </MenuItem>
+          ))}
+          <MenuItem
+            className="action-icon-menu-item"
+            onClick={() => downloadSvg('attention-bubble', BUBBLE_CHART_DOM_ID)}
+          >
+            <ListItemText>
+              <FormattedMessage {...messages.downloadSVG} />
+            </ListItemText>
+            <ListItemIcon>
+              <DownloadButton />
+            </ListItemIcon>
+          </MenuItem>
+        </ActionMenu>
+      );
       content = (
         <div>
           <BubbleRowChart
@@ -127,30 +123,30 @@ class QueryTotalAttentionResultsContainer extends React.Component {
           <div className="actions">
             {downloadOptimizer}
             <ActionMenu actionTextMsg={messages.viewOptions}>
-              <MenuItem
-                className="action-icon-menu-item"
-                disabled={this.state.view === VIEW_REGULAR}
-                onClick={() => this.setView(VIEW_REGULAR)}
-              >
-                <ListItemText>
-                  <FormattedMessage {...localMessages.viewNormalized} />
-                </ListItemText>
-              </MenuItem>
-              <MenuItem
-                className="action-icon-menu-item"
-                disabled={this.state.view === VIEW_NORMALIZED}
-                onClick={() => this.setView(VIEW_NORMALIZED)}
-              >
-                <ListItemText>
-                  <FormattedMessage {...localMessages.viewRegular} />
-                </ListItemText>
-              </MenuItem>
+              {[{
+                view: VIEW_REGULAR,
+                msg: localMessages.viewNormalized,
+              }, {
+                view: VIEW_NORMALIZED,
+                msg: localMessages.viewRegular,
+              }].map(item => (
+                <MenuItem
+                  className="action-icon-menu-item"
+                  key={`view-options-${item.view}`}
+                  disabled={this.state.view === item.view}
+                  onClick={() => this.setView(item.view)}
+                >
+                  <ListItemText>
+                    <FormattedMessage {...item.msg} />
+                  </ListItemText>
+                </MenuItem>
+              ))}
             </ActionMenu>
           </div>
         </div>
       );
     }
-    return (content);
+    return content;
   }
 }
 
@@ -159,11 +155,10 @@ QueryTotalAttentionResultsContainer.propTypes = {
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
-  selectedQuery: PropTypes.object.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   // from dispatch
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
   // from state
   fetchStatus: PropTypes.string.isRequired,
 };

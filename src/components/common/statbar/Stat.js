@@ -25,7 +25,7 @@ class Stat extends React.Component {
       contentToShow = (
         <div>
           <small><FormattedMessage {...message} /> { helpDisplayContent }</small>
-          <em>{data}</em>
+          <em>{data || '?'}</em>
         </div>
       );
     }

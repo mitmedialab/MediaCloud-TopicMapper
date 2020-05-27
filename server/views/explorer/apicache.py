@@ -34,7 +34,7 @@ def normalized_and_story_split_count(q, open_q, start_date, end_date):
 
 @cache.cache_on_arguments()
 def cached_story_split_count(mc_api_key, q, fq):
-    local_mc = base_cache.mc_client()
+    local_mc = base_cache.user_mediacloud_client(mc_api_key)
     results = local_mc.storyCount(q, fq, split=True, http_method='POST')
     return results
 
@@ -106,10 +106,10 @@ def tag_set_coverage(total_q, subset_q, fq):
 
 
 @cache.cache_on_arguments()
-def _cached_most_used_tags(api_key, q, fq, tag_sets_id, sample_size=None):
+def _cached_most_used_tags(mc_api_key, q, fq, tag_sets_id, sample_size=None):
     # top tags used in stories matching query
     # api_key used for caching at the user level
-    local_mc = base_cache.mc_client()
+    local_mc = base_cache.user_mediacloud_client(mc_api_key)
     return local_mc.storyTagCount(q, fq, tag_sets_id=tag_sets_id, limit=sample_size, http_method='POST')
 
 
@@ -119,9 +119,9 @@ def story_count(q, fq):
 
 
 @cache.cache_on_arguments()
-def _cached_total_story_count(api_key, q, fq):
+def _cached_total_story_count(mc_api_key, q, fq):
     # api_key is included to keep the cache at the user-level
-    local_mc = base_cache.mc_client()
+    local_mc = base_cache.user_mediacloud_client(mc_api_key)
     count = local_mc.storyCount(q, fq, http_method='POST')
     return count
 
@@ -149,22 +149,10 @@ def word_count(q, fq, ngram_size, num_words, sample_size):
 
 
 @cache.cache_on_arguments()
-def _cached_word_count(api_key, q, fq, ngram_size, num_words, sample_size):
-    local_mc = base_cache.mc_client()
+def _cached_word_count(mc_api_key, q, fq, ngram_size, num_words, sample_size):
+    local_mc = base_cache.user_mediacloud_client(mc_api_key)
     return local_mc.wordCount(q, fq, ngram_size=ngram_size, num_words=num_words, sample_size=sample_size,
                               http_method='POST')
-
-
-def word2vec_google_2d(words):
-    return _cached_word2vec_google_2d(words)
-
-
-@cache.cache_on_arguments()
-def _cached_word2vec_google_2d(words):
-    # don't need to be user-level cache here - can be app-wide because results are from another service that doesn't
-    # have any concept of permissioning
-    word2vec_results = wordembeddings.google_news_2d(words)
-    return word2vec_results
 
 
 def tag_set(tag_sets_id):
@@ -172,7 +160,7 @@ def tag_set(tag_sets_id):
 
 
 @cache.cache_on_arguments()
-def _cached_tag_set(api_key, tag_sets_id):
-    local_mc = base_cache.mc_client()
+def _cached_tag_set(mc_api_key, tag_sets_id):
+    local_mc = user_mediacloud_client(mc_api_key)
     return local_mc.tagSet(tag_sets_id)
 

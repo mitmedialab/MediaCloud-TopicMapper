@@ -64,12 +64,6 @@ export function serializeSearchTags(searches) {
   return currentSearch.length ? `[${currentSearch}]` : '';
 }
 
-
-export function replaceCurlyQuotes(stringWithQuotes) {
-  let removedQuotes = stringWithQuotes.replace(/[\u2018]/g, "'").replace(/[\u2019]/g, "'"); // replace single curly quotes
-  removedQuotes = removedQuotes.replace(/[\u201C]/g, '"').replace(/[\u201D]/g, '"'); // replace double curly quotes
-  return removedQuotes;
-}
 /* deletions, duplications and new queries shouldn't be shown in results until they have fetched results */
 export function ensureSafeSortedQueries(queries) {
   const unDeletedQueries = queries.filter(q => q.deleted !== true);
@@ -77,19 +71,20 @@ export function ensureSafeSortedQueries(queries) {
 }
 
 /* deletions, duplications and new queries may result in an intermediate state in which the results and queries are not yet in alignment. Use
-this function to handle these cases. sort resutls according to query sortPositions */
+this function to handle these cases. sort results according to query sortPositions */
 export function ensureSafeResults(queries, results) {
-  const unDeletedQueries = queries.filter(q => q.deleted !== true);
-  let safeQueryWithResults = null;
-
-  if (results !== undefined && results !== null && results.length > 0) {
-    safeQueryWithResults = unDeletedQueries.map(q => ({ ...q, ...results.find(r => r.uid === q.uid) }));
-    const nonEmptyQueries = safeQueryWithResults.filter(q => q.q !== undefined && q.results && q.results !== undefined);
-    safeQueryWithResults = Object.values(nonEmptyQueries).sort((a, b) => a.sortPosition - b.sortPosition);
-    const allQueriesHaveResults = safeQueryWithResults.filter(q => q.results); // trying to handle not-yet fetched queries (dupes/new)
-    return allQueriesHaveResults.length === safeQueryWithResults.length ? safeQueryWithResults : [];
+  if (!results) {
+    return [];
   }
-  return [];
+  const resultUids = Object.keys(results);
+  const validQueries = queries
+    .filter(q => q.deleted !== true) // undeleted queries
+    .filter(q => resultUids.includes(q.uid)); // and those that have results
+  const validQueriesWithResults = validQueries.map(q => ({
+    ...q,
+    results: results[q.uid],
+  }));
+  return validQueriesWithResults;
 }
 
 /* deletions may result in an intermediate state in which the selectedTabIndex hasn't been updated yet. Use
@@ -244,7 +239,7 @@ function queryPropertyHasChanged(queries, nextQueries, propName) {
 // call this from componentShouldUpdate to figure out if it should or not
 export function queryChangedEnoughToUpdate(queries, nextQueries, results, nextResults) {
   // only re-render if results, any labels, or any colors have changed
-  if (results.length) { // may have reset results so avoid test if results is empty
+  if (results) { // may have reset results so avoid test if results is empty
     const labelsHaveChanged = queryPropertyHasChanged(queries.slice(0, results.length), nextQueries.slice(0, results.length), 'label');
     const colorsHaveChanged = queryPropertyHasChanged(queries.slice(0, results.length), nextQueries.slice(0, results.length), 'color');
     return (

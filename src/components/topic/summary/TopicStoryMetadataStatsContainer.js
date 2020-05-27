@@ -3,9 +3,10 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
-import { fetchTopicGeocodedStoryCoverage, fetchTopicEnglishStoryCounts, fetchTopicUndateableStoryCounts, fetchTopicNytLabelCoverage } from '../../../actions/topicActions';
+import { fetchTopicProviderCount } from '../../../actions/topicActions';
 import StatBar from '../../common/statbar/StatBar';
 import messages from '../../../resources/messages';
+import { TAG_NYT_LABELER_1_0_0, CLIFF_VERSION_TAG_LIST, TAG_STORY_UNDATEABLE } from '../../../lib/tagUtil';
 
 const localMessages = {
   themedCount: { id: 'topic.summary.storystats.themedCount', defaultMessage: 'Stories Checked for Themes' },
@@ -15,7 +16,7 @@ const localMessages = {
 };
 
 const TopicStoryMetadataStatsContainer = (props) => {
-  const { timespan, themeCounts, undateableCount, geocodedCounts, englishCounts } = props;
+  const { timespan, nytThemeCoverage, undateableCount, entityCoverage, englishCounts } = props;
   const { formatNumber } = props.intl;
   if ((timespan === null) || (timespan === undefined)) {
     return null;
@@ -25,16 +26,16 @@ const TopicStoryMetadataStatsContainer = (props) => {
       columnWidth={3}
       stats={[
         { message: localMessages.englishCount,
-          data: formatNumber(englishCounts.count / geocodedCounts.total, { style: 'percent', maximumFractionDigits: 0 }) },
+          data: formatNumber(englishCounts.count / entityCoverage.total, { style: 'percent', maximumFractionDigits: 0 }) },
         { message: localMessages.undateableCount,
           data: formatNumber(undateableCount.count / undateableCount.total, { style: 'percent', maximumFractionDigits: 0 }) },
         { message: localMessages.geocodedCount,
-          data: formatNumber(geocodedCounts.count / geocodedCounts.total, { style: 'percent', maximumFractionDigits: 0 }),
+          data: formatNumber(entityCoverage.count / entityCoverage.total, { style: 'percent', maximumFractionDigits: 0 }),
           helpTitleMsg: messages.entityHelpTitle,
           helpContentMsg: messages.entityHelpContent,
         },
         { message: localMessages.themedCount,
-          data: formatNumber(themeCounts.count / themeCounts.total, { style: 'percent', maximumFractionDigits: 0 }),
+          data: formatNumber(nytThemeCoverage.count / nytThemeCoverage.total, { style: 'percent', maximumFractionDigits: 0 }),
           helpTitleMsg: messages.themeHelpTitle,
           helpContentMsg: messages.themeHelpContent,
         },
@@ -51,32 +52,43 @@ TopicStoryMetadataStatsContainer.propTypes = {
   // from composition chain
   intl: PropTypes.object.isRequired,
   // from state
-  fetchStatus: PropTypes.arrayOf(PropTypes.string).isRequired,
-  geocodedCounts: PropTypes.object,
+  fetchStatus: PropTypes.string.isRequired,
+  entityCoverage: PropTypes.object,
   englishCounts: PropTypes.object,
-  themeCounts: PropTypes.object,
+  nytThemeCoverage: PropTypes.object,
   undateableCount: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: [
-    state.topics.selected.summary.geocodedStoryTotals.fetchStatus,
-    state.topics.selected.summary.englishStoryTotals.fetchStatus,
-    state.topics.selected.summary.undateableStoryTotals.fetchStatus,
-    state.topics.selected.summary.themedStoryTotals.fetchStatus,
-  ],
-  geocodedCounts: state.topics.selected.summary.geocodedStoryTotals.counts,
-  englishCounts: state.topics.selected.summary.englishStoryTotals.counts,
-  undateableCount: state.topics.selected.summary.undateableStoryTotals.counts,
-  themeCounts: state.topics.selected.summary.themedStoryTotals.counts,
+  fetchStatus: state.topics.selected.provider.count.fetchStatus,
+  entityCoverage: state.topics.selected.provider.count.results.entities || null,
+  undateableCount: state.topics.selected.provider.count.results.undateable || null,
+  nytThemeCoverage: state.topics.selected.provider.count.results.nytThemes || null,
+  englishCounts: state.topics.selected.provider.count.results.englishLanguage || null,
   filters: state.topics.selected.filters,
 });
 
 const fetchAsyncData = (dispatch, props) => {
-  dispatch(fetchTopicGeocodedStoryCoverage(props.topicId, props.filters));
-  dispatch(fetchTopicEnglishStoryCounts(props.topicId, props.filters));
-  dispatch(fetchTopicUndateableStoryCounts(props.topicId, props.filters));
-  dispatch(fetchTopicNytLabelCoverage(props.topicId, props.filters));
+  dispatch(fetchTopicProviderCount(props.topicId, {
+    uid: 'englishLanguage',
+    ...props.filters,
+    subQuery: 'language:en',
+  }));
+  dispatch(fetchTopicProviderCount(props.topicId, {
+    uid: 'entities',
+    ...props.filters,
+    subQuery: `tags_id_stories:(${CLIFF_VERSION_TAG_LIST.join(' ')})`,
+  }));
+  dispatch(fetchTopicProviderCount(props.topicId, {
+    uid: 'undateable',
+    ...props.filters,
+    subQuery: `tags_id_stories:(${TAG_STORY_UNDATEABLE})`,
+  }));
+  dispatch(fetchTopicProviderCount(props.topicId, {
+    ...props.filters,
+    uid: 'nytThemes',
+    subQuery: `tags_id_stories:(${TAG_NYT_LABELER_1_0_0})`,
+  }));
 };
 
 export default

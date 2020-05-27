@@ -5,9 +5,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
+import SanitizedHTML from 'react-sanitized-html';
 import AppButton from './AppButton';
 import messages from '../../resources/messages';
+import { intlIfObject } from '../../lib/stringUtil';
+import { intlMessageShape } from '../../lib/reactUtil';
 
+/**
+ * A helper for showing a modal dialog. If you want to show a help icon, use the HelpDialog wrapper instead.
+ */
 class SimpleDialog extends React.Component {
   state = {
     open: false,
@@ -23,18 +29,19 @@ class SimpleDialog extends React.Component {
   };
 
   render() {
-    const { trigger, children, title } = this.props;
-    const { formatMessage } = this.props.intl;
+    const { trigger, children, title, content } = this.props;
+    const { formatMessage, formatHTMLMessage } = this.props.intl;
     return (
       <span>
-        <a href="#" role="button" tabIndex="0" onClick={this.handleClickOpen}>{trigger}</a>
+        <a role="button" tabIndex="0" onKeyPress={this.handleClickOpen} onClick={this.handleClickOpen}>{intlIfObject(formatHTMLMessage, trigger)}</a>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="simple-dialog-title"
         >
-          <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
+          <DialogTitle id="simple-dialog-title">{intlIfObject(formatHTMLMessage, title)}</DialogTitle>
           <DialogContent>
+            <SanitizedHTML html={intlIfObject(formatHTMLMessage, content)} />
             {children}
           </DialogContent>
           <DialogActions>
@@ -44,7 +51,7 @@ class SimpleDialog extends React.Component {
               onClick={this.handleClose}
             >
               <FormattedMessage {...messages.ok} />
-            </AppButton>,
+            </AppButton>
           </DialogActions>
         </Dialog>
       </span>
@@ -53,11 +60,23 @@ class SimpleDialog extends React.Component {
 }
 
 SimpleDialog.propTypes = {
+  // from parent
+  trigger: PropTypes.oneOfType([ // the thing the user can click to make the dialog appear
+    PropTypes.shape(intlMessageShape),
+    PropTypes.string, // a raw text link
+    PropTypes.node, // an icon perhaps
+  ]).isRequired,
+  title: PropTypes.oneOfType([ // the title of the dialog that shows up
+    PropTypes.string,
+    PropTypes.shape(intlMessageShape),
+  ]).isRequired,
+  content: PropTypes.oneOfType([ // supply this, or children to show
+    PropTypes.string,
+    PropTypes.shape(intlMessageShape),
+  ]),
+  children: PropTypes.node, // supply this, or `content` to show
   // from composition
   intl: PropTypes.object.isRequired,
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
-  trigger: PropTypes.string.isRequired,
 };
 
 

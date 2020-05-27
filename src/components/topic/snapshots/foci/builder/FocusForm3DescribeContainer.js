@@ -7,7 +7,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../../../common/hocs/IntlForm';
 import AppButton from '../../../../common/AppButton';
 import FocusDescriptionForm, { NEW_FOCAL_SET_PLACEHOLDER_ID } from './FocusDescriptionForm';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
 import messages from '../../../../../resources/messages';
 import FocalSetForm from './FocalSetForm';
@@ -39,18 +39,6 @@ const FocusForm3DescribeContainer = (props) => {
   let content;
   switch (formData.focalTechnique) {
     case FOCAL_TECHNIQUE_BOOLEAN_QUERY:
-      content = (
-        <FocusDescriptionForm
-          topicId={topicId}
-          initialValues={initialValues}
-          focalSetDefinitions={focalSetDefinitions}
-          focalTechnique={formData.focalTechnique}
-          currentFocalSetDefinitionId={formData.focalSetDefinitionId}
-          keywords={formData.keywords}
-        />
-      );
-      break;
-    case FOCAL_TECHNIQUE_MEDIA_SEARCH:
       content = (
         <FocusDescriptionForm
           topicId={topicId}

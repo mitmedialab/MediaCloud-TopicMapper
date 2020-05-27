@@ -18,6 +18,7 @@ import { getBrandDarkColor } from '../../styles/colors';
 import { downloadSvg } from '../util/svg';
 import ActionMenu from './ActionMenu';
 import { WarningNotice } from './Notice';
+import { intlIfObject } from '../../lib/stringUtil';
 
 export const VIEW_1K = 1000;
 export const VIEW_10K = 10000;
@@ -28,6 +29,8 @@ const VIEW_GOOGLE_W2V = 'VIEW_GOOGLE_W2V';
 const VIEW_TOPIC_W2V = 'VIEW_TOPIC_W2V';
 
 const WORD_SPACE_WORD_LIMIT = 50;
+
+const DEFAULT_DOM_ID = 'topic-word-cloud';
 
 const localMessages = {
   editing: { id: 'wordcloud.editable.editingNotice', defaultMessage: 'You are temporarily editing this word cloud. Click words you want to hide, then use the menu to flip back into view mode and export it to SVG.' },
@@ -101,16 +104,16 @@ class EditableWordCloudDataCard extends React.Component {
       // be smart about tacking on hte ngram size requested automatically here
       if (ngramSize) {
         if (url.indexOf('?') !== -1) {
-          url = `${url}&ngram_size=${ngramSize}`;
+          url = `${url}&ngramSize=${ngramSize}`;
         } else {
-          url = `${url}?ngram_size=${ngramSize}`;
+          url = `${url}?ngramSize=${ngramSize}`;
         }
       }
       if (sampleSize) {
         if (url.indexOf('?') !== -1) {
-          url = `${url}&sample_size=${sampleSize}`;
+          url = `${url}&sampleSize=${sampleSize}`;
         } else {
-          url = `${url}?sample_size=${sampleSize}`;
+          url = `${url}?sampleSize=${sampleSize}`;
         }
       }
       window.location = url;
@@ -289,8 +292,8 @@ class EditableWordCloudDataCard extends React.Component {
   }
 
   buildHeaderContent = () => {
-    const { title, explore, helpButton, subtitleContent } = this.props;
-    let titleContent = title;
+    const { title, explore, helpButton, subtitleContent, intl } = this.props;
+    let titleContent = intlIfObject(intl.formatMessage, title);
     if (explore) {
       titleContent = (
         <Link to={explore}>
@@ -320,7 +323,7 @@ class EditableWordCloudDataCard extends React.Component {
     const lColor = textAndLinkColor || linkColor || getBrandDarkColor();
     let wordsArray = words.map(w => ({ ...w, display: true }));
     let editingWarning;
-    const uniqueDomId = `${domId}-${(this.state.ordered ? 'ordered' : 'unordered')}`; // add mode to it so ordered or not works
+    const uniqueDomId = `${domId || DEFAULT_DOM_ID}-${(this.state.ordered ? 'ordered' : 'unordered')}`; // add mode to it so ordered or not works
     if (this.state.editing && this.state.modifiableWords) {
       wordClickHandler = this.onEditModeClick;
       className += ' editing';
@@ -434,13 +437,13 @@ EditableWordCloudDataCard.propTypes = {
   textAndLinkColor: PropTypes.string, // render the words in this color (instead of the brand dark color)
   textColor: PropTypes.string,
   linkColor: PropTypes.string,
-  title: PropTypes.string, // rendered as an H2 inside the DataCard
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]), // rendered as an H2 inside the DataCard
   words: PropTypes.array.isRequired,
   selectedTerm: PropTypes.string,
-  downloadUrl: PropTypes.string, // used as the base for downloads, ngram_size appended for bigram/trigram download
+  downloadUrl: PropTypes.string, // used as the base for downloads, ngramSize appended for bigram/trigram download
   onDownload: PropTypes.func, // if you want to handle the download request yourself, pass in a function (overrides downloadUrl)
   svgDownloadPrefix: PropTypes.string, // for naming the SVG download file
-  explore: PropTypes.object, // show an exlore button and link it to this URL
+  explore: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // show an exlore button and link it to this URL
   helpButton: PropTypes.node, // pass in a helpButton to render to the right of the H2 title
   subtitleContent: PropTypes.object, // shows up to the right of the H2 title
   subHeaderContent: PropTypes.object, // shows up under the H2 title, above the word cloud
@@ -452,7 +455,7 @@ EditableWordCloudDataCard.propTypes = {
   onViewSampleSizeClick: PropTypes.func,
   initSampleSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   actionsAsLinksUnderneath: PropTypes.bool, // show the actions as links under the viz (ie. in a SummarizedVisualization card)
-  domId: PropTypes.string.isRequired, // unique dom id needed to support CSV downloading
+  domId: PropTypes.string, // unique dom id needed to support CSV downloading
   // from compositional chain
   intl: PropTypes.object.isRequired,
 };

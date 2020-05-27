@@ -11,12 +11,13 @@ const localMessages = {
   whatNowText: { id: 'version.queued.explanation2.text', defaultMessage: 'Does that query on the right look wrong? Did you not need this version of the topic anymore?  You can cancel it.' },
 };
 
-const TopicVersionQueuedStatusContainer = ({ topic, snapshot, intl }) => (
+const TopicVersionQueuedStatusContainer = ({ topic, snapshot, intl, focalSets }) => (
   <>
     <TopicVersionStatus
       subtitle={localMessages.title}
       topic={topic}
       snapshot={snapshot}
+      focalSets={focalSets}
     >
       <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
       <p><FormattedMessage {...localMessages.explanationText} /></p>
@@ -38,11 +39,12 @@ const TopicVersionQueuedStatusContainer = ({ topic, snapshot, intl }) => (
 );
 
 TopicVersionQueuedStatusContainer.propTypes = {
-  // from state
+  // from parent
   topic: PropTypes.object,
   filters: PropTypes.object,
   snapshot: PropTypes.object,
   goToCreateNewVersion: PropTypes.func,
+  focalSets: PropTypes.array,
   // from context
   intl: PropTypes.object.isRequired,
 };

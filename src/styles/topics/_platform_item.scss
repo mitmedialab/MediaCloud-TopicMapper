@@ -1,0 +1,64 @@
+@import '../constants';
+
+.available-platform {
+
+  border: 1px solid $material-grey400;
+  padding: 30px;
+  margin-bottom: 15px;
+
+  h3 {
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 8px;
+
+    img {
+      display: inline-block;
+      margin-right: 5px;
+    }
+  }
+
+  small {
+    font-size: 16px;
+    color: $material-grey800;
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  &.inactive {
+    opacity: 0.4;
+    &:hover {
+      opacity: 1.0;
+    }
+  }
+
+  button {
+    margin: 0px;
+    margin-bottom: 15px;
+  }
+
+  .platform-query {
+    margin-top: 5px;
+    label {
+      font-size: 14px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    code {
+      font-size: 10px;
+    }
+  }
+
+  .q-field-wrapper {
+    border: 1px solid $material-grey200 !important;
+    textarea {
+      margin-left: 10px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    input {
+      margin-left: 10px;
+    }
+  }
+
+}

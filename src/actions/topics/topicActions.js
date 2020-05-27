@@ -5,9 +5,6 @@ import * as api from '../../lib/serverApi/topics';
 export const FETCH_PERSONAL_TOPIC_LIST = 'FETCH_PERSONAL_TOPIC_LIST';
 export const fetchPersonalTopicsList = createAsyncAction(FETCH_PERSONAL_TOPIC_LIST, api.topicsPersonalList, linkId => linkId);
 
-export const FETCH_PUBLIC_TOPICS_LIST = 'FETCH_PUBLIC_TOPICS_LIST';
-export const fetchPublicTopicsList = createAsyncAction(FETCH_PUBLIC_TOPICS_LIST, api.topicsPublicList);
-
 export const FETCH_FAVORITE_TOPICS_LIST = 'FETCH_FAVORITE_TOPICS_LIST';
 export const fetchFavoriteTopicsList = createAsyncAction(FETCH_FAVORITE_TOPICS_LIST, api.topicsFavoriteList);
 
@@ -20,10 +17,6 @@ export const updateTopicFilterParsingStatus = createAction(UPDATE_TOPIC_FILTER_P
 // pass in topicId
 export const SELECT_TOPIC = 'SELECT_TOPIC';
 export const selectTopic = createAction(SELECT_TOPIC, id => parseInt(id, 10));
-
-// pass in topicId
-export const FETCH_TOPIC_SNAPSHOTS_LIST = 'FETCH_TOPIC_SNAPSHOTS_LIST';
-export const fetchTopicSnapshotsList = createAsyncAction(FETCH_TOPIC_SNAPSHOTS_LIST, api.topicSnapshotsList);
 
 // pass in snapshotId
 export const TOPIC_FILTER_BY_SNAPSHOT = 'TOPIC_FILTER_BY_SNAPSHOT';
@@ -93,10 +86,7 @@ export const UPDATE_TOPIC_SEED_QUERY = 'UPDATE_TOPIC_SEED_QUERY';
 export const updateTopicSeedQuery = createAsyncAction(UPDATE_TOPIC_SEED_QUERY, api.topicUpdateSeedQuery);
 
 export const TOPIC_START_SPIDER = 'TOPIC_START_SPIDER';
-export const topicSnapshotSpider = createAsyncAction(TOPIC_START_SPIDER, api.topicSnapshotSpider);
-
-export const TOPIC_GENERATE_SNAPSHOT = 'TOPIC_GENERATE_SNAPSHOT';
-export const topicSnapshotGenerate = createAsyncAction(TOPIC_GENERATE_SNAPSHOT, api.topicSnapshotGenerate);
+export const topicSnapshotGenerate = createAsyncAction(TOPIC_START_SPIDER, api.topicSnapshotGenerate);
 
 export const TOPIC_CREATE_SNAPSHOT = 'TOPIC_CREATE_SNAPSHOT';
-export const topicSnapshotCreate = createAsyncAction(TOPIC_GENERATE_SNAPSHOT, api.topicSnapshotCreate);
+export const topicSnapshotCreate = createAsyncAction(TOPIC_CREATE_SNAPSHOT, api.topicSnapshotCreate);

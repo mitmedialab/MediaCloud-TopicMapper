@@ -7,7 +7,6 @@ import topWordsComparison from './topWordsComparison';
 import topEntitiesPeople from './topEntitiesPeople';
 import topEntitiesOrgs from './topEntitiesOrgs';
 import topWords from './topWords';
-import samples from './samples';
 import stories from './stories';
 import geo from './geo';
 import savedSearches from './savedSearches';
@@ -23,7 +22,6 @@ const rootReducer = combineReducers({
   storySplitCount,
   topWords,
   topWordsComparison,
-  samples,
   stories,
   geo,
   topEntitiesPeople,

@@ -19,7 +19,7 @@ const NytThemeCoveragePreviewContainer = (props) => {
   const { counts, numThemes } = props;
   const { formatMessage } = props.intl;
   let content = null;
-  if (counts !== null) {
+  if (counts !== null && counts !== undefined) {
     content = (
       <PieChart
         title={formatMessage(localMessages.title)}
@@ -50,7 +50,7 @@ NytThemeCoveragePreviewContainer.propTypes = {
   topicId: PropTypes.number.isRequired,
   numThemes: PropTypes.number.isRequired,
   // from state
-  counts: PropTypes.object,
+  counts: PropTypes.array,
   fetchStatus: PropTypes.string.isRequired,
 };
 

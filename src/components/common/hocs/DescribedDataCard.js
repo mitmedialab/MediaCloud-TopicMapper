@@ -11,7 +11,7 @@ const localMessage = {
 /**
  * Use this with the JS Composition pattern to make a DataCard that has help on the side.
  */
-function withDescription(introMessage, descriptionMessage) {
+function withDescription(introMessage, descriptionMessage, showingPropName) {
   return (ChildComponent) => {
     class DescribedDataCard extends React.Component {
       state = {
@@ -46,24 +46,29 @@ function withDescription(introMessage, descriptionMessage) {
             );
           }
         }
-        return (
-          <span className="described-data-card">
-            <Row>
-              <Col lg={8}>
-                <ChildComponent {...this.props} showingDetails={this.state.showDescription} />
-              </Col>
-              <Col lg={4}>
-                <div className="helpful-content">
-                  <p>
-                    <FormattedHTMLMessage {...introMessage} />
-                    {toggleButton}.
-                  </p>
-                  {descriptionContent}
-                </div>
-              </Col>
-            </Row>
-          </span>
-        );
+        // optional support for only showing the whole DataCard if the specified property is true
+        const visible = (showingPropName === undefined) || (showingPropName && (this.props[showingPropName] !== false));
+        if (visible) {
+          return (
+            <span className="described-data-card">
+              <Row>
+                <Col lg={8}>
+                  <ChildComponent {...this.props} showingDetails={this.state.showDescription} />
+                </Col>
+                <Col lg={4}>
+                  <div className="helpful-content">
+                    <p>
+                      <FormattedHTMLMessage {...introMessage} />
+                      {toggleButton}.
+                    </p>
+                    {descriptionContent}
+                  </div>
+                </Col>
+              </Row>
+            </span>
+          );
+        }
+        return '';
       }
     }
 

@@ -29,7 +29,7 @@ class LoggedInQueryContainer extends React.Component {
   }
 
   render() {
-    const { queries, handleSearch, samples, location, lastSearchTime } = this.props;
+    const { queries, handleSearch, location, lastSearchTime } = this.props;
     const isEditable = false;
     return (
       <div className="query-container query-container-logged-in">
@@ -39,7 +39,6 @@ class LoggedInQueryContainer extends React.Component {
           lastSearchTime={lastSearchTime}
           queries={queries}
           params={location}
-          samples={samples}
           onSearch={() => handleSearch(queries)}
         />
       </div>
@@ -54,7 +53,6 @@ LoggedInQueryContainer.propTypes = {
   // from state
   selected: PropTypes.object,
   queries: PropTypes.array,
-  samples: PropTypes.array,
   query: PropTypes.object,
   location: PropTypes.object,
   // from dispatch
@@ -70,7 +68,6 @@ const mapStateToProps = state => ({
   selectedQuery: state.explorer.selected,
   queries: state.explorer.queries.queries,
   lastSearchTime: state.explorer.lastSearchTime.time,
-  samples: state.explorer.samples.list,
 });
 
 // push any updates (including selected) into queries in state, will trigger async load in sub sections

@@ -13,7 +13,7 @@ const localMessages = {
   title: { id: 'version.running.title', defaultMessage: 'Version {number} - ' },
 };
 
-const TopicVersionStatus = ({ topic, snapshot, subtitle, children }) => (
+const TopicVersionStatus = ({ topic, snapshot, subtitle, children, focalSets }) => (
   <Grid>
     <div className="topic-version-status">
       <Row>
@@ -39,7 +39,7 @@ const TopicVersionStatus = ({ topic, snapshot, subtitle, children }) => (
         </Col>
         <Col lg={1} />
         <Col lg={5}>
-          <SeedQuerySummary topic={topic} snapshot={snapshot} />
+          <SeedQuerySummary topic={topic} snapshot={snapshot} focalSets={focalSets} />
         </Col>
       </Row>
     </div>
@@ -52,6 +52,7 @@ TopicVersionStatus.propTypes = {
   children: PropTypes.node.isRequired,
   topic: PropTypes.object.isRequired,
   snapshot: PropTypes.object,
+  focalSets: PropTypes.array,
   // from context
   intl: PropTypes.object.isRequired,
 };

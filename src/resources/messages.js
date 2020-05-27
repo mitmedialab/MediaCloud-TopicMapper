@@ -39,7 +39,9 @@ const messages = {
   topicValidationProp: { id: 'topic.prop.validationPattern', defaultMessage: 'Validation Pattern' },
   topicIterationsProp: { id: 'topic.prop.iteration', defaultMessage: 'Iterations' },
   toicSkipSolrQueryProp: { id: 'topic.prop.public', defaultMessage: 'Skip SOLR Query' },
-  topicPublicProp: { id: 'topic.prop.public', defaultMessage: 'Public' },
+  searchByRedditChannel: { id: 'topic.prop.reddit.channel', defaultMessage: 'Search By Subreddit (comma separated list)' },
+  searchByTwitterChannel: { id: 'topic.prop.twitter.source', defaultMessage: 'Search By Twitter Source' },
+
 
   entityName: { id: 'entity.title.default', defaultMessage: 'Entity' },
   entityPerson: { id: 'entity.title.person', defaultMessage: 'Person' },
@@ -74,6 +76,7 @@ const messages = {
   feedUrl: { id: 'feed.url', defaultMessage: 'URL' },
   feedType: { id: 'feed.type', defaultMessage: 'Type' },
   feedIsActive: { id: 'feed.active', defaultMessage: 'Active' },
+  feedIsDisabled: { id: 'feed.inactive', defaultMessage: 'Disabled' },
 
   timespan: { id: 'common.timespan', defaultMessage: 'Timespan' },
 
@@ -81,13 +84,17 @@ const messages = {
   collectionNameProp: { id: 'collection.prop.name', defaultMessage: 'Name' },
   collectionDescriptionProp: { id: 'collection.prop.description', defaultMessage: 'Description' },
 
+  stories: { id: 'common.stories', defaultMessage: 'Stories' },
   inlinks: { id: 'common.inlinks', defaultMessage: 'Inlinks' },
   sortByMediaInlinks: { id: 'common.sortByMediaInlinks', defaultMessage: 'sort by media inlinks' },
   mediaInlinks: { id: 'common.mediaInlinks', defaultMessage: 'Media Inlinks' },
   outlinks: { id: 'common.outlinks', defaultMessage: 'Outlinks' },
   clicks: { id: 'common.clicks', defaultMessage: 'Clicks' },
-  facebookShares: { id: 'common.facebookShares', defaultMessage: 'Facebook Shares' },
-  tweetCounts: { id: 'common.tweetCounts', defaultMessage: 'Tweet Count' },
+  facebookShares: { id: 'common.facebookShares', defaultMessage: 'FB Shares' },
+  authorCount: { id: 'story.authorCount', defaultMessage: 'Authors' },
+  postCount: { id: 'story.postCount', defaultMessage: 'Posts' },
+  channelCount: { id: 'story.channelCount', defaultMessage: 'Channels' },
+  tweetCounts: { id: 'common.tweetCounts', defaultMessage: 'Tweets' },
   public: { id: 'common.public', defaultMessage: 'Public' },
   private: { id: 'common.private', defaultMessage: 'Private' },
   language: { id: 'common.language', defaultMessage: 'Language' },
@@ -124,6 +131,14 @@ const messages = {
   backToTopic: { id: 'backToTopic', defaultMessage: 'back to Topic' },
   addFocus: { id: 'focus.add', defaultMessage: 'Add a New Subtopic' },
   manageFoci: { id: 'focus.manage', defaultMessage: 'Manage Subtopics' },
+
+  platform: { id: 'platform', defaultMessage: 'Platform' },
+  platformHeader: { id: 'platform.header', defaultMessage: 'Platforms' },
+  addPlatform: { id: 'platform.add', defaultMessage: 'Add A New Platform' },
+  managePlatforms: { id: 'platform.manage', defaultMessage: 'Manage Platforms' },
+  platformSource: { id: 'platform.source', defaultMessage: 'Source' },
+  incompletePlatform: { id: 'platform.incompletePlatform', defaultMessage: 'You need to set up a platform for your topic!' },
+
 
   story: { id: 'story', defaultMessage: 'Story' },
   storyPlural: { id: 'stories', defaultMessage: 'Stories' },
@@ -165,6 +180,7 @@ const messages = {
   save: { id: 'save', defaultMessage: 'Save' },
   done: { id: 'done', defaultMessage: 'Done' },
   preview: { id: 'preview', defaultMessage: 'Preview' },
+  create: { id: 'create', defaultMessage: 'Create' },
   confirm: { id: 'confirm', defaultMessage: 'Confirm' },
   remove: { id: 'remove', defaultMessage: 'Remove' },
   add: { id: 'add', defaultMessage: 'Add' },

@@ -7,6 +7,7 @@ import 'codemirror/theme/material.css';
 import 'codemirror/mode/solr/solr';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -28,7 +29,7 @@ function withIntlForm(Component) {
 
     intlCustomProps = (customProps) => {
       const intlCustom = { ...customProps };
-      ['label', 'helpertext', 'error', 'disabled'].forEach((prop) => {
+      ['label', 'helpertext', 'error', 'disabled', 'placeholder'].forEach((prop) => {
         if ((prop in customProps)) {
           intlCustom[prop] = this.intlIfObject(customProps[prop]);
         }
@@ -93,10 +94,10 @@ function withIntlForm(Component) {
       );
     };
 
-    renderCheckbox = ({ input, label, meta: { error }, disabled, initialValues }) => {
+    renderCheckbox = ({ input, label, meta: { error }, disabled, initialValues, value }) => {
       const intlError = this.intlIfObject(error);
       //  be extra safe about how the initialValues might have come in
-      const checked = input.value === true || input.value === 1 || initialValues === 'checked';
+      const checked = value === true || input.value === true || input.value === 1 || initialValues === 'checked';
       return (
         <div>
           <FormControlLabel
@@ -158,6 +159,17 @@ function withIntlForm(Component) {
       );
     }
 
+    renderRadio = ({ input, ...custom }) => {
+      const intlCustom = this.intlCustomProps(custom);
+      return (
+        <Radio
+          {...input}
+          onChange={event => input.onChange(event.target.value)}
+          {...intlCustom}
+        />
+      );
+    }
+
     render() {
       const helpers = {
         renderTextField: this.renderTextField,
@@ -168,6 +180,7 @@ function withIntlForm(Component) {
         renderAutocomplete: this.renderAutocomplete,
         renderAsyncAutocomplete: this.renderAsyncAutocomplete,
         renderSolrTextField: this.renderSolrTextField,
+        renderRadio: this.renderRadio,
       };
       return (
         <Component {...this.props} {...helpers} />

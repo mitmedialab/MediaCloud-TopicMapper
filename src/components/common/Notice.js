@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from '@material-ui/core/Icon';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { intlIfObject } from '../../lib/stringUtil';
 
 export const LEVEL_INFO = 'info';
 export const LEVEL_WARNING = 'warning';
@@ -27,7 +28,7 @@ function composeNotice(level) {
       if (details) {
         let smallContent = null;
         if (this.state.showDetails) {
-          smallContent = <div><small>{details}</small></div>;
+          smallContent = <div><small>{intlIfObject(formatMessage, details)}</small></div>;
         }
         detailsContent = (
           <span>

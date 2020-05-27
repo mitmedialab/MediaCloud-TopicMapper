@@ -210,11 +210,13 @@ export function calcStories(countsMap) {
 // Helper to change solr dates (2015-12-14T00:00:00Z) into javascript date ojects
 export function cleanDateCounts(countsMap) {
   const countsArray = [];
-  Object.keys(countsMap).forEach((k) => {
-    const v = countsMap[k];
-    const timestamp = parseInt(solrTimestamp(v.date), 10);
-    countsArray.push({ ...v, date: timestamp });
-  });
+  if (countsMap) {
+    Object.keys(countsMap).forEach((k) => {
+      const v = countsMap[k];
+      const timestamp = parseInt(solrTimestamp(v.date), 10);
+      countsArray.push({ ...v, date: timestamp });
+    });
+  }
   return countsArray.sort((a, b) => a.date - b.date);
 }
 

@@ -1,4 +1,4 @@
-import { UPDATE_QUERY, UPDATE_QUERY_COLLECTION_LOOKUP_INFO, UPDATE_QUERY_SOURCE_LOOKUP_INFO, UPDATE_QUERY_SEARCH_LOOKUP_INFO, ADD_CUSTOM_QUERY, SELECT_SEARCH_BY_ID, SAVE_PARSED_QUERIES, MARK_AS_DELETED_QUERY, RESET_QUERIES, REMOVE_DELETED_QUERIES, COPY_AND_REPLACE_QUERY_FIELD, REMOVE_NEW_STATUS, SWAP_SORT_QUERIES } from '../../../actions/explorerActions';
+import { UPDATE_QUERY, UPDATE_QUERY_COLLECTION_LOOKUP_INFO, UPDATE_QUERY_SOURCE_LOOKUP_INFO, UPDATE_QUERY_SEARCH_LOOKUP_INFO, ADD_CUSTOM_QUERY, SAVE_PARSED_QUERIES, MARK_AS_DELETED_QUERY, RESET_QUERIES, REMOVE_DELETED_QUERIES, COPY_AND_REPLACE_QUERY_FIELD, REMOVE_NEW_STATUS, SWAP_SORT_QUERIES } from '../../../actions/explorerActions';
 import { autoMagicQueryLabel, lookupReadableMetadataName } from '../../../lib/explorerUtil';
 
 const INITIAL_STATE = [];
@@ -125,13 +125,6 @@ function queries(state = INITIAL_STATE, action) {
         return updatedState;
       }
       return null;
-    case SELECT_SEARCH_BY_ID:
-      if (action.payload) { // make sure searchId is set if present in return results. use uid to differentiate queries.
-        const queryData = action.payload.queries.map(q => ({ ...q, searchId: action.payload.id, id: action.payload.uid, uid: action.payload.uid }));
-        updatedState = queryData;
-        return updatedState;
-      }
-      return state;
     case SAVE_PARSED_QUERIES: // select this set of queries as passed in by URL
       updatedState = action.payload.map(q => ({ ...q, autoNaming: q.q === '*' || q.q === '' ? true : q.autoNaming }));
       return updatedState;

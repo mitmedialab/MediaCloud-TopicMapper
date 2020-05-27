@@ -4,9 +4,10 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import withAsyncData from '../../../common/hocs/AsyncDataContainer';
 import CloseableDataCard from '../../../common/CloseableDataCard';
-import { resetTopicTopStoriesDrillDown, fetchTopicTopStoriesOnDates } from '../../../../actions/topicActions';
+import { resetTopicTopStoriesDrillDown, fetchTopicProviderStories } from '../../../../actions/topicActions';
 import TopicPropTypes from '../../TopicPropTypes';
-import TopicStoryTable from '../../TopicStoryTable';
+import TopicStoryTableContainer from '../../TopicStoryTableContainer';
+import { FETCH_INVALID } from '../../../../lib/fetchConstants';
 
 const localMessages = {
   title: { id: 'topic.attention.drillDown.title', defaultMessage: 'Top Stories by Inlink in Week of {date1} to {date2}' },
@@ -31,7 +32,7 @@ class TopicAttentionDrillDownContainer extends React.Component {
   }
 
   render() {
-    const { topicId, handleClose, stories, timespan } = this.props;
+    const { handleClose, drillDownStories, timespan } = this.props;
     let content = <span />;
     if (timespan) {
       const title = (
@@ -47,16 +48,9 @@ class TopicAttentionDrillDownContainer extends React.Component {
       );
       content = (
         <div className="drill-down" ref={this.rootRef}>
-          <CloseableDataCard
-            title={title}
-            color=""
-            // words={words}
-            stories={stories}
-            onClose={handleClose}
-            content={
-              <TopicStoryTable stories={stories} topicId={topicId} sortedBy="inlink" />
-            }
-          />
+          <CloseableDataCard title={title} onClose={handleClose}>
+            <TopicStoryTableContainer stories={drillDownStories} sortedBy="inlink" />
+          </CloseableDataCard>
         </div>
       );
     }
@@ -73,16 +67,16 @@ TopicAttentionDrillDownContainer.propTypes = {
   topicId: PropTypes.number.isRequired,
   filters: TopicPropTypes.filters.isRequired,
   // from state
-  fetchStatus: PropTypes.array.isRequired,
+  fetchStatus: PropTypes.string.isRequired,
   timespan: PropTypes.object,
-  stories: PropTypes.array,
+  drillDownStories: PropTypes.array,
   // words: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: [state.topics.selected.summary.attentionDrillDownStories.fetchStatus],
-  timespan: state.topics.selected.summary.splitStoryCount.drillDownTimespan,
-  stories: state.topics.selected.summary.attentionDrillDownStories.stories,
+  timespan: state.topics.selected.summary.attentionDrillDownStories.drillDownTimespan,
+  fetchStatus: state.topics.selected.provider.stories.fetchStatuses.summaryDrillDown || FETCH_INVALID,
+  drillDownStories: state.topics.selected.provider.stories.results.summaryDrillDown ? state.topics.selected.provider.stories.results.summaryDrillDown.stories : 0,
   // words: state.explorer.topWordsPerDateRange.results,
 });
 
@@ -92,11 +86,12 @@ const mapDispatchToProps = dispatch => ({
 
 const fetchAsyncData = (dispatch, { topicId, timespan, filters }) => {
   if (timespan) {
-    dispatch(fetchTopicTopStoriesOnDates(topicId, {
+    dispatch(fetchTopicProviderStories(topicId, {
       ...filters,
       sort: 'inlink',
       limit: 10,
-      selectedTimespanId: timespan.timespans_id,
+      timespans_id: timespan.timespans_id,
+      uid: 'summaryDrillDown',
     }));
     // dispatch(fetchQueryPerDateTopWords({ ...dataPoint }));
   }

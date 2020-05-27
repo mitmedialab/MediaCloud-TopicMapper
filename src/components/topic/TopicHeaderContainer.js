@@ -18,9 +18,6 @@ const TopicHeaderContainer = (props) => {
   const { topicId, filters, topicInfo, handleSetFavorited, currentVersion } = props;
   const { formatMessage } = props.intl;
   let title = '';
-  if (topicInfo.is_public === 1) {
-    title += `${formatMessage(messages.topicPublicProp)} `;
-  }
   title += `${formatMessage(messages.topicName)}: ${topicInfo.name}`;
   const version = `${formatMessage(localMessages.topicVersion, { version: currentVersion })}`;
 

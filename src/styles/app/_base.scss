@@ -115,7 +115,7 @@ code {
   display: inline-block;
 }
 
-#content { 
+#content {
   min-height: 400px;
   padding-bottom: 30px;
   background-color: $white;
@@ -140,4 +140,8 @@ code {
 
 .error-background {
   background-color: $error-color;
+}
+
+.detail-background {
+  background-color: $material-grey300;
 }

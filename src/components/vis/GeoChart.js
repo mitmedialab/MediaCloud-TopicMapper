@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import initHighcharts from './initHighcharts';
 import { getBrandDarkColor } from '../../styles/colors';
 import { highchartsRobinsonLowRes } from '../../lib/mapUtil';
+import { countryTagsWithAlpha2 } from '../../lib/tagUtil';
 
 initHighcharts();
 
@@ -65,7 +66,7 @@ class GeoChart extends React.Component {
         },
       },
       series: [{
-        data,
+        data: countryTagsWithAlpha2(data), // grab just country-level tags, add in alpha2 for highcarts rendering
         joinBy: 'iso-a2',
         name: formatMessage(localMessages.seriesName),
         allowPointSelect: true,

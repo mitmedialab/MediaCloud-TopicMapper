@@ -48,7 +48,7 @@ StoryImages.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.story.reddit.fetchStatus,
+  fetchStatus: state.story.images.fetchStatus,
   allImages: state.story.images.all,
   topImage: state.story.images.top,
 });

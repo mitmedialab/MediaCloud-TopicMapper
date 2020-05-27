@@ -3,7 +3,7 @@ import logging
 from flask import jsonify, request
 
 from server import app, user_db, mc
-from server.auth import user_mediacloud_client, user_name, user_admin_mediacloud_client, is_user_logged_in,\
+from server.auth import user_mediacloud_client, user_name, user_admin_mediacloud_client,\
     user_is_admin
 from server.util.request import form_fields_required, arguments_required, api_error_handler
 
@@ -76,15 +76,6 @@ def does_user_have_a_running_topic():
     return jsonify(queued_and_running_topics)
 
 
-@app.route('/api/topics/public', methods=['GET'])
-@api_error_handler
-def public_topics_list():
-    public_topics = sorted_public_topic_list()
-    if is_user_logged_in():
-        public_topics = add_user_favorite_flag_to_topics(public_topics)
-    return jsonify({"topics": public_topics})
-
-
 def topics_user_can_access(topics, user_email, is_admin):
     # we can't see all the permissions for a topic in topicList results, so we have to use some guesses here.
     # pull out just the topics this user has permissions for (ie. remove public ones they don't own)
@@ -124,16 +115,6 @@ def topic_set_favorited(topics_id):
     else:
         user_db.remove_item_from_users_list(username, 'favoriteTopics', int(topics_id))
     return jsonify({'isFavorite': favorite == 1})
-
-
-def sorted_public_topic_list():
-    # needs to support logged in or not
-    if is_user_logged_in():
-        local_mc = user_mediacloud_client()
-    else:
-        local_mc = mc
-    public_topics = local_mc.topicList(public=True, limit=51)['topics']
-    return sorted(public_topics, key=lambda t: t['name'].lower())
 
 
 def add_user_favorite_flag_to_topics(topics):

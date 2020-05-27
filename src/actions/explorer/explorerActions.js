@@ -9,18 +9,12 @@ export const setQueryWordCountSampleSize = createAction(SET_QUERY_WORD_COUNT_SAM
 export const UPDATE_TIMESTAMP_FOR_QUERIES = 'UPDATE_TIMESTAMP_FOR_QUERIES';
 export const updateTimestampForQueries = createAction(UPDATE_TIMESTAMP_FOR_QUERIES, queries => queries);
 
-export const FETCH_SAMPLE_SEARCHES = 'FETCH_SAMPLE_SEARCHES';
-export const fetchSampleSearches = createAsyncAction(FETCH_SAMPLE_SEARCHES, api.fetchSampleSearches);
-
 export const FETCH_WORD_SAMPLE_SENTENCES = 'FETCH_WORD_SAMPLE_SENTENCES';
 export const fetchWordSampleSentences = createAsyncAction(FETCH_WORD_SAMPLE_SENTENCES, api.fetchWordSampleSentences);
 
 export const RESET_WORD_SAMPLE_SENTENCES = 'RESET_WORD_SAMPLE_SENTENCES';
 export const resetWordSampleSentences = createAction(RESET_WORD_SAMPLE_SENTENCES);
 
-
-export const SELECT_SEARCH_BY_ID = 'SELECT_SEARCH_BY_ID';
-export const selectBySearchId = createAction(SELECT_SEARCH_BY_ID, searchId => searchId);
 
 export const SAVE_PARSED_QUERIES = 'SAVE_PARSED_QUERIES';
 export const saveParsedQueries = createAction(SAVE_PARSED_QUERIES, searchParams => searchParams);

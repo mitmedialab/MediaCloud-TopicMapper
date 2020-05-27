@@ -1,6 +1,6 @@
 import { FETCH_TOPIC_SEARCH_RESULTS } from '../../actions/topicActions';
 import { createAsyncReducer } from '../../lib/reduxHelpers';
-import { addLatestStateToTopicsList } from './personalList';
+import { addUsefulDetailsToTopicsList } from './personalList';
 
 const search = createAsyncReducer({
   initialState: {
@@ -9,7 +9,7 @@ const search = createAsyncReducer({
   action: FETCH_TOPIC_SEARCH_RESULTS,
   handleSuccess: payload => ({
     ...payload,
-    topics: addLatestStateToTopicsList(payload.topics),
+    topics: addUsefulDetailsToTopicsList(payload.topics),
   }),
 });
 

@@ -1,15 +1,11 @@
 import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
 import { FETCH_QUERY_GEO, RESET_GEO } from '../../actions/explorerActions';
-// import { cleanDateCounts } from '../../lib/dateUtil';
-// import * as fetchConstants from '../../lib/fetchConstants';
+import { FETCH_INVALID } from '../../lib/fetchConstants';
 
 const geo = createIndexedAsyncReducer({
-  initialState: ({
-    fetchStatus: '', fetchStatuses: [], results: [],
-  }),
   action: FETCH_QUERY_GEO,
   [RESET_GEO]: () => ({
-    fetchStatus: '', fetchStatuses: [], results: [],
+    fetchStatus: FETCH_INVALID, fetchStatuses: {}, results: {},
   }),
 });
 

@@ -3,19 +3,19 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { schemeCategory10 } from 'd3';
-import { fetchTopicNytLabelCounts, filterByQuery } from '../../../actions/topicActions';
+import { fetchTopicProviderTagUse, filterByQuery } from '../../../actions/topicActions';
 import ActionMenu from '../../common/ActionMenu';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import BubbleRowChart from '../../vis/BubbleRowChart';
 import { downloadSvg } from '../../util/svg';
-import Permissioned from '../../common/Permissioned';
-import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import messages from '../../../resources/messages';
 import SVGAndCSVMenu from '../../common/SVGAndCSVMenu';
-import { filtersAsUrlParams } from '../../util/location';
+import { filtersAsUrlParams, formatAsUrlParams } from '../../util/location';
 import { WarningNotice } from '../../common/Notice';
 import { topicDownloadFilename } from '../../util/topicUtil';
+import { TAG_SET_NYT_THEMES, TAG_NYT_LABELER_1_0_0 } from '../../../lib/tagUtil';
+import { FETCH_INVALID } from '../../../lib/fetchConstants';
 
 const BUBBLE_CHART_DOM_ID = 'nyt-tag-representation-bubble-chart';
 const COLORS = schemeCategory10;
@@ -41,7 +41,10 @@ class NytLabelSummaryContainer extends React.Component {
     if (evt.preventDefault) {
       evt.preventDefault();
     }
-    const url = `/api/topics/${topicId}/nyt-tags/counts.csv?${filtersAsUrlParams(filters)}`;
+    const url = `/api/topics/${topicId}/provider/tag-use.csv?${filtersAsUrlParams(filters)}&${formatAsUrlParams({
+      tagSetsId: TAG_SET_NYT_THEMES,
+      tagsId: TAG_NYT_LABELER_1_0_0,
+    })}`;
     window.location = url;
   }
 
@@ -98,20 +101,18 @@ class NytLabelSummaryContainer extends React.Component {
             onBubbleClick={this.handleBubbleClick}
             minCutoffValue={0.05}
           />
-          <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-            <div className="actions">
-              <ActionMenu actionTextMsg={messages.downloadOptions}>
-                <SVGAndCSVMenu
-                  downloadCsv={this.downloadCsv}
-                  downloadSvg={() => downloadSvg(
-                    `${topicDownloadFilename(topicName, filters)}-top-NYT-themes`,
-                    BUBBLE_CHART_DOM_ID
-                  )}
-                  label={formatMessage(localMessages.all)}
-                />
-              </ActionMenu>
-            </div>
-          </Permissioned>
+          <div className="actions">
+            <ActionMenu actionTextMsg={messages.downloadOptions}>
+              <SVGAndCSVMenu
+                downloadCsv={this.downloadCsv}
+                downloadSvg={() => downloadSvg(
+                  `${topicDownloadFilename(topicName, filters)}-top-NYT-themes`,
+                  BUBBLE_CHART_DOM_ID
+                )}
+                label={formatMessage(localMessages.all)}
+              />
+            </ActionMenu>
+          </div>
         </>
       );
     } else {
@@ -147,11 +148,11 @@ NytLabelSummaryContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.topics.selected.nytlabels.fetchStatus,
-  data: state.topics.selected.nytlabels.entities,
-  coverage: state.topics.selected.nytlabels.coverage,
   filters: state.topics.selected.filters,
   topicName: state.topics.selected.info.name,
+  fetchStatus: state.topics.selected.provider.tagUse.fetchStatuses.nytThemes || FETCH_INVALID,
+  data: state.topics.selected.provider.tagUse.results.nytThemes ? state.topics.selected.provider.tagUse.results.nytThemes.list : [],
+  coverage: state.topics.selected.provider.tagUse.results.nytThemes ? state.topics.selected.provider.tagUse.results.nytThemes.coverage : {},
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -160,7 +161,12 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-const fetchAsyncData = (dispatch, props) => dispatch(fetchTopicNytLabelCounts(props.topicId, props.filters));
+const fetchAsyncData = (dispatch, props) => dispatch(fetchTopicProviderTagUse(props.topicId, {
+  ...props.filters,
+  uid: 'nytThemes',
+  tagSetsId: TAG_SET_NYT_THEMES,
+  tagsId: TAG_NYT_LABELER_1_0_0,
+}));
 
 export default
 injectIntl(

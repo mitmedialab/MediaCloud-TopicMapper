@@ -3,7 +3,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import TabSelector from '../../common/TabSelector';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
-import { queryChangedEnoughToUpdate, ensureSafeResults, ensureSafeTabIndex, ensureSafeSortedQueries,
+import { queryChangedEnoughToUpdate /* , ensureSafeResults */, ensureSafeTabIndex, ensureSafeSortedQueries,
   formatQueryForServer, formatDemoQueryForServer } from '../../../lib/explorerUtil';
 
 
@@ -11,9 +11,16 @@ function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPro
   const innerWithQueryResults = (ChildComponent) => {
     class QueryResultsSelector extends React.Component {
       state = {
-        selectedQueryUid: 0,
-        selectedQueryTabIndex: 0,
+        selectedQueryTabIndex: null,
+        selectedQueryUid: null,
       };
+
+      UNSAFE_componentWillMount = () => {
+        // make sure that the tabIndex and UID are set before rendering the first time
+        if (this.state.selectedQueryTabIndex === null) {
+          this.getUidFromTabSelection(0);
+        }
+      }
 
       shouldComponentUpdate(nextProps) {
         const { results, queries, shouldUpdate } = this.props;
@@ -35,10 +42,10 @@ function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPro
       }
 
       render() {
-        const { queries, results } = this.props;
+        const { queries /* , results */ } = this.props;
         // remove deleted stuff and sort queries and results correctly before sending down to child
         const sortedSafeQueries = ensureSafeSortedQueries(queries);
-        const safeResults = ensureSafeResults(sortedSafeQueries, results);
+        // const safeResults = ensureSafeResults(sortedSafeQueries, results);
         const safeIndex = ensureSafeTabIndex(sortedSafeQueries, this.state.selectedQueryTabIndex);
         const tabSelector = <TabSelector onViewSelected={idx => this.getUidFromTabSelection(idx)} tabLabels={sortedSafeQueries} />;
         return (
@@ -46,10 +53,10 @@ function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPro
             <ChildComponent
               {...this.props}
               safeSortedQueries={sortedSafeQueries}
-              results={safeResults}
               selectedTabIndex={safeIndex}
               selectedQueryUid={this.state.selectedQueryUid}
               selectedQuery={sortedSafeQueries[safeIndex]}
+
               tabSelector={tabSelector}
             />
           </div>
@@ -63,10 +70,7 @@ function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPro
       // from store
       isLoggedIn: PropTypes.bool.isRequired,
       fetchStatus: PropTypes.string.isRequired,
-      results: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object,
-      ]),
+      results: PropTypes.object,
       queries: PropTypes.array,
       lastSearchTime: PropTypes.number,
       // from children

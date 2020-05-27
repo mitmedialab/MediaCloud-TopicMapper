@@ -69,7 +69,7 @@ const messageForVersionState = (snapshot) => {
   }
 };
 
-const detailsForVersionState = (snapshot, storyCounts) => {
+const detailsForVersionState = (topic, snapshot, storyCounts) => {
   switch (snapshotOrJobState(snapshot)) {
     case TOPIC_SNAPSHOT_STATE_QUEUED:
       // this is a moment object so we can call this relative date helper
@@ -83,7 +83,7 @@ const detailsForVersionState = (snapshot, storyCounts) => {
       if (!snapshot.isUsable) {
         return <FormattedMessage {...localMessages.runningDetailsAmostDone} />;
       }
-      return <TopicVersionReadySummary storyCounts={storyCounts} snapshot={snapshot} />;
+      return <TopicVersionReadySummary storyCounts={storyCounts} snapshot={snapshot} topic={topic} />;
     case TOPIC_SNAPSHOT_STATE_RUNNING:
       return <FormattedMessage {...localMessages.runningDetails} />;
     case TOPIC_SNAPSHOT_STATE_ERROR:
@@ -96,7 +96,7 @@ const detailsForVersionState = (snapshot, storyCounts) => {
   }
 };
 
-const TopicVersionListItem = ({ version, intl, number, topicId, storyCounts, selected, isAdmin }) => (
+const TopicVersionListItem = ({ topic, version, intl, number, topicId, storyCounts, selected, isAdmin }) => (
   <div className="topic-version-list-item">
     <Row>
       <Col lg={2}>
@@ -119,7 +119,7 @@ const TopicVersionListItem = ({ version, intl, number, topicId, storyCounts, sel
             <FormattedHTMLMessage {...messageForVersionState(version)} />
             {selected && <TabbedChip message={localMessages.selected} />}
           </h2>
-          {detailsForVersionState(version, storyCounts)}
+          {detailsForVersionState(topic, version, storyCounts)}
           {isAdmin && (
             <FormattedHTMLMessage
               {...localMessages.adminDetails}
@@ -147,6 +147,7 @@ TopicVersionListItem.propTypes = {
   // from parent
   number: PropTypes.number.isRequired,
   version: PropTypes.object.isRequired,
+  topic: PropTypes.object.isRequired,
   topicId: PropTypes.number.isRequired,
   storyCounts: PropTypes.object.isRequired,
   isAdmin: PropTypes.bool.isRequired,

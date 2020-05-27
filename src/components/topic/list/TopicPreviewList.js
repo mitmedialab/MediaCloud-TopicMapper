@@ -6,8 +6,6 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import Link from 'react-router/lib/Link';
 import DataCard from '../../common/DataCard';
 import FavoriteToggler from '../../common/FavoriteToggler';
-import Permissioned from '../../common/Permissioned';
-import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import { TOPIC_SNAPSHOT_STATE_ERROR, TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING,
   TOPIC_SNAPSHOT_STATE_CREATED_NOT_QUEUED, TOPIC_SNAPSHOT_STATE_COMPLETED }
   from '../../../reducers/topics/selected/snapshots';
@@ -76,12 +74,10 @@ const TopicPreviewList = (props) => {
                 <div className="content" id={`topic-preview-${topic.topics_id}`}>
                   <div>
                     { onSetFavorited && (
-                      <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-                        <FavoriteToggler
-                          isFavorited={topic.isFavorite}
-                          onSetFavorited={isFav => onSetFavorited(topic.topics_id, isFav)}
-                        />
-                      </Permissioned>
+                      <FavoriteToggler
+                        isFavorited={topic.isFavorite}
+                        onSetFavorited={isFav => onSetFavorited(topic.topics_id, isFav)}
+                      />
                     )}
                     <h2><Link to={linkGenerator(topic)}>{topic.name}</Link></h2>
                     <FormattedMessage

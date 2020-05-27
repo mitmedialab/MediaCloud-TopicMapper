@@ -6,9 +6,14 @@ from server import app
 from server.util.request import arguments_required, api_error_handler, filters_from_args, json_error_response
 from server.auth import user_mediacloud_client, user_mediacloud_key
 from server.views.topics import apicache as apicache
-from server.views.topics.apicache import topic_focal_sets_list
 
 logger = logging.getLogger(__name__)
+
+URL_SHARING_FOCAL_SET_NAME = "URL Sharing"
+
+
+def is_url_sharing_focal_set(fs):
+    return fs['name'] == URL_SHARING_FOCAL_SET_NAME
 
 
 @app.route('/api/topics/<topics_id>/focal-sets/list', methods=['GET'])
@@ -16,9 +21,12 @@ logger = logging.getLogger(__name__)
 @flask_login.login_required
 @api_error_handler
 def topic_focal_set_list(topics_id):
-    snapshots_id = request.args.get('snapshotId')
+    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     include_story_counts = request.args.get('includeStoryCounts')
-    focal_sets = topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)
+    focal_sets = apicache.topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)
+    # now mark the ones that are the magically added URL sharing platform ones
+    for fs in focal_sets:
+        fs['is_url_sharing'] = is_url_sharing_focal_set(fs)
     if include_story_counts and (include_story_counts == u'1'):
         _add_story_counts_to_foci(topics_id, focal_sets)
     return jsonify(focal_sets)

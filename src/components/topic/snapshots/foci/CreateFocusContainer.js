@@ -5,10 +5,11 @@ import { injectIntl } from 'react-intl';
 import { push } from 'react-router-redux';
 import { reset } from 'redux-form';
 import FocusBuilderWizard from './builder/FocusBuilderWizard';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../lib/focalTechniques';
 import { submitFocusUpdateOrCreate, setTopicNeedsNewSnapshot, createRetweetFocalSet, createTopCountriesFocalSet, createNytThemeFocalSet, createMediaTypeFocalSet } from '../../../../actions/topicActions';
 import { LEVEL_ERROR } from '../../../common/Notice';
 import { updateFeedback, addNotice } from '../../../../actions/appActions';
+import { NEW_FOCAL_SET_PLACEHOLDER_ID } from './builder/FocusDescriptionForm';
 
 const DEFAULT_SELECTED_NUMBER = 5;
 
@@ -33,7 +34,9 @@ const CreateFocusContainer = (props) => {
     initialValues.focalTechnique = FOCAL_TECHNIQUE_BOOLEAN_QUERY;
   }
   // if there aren't any focal set defs, the user should have to create a new one
-  if (focalSetDefId !== undefined) {
+  if (focalSetDefId === null || focalSetDefId === undefined) {
+    initialValues.focalSetDefinitionId = NEW_FOCAL_SET_PLACEHOLDER_ID;
+  } else {
     initialValues.focalSetDefinitionId = parseInt(focalSetDefId, 10);
   }
   return (
@@ -75,7 +78,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       return dispatch(addNotice({ level: LEVEL_ERROR, message: ownProps.intl.formatMessage(localMessages.duplicateName) }));
     }
     switch (formValues.focalTechnique) {
-      case FOCAL_TECHNIQUE_MEDIA_SEARCH:
       case FOCAL_TECHNIQUE_BOOLEAN_QUERY:
         let collections = [];
         let sources = [];

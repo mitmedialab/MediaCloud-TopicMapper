@@ -9,6 +9,7 @@ import explorer from './explorer/explorer';
 import sources from './sources/sources';
 import system from './system/system';
 import story from './story/story';
+import platforms from './platforms/platforms';
 
 const LIMIT_REDUCERS = true; // so we enforce that apps don't accidently use another apps reducer
 
@@ -42,6 +43,7 @@ function getRootReducer(appName) {
     form,
     routing,
     story,
+    platforms,
   };
 
   let reducers = { ...appReducers };

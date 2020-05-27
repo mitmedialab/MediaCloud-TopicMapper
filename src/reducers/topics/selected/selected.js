@@ -5,17 +5,15 @@ import timespans from './timespans';
 import summary from './summary/summary';
 import filters from './filters';
 import info from './info';
-import media from './media';
 import mediaSource from './mediaSource/mediaSource';
-import stories from './stories';
 import story from './story/story';
 import focalSets from './focalSets/focalSets';
 import permissions from './permissions';
 import attention from './attention';
 import word from './word/word';
-import nytlabels from './nytlabels';
-import geotags from './geotags';
 import snapshotStoryCounts from './snapshotStoryCounts';
+import platforms from './platforms/platforms';
+import provider from './provider';
 import { parseId } from '../../../lib/numberUtil';
 
 function id(state = null, action) {
@@ -61,17 +59,15 @@ const selected = combineReducers({
   snapshots,
   timespans,
   filters,
-  media,
+  provider,
   mediaSource,
-  stories,
   story,
   focalSets,
   permissions,
   attention,
   word,
-  nytlabels,
-  geotags,
   snapshotStoryCounts,
+  platforms,
 });
 
 const rootReducer = (state, action) => {

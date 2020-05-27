@@ -13,10 +13,13 @@ initHighcharts();
 /**
  * Pass in data - an array of `name`/`value` objects
  */
-const TreeMap = ({ title, data, onLeafClick, intl, domId, tooltipMessage }) => {
+const TreeMap = ({ title, data, onLeafClick, intl, domId, tooltipMessage, height }) => {
   const { formatNumber, formatMessage } = intl;
   const totalCount = data.map(d => d.value).reduce((acc, d) => acc + d, 0);
   const config = {
+    chart: {
+      height,
+    },
     colorAxis: {
       minColor: getBrandDarkColor(), // not working
       maxColor: getBrandDarkerColor(),
@@ -85,6 +88,7 @@ TreeMap.propTypes = {
   color: PropTypes.string,
   domId: PropTypes.string.isRequired, // to make download work
   tooltipMessage: PropTypes.object, // supports count and name variables
+  height: PropTypes.number,
   // from composition chain
   intl: PropTypes.object.isRequired,
 };

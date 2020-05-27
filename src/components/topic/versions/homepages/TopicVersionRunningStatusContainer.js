@@ -15,12 +15,13 @@ const localMessages = {
   seeOtherVersionsDetails: { id: 'version.running.seeOtherVersions.details', defaultMessage: 'While you wait for this version to finish generating, you can browse any previous versions of your topic.' },
 };
 
-const TopicVersionRunningStatusContainer = ({ subtitle, topic, snapshot, intl }) => (
+const TopicVersionRunningStatusContainer = ({ subtitle, topic, snapshot, intl, focalSets }) => (
   <>
     <TopicVersionStatus
       subtitle={subtitle || localMessages.title}
       topic={topic}
       snapshot={snapshot}
+      focalSets={focalSets}
     >
       <h2>
         <FormattedMessage {...localMessages.explanationTitle} />
@@ -43,10 +44,11 @@ const TopicVersionRunningStatusContainer = ({ subtitle, topic, snapshot, intl })
 );
 
 TopicVersionRunningStatusContainer.propTypes = {
-  // from state
+  // from parent
   topic: PropTypes.object.isRequired,
   snapshot: PropTypes.object,
   subtitle: PropTypes.object,
+  focalSets: PropTypes.array,
   // from context
   intl: PropTypes.object.isRequired,
 };

@@ -19,99 +19,77 @@ const localMessages = {
   help: { id: 'explorer.geo.help',
     defaultMessage: '<p>Sometimes media coverage can differ based on the place being talked about. Digging into the <i>geography</i> of the coverage can provide clues to help you understand the narratives. This heatmap shows you the countries that were most often the focus of stories. Click a country to load an Explorer search showing you how the sources in this collection cover it.</p>' },
   descriptionIntro: { id: 'explorer.geo.help.title', defaultMessage: 'About Geographic Attention' },
-  downloadCsv: { id: 'explorer.geo.downloadCsv', defaultMessage: 'Download { name } Top Countries CSV' },
-  downloadTopPlacesCsv: { id: 'explorer.geo.downloadTopCsv', defaultMessage: 'Download { name } Top Places (city, state, or country) CSV' },
+  downloadCsv: { id: 'explorer.geo.downloadCsv', defaultMessage: 'Download { name } Top Places CSV' },
 };
 
-class QueryGeoResultsContainer extends React.Component {
-  downloadCsv = (query) => {
-    postToDownloadUrl('/api/explorer/geography/geography.csv', query);
-  }
-
-  downloadTopPlacesCsv = (query) => {
-    postToDownloadUrl('/api/explorer/geography/topplaces.csv', query);
-  }
-
-  render() {
-    const { results, intl, queries, handleCountryClick, selectedTabIndex, tabSelector } = this.props;
-    const { formatNumber } = intl;
-    let content;
-    const coverageRatio = results[selectedTabIndex] ? results[selectedTabIndex].coverage_percentage : 0;
-    if (coverageRatio > COVERAGE_REQUIRED) {
-      const data = results[selectedTabIndex].results.map(item => ({ ...item, value: item.pct }));
-      content = (
-        <div>
-          {results[selectedTabIndex] && (
-            <GeoChart
-              data={data}
-              countryMaxColorScale={queries[selectedTabIndex].color}
-              hideLegend
-              onCountryClick={handleCountryClick}
-              backgroundColor="#f5f5f5"
-            />
-          )}
-        </div>
-      );
-    } else {
-      content = (
-        <p>
-          <FormattedHTMLMessage
-            {...messages.notEnoughCoverage}
-            values={{ pct: formatNumber(coverageRatio, { style: 'percent', maximumFractionDigits: 2 }) }}
-          />
-        </p>
-      );
-    }
-    return (
+const QueryGeoResultsContainer = (props) => {
+  const { results, intl, selectedQuery, handleCountryClick, tabSelector } = props;
+  const { formatNumber } = intl;
+  let content;
+  const selectedResults = results[selectedQuery.uid];
+  const coverageRatio = selectedResults.coverage_percentage;
+  if (coverageRatio > COVERAGE_REQUIRED) {
+    const data = selectedResults.results.map(item => ({ ...item, value: item.pct }));
+    content = (
       <div>
-        { tabSelector }
-        { content }
-        <div className="actions">
-          <ActionMenu actionTextMsg={messages.downloadOptions}>
-            <MenuItem
-              className="action-icon-menu-item"
-              onClick={() => this.downloadCsv(queries[selectedTabIndex])}
-            >
-              <ListItemText>
-                <FormattedMessage {...localMessages.downloadCsv} values={{ name: queries[selectedTabIndex].label }} />
-              </ListItemText>
-              <ListItemIcon>
-                <DownloadButton />
-              </ListItemIcon>
-            </MenuItem>
-            <MenuItem
-              className="action-icon-menu-item"
-              onClick={() => this.downloadTopPlacesCsv(queries[selectedTabIndex])}
-            >
-              <ListItemText>
-                <FormattedMessage {...localMessages.downloadTopPlacesCsv} values={{ name: queries[selectedTabIndex].label }} />
-              </ListItemText>
-              <ListItemIcon>
-                <DownloadButton />
-              </ListItemIcon>
-            </MenuItem>
-          </ActionMenu>
-        </div>
+        {selectedResults && (
+          <GeoChart
+            data={data}
+            countryMaxColorScale={selectedQuery.color}
+            hideLegend
+            onCountryClick={handleCountryClick}
+            backgroundColor="#f5f5f5"
+          />
+        )}
       </div>
     );
+  } else {
+    content = (
+      <p>
+        <FormattedHTMLMessage
+          {...messages.notEnoughCoverage}
+          values={{ pct: formatNumber(coverageRatio, { style: 'percent', maximumFractionDigits: 2 }) }}
+        />
+      </p>
+    );
   }
-}
+  return (
+    <div>
+      { tabSelector }
+      { content }
+      <div className="actions">
+        <ActionMenu actionTextMsg={messages.downloadOptions}>
+          <MenuItem
+            className="action-icon-menu-item"
+            onClick={() => postToDownloadUrl('/api/explorer/geography/geography.csv', selectedQuery)}
+          >
+            <ListItemText>
+              <FormattedMessage {...localMessages.downloadCsv} values={{ name: selectedQuery.label }} />
+            </ListItemText>
+            <ListItemIcon>
+              <DownloadButton />
+            </ListItemIcon>
+          </MenuItem>
+        </ActionMenu>
+      </div>
+    </div>
+  );
+};
 
 QueryGeoResultsContainer.propTypes = {
   // from parent
   lastSearchTime: PropTypes.number.isRequired,
-  queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   onQueryModificationRequested: PropTypes.func.isRequired,
+  selectedQuery: PropTypes.object.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   // from dispatch
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
   handleCountryClick: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string.isRequired,
   tabSelector: PropTypes.object.isRequired,
-  selectedTabIndex: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({

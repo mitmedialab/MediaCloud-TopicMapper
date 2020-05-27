@@ -116,7 +116,7 @@ def is_bad_theme(tag_id):
     :return: True if it is a valid metadata tag set, False if it is not
     """
     if int(tag_id) in BAD_THEMES:
-            return True
+        return True
     return False
 
 
@@ -139,6 +139,7 @@ def label_for_metadata_tag(tag):
     elif tag_sets_id == TAG_SETS_ID_MEDIA_TYPE:
         label = tag['tag']
     return label
+
 
 static_tag_set_cache_dir = os.path.join(base_dir, 'server', 'static', 'data')
 

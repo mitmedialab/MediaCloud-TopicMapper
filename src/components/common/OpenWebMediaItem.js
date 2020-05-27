@@ -13,7 +13,7 @@ const localMessages = {
 
 };
 
-const OpenWebMediaItem = ({ object, onDelete, intl }) => {
+const OpenWebMediaItem = ({ object, onDelete, intl, justText }) => {
   const isSearch = object.customColl === true;
   const isCollection = object.tags_id !== undefined;
   // if (!isSearch && !object.selected) return null;
@@ -53,6 +53,9 @@ const OpenWebMediaItem = ({ object, onDelete, intl }) => {
   } else {
     text = name;
   }
+  if (justText) {
+    return text;
+  }
   return (
     <span
       className={`media-widget ${typeClass}`}
@@ -69,6 +72,7 @@ OpenWebMediaItem.propTypes = {
   object: PropTypes.object.isRequired,
   onDelete: PropTypes.func,
   intl: PropTypes.object,
+  justText: PropTypes.bool,
 };
 
 export default injectIntl(OpenWebMediaItem);

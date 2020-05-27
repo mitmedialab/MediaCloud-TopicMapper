@@ -10,7 +10,7 @@ import Permissioned from '../../common/Permissioned';
 import { urlToExplorerQuery } from '../../../lib/urlUtil';
 import { PERMISSION_TOPIC_WRITE, PERMISSION_TOPIC_ADMIN } from '../../../lib/auth';
 import { TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING,
-  TOPIC_SNAPSHOT_STATE_ERROR, TOPIC_SNAPSHOT_STATE_CREATED_NOT_QUEUED } from '../../../reducers/topics/selected/snapshots';
+  TOPIC_SNAPSHOT_STATE_ERROR } from '../../../reducers/topics/selected/snapshots';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
 
 const localMessages = {
@@ -27,8 +27,8 @@ const localMessages = {
   jumpToExplorer: { id: 'topic.controlBar.jumpToExplorer', defaultMessage: 'Query on Explorer' },
 
   latestNeedsAttention: { id: 'topic.version.latestNeedsAttention', defaultMessage: 'needs attention' },
-  latestRunning: { id: 'topic.version.latestNeedsAttention', defaultMessage: 'running' },
-  newerData: { id: 'topic.version.latestNeedsAttention', defaultMessage: 'newer data' },
+  latestRunning: { id: 'topic.version.latestRunning', defaultMessage: 'running' },
+  newerData: { id: 'topic.version.newerData', defaultMessage: 'newer data' },
 };
 
 const explorerUrl = (topic, filters, selectedTimespan) => {
@@ -98,7 +98,7 @@ const TopicControlBar = ({ sideBarContent, topic, intl, selectedSnapshot, latest
                   id="modify-topic-permissions"
                 />
                 <b><FormattedMessage {...localMessages.versionList} /></b>
-                {[TOPIC_SNAPSHOT_STATE_ERROR, TOPIC_SNAPSHOT_STATE_CREATED_NOT_QUEUED].includes(latestState.state) && (
+                {[TOPIC_SNAPSHOT_STATE_ERROR].includes(latestState.state) && (
                   <TabbedChip error message={localMessages.latestNeedsAttention} />
                 )}
                 {[TOPIC_SNAPSHOT_STATE_QUEUED, TOPIC_SNAPSHOT_STATE_RUNNING].includes(latestState.state) && (

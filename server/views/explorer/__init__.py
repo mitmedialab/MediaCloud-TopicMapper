@@ -8,35 +8,12 @@ import datetime
 from slugify import slugify
 
 from server import mc, app, analytics_db
-from server.auth import is_user_logged_in
 from server.util.request import api_error_handler
 from server.views.media_picker import concatenate_query_for_solr
 
 logger = logging.getLogger(__name__)
 
-SORT_SOCIAL = 'social'
-SORT_INLINK = 'inlink'
 DEFAULT_COLLECTION_IDS = [9139487]
-
-
-def validated_sort(desired_sort, default_sort=SORT_SOCIAL):
-    valid_sorts = [SORT_SOCIAL, SORT_INLINK]
-    if (desired_sort is None) or (desired_sort not in valid_sorts):
-        return default_sort
-    return desired_sort
-
-
-def topic_is_public(topics_id):
-    topic = mc.topic(topics_id)
-    is_public = topic['is_public']
-    return int(is_public) == 1
-
-
-def access_public_topic(topics_id):
-    # check whether logged in here since it is a requirement for public access
-    if (not is_user_logged_in()) and (topic_is_public(topics_id)):
-        return True
-    return False
 
 
 def dates_as_filter_query(start_date, end_date):
@@ -129,47 +106,6 @@ def parse_query_with_keywords(args):
     except Exception as e:
         logger.warning("user custom query failed, there's a problem with the arguments " + str(e))
     return solr_q, solr_fq
-
-
-def _parse_query_for_sample_search(sample_search_id, query_id):
-    these_sample_searches = load_sample_searches()
-    current_query_info = these_sample_searches[int(sample_search_id)]['queries'][int(query_id)]
-    solr_q = concatenate_query_for_solr(solr_seed_query=current_query_info['q'],
-                                        media_ids=current_query_info['sources'],
-                                        tags_ids=current_query_info['collections'])
-    solr_fq = dates_as_filter_query(current_query_info['startDate'], current_query_info['endDate'])
-    return solr_q, solr_fq
-
-
-def parse_as_sample(search_id_or_query, query_id=None):
-    try:
-        if isinstance(search_id_or_query, int):  # special handling for an indexed query
-            sample_search_id = search_id_or_query
-            return _parse_query_for_sample_search(sample_search_id, query_id)
-
-    except Exception as e:
-        logger.warning("error " + str(e))
-
-
-sample_searches = None  # use as singeton, not cache so that we can change the file and restart and see changes
-
-
-def load_sample_searches():
-    global sample_searches
-    if sample_searches is None:
-        json_file = os.path.join(os.path.dirname(__file__), '../..', 'static/data/sample_searches.json')
-        # load the sample searches file
-        with open(json_file) as json_data:
-            d = json.load(json_data)
-            sample_searches = d
-    return sample_searches
-
-
-def read_sample_searches():
-    json_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'static/data'))
-
-    # load the sample searches file
-    return send_from_directory(json_dir, 'sample_searches.json', as_attachment=True)
 
 
 def file_name_for_download(label, type_of_download):

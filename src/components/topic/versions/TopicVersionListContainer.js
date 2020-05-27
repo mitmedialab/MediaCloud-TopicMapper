@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { push } from 'react-router-redux';
 import LinkWithFilters from '../LinkWithFilters';
 import AppButton from '../../common/AppButton';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
@@ -10,11 +11,10 @@ import messages from '../../../resources/messages';
 import BackLinkingControlBar from '../BackLinkingControlBar';
 import Permissioned from '../../common/Permissioned';
 import { PERMISSION_TOPIC_WRITE, PERMISSION_ADMIN } from '../../../lib/auth';
-import { fetchSnapshotStoryCounts } from '../../../actions/topicActions';
+import { fetchSnapshotStoryCounts, topicSnapshotGenerate } from '../../../actions/topicActions';
+import { updateFeedback } from '../../../actions/appActions';
 import JobList from './homepages/JobList';
 import TopicVersionListItem from './TopicVersionListItem';
-import NeedsNewVersionWarning from './NeedsNewVersionWarning';
-import { createNewSpideredVersion } from '../wizard/TopicConfirmContainer';
 
 const localMessages = {
   title: { id: 'topic.versionList.title', defaultMessage: 'Topic Versions' },
@@ -40,6 +40,9 @@ const localMessages = {
   topicRunning: { id: 'topic.topicRunning', defaultMessage: 'We are scraping the web for all the stories in include in your topic.' },
   queueAge: { id: 'topic.spiderQueuedAge', defaultMessage: 'In the {queueName} queue since {lastUpdated}' },
   notUsingLatestSnapshot: { id: 'topic.notUsingLatestSnapshot', defaultMessage: 'You are not using the latest snapshot!  If you are not doing this on purpose, <a href="{url}">switch to the latest snapshot</a> to get the best data.' },
+  feedback: { id: 'topic.edit.save.feedback', defaultMessage: 'We started generating a new version!' },
+  failed: { id: 'topic.edit.save.failed', defaultMessage: 'Sorry, that didn\'t work!' },
+
 };
 
 const TopicVersionListContainer = ({ topicId, topic, storyCounts, versions, selectedSnapshot, intl, isAdmin, handleQuickCreate }) => {
@@ -56,6 +59,7 @@ const TopicVersionListContainer = ({ topicId, topic, storyCounts, versions, sele
         selected={selectedSnapshot.snapshots_id === snapshot.snapshots_id}
         key={idx}
         topicId={topicId}
+        topic={topic}
         number={versions.length - idx}
         version={snapshot}
         storyCounts={storyCounts[snapshot.snapshots_id]}
@@ -69,6 +73,7 @@ const TopicVersionListContainer = ({ topicId, topic, storyCounts, versions, sele
         seleceted
         number={1}
         topicId={topicId}
+        topic={topic}
         version={{
           state: topic.state,
           snapshots_id: -1,
@@ -84,7 +89,6 @@ const TopicVersionListContainer = ({ topicId, topic, storyCounts, versions, sele
   return (
     <>
       <BackLinkingControlBar message={messages.backToTopic} linkTo={`/topics/${topicId}/summary`} />
-      <NeedsNewVersionWarning />
       <Grid>
         <Row>
           <Col lg={12}>
@@ -127,7 +131,7 @@ const TopicVersionListContainer = ({ topicId, topic, storyCounts, versions, sele
         <Permissioned onlyRole={PERMISSION_ADMIN}>
           <Row>
             <Col lg={10}>
-              <JobList jobs={[...topic.job_states]} highlightSnapshotId={selectedSnapshot.snapshots_id} />
+              <JobList jobs={[...topic.job_states]} highlightSnapshotId={selectedSnapshot ? selectedSnapshot.snapshots_id : -1} />
             </Col>
           </Row>
         </Permissioned>
@@ -159,6 +163,17 @@ const mapStateToProps = state => ({
   selectedSnapshot: state.topics.selected.snapshots.selected,
   isAdmin: state.user.isAdmin,
 });
+
+export const createNewSpideredVersion = (topicId, dispatch, formatMessage) => {
+  dispatch(topicSnapshotGenerate(topicId, { snapshotId: null, spider: 1 }))
+    .then((spiderResults) => {
+      if (spiderResults && spiderResults.topics_id) { // let them know it worked
+        dispatch(updateFeedback({ classes: 'info-notice', open: true, message: formatMessage(localMessages.feedback) }));
+        return dispatch(push(`/topics/${spiderResults.topics_id}/versions`));
+      }
+      return dispatch(updateFeedback({ open: true, message: formatMessage(localMessages.failed) }));
+    });
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   handleQuickCreate: (topicId) => {

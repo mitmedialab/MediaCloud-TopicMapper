@@ -74,7 +74,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   reallyHandleSave: (values, filters) => {
     const infoToSave = { ...values }; // TODO: what of settings vs. query updates?
-    infoToSave.is_public = infoToSave.is_public ? 1 : 0;
     infoToSave.is_logogram = infoToSave.is_logogram ? 1 : 0;
     infoToSave.ch_monitor_id = values.ch_monitor_id ? values.ch_monitor_id : '';
     return dispatch(updateTopicSettings(ownProps.params.topicId, infoToSave))

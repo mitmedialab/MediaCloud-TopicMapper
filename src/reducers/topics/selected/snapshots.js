@@ -1,5 +1,5 @@
 import { resolve } from 'redux-simple-promise';
-import { FETCH_TOPIC_SNAPSHOTS_LIST, TOPIC_FILTER_BY_SNAPSHOT, FETCH_TOPIC_SUMMARY }
+import { TOPIC_FILTER_BY_SNAPSHOT, FETCH_TOPIC_SUMMARY }
   from '../../../actions/topicActions';
 import { createAsyncReducer } from '../../../lib/reduxHelpers';
 import { snapshotDateToMoment } from '../../../lib/dateUtil';
@@ -51,7 +51,7 @@ function cleanUpSnapshotList(rawList, jobList) {
   }));
 }
 
-const latestByDate = (list) => {
+export const latestSnapshotByDate = (list) => {
   const orderedList = snapshotsByDateDesc(list);
   if (orderedList && orderedList.length > 0) {
     return orderedList[0];
@@ -85,7 +85,7 @@ function isLatestVersionRunning(snapshotList, jobList) {
 }
 
 const usingLatestSnapshot = (list, selectedId) => {
-  const latest = latestByDate(list);
+  const latest = latestSnapshotByDate(list);
   if (latest) {
     return selectedId === latest.snapshots_id;
   }
@@ -93,7 +93,7 @@ const usingLatestSnapshot = (list, selectedId) => {
 };
 
 const latestSnaphostIsUsable = (list) => {
-  const latest = latestByDate(list);
+  const latest = latestSnapshotByDate(list);
   if (latest) {
     return snapshotIsUsable(latest);
   }
@@ -110,23 +110,9 @@ const snapshots = createAsyncReducer({
     selectedId: null,
     selected: null,
   },
-  action: FETCH_TOPIC_SNAPSHOTS_LIST,
-  handleSuccess: (payload, state) => {
-    const snapshotList = cleanUpSnapshotList(payload.snapshots.list, payload.job_states);
-    return {
-      // add in an isUsable property to centralize that logic to one place (ie. here!)
-      list: snapshotList,
-      latest: latestByDate(payload.snapshots.list),
-      usingLatest: usingLatestSnapshot(payload.snapshots.list, state.selectedId),
-      latestIsUsable: latestSnaphostIsUsable(payload.snapshots.list),
-      latestUsableSnapshot: latestUsableSnapshot(snapshotList),
-      latestVersionRunning: isLatestVersionRunning(payload.snapshots.list, payload.job_states),
-      selected: getSnapshotFromListById(snapshotList, state.selectedId),
-    };
-  },
   [resolve(FETCH_TOPIC_SUMMARY)]: (payload, state) => ({ // topic summary includes list of snapshots
     list: cleanUpSnapshotList(payload.snapshots.list, payload.job_states),
-    latest: latestByDate(payload.snapshots.list),
+    latest: latestSnapshotByDate(payload.snapshots.list),
     usingLatest: usingLatestSnapshot(payload.snapshots.list, state.selectedId),
     latestIsUsable: latestSnaphostIsUsable(payload.snapshots.list),
     latestUsableSnapshot: latestUsableSnapshot(payload.snapshots.list),

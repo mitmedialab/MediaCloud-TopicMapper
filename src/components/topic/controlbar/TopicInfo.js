@@ -16,7 +16,6 @@ const localMessages = {
 
 const TopicInfo = (props) => {
   const { topic, currentVersion } = props;
-  const { formatMessage } = props.intl;
   let stateMessage = '';
   if (topic.state !== 'error') {
     stateMessage = topic.message; // show details to everyone if in normal state
@@ -36,8 +35,6 @@ const TopicInfo = (props) => {
           <b><FormattedMessage {...localMessages.state} /></b>: {topic.state }
           <br />
           {stateMessage}
-          <br />
-          <b><FormattedMessage {...messages.topicPublicProp} /></b>: { topic.is_public ? formatMessage(messages.yes) : formatMessage(messages.no) }
           <br />
           <b><FormattedMessage {...messages.topicStartDateProp} /></b>: {topic.start_date}
           <br />

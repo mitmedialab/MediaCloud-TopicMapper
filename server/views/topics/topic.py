@@ -6,13 +6,13 @@ from operator import itemgetter
 
 import server.views.apicache as shared_apicache
 import server.views.topics.apicache as apicache
-from server import app, mc, executor, TOOL_API_KEY
+from server import app, mc, executor
 from server.auth import user_mediacloud_key, user_mediacloud_client, is_user_logged_in
-from server.util.request import api_error_handler
-from server.views.topics import access_public_topic
+from server.util.request import api_error_handler, filters_from_args
 from server.views.topics import concatenate_solr_dates
 from server.views.media_picker import concatenate_query_for_solr
 from server.views.topics.topiclist import add_user_favorite_flag_to_topics
+from server.views.topics.platforms.platforms_manage import platform_for_web_seed_query, topic_has_seed_query
 
 logger = logging.getLogger(__name__)
 
@@ -21,19 +21,15 @@ ARRAY_BASE_ONE = 1
 
 def _topic_seed_story_count(topic):
     try:
-        if access_public_topic(topic['topics_id']):
-            api_key = TOOL_API_KEY
-        else:
-            api_key = user_mediacloud_key()
         seed_query_count = shared_apicache.story_count(
-            api_key,
+            user_mediacloud_key(),
             q=concatenate_query_for_solr(solr_seed_query=topic['solr_seed_query'],
-                                         media_ids=[m['media_id'] for m in topic['media']],
-                                         tags_ids=[t['tags_id'] for t in topic['media_tags']]),
+                                         media_ids=[m['media_id'] for m in topic['media'] if 'media_id' in m],
+                                         tags_ids=[t['tags_id'] for t in topic['media_tags'] if 'tags_id' in t]),
             fq=concatenate_solr_dates(start_date=topic['start_date'], end_date=topic['end_date'])
         )['count']
     except mediacloud.error.MCException:
-        # the query syntax is wrong (perhaps pre-story-level search
+        # the query syntax is wrong (perhaps pre-story-level search)
         seed_query_count = None
     return seed_query_count
 
@@ -42,7 +38,6 @@ def _topic_seed_story_count(topic):
 @api_error_handler
 def topic_summary(topics_id):
     topic = _topic_summary(topics_id)
-    topic['seed_query_story_count'] = _topic_seed_story_count(topic)
     return jsonify(topic)
 
 
@@ -69,33 +64,37 @@ def _add_snapshot_foci_count(api_key, topics_id, snapshots):
             'snapshot': s,
         }
         jobs.append(job)
-    snapshots = _snapshot_foci_count_job.map(jobs)
-    return snapshots
+    return [item for item in _snapshot_foci_count_job.map(jobs)]
 
 
 def _topic_snapshot_list(topic):
-    if access_public_topic(topic['topics_id']):
-        local_mc = mc
-        api_key = TOOL_API_KEY
-    elif is_user_logged_in():
-        local_mc = user_mediacloud_client()
-        api_key = user_mediacloud_key()
-    else:
-        return {}  # prob something smarter we can do here
+    local_mc = user_mediacloud_client()
+    api_key = user_mediacloud_key()
     snapshots = local_mc.topicSnapshotList(topic['topics_id'])
     snapshots = sorted(snapshots, key=itemgetter('snapshots_id'))
     # add in any missing version numbers
     for idx in range(0, len(snapshots)):
         if snapshots[idx]['note'] in [None, '']:
             snapshots[idx]['note'] = idx + ARRAY_BASE_ONE
-    # seed_query story count
-    topic['seed_query_story_count'] = _topic_seed_story_count(topic)
+    # format any web seed queries as platforms objects
+    for s in snapshots:
+        platforms = []
+        if (s['seed_queries'] is not None) and ('topic' in s['seed_queries']):
+            p = platform_for_web_seed_query(s['seed_queries'])
+            platforms.append(p)
+            platforms += s['seed_queries']['topic_seed_queries']
+        else:
+            if topic_has_seed_query(topic):
+                p = platform_for_web_seed_query(topic)
+                platforms.append(p)
+        s['platform_seed_queries'] = platforms
     # add foci_count for display
     snapshots = _add_snapshot_foci_count(api_key, topic['topics_id'], snapshots)
     snapshots = sorted(snapshots, key=lambda d: d['snapshot_date'])
     # extra stuff
     snapshot_status = mc.topicSnapshotGenerateStatus(topic['topics_id'])['job_states']  # need to know if one is running
     latest = snapshots[-1] if len(snapshots) > 0 else None
+    topic['seed_query_story_count'] = _topic_seed_story_count(topic)
     return {
         'list': snapshots,
         'jobStatus': snapshot_status,
@@ -104,36 +103,35 @@ def _topic_snapshot_list(topic):
 
 
 def _topic_summary(topics_id):
-    if access_public_topic(topics_id):
-        local_mc = mc
-    elif is_user_logged_in():
-        local_mc = user_mediacloud_client()
-    else:
-        return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
+    local_mc = user_mediacloud_client()
     topic = local_mc.topic(topics_id)
     # add in snapshot list (with version numbers, by date)
     topic['snapshots'] = _topic_snapshot_list(topic)
+    # add in fake topic_seed_query for web/mediacloud platform
+    if topic_has_seed_query(topic):
+        p = platform_for_web_seed_query(topic)
+        topic['topic_seed_queries'].append(p)
     if is_user_logged_in():
         add_user_favorite_flag_to_topics([topic])
     return topic
-
-
-@app.route('/api/topics/<topics_id>/snapshots/list', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_snapshots_list(topics_id):
-    user_mc = user_mediacloud_client()
-    topic = user_mc.topic(topics_id)
-    snapshots = _topic_snapshot_list(topic)
-    return jsonify(snapshots)
 
 
 @app.route('/api/topics/<topics_id>/snapshots/<snapshots_id>/timespans/list', methods=['GET'])
 @flask_login.login_required
 @api_error_handler
 def topic_timespan_list(topics_id, snapshots_id):
-    foci_id = request.args.get('focusId')
+    ignored_snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    # add the focal_set type to the timespan so we can use that in the client (ie. decide what to show or not
+    # based on what type of focal_set this timespan is part of)
+    focal_sets = apicache.topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)
+    for t in timespans:
+        for fs in focal_sets:
+            for f in fs['foci']:
+                if f['foci_id'] == t['foci_id']:
+                    t['focal_set'] = fs
+                    t['focus'] = f
+                    break
     return jsonify({'list': timespans})
 
 
@@ -143,10 +141,17 @@ def topic_timespan_list(topics_id, snapshots_id):
 def topic_update_settings(topics_id):
     user_mc = user_mediacloud_client()
     args = {
-        'name': request.form['name'] if 'name' in request.form else None,
-        'description': request.form['description'] if 'description' in request.form else None,
-        'is_public': request.form['is_public'] if 'is_public' in request.form else None,
-        'is_logogram': request.form['is_logogram'] if 'is_logogram' in request.form else None,
+        'name': _safe_member_of_dict('name', request.form),
+        'description': _safe_member_of_dict('description', request.form),
+        'is_logogram': _safe_member_of_dict('is_logogram', request.form),
+        'start_date': _safe_member_of_dict('start_date', request.form),
+        'end_date': _safe_member_of_dict('end_date', request.form),
+        'max_iterations': _safe_member_of_dict('max_iterations', request.form),
+        'max_stories': _safe_member_of_dict('max_topic_stories', request.form),
     }
     result = user_mc.topicUpdate(topics_id, **args)
     return topic_summary(result['topics'][0]['topics_id'])  # give them back new data, so they can update the client
+
+
+def _safe_member_of_dict(key, a_dict):
+    return a_dict[key] if key in a_dict else None

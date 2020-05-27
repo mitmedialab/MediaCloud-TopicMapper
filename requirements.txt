@@ -1,7 +1,7 @@
 Flask==1.1.2
 Flask-Login==0.5.0
 Flask-Webpack==0.1.0
-mediacloud==3.11.2
+mediacloud==3.11.3
 pymongo==3.10.1
 requests==2.23.0
 raven[flask]==6.10.0
@@ -15,7 +15,6 @@ python-dateutil==2.8.1
 python-slugify==4.0.0
 greenlet==0.4.15
 deco==0.5.2
-psaw==0.0.12
 Flask-Executor==0.9.3
 newspaper3k==0.2.8
 pytest==5.4.1

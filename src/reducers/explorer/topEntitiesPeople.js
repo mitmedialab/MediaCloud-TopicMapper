@@ -1,14 +1,11 @@
 import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
 import { FETCH_TOP_ENTITIES_PEOPLE, RESET_ENTITIES_PEOPLE } from '../../actions/explorerActions';
-import * as fetchConstants from '../../lib/fetchConstants';
+import { FETCH_INVALID } from '../../lib/fetchConstants';
 
 const topEntitiesPeople = createIndexedAsyncReducer({
-  initialState: ({
-    fetchStatus: '', fetchStatuses: [], fetchUids: [], results: [],
-  }),
   action: FETCH_TOP_ENTITIES_PEOPLE,
   [RESET_ENTITIES_PEOPLE]: () => ({
-    fetchStatus: fetchConstants.FETCH_INVALID, fetchStatuses: [], fetchUids: [], results: [],
+    fetchStatus: FETCH_INVALID, fetchStatuses: {}, results: {},
   }),
 });
 export default topEntitiesPeople;

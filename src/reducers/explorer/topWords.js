@@ -4,10 +4,6 @@ import { FETCH_QUERY_TOP_WORDS, SELECT_WORD, RESET_SELECTED_WORD, SET_QUERY_WORD
 
 const topWords = createIndexedAsyncReducer({
   initialState: ({
-    fetchStatus: '',
-    fetchStatuses: [],
-    fetchUids: [],
-    results: [],
     selectedWord: null,
     sampleSize: 1000, // default to smaller, faster word clouds
   }),

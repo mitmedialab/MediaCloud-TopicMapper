@@ -3,7 +3,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import withIntlForm from '../../../../common/hocs/IntlForm';
-import { FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import { notEmptyString } from '../../../../../lib/formValidators';
 
 const localMessages = {
@@ -22,9 +22,6 @@ const localMessages = {
   defaultSetDescriptionNytTheme: { id: 'focalSet.default.setDescription.nyt', defaultMessage: 'Subtopics for the themes stories are most often related to.' },
   defaultSetNameMediaType: { id: 'focalSet.default.setName.mediaType', defaultMessage: 'Media Type' },
   defaultSetDescriptionMediaType: { id: 'focalSet.default.setDescription.mediaType', defaultMessage: 'Automatically generated subtopics that group together stories by the type of media source that published them.' },
-  defaultSetNameMediaSearch: { id: 'focalSet.default.setName.mediaSearch', defaultMessage: 'Media Type' },
-  defaultSetDescriptionMediaSearch: { id: 'focalSet.default.setDescription.mediaSearch', defaultMessage: 'Automatically generated subtopics that group together stories by the type of media source that published them.' },
-
 };
 
 class FocalSetForm extends React.Component {
@@ -50,10 +47,6 @@ class FocalSetForm extends React.Component {
       case FOCAL_TECHNIQUE_MEDIA_TYPE:
         setName = formatMessage(localMessages.defaultSetNameMediaType);
         setDescription = formatMessage(localMessages.defaultSetDescriptionMediaType);
-        break;
-      case FOCAL_TECHNIQUE_MEDIA_SEARCH:
-        setName = formatMessage(localMessages.defaultSetNameMediaSearch);
-        setDescription = formatMessage(localMessages.defaultSetDescriptionMediaSearch);
         break;
       default:
         setName = formatMessage(localMessages.defaultSetName);

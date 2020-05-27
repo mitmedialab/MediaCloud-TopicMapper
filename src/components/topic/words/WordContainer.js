@@ -5,12 +5,13 @@ import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import { selectWord } from '../../../actions/topicActions';
 import WordDetails from './WordDetails';
-import WordWordsContainer from './WordWordsContainer';
-import WordStoriesContainer from './WordStoriesContainer';
-import WordSplitStoryCountContainer from './WordSplitStoryCountContainer';
+import TopicWordCloudContainer from '../provider/TopicWordCloudContainer';
+import TopicStoriesContainer from '../provider/TopicStoriesContainer';
+import TopicCountOverTimeContainer from '../provider/TopicCountOverTimeContainer';
 import WordInContextContainer from './WordInContextContainer';
 import WordSimilarWordsContainer from './WordSimilarWordsContainer';
 import TopicPageTitle from '../TopicPageTitle';
+import messages from '../../../resources/messages';
 
 const localMessages = {
   mainTitle: { id: 'word.details.mainTitle', defaultMessage: 'Word: "{title}"' },
@@ -46,12 +47,18 @@ class WordContainer extends React.Component {
           </Row>
           <Row>
             <Col lg={12}>
-              <WordSplitStoryCountContainer topicId={topicId} stem={stem} term={term} filters={filters} />
+              <TopicCountOverTimeContainer titleMsg={messages.attention} uid="word" extraQueryClause={`${stem}*`} />
             </Col>
           </Row>
           <Row>
             <Col lg={12}>
-              <WordWordsContainer topicId={topicId} stem={stem} term={term} filters={filters} topicName={topicName} />
+              <TopicWordCloudContainer
+                title={messages.topWords}
+                svgName={`word-${stem}`}
+                extraQueryClause={`${stem}*`}
+                width={720}
+                uid="word"
+              />
             </Col>
           </Row>
           <Row>
@@ -61,7 +68,7 @@ class WordContainer extends React.Component {
           </Row>
           <Row>
             <Col lg={12}>
-              <WordStoriesContainer topicId={topicId} stem={stem} term={term} filters={filters} />
+              <TopicStoriesContainer titleMsg={messages.stories} uid="word" extraQueryClause={`${stem}*`} />
             </Col>
           </Row>
           <Row>

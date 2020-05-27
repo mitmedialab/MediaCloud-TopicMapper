@@ -10,25 +10,26 @@ import { WarningNotice } from '../../common/Notice';
 import LinkWithFilters from '../LinkWithFilters';
 
 const localMessages = {
-  needsNewSnapshot: { id: 'topic.needsNewSnapshot.subtopics', defaultMessage: 'You\'ve changed some subtopics and need to generate a new version!' },
+  needsNewSnapshot: { id: 'topic.needsNewSnapshot.subtopics', defaultMessage: 'You\'ve changed this topic and need to generate a new version!' },
   needsNewSnapshotAction: { id: 'topic.needsNewSnapshot.subtopics.action', defaultMessage: 'Review Changes' },
 };
 
-// TODO: move this into a reducer
-export function needsNewVersion(usingLatest, newDefinitions, latestVersionRunning) {
-  return usingLatest && newDefinitions && !latestVersionRunning;
+// TODO: move this into a reducer when we've accounted for all cases
+// latestUsableSnapshot === null accounts for an empty topic with no snapshot...
+export function needsNewVersion(usingLatest, newDefinitions, platformsHaveChanged, datesOrSpideringHaveChanged, latestVersionRunning) {
+  return (usingLatest && !latestVersionRunning && (newDefinitions || platformsHaveChanged || datesOrSpideringHaveChanged));
 }
 
-const NeedsNewVersionWarning = ({ topicId, newDefinitions, latestVersionRunning, usingLatest }) => (
+const NeedsNewVersionWarning = ({ topicId, newDefinitions, latestVersionRunning, usingLatest, platformsHaveChanged, datesOrSpideringHaveChanged }) => (
   <Permissioned onlyTopic={PERMISSION_TOPIC_WRITE}>
-    {needsNewVersion(usingLatest, newDefinitions, latestVersionRunning) && (
+    {needsNewVersion(usingLatest, newDefinitions, platformsHaveChanged, datesOrSpideringHaveChanged, latestVersionRunning) && (
       <div className="warning-background">
         <Grid>
           <Row>
             <Col lg={12}>
               <WarningNotice>
                 <FormattedMessage {...localMessages.needsNewSnapshot} />
-                <LinkWithFilters to={`/topics/${topicId}/snapshot/foci`}>
+                <LinkWithFilters to={`/topics/${topicId}/new-version`}>
                   <AppButton label={localMessages.needsNewSnapshotAction} />
                 </LinkWithFilters>
               </WarningNotice>
@@ -44,6 +45,8 @@ NeedsNewVersionWarning.propTypes = {
   // from state
   usingLatest: PropTypes.bool.isRequired,
   newDefinitions: PropTypes.bool.isRequired,
+  platformsHaveChanged: PropTypes.bool.isRequired,
+  datesOrSpideringHaveChanged: PropTypes.bool.isRequired,
   latestVersionRunning: PropTypes.bool.isRequired,
   topicId: PropTypes.number.isRequired,
   // from compositional chain
@@ -54,6 +57,8 @@ const mapStateToProps = state => ({
   topicId: state.topics.selected.id,
   usingLatest: state.topics.selected.snapshots.usingLatest,
   newDefinitions: state.topics.selected.focalSets.all.newDefinitions,
+  platformsHaveChanged: state.topics.selected.info.platformsHaveChanged,
+  datesOrSpideringHaveChanged: state.topics.selected.info.datesOrSpideringHaveChanged,
   latestVersionRunning: state.topics.selected.snapshots.latestVersionRunning,
 });
 

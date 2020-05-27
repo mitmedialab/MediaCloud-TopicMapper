@@ -44,8 +44,7 @@ class MediaTable extends React.Component {
   }
 
   render() {
-    const { media, topicId, includeMetadata, showTweetCounts } = this.props;
-    const tweetHeader = showTweetCounts ? <th className="numeric">{this.sortableHeader('twitter', messages.tweetCounts)}</th> : null;
+    const { media, topicId, includeMetadata, showTweetCounts, usingUrlSharingSubtopic } = this.props;
     return (
       <div className="media-table">
         <StorySearchFilterMediaWarning />
@@ -54,10 +53,23 @@ class MediaTable extends React.Component {
             <tr>
               <th colSpan="2"><FormattedMessage {...messages.mediaName} /></th>
               <th><FormattedMessage {...messages.storyPlural} /></th>
-              <th className="numeric">{this.sortableHeader('inlink', messages.mediaInlinks)}</th>
-              <th className="numeric"><FormattedMessage {...messages.outlinks} /></th>
+              { !usingUrlSharingSubtopic && (
+                <>
+                  <th className="numeric">{this.sortableHeader('inlink', messages.mediaInlinks)}</th>
+                  <th className="numeric"><FormattedMessage {...messages.outlinks} /></th>
+                </>
+              )}
               <th className="numeric">{this.sortableHeader('facebook', messages.facebookShares)}</th>
-              {tweetHeader}
+              { usingUrlSharingSubtopic && (
+                <>
+                  <th className="numeric">{this.sortableHeader('sum_post_count', messages.postCount)}</th>
+                  <th className="numeric">{this.sortableHeader('sum_author_count', messages.authorCount)}</th>
+                  <th className="numeric">{this.sortableHeader('sum_channel_count', messages.channelCount)}</th>
+                </>
+              )}
+              { showTweetCounts && (
+                <th className="numeric">{this.sortableHeader('twitter', messages.tweetCounts)}</th>
+              )}
               {(includeMetadata !== false) && (
                 <>
                   <th><FormattedMessage {...messages.mediaType} /></th>
@@ -79,9 +91,20 @@ class MediaTable extends React.Component {
                   </LinkWithFilters>
                 </td>
                 <td className="numeric"><FormattedNumber value={m.story_count !== undefined ? m.story_count : '?'} /></td>
-                <td className="numeric"><FormattedNumber value={m.media_inlink_count !== undefined ? m.media_inlink_count : '?'} /></td>
-                <td className="numeric"><FormattedNumber value={m.outlink_count !== undefined ? m.outlink_count : '?'} /></td>
+                { !usingUrlSharingSubtopic && (
+                  <>
+                    <td className="numeric"><FormattedNumber value={m.media_inlink_count !== undefined ? m.media_inlink_count : '?'} /></td>
+                    <td className="numeric"><FormattedNumber value={m.outlink_count !== undefined ? m.outlink_count : '?'} /></td>
+                  </>
+                )}
                 <td className="numeric"><FormattedNumber value={m.facebook_share_count !== undefined ? m.facebook_share_count : '?'} /></td>
+                { usingUrlSharingSubtopic && (
+                  <>
+                    <td className="numeric"><SafelyFormattedNumber value={m.sum_post_count} /></td>
+                    <td className="numeric"><SafelyFormattedNumber value={m.sum_author_count} /></td>
+                    <td className="numeric"><SafelyFormattedNumber value={m.sum_channel_count} /></td>
+                  </>
+                )}
                 { showTweetCounts && (
                   <td className="numeric"><SafelyFormattedNumber value={m.simple_tweet_count} /></td>
                 )}
@@ -104,13 +127,16 @@ class MediaTable extends React.Component {
 }
 
 MediaTable.propTypes = {
+  // from parent
   media: PropTypes.array.isRequired,
-  showTweetCounts: PropTypes.bool,
   intl: PropTypes.object.isRequired,
   topicId: PropTypes.number.isRequired,
   onChangeSort: PropTypes.func,
   sortedBy: PropTypes.string,
   includeMetadata: PropTypes.bool, // default true
+  // from parent container
+  showTweetCounts: PropTypes.bool,
+  usingUrlSharingSubtopic: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(MediaTable);

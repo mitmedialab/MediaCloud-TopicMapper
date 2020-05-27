@@ -8,7 +8,8 @@ const localMessages = {
   focalSetExisting: { id: 'focus.create.confirm.focalSetExisting', defaultMessage: '<b>Technique</b>: Add to existing' },
   name: { id: 'focus.create.confirm.name', defaultMessage: '<b>Name</b>: {name}' },
   description: { id: 'focus.create.confirm.description', defaultMessage: '<b>Description</b>: {description}' },
-  searchValues: { id: 'focus.create.confirm.booleanQuery.searchValues', defaultMessage: '<b>Search using media </b>: {searchValues}' },
+  searchKeywords: { id: 'focus.create.confirm.booleanQuery.keywords', defaultMessage: '<b>Search using keywords </b>: {keywords}' },
+  searchMedia: { id: 'focus.create.confirm.booleanQuery.media', defaultMessage: '<b>Search using media </b>: {names}' },
 };
 
 const SearchSummary = (props) => {
@@ -27,7 +28,8 @@ const SearchSummary = (props) => {
         <li><FormattedHTMLMessage {...localMessages.name} values={{ name: formValues.focusName }} /></li>
         <li><FormattedHTMLMessage {...localMessages.description} values={{ description: formValues.focusDescription }} /></li>
         <li>{focalSetContent}</li>
-        <li><FormattedHTMLMessage {...localMessages.searchValues} values={{ searchValues: JSON.stringify(formValues.media.map(s => s.name)) }} /></li>
+        <li><FormattedHTMLMessage {...localMessages.searchKeywords} values={{ keywords: formValues.keywords }} /></li>
+        <li><FormattedHTMLMessage {...localMessages.searchMedia} values={{ names: formValues.media ? JSON.stringify(formValues.media.map(s => s.name)) : '' }} /></li>
       </ul>
     </div>
   );

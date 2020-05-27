@@ -51,3 +51,9 @@ MAINTENANCE_MODE = 0
 
 # Service: The URL to an install of the stanford corenlp
 CORENLP_URL = http://stanford-corenlp-server:9000
+
+# API Key to use in communication with Crimson Hexagon
+CRIMSON_HEXAGON_API_KEY = 0
+
+# API Key for use in communication with YouTube API
+YOUTUBE_API_KEY = 0

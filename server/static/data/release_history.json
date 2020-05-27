@@ -53,8 +53,7 @@
           "note": "More work on support for very long queries"
         }
       ]
-    },
-    {
+    },    {
       "date": "2020-05-01",
       "version": "v3.13.16",
       "notes": [

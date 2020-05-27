@@ -182,7 +182,7 @@ QueryAttentionOverTimeResultsContainer.propTypes = {
   attentionAggregationMenuItems: PropTypes.array.isRequired,
   selectedTimePeriod: PropTypes.string.isRequired,
   // from dispatch
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
   daySpread: PropTypes.bool,
   // from state
   fetchStatus: PropTypes.string.isRequired,

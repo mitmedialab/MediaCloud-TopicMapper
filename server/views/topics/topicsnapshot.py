@@ -5,7 +5,7 @@ from flask_login import current_user
 
 from server import app
 from server.auth import user_mediacloud_client
-from server.util.request import api_error_handler
+from server.util.request import api_error_handler, form_fields_required
 from server.util.stringutil import ids_from_comma_separated_str
 from server.views.topics.topic import topic_summary
 
@@ -23,7 +23,6 @@ def topic_update(topics_id):
         'solr_seed_query': request.form['solr_seed_query'] if 'solr_seed_query' in request.form else None,
         'start_date': request.form['start_date'] if 'start_date' in request.form else None,
         'end_date': request.form['end_date'] if 'end_date' in request.form else None,
-        'is_public': request.form['is_public'] if 'is_public' in request.form else None,
         'is_logogram': request.form['is_logogram'] if 'is_logogram' in request.form else None,
         'ch_monitor_id': request.form['ch_monitor_id'] if 'ch_monitor_id' in request.form
                                                           and request.form['ch_monitor_id'] is not None
@@ -66,35 +65,27 @@ def topic_snapshot_create(topics_id):
 
 
 @app.route("/api/topics/<topics_id>/snapshots/generate", methods=['POST'])
-@flask_login.login_required
-@api_error_handler
-def topic_snapshot_generate(topics_id):
-    user_mc = user_mediacloud_client()
-    if 'snapshot_id' in request.form:
-        # generate into the one passed in
-        snapshots_id = request.form['snapshotId'] if 'snapshotId' in request.form else None
-    else:
-        # make a new snapshot
-        new_snapshot = user_mc.topicCreateSnapshot(topics_id, note=_next_snapshot_number(topics_id))['snapshot']
-        snapshots_id = new_snapshot['snapshots_id']
-    # and now generate into the existing or the new snapshot
-    job = user_mc.topicGenerateSnapshot(topics_id, snapshots_id=snapshots_id)
-    return topic_summary(topics_id)
-
-
-@app.route("/api/topics/<topics_id>/snapshots/spider", methods=['POST'])
+@form_fields_required('snapshotId', 'spider')
 @flask_login.login_required
 @api_error_handler
 def topic_snapshot_spider(topics_id):
+    """
+    This supports making a new version, or re-using the current one. It also allows for spidering or not.
+    :param topics_id:
+    :return:
+    """
     user_mc = user_mediacloud_client()
     # kick off a spider, which will also generate a snapshot
-    if 'snapshotId' in request.form:
+    if request.form['snapshotId'] is not None and request.form['snapshotId'] != "null":
         # generate into the one passed in
         snapshots_id = request.form['snapshotId'] if 'snapshotId' in request.form else None
     else:
         # make a new snapshot
         new_snapshot = user_mc.topicCreateSnapshot(topics_id, note=_next_snapshot_number(topics_id))['snapshot']
         snapshots_id = new_snapshot['snapshots_id']
-    # and now spider into the existinng or the new snapshot
-    job = user_mc.topicSpider(topics_id, snapshots_id=snapshots_id)
+    # and now spider into the existing or the new snapshot
+    if request.form['spider'] == '1':
+        job = user_mc.topicSpider(topics_id, snapshots_id=snapshots_id)
+    else:
+        job = user_mc.topicGenerateSnapshot(topics_id, snapshots_id=snapshots_id)
     return topic_summary(topics_id)

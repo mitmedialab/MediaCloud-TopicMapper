@@ -9,13 +9,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ActionMenu from '../../common/ActionMenu';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import WordSpace from '../../vis/WordSpace';
-import Permissioned from '../../common/Permissioned';
-import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import messages from '../../../resources/messages';
 import { DownloadButton } from '../../common/IconButton';
 import { topicDownloadFilename } from '../../util/topicUtil';
 import { downloadSvg } from '../../util/svg';
+import { FETCH_INVALID } from '../../../lib/fetchConstants';
 
 const localMessages = {
   title: { id: 'topic.summary.words.space.title', defaultMessage: 'Topic Word Space' },
@@ -39,19 +38,17 @@ const TopicWordSpaceContainer = (props) => {
         noDataMsg={localMessages.noTopicW2VData}
       />
       <div className="actions">
-        <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
-          <div className="actions">
-            <ActionMenu actionTextMsg={messages.downloadOptions}>
-              <MenuItem
-                className="action-icon-menu-item"
-                onClick={() => downloadSvg(`${topicDownloadFilename(topicName, filters)}-sampled-word-space`, WORD_SPACE_DOM_ID)}
-              >
-                <ListItemText><FormattedMessage {...localMessages.downloadSVG} /></ListItemText>
-                <ListItemIcon><DownloadButton /></ListItemIcon>
-              </MenuItem>
-            </ActionMenu>
-          </div>
-        </Permissioned>
+        <div className="actions">
+          <ActionMenu actionTextMsg={messages.downloadOptions}>
+            <MenuItem
+              className="action-icon-menu-item"
+              onClick={() => downloadSvg(`${topicDownloadFilename(topicName, filters)}-sampled-word-space`, WORD_SPACE_DOM_ID)}
+            >
+              <ListItemText><FormattedMessage {...localMessages.downloadSVG} /></ListItemText>
+              <ListItemIcon><DownloadButton /></ListItemIcon>
+            </MenuItem>
+          </ActionMenu>
+        </div>
       </div>
     </>
   );
@@ -64,14 +61,15 @@ TopicWordSpaceContainer.propTypes = {
   topicId: PropTypes.number.isRequired,
   filters: PropTypes.object.isRequired,
   topicName: PropTypes.string.isRequired,
+  uid: PropTypes.string.isRequired,
   // from state
   words: PropTypes.array,
   fetchStatus: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
-  fetchStatus: state.topics.selected.summary.topWords.fetchStatus,
-  words: state.topics.selected.summary.topWords.list,
+const mapStateToProps = (state, ownProps) => ({
+  fetchStatus: state.topics.selected.provider.words.fetchStatuses[ownProps.uid] || FETCH_INVALID,
+  words: state.topics.selected.provider.words.results[ownProps.uid] ? state.topics.selected.provider.words.results[ownProps.uid].words : [],
 });
 
 const mapDispatchToProps = dispatch => ({

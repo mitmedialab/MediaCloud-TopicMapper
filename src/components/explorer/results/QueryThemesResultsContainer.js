@@ -42,13 +42,14 @@ class QueryThemesResultsContainer extends React.Component {
 
 
   render() {
-    const { results, queries, selectedTabIndex, tabSelector } = this.props;
+    const { results, queries, selectedQuery, selectedTabIndex, tabSelector } = this.props;
     const { formatNumber } = this.props.intl;
     let rawData = [];
     let content = null;
-    if (results) {
-      rawData = results[selectedTabIndex] ? results[selectedTabIndex].results : [];
-      const coverageRatio = results[selectedTabIndex] ? results[selectedTabIndex].coverage_percentage : 0;
+    const selectedResults = results[selectedQuery.uid];
+    if (selectedResults) {
+      rawData = selectedResults.results;
+      const coverageRatio = selectedResults.coverage_percentage;
       if (coverageRatio > COVERAGE_REQUIRED) {
         const data = rawData.slice(0, 4).map((info, idx) => ({
           value: info.pct, // info.count,
@@ -107,6 +108,7 @@ QueryThemesResultsContainer.propTypes = {
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
+  selectedQuery: PropTypes.object.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   onShowLoginDialog: PropTypes.func.isRequired,
@@ -115,7 +117,7 @@ QueryThemesResultsContainer.propTypes = {
   tabSelector: PropTypes.object.isRequired,
   // from state
   fetchStatus: PropTypes.string.isRequired,
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({

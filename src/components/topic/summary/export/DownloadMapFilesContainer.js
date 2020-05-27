@@ -5,8 +5,8 @@ import withFilteredAsyncData from '../../FilteredAsyncDataContainer';
 import { fetchTopicMapFiles } from '../../../../actions/topicActions';
 import DownloadMapFiles from './DownloadMapFiles';
 
-const DownloadMapFilesContainer = ({ topicId, filters, files }) => (
-  <DownloadMapFiles topicId={topicId} filters={filters} files={files} />
+const DownloadMapFilesContainer = ({ filters, files }) => (
+  <DownloadMapFiles filters={filters} files={files} />
 );
 
 DownloadMapFilesContainer.propTypes = {

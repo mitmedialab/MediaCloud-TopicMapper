@@ -20,11 +20,9 @@ server/static/data/GoogleNews-vectors-negative300
 server/static/data/GoogleNews-vectors-negative300.syn0.npy
 update_mc_api.sh
 env
-*.csv
 *.gexf
 .idea
 sketches/*
-config/test.config.js
 react-codemod
 config/app.config
 *.ipynb
@@ -32,3 +30,4 @@ src/components/explorer/results/drilldowns/WordInContextDrillDownContainer.js
 .cache-loader
 build/public/
 server/static/data/tags_in*
+server/static/data/*.csv

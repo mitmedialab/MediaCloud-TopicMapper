@@ -15,11 +15,12 @@ const localMessages = {
   whatNowText: { id: 'version.error.explanation2.text', defaultMessage: 'Nothing! We\'ve been notified, and will take a look at it.  If you don\'t hear from us soon, do drop us a line at support@mediacloud.org.' },
 };
 
-const TopicVersionErrorStatusContainer = ({ topic, goToCreateNewVersion, snapshot, intl }) => (
+const TopicVersionErrorStatusContainer = ({ topic, goToCreateNewVersion, snapshot, intl, focalSets }) => (
   <>
     <TopicVersionStatus
       subtitle={localMessages.title}
       topic={topic}
+      focalSets={focalSets}
       snapshot={snapshot}
     >
       <h2><FormattedMessage {...localMessages.explanationTitle} /></h2>
@@ -43,11 +44,12 @@ const TopicVersionErrorStatusContainer = ({ topic, goToCreateNewVersion, snapsho
 );
 
 TopicVersionErrorStatusContainer.propTypes = {
-  // from state
+  // from parent
   topic: PropTypes.object,
   filters: PropTypes.object,
   snapshot: PropTypes.object,
   goToCreateNewVersion: PropTypes.func,
+  focalSets: PropTypes.array,
   // from context
   intl: PropTypes.object.isRequired,
 };

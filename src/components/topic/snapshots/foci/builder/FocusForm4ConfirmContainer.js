@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../../../common/hocs/IntlForm';
-import KeywordSearchSummary from './keywordSearch/KeywordSearchSummary';
 import RetweetPartisanshipSummary from './retweetPartisanship/RetweetPartisanshipSummary';
 import TopCountriesSummary from './topCountries/TopCountriesSummary';
 import NytThemeSummary from './nyttheme/NytThemeSummary';
 import MediaTypeSummary from './mediaType/MediaTypeSummary';
 import SearchSummary from './search/SearchSummary';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE, FOCAL_TECHNIQUE_MEDIA_SEARCH } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import AppButton from '../../../../common/AppButton';
 import messages from '../../../../../resources/messages';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
@@ -32,11 +31,6 @@ const FocusForm4ConfirmContainer = (props) => {
   let content = null;
   switch (formValues.focalTechnique) {
     case FOCAL_TECHNIQUE_BOOLEAN_QUERY:
-      content = (
-        <KeywordSearchSummary topicId={topicId} formValues={formValues} initialValues={initialValues} />
-      );
-      break;
-    case FOCAL_TECHNIQUE_MEDIA_SEARCH:
       content = (
         <SearchSummary topicId={topicId} formValues={formValues} initialValues={initialValues} />
       );

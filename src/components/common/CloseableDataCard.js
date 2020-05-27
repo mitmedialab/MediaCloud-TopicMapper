@@ -7,22 +7,18 @@ import { CloseButton } from './IconButton';
 import messages from '../../resources/messages';
 
 const CloseableDataCard = (props) => {
-  const { content, title, onClose } = props;
+  const { children, title, onClose } = props;
   const { formatMessage } = props.intl;
   return (
     <DataCard>
       <Row>
         <Col lg={12}>
-          <CloseButton
-            onClick={onClose}
-            tooltip={formatMessage(messages.close)}
-            backgroundColor="#000000"
-          />
+          <CloseButton onClick={onClose} tooltip={formatMessage(messages.close)} backgroundColor="#000000" />
           {title}
         </Col>
       </Row>
       <Row>
-        {content}
+        {children}
       </Row>
     </DataCard>
   );
@@ -30,7 +26,7 @@ const CloseableDataCard = (props) => {
 
 CloseableDataCard.propTypes = {
   // from parent
-  content: PropTypes.node.isRequired, // pass in columns to render inside this card
+  children: PropTypes.node.isRequired,
   title: PropTypes.node,
   onClose: PropTypes.func.isRequired,
   // from compositional chain

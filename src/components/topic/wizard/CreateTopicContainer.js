@@ -1,71 +1,58 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { push } from 'react-router-redux';
+import { Grid } from 'react-flexbox-grid/lib';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { reset } from 'redux-form';
+import { reset, reduxForm } from 'redux-form';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
-import { fetchUserQueuedAndRunningTopics } from '../../../actions/topicActions';
+import { fetchUserQueuedAndRunningTopics, createTopic } from '../../../actions/topicActions';
 import { WarningNotice } from '../../common/Notice';
+import { updateFeedback } from '../../../actions/appActions';
 import { FETCH_SUCCEEDED } from '../../../lib/fetchConstants';
-import TopicBuilderWizard from './TopicBuilderWizard';
 import PageTitle from '../../common/PageTitle';
-import { TOPIC_FORM_MODE_CREATE } from './TopicForm';
+import TopicForm from './TopicForm';
+// import { formatTopicPreviewQuery } from '../../util/topicUtil';
+import messages from '../../../resources/messages';
+import { getCurrentDate, getMomentDateSubtraction } from '../../../lib/dateUtil';
 
 const localMessages = {
-  pageTitle: { id: 'topic.modify.pageTitle', defaultMessage: 'Create a Topic' },
+  pageTitle: { id: 'topic.modify.pageTitle', defaultMessage: 'Step 1: Setup Your Topic' },
   pageDesc: { id: 'topic.modify.pageTitle', defaultMessage: 'You can try out your query in our <a href="https://explorer.mediacloud.org/">Explorer tool</a> before coming here to create a topic.' },
   cannotCreateTopic: { id: 'topic.modify.cannotCreateTopic', defaultMessage: 'You cannot create a new topic right now because you are currently running another topic.' },
-  previewTitle: { id: 'topic.modify.preview.title', defaultMessage: 'Step 2: Preview Your Topic' },
-  previewDesc: { id: 'topic.modify.preview.about',
-    defaultMessage: '<b>Make sure your topic looks right before you create it</b>.  We start your topic by finding all the stories in our database that match your query. From there we follow all the links and download them. We check if they match your keywords, and if they do then we add them to your topic (this is called "spidering"). Check the result below and make sure your topic is finding you the stories you want before creating it.' },
-  validateTitle: { id: 'topic.modify.validate.title', defaultMessage: 'Step 3: Validate 30 Random Stories' },
-  validateDesc: { id: 'topic.modify.validate.about',
-    defaultMessage: 'To make sure the stories that match your seed query are relevant to your research, you need to review this random sample to see if these are the kinds of stories you want. For each story, click "yes" if it is about the topic you are interested in.  Click "no" if it is not about the topic you are intereseted in.' },
-  confirmTitle: { id: 'topic.modify.confirm.title', defaultMessage: 'Step 4: Confirm Your New Topic' },
-  name: { id: 'topic.modify.confirm.name', defaultMessage: 'Name' },
-  confirmDesc: { id: 'topic.modify.confirm.description', defaultMessage: 'Description' },
-  confirmFeedback: { id: 'topic.modify.failed', defaultMessage: 'Successfully created your new topic!' },
   createTopic: { id: 'topic.create', defaultMessage: 'Create Topic' },
   creatingTitle: { id: 'topic.creating.title', defaultMessage: 'Please wait - we\'re creating your Topic now' },
   creatingDesc: { id: 'topic.creating.detail', defaultMessage: 'We are creating your topic now.  This can take a minute or so, just to make sure everyting is in order.  Once it is created, you\'ll be shown a page telling you we are gathering the stories.' },
+  feedback: { id: 'topic.edit.save.feedback', defaultMessage: 'We created your topic!' },
+  failed: { id: 'topic.edit.save.failed', defaultMessage: 'Sorry, that didn\'t work!' },
+
 };
 
-const CreateTopicContainer = ({ allowedToRun, intl }) => {
-  const stepTexts = [
-    {
-      title: intl.formatHTMLMessage(localMessages.pageTitle),
-      description: intl.formatHTMLMessage(localMessages.pageDesc),
-    },
-    {
-      title: intl.formatMessage(localMessages.previewTitle),
-      description: intl.formatHTMLMessage(localMessages.previewDesc),
-    },
-    {
-      title: intl.formatHTMLMessage(localMessages.validateTitle),
-      description: intl.formatHTMLMessage(localMessages.validateDesc),
-    },
-    {
-      title: intl.formatHTMLMessage(localMessages.confirmTitle),
-      description: 'not used',
-      saveTopic: intl.formatHTMLMessage(localMessages.createTopic),
-      savingTitle: intl.formatHTMLMessage(localMessages.creatingTitle),
-      savingDesc: intl.formatHTMLMessage(localMessages.creatingDesc),
-    },
-  ];
+const CreateTopicContainer = (props) => {
+  const endDate = getCurrentDate();
+  const startDate = getMomentDateSubtraction(endDate, 3, 'months');
+  const initialValues = {
+    mode: 'web',
+    start_date: startDate,
+    end_date: endDate,
+    buttonLabel: props.intl.formatMessage(messages.create),
+    max_iterations: 15,
+  };
   return (
-    <>
+    <Grid>
       <PageTitle value={localMessages.pageTitle} />
-      {!allowedToRun && (
+      {!props.allowedToRun && (
         <WarningNotice><FormattedHTMLMessage {...localMessages.cannotCreateTopic} /></WarningNotice>
       )}
-      <TopicBuilderWizard
-        startStep={0}
-        location={window.location}
-        mode={TOPIC_FORM_MODE_CREATE}
-        currentStepTexts={stepTexts}
-        disabled={!allowedToRun}
+      <TopicForm
+        destroyOnUnmount={false}
+        form="topicForm"
+        forceUnregisterOnUnmount
+        initialValues={initialValues}
+        onSubmit={props.handleCreateEmptyTopic}
+        title={props.intl.formatMessage(localMessages.pageTitle)}
       />
-    </>
+    </Grid>
   );
 };
 
@@ -76,6 +63,7 @@ CreateTopicContainer.propTypes = {
   // from store
   allowedToRun: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
+  handleCreateEmptyTopic: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -84,6 +72,29 @@ const mapStateToProps = state => ({
   isAdmin: state.user.isAdmin,
 });
 
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  handleCreateEmptyTopic: (values) => {
+    const queryInfo = {
+      name: values.name,
+      description: values.description,
+      start_date: values.start_date,
+      end_date: values.end_date,
+      solr_seed_query: null, // we don't create it here anymore values.solr_seed_query,
+      max_iterations: values.max_iterations,
+      ch_monitor_id: values.ch_monitor_id === undefined ? '' : values.ch_monitor_id,
+      is_logogram: values.is_logogram ? 1 : 0,
+      max_stories: values.max_topic_stories,
+    };
+    dispatch(createTopic(queryInfo))
+      .then((results) => {
+        if (results && results.topics_id) {
+          dispatch(updateFeedback({ classes: 'info-notice', open: true, message: ownProps.intl.formatMessage(localMessages.feedback) }));
+          return dispatch(push(`/topics/${results.topics_id}/summary`));
+        }
+        return dispatch(updateFeedback({ classes: 'error-notice', open: true, message: ownProps.intl.formatMessage(localMessages.failed) }));
+      });
+  },
+});
 const fetchAsyncData = (dispatch, { isAdmin }) => {
   reset(); // reset form
   // non-admin users can only run one topic at a time
@@ -92,11 +103,19 @@ const fetchAsyncData = (dispatch, { isAdmin }) => {
   }
 };
 
+const reduxFormConfig = {
+  form: 'topicForm',
+  // destroyOnUnmount: false, // so the wizard works
+  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+};
+
 export default
 injectIntl(
-  connect(mapStateToProps)(
-    withAsyncData(fetchAsyncData)(
-      CreateTopicContainer
+  reduxForm(reduxFormConfig)(
+    connect(mapStateToProps, mapDispatchToProps)(
+      withAsyncData(fetchAsyncData)(
+        CreateTopicContainer
+      )
     )
   )
 );

@@ -35,7 +35,7 @@ SearchPreview.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   // from parent
-  searchValues: PropTypes.array.isRequired,
+  searchValues: PropTypes.object.isRequired,
   topicId: PropTypes.number.isRequired,
 };
 

@@ -37,7 +37,7 @@ const StoryRedditAttention = ({ total, bySub, helpButton, storyId, intl }) => (
       <FormattedMessage
         {...localMessages.intro}
         values={{
-          total,
+          total: intl.formatNumber(total),
           date: intl.formatDate(new Date()),
         }}
       />
@@ -47,6 +47,7 @@ const StoryRedditAttention = ({ total, bySub, helpButton, storyId, intl }) => (
         title={localMessages.chartTitle}
         data={bySub}
         domId={`story${storyId}subreddits`}
+        height={600}
       />
     )}
   </DataCard>

@@ -246,16 +246,20 @@ def collection_source_story_split_historical_counts(collection_id):
 def collection_source_story_split_historical_counts_csv(collection_id):
     results = _collection_source_story_split_historical_counts(collection_id)
     date_cols = None
-    # TODO verify this
+
+    source_list = []
     for source in results:
         if date_cols is None:
             date_cols = sorted([s['date'] for s in source['splits_over_time']])
         for day in source['splits_over_time']:
             source[day['date']] = day['count']
         del source['splits_over_time']
+        source_list.append(source)
+
     props = ['media_id', 'media_name', 'media_url', 'total_stories', 'splits_over_time'] + date_cols
     filename = "{} - source content count".format(collection_id)
-    return csv.stream_response(results, props, filename)
+
+    return csv.stream_response(source_list, props, filename)
 
 
 @executor.job

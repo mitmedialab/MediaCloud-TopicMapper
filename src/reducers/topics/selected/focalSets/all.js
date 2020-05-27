@@ -5,11 +5,14 @@ import { FETCH_TOPIC_FOCAL_SETS_LIST, TOPIC_FILTER_BY_SNAPSHOT, FETCH_FOCAL_SET_
   CREATE_MEDIA_TYPE_FOCUS_SET }
   from '../../../../actions/topicActions';
 import { createAsyncReducer } from '../../../../lib/reduxHelpers';
+import { isUrlSharingFocalSet } from '../../../../lib/topicVersionUtil';
 
 // Return true if there are focal set changes that require a new snapshot
 function pendingFocalSetDefinitions(definitions, focalSets) {
   // differet total number
-  if (definitions.length !== focalSets.length) {
+  // TODO: remove when we no longer have to specifically check for URLSharing subtopics
+  const focalSetsNoAutoSets = focalSets.filter(f => !isUrlSharingFocalSet(f.name));
+  if (definitions.length !== focalSetsNoAutoSets.length) {
     return true;
   }
   // has match?

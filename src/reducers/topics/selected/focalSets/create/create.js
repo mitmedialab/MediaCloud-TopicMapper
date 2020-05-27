@@ -1,6 +1,4 @@
 import { combineReducers } from 'redux';
-import matchingStories from './matchingStories';
-import matchingStoryCounts from './matchingStoryCounts';
 import retweetCoverage from './retweetCoverage';
 import retweetStoryCounts from './retweetStoryCounts';
 import topCountriesCoverage from './topCountriesCoverage';
@@ -13,8 +11,6 @@ import workflow from './workflow';
 import mediaTypes from './mediaTypes';
 
 const createFocusReducer = combineReducers({
-  matchingStories,
-  matchingStoryCounts,
   retweetCoverage,
   retweetStoryCounts,
   topCountriesCoverage,

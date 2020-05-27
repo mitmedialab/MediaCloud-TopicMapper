@@ -1,6 +1,6 @@
 import { FETCH_ADMIN_TOPIC_LIST } from '../../actions/topicActions';
 import { createAsyncReducer } from '../../lib/reduxHelpers';
-import { addLatestStateToTopicsList } from './personalList';
+import { addUsefulDetailsToTopicsList } from './personalList';
 
 export const topicMessageSaysTooBig = msg => msg && (msg.includes('exceeds topic max') || msg.includes('solr_seed_query returned more than'));
 
@@ -10,7 +10,7 @@ const adminList = createAsyncReducer({
   },
   action: FETCH_ADMIN_TOPIC_LIST,
   handleSuccess: payload => ({
-    topics: addLatestStateToTopicsList(payload)
+    topics: addUsefulDetailsToTopicsList(payload)
       .map((t) => {
         // mark the ones that are "exceeded stories" - these are noise
         const updatedTopic = { ...t };

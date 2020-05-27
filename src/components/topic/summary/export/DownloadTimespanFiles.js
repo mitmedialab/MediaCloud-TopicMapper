@@ -15,9 +15,18 @@ const localMessages = {
   rename_media: { id: 'topic.summary.media.name', defaultMessage: 'All Media' },
   rename_story_links: { id: 'topic.summary.story_links.name', defaultMessage: 'Links between stories' },
   rename_medium_links: { id: 'topic.summary.medium_links.name', defaultMessage: 'Links between media' },
+  rename_topic_posts: { id: 'topic.summary.topic_posts.name', defaultMessage: 'Platform-specific metadata about each post' },
+  rename_post_stories: { id: 'topic.summary.post_stories.name', defaultMessage: 'Lookup to map from post to the story it links to' },
 };
 
-const DownloadTimespanFiles = ({ filters, files }) => {
+// these files are only non-empty if you are in a URL Sharing subtopic right now
+const urlSharingTimespanOnlyFiles = ['topic_posts', 'post_stories'];
+
+/**
+ * When a new verson is run, we generate help CSVs for every timespan automatically and stick them on S3. This widgets
+ * lists those so that it is easy to download them quickly, rather than paging through the results of API calls forever.
+ */
+const DownloadTimespanFiles = ({ filters, files, usingUrlSharingSubtopic }) => {
   if (files.length === 0) {
     return <FormattedHTMLMessage {...localMessages.none} />;
   }
@@ -25,13 +34,17 @@ const DownloadTimespanFiles = ({ filters, files }) => {
     <>
       {filters.q && (<FormattedMessage {...localMessages.unsupported} values={{ q: filters.q }} />)}
       <ul>
-        {files.map((f, idx) => (
-          <li key={idx}>
-            {localMessages[`rename_${f.name}`] ? (<FormattedMessage {...localMessages[`rename_${f.name}`]} />) : f.name }
-            &nbsp; &nbsp;
-            <a target="_new" href={f.url}><FormattedMessage {...messages.download} /></a>
-          </li>
-        ))}
+        {files.map((f, idx) => {
+          // only show certain files if the user is in a URL Sharing subtopic
+          const okToDisplay = !urlSharingTimespanOnlyFiles.includes(f.name) || (usingUrlSharingSubtopic && urlSharingTimespanOnlyFiles.includes(f.name));
+          return (okToDisplay && (
+            <li key={idx}>
+              {localMessages[`rename_${f.name}`] ? (<FormattedMessage {...localMessages[`rename_${f.name}`]} />) : f.name }
+              &nbsp; &nbsp;
+              <a target="_new" href={f.url}><FormattedMessage {...messages.download} /></a>
+            </li>
+          ));
+        })}
       </ul>
     </>
   );
@@ -41,6 +54,7 @@ DownloadTimespanFiles.propTypes = {
   // from parent
   filters: PropTypes.object.isRequired,
   files: PropTypes.array,
+  usingUrlSharingSubtopic: PropTypes.bool,
 };
 
 export default

@@ -9,9 +9,9 @@ from server import app
 import server.util.csv as csv
 import server.util.tags as tag_util
 from server.auth import user_mediacloud_key
-import server.util.pushshift as pushshift
+from server.platforms.reddit_pushshift import RedditPushshiftProvider,  NEWS_SUBREDDITS
 from server.util.request import api_error_handler
-from server.views.explorer import parse_as_sample, only_queries_reddit, parse_query_dates, \
+from server.views.explorer import only_queries_reddit, parse_query_dates, \
     parse_query_with_keywords, file_name_for_download
 import server.views.explorer.apicache as apicache
 
@@ -27,9 +27,10 @@ INCLUDE_MEDIA_METADATA_IN_CSV = False
 def api_explorer_story_sample():
     if only_queries_reddit(request.form):
         start_date, end_date = parse_query_dates(request.form)
-        results = pushshift.reddit_top_submissions(query=request.form['q'],
-                                                   start_date=start_date, end_date=end_date,
-                                                   subreddits=pushshift.NEWS_SUBREDDITS)
+        provider = RedditPushshiftProvider()
+        results = provider.sample(query=request.form['q'],
+                                  start_date=start_date, end_date=end_date,
+                                  subreddits=NEWS_SUBREDDITS)
     else:
         solr_q, solr_fq = parse_query_with_keywords(request.form)
         results = apicache.random_story_list(solr_q, solr_fq, SAMPLE_STORY_COUNT)
@@ -38,48 +39,28 @@ def api_explorer_story_sample():
     return jsonify({"results": results})
 
 
-@app.route('/api/explorer/demo/stories/sample', methods=['GET'])
-@api_error_handler
-def api_explorer_demo_story_sample():
-    search_id = int(request.args['search_id']) if 'search_id' in request.args else None
-    if search_id not in [None, -1]:
-        solr_q, solr_fq = parse_as_sample(search_id, request.args['index'])
-    else:
-        solr_q, solr_fq = parse_query_with_keywords(request.args)
-
-    story_sample_result = apicache.random_story_list(solr_q, solr_fq, SAMPLE_STORY_COUNT)
-    for story in story_sample_result:
-        story["media"] = base_cache.media(story["media_id"])
-    return jsonify({"results": story_sample_result})
-
-
 @app.route('/api/explorer/stories/all-story-urls.csv', methods=['POST'])
 @flask_login.login_required
 def explorer_stories_csv():
     logger.info(flask_login.current_user.name)
     filename = 'all-story-urls'
     data = request.form
-    if 'searchId' in data:
-        solr_q, solr_fq = parse_as_sample(data['searchId'], data['uid'])
-        filename = filename  # don't have this info + current_query['q']
-        # for demo users we only download 100 random stories (ie. not all matching stories)
-        return _stream_story_list_csv(filename, solr_q, solr_fq, 100, MediaCloud.SORT_RANDOM, 1)
+    q = json.loads(data['q'])
+    filename = file_name_for_download(q['label'], filename)
+    # now compute total attention for all results
+    if (len(q['collections']) == 0) and only_queries_reddit(q['sources']):
+        start_date, end_date = parse_query_dates(q)
+        provider = RedditPushshiftProvider()
+        stories = provider.sample(query=q['q'], limit=2000,
+                                  start_date=start_date, end_date=end_date,
+                                  subreddits=NEWS_SUBREDDITS)
+        props = ['stories_id', 'subreddit', 'publish_date', 'score', 'last_updated', 'title', 'url', 'full_link',
+                 'author']
+        return csv.stream_response(stories, props, filename)
     else:
-        q = json.loads(data['q'])
-        filename = file_name_for_download(q['label'], filename)
-        # now compute total attention for all results
-        if (len(q['collections']) == 0) and only_queries_reddit(q['sources']):
-            start_date, end_date = parse_query_dates(q)
-            stories = pushshift.reddit_top_submissions(query=q['q'], limit=2000,
-                                                       start_date=start_date, end_date=end_date,
-                                                       subreddits=pushshift.NEWS_SUBREDDITS)
-            props = ['stories_id', 'subreddit', 'publish_date', 'score', 'last_updated', 'title', 'url', 'full_link',
-                     'author']
-            return csv.stream_response(stories, props, filename)
-        else:
-            solr_q, solr_fq = parse_query_with_keywords(q)
-            # now page through all the stories and download them
-            return _stream_story_list_csv(filename, solr_q, solr_fq)
+        solr_q, solr_fq = parse_query_with_keywords(q)
+        # now page through all the stories and download them
+        return _stream_story_list_csv(filename, solr_q, solr_fq)
 
 
 def _stream_story_list_csv(filename, q, fq, stories_per_page=500, sort=MediaCloud.SORT_PROCESSED_STORIES_ID,

@@ -27,7 +27,7 @@ BackLinkingControlBar.propTypes = {
   // from context
   intl: PropTypes.object.isRequired,
   // from parent
-  linkTo: PropTypes.string.isRequired,
+  linkTo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   message: PropTypes.object.isRequired,
   children: PropTypes.node,
 };

@@ -26,14 +26,15 @@ class QueryWordSpaceResultsContainer extends React.Component {
   }
 
   render() {
-    const { results, queries, selectedTabIndex, tabSelector } = this.props;
-    const domId = `${WORD_SPACE_DOM_ID}-${selectedTabIndex}`;
-    if (results.length > 0) {
+    const { results, selectedQuery, tabSelector } = this.props;
+    const domId = `${WORD_SPACE_DOM_ID}-${selectedQuery.uid}`;
+    const selectedResults = results[selectedQuery.uid];
+    if (selectedResults) {
       return (
         <div>
           {tabSelector}
           <WordSpace
-            words={results[selectedTabIndex].results.slice(0, 50)}
+            words={selectedResults.results.slice(0, 50)}
             domId={domId}
             xProperty="google_w2v_x"
             yProperty="google_w2v_y"
@@ -43,9 +44,9 @@ class QueryWordSpaceResultsContainer extends React.Component {
           <div className="actions">
             <ActionMenu actionTextMsg={messages.downloadOptions}>
               <SVGAndCSVMenu
-                downloadCsv={() => this.handleDownloadCsv(queries[selectedTabIndex])}
-                downloadSvg={() => downloadExplorerSvg(queries[selectedTabIndex].label, 'sampled-word-space', domId)}
-                label={queries[selectedTabIndex].label}
+                downloadCsv={() => this.handleDownloadCsv(selectedQuery)}
+                downloadSvg={() => downloadExplorerSvg(selectedQuery.label, 'sampled-word-space', domId)}
+                label={selectedQuery.label}
               />
             </ActionMenu>
           </div>
@@ -60,17 +61,17 @@ QueryWordSpaceResultsContainer.propTypes = {
   // from parent
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
+  selectedQuery: PropTypes.object.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   onQueryModificationRequested: PropTypes.func.isRequired,
+  tabSelector: PropTypes.object.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
-  selectedTabIndex: PropTypes.number.isRequired,
-  tabSelector: PropTypes.object.isRequired,
   // from dispatch
   handleWordCloudClick: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string.isRequired,
-  results: PropTypes.array.isRequired,
+  results: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({

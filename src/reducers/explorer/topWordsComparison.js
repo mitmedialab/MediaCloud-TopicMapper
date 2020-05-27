@@ -6,7 +6,6 @@ const LEFT = 0;
 
 const topWordsComparison = createAsyncReducer({
   initialState: ({
-    results: [], // list of words
     left: null, // ui component selection
     right: null,
   }),

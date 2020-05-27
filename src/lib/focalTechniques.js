@@ -1,7 +1,6 @@
 
 // Implemented
 export const FOCAL_TECHNIQUE_BOOLEAN_QUERY = 'Boolean Query';
-export const FOCAL_TECHNIQUE_MEDIA_SEARCH = 'Media Sources Query';
 export const FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP = 'Retweet Partisanship';
 export const FOCAL_TECHNIQUE_TOP_COUNTRIES = 'Top Countries';
 export const FOCAL_TECHNIQUE_NYT_THEME = 'NYT Theme';

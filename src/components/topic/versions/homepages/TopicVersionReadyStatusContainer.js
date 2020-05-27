@@ -6,7 +6,6 @@ import TopicFilterBar from '../../controlbar/TopicFilterBar';
 import withAsyncData from '../../../common/hocs/AsyncDataContainer';
 import { ExploreButton } from '../../../common/IconButton';
 import { urlToExplorerQuery } from '../../../../lib/urlUtil';
-import NeedsNewVersionWarning from '../NeedsNewVersionWarning';
 import NotUsingLatestWarning from '../NotUsingLatestWarning';
 
 const localMessages = {
@@ -52,7 +51,6 @@ class TopicVersionReadyStatusContainer extends React.Component {
       <div>
         <div className="sub">
           <TopicFilterBar topicId={topicId} setSideBarContent={setSideBarContent} location={location} />
-          <NeedsNewVersionWarning />
           <NotUsingLatestWarning />
           {children}
         </div>

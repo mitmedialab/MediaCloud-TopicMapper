@@ -9,6 +9,8 @@ const DEFAULT_MAX_BUBBLE_RADIUS = 70;
 const DEFAULT_HEIGHT = 200;
 const PADDING_BETWEEN_BUBBLES = 10;
 
+const DEFAULT_DOM_ID = 'bubble-chart-wrapper';
+
 const localMessages = {
   noData: { id: 'chart.bubble.noData', defaultMessage: 'Sorry, but we don\'t have any data to draw this chart.' },
 };
@@ -95,7 +97,7 @@ function drawViz(wrapperElement, {
     const node = d3.select(wrapperElement).html(''); // important to empty this out
     const div = node.append('div').attr('id', 'bubble-chart-wrapper');
     const svg = div.append('svg:svg');
-    svg.attr('id', domId)
+    svg.attr('id', domId || DEFAULT_DOM_ID)
       .attr('width', options.width)
       .attr('height', options.height)
       .attr('class', 'bubble-chart');
@@ -233,7 +235,7 @@ BubbleRowChart.propTypes = {
   */
   onBubbleClick: PropTypes.func,
   data: PropTypes.array.isRequired,
-  domId: PropTypes.string.isRequired, // to make download work
+  domId: PropTypes.string, // to make download work
   width: PropTypes.number,
   height: PropTypes.number,
   placement: PropTypes.string,

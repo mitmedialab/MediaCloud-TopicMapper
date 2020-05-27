@@ -13,12 +13,12 @@ export function mergeFilters(currentProps, specificQueryFragment) {
   if (currentProps.filters) {
     filterObj = {
       ...currentProps.filters,
-      sample_size: currentProps.sample_size,
+      sampleSize: currentProps.sampleSize,
       q: combineQueryParams(currentProps.filters.q, specificQueryFragment),
     };
   } else {
     filterObj = {
-      sample_size: currentProps.sample_size,
+      sampleSize: currentProps.sampleSize,
       q: specificQueryFragment,
     };
   }

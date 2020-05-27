@@ -2,6 +2,7 @@
 
 .create-topic {
   min-height: 500px;
+  padding-bottom: 30px;
 
   hr {
     margin-top: 15px;
@@ -27,6 +28,16 @@
   label {
     margin: 10px 0px;
     display: block;
+  }
+
+  .topic-mode-option {
+    opacity: 0.6;
+    &.selected {
+      opacity: 1.0;
+      background-color: $topics-darker;
+      color: white;
+    }
+    cursor: pointer;
   }
 }
 

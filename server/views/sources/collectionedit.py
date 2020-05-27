@@ -6,7 +6,6 @@ from flask import request, jsonify, render_template
 from mediacloud.tags import MediaTag, TAG_ACTION_ADD, TAG_ACTION_REMOVE
 from werkzeug.utils import secure_filename
 import csv as pycsv
-from deco import concurrent, synchronized
 
 from server import app, config, TOOL_API_KEY, executor
 from server.auth import user_admin_mediacloud_client, user_mediacloud_key, user_name
@@ -178,8 +177,8 @@ def _parse_sources_from_csv_upload(filepath):
                 else:
                     sources_to_create.append(newline_no_empties)
             except Exception as e:
-                    logger.error("Couldn't process a CSV row: " + str(e))
-                    raise Exception("Couldn't process a CSV row: " + str(e))
+                logger.error("Couldn't process a CSV row: " + str(e))
+                raise Exception("Couldn't process a CSV row: " + str(e))
 
         return sources_to_update, sources_to_create
 

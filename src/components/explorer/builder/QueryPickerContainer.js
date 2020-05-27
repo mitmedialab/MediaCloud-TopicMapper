@@ -17,9 +17,9 @@ import { selectQuery, updateQuery, addCustomQuery, loadUserSearches, saveUserSea
 import { AddQueryButton } from '../../common/IconButton';
 import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { autoMagicQueryLabel, KEYWORD, DATES, MEDIA,
-  DEFAULT_COLLECTION_OBJECT_ARRAY, replaceCurlyQuotes, uniqueQueryId, LEFT, prepSearches, getQFromCodeMirror } from '../../../lib/explorerUtil';
+  DEFAULT_COLLECTION_OBJECT_ARRAY, uniqueQueryId, LEFT, prepSearches, getQFromCodeMirror } from '../../../lib/explorerUtil';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
-import { queryAsString } from '../../../lib/stringUtil';
+import { queryAsString, replaceCurlyQuotes } from '../../../lib/stringUtil';
 
 const localMessages = {
   mainTitle: { id: 'explorer.querypicker.mainTitle', defaultMessage: 'Query List' },

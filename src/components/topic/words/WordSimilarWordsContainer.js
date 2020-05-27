@@ -20,7 +20,7 @@ WordSimilarWordsContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.topics.selected.word.stories.fetchStatus,
+  fetchStatus: state.topics.selected.word.similarWords.fetchStatus,
   similarWords: state.topics.selected.word.similarWords.words,
 });
 

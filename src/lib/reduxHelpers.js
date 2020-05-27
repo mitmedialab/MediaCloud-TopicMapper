@@ -101,7 +101,7 @@ export function createReducer(handlers) {
  *  initialState: {
  *    list: [],
  *  },
- *  action: FETCH_TOPIC_TOP_WORDS,
+ *  action: FETCH_STUFF,
  * });
  * ```
  */
@@ -221,7 +221,7 @@ export function errorReportingMiddleware({ dispatch }) {
 
 /**
  * For any anyc reducers that query N of the same action in parallel, and want to hold the results
- * in an array of results.  This REQUIRES you to have a "index" parameter in the action, so it knows
+ * in an array of results.  This REQUIRES you to have a "uid" parameter in the action, so it knows
  * where to put the payload in the results array it holds.
  */
 export function createIndexedAsyncReducer(handlers) {
@@ -231,16 +231,16 @@ export function createIndexedAsyncReducer(handlers) {
     desiredInitialState = handlers.initialState;
   }
   const initialState = {
-    results: [],
+    results: {},
     fetchStatus: fetchConstants.FETCH_INVALID,
     fetchStatuses: {}, // array of fetchStatus
-    fetchUids: {}, // array of unique ids for each fetch in the list
     ...desiredInitialState,
   };
   // set up any async reducer handlers the user passed in
   const reducers = { // set up some smart defaults for normal behaviour
     handleFetch: (payload, state, args) => {
-      const { uid } = args[0];
+      const firstArgWithUid = args.find(item => item.uid);
+      const uid = firstArgWithUid ? firstArgWithUid.uid : undefined;
       if (uid === undefined) {
         const error = { error: 'You need to pass the indexedAsyncReducer an uid to use!' };
         throw error;
@@ -250,40 +250,42 @@ export function createIndexedAsyncReducer(handlers) {
       return { ...state,
         fetchStatus: fetchConstants.combineFetchStatuses(updatedFetchStatuses),
         fetchStatuses: updatedFetchStatuses,
-        fetchUids: state.fetchUids };
+        // NOT a good idea to set `results: null|[]|{}` here, because in case of a failure at least the last results will be there
+      };
     },
     handleSuccess: (payload, state, args) => {
-      const { uid } = args[0];
-      // const { uid } = meta;
+      const firstArgWithUid = args.find(item => item.uid);
+      const uid = firstArgWithUid ? firstArgWithUid.uid : undefined;
+      // update the appropriate fetchStatus
       const updatedFetchStatuses = { ...state.fetchStatuses };
       updatedFetchStatuses[uid] = fetchConstants.FETCH_SUCCEEDED;
       // if results already exist (by uid), we need to replace them, otherwise add them as new results
-      const updatedResults = Array.isArray(state.results) ? [...state.results] : [];
+      const updatedResults = { ...state.results };
       let resultsToSave;
       if ('handleSuccess' in handlers) {
         const results = handlers.handleSuccess(payload, state, args, uid);
-        resultsToSave = { uid, results };
+        resultsToSave = results;
       } else {
-        resultsToSave = { uid, ...payload };
+        resultsToSave = payload;
       }
-      const itemIndex = updatedResults.findIndex(item => item.uid === uid); // does this UID exist?
-      if (itemIndex === -1) {
-        updatedResults.push(resultsToSave);
-      } else {
-        updatedResults[itemIndex] = resultsToSave;
-      }
-      return { ...state,
+      updatedResults[uid] = resultsToSave;
+      return {
+        ...state,
         fetchStatus: fetchConstants.combineFetchStatuses(updatedFetchStatuses),
         fetchStatuses: updatedFetchStatuses,
-        results: updatedResults };
+        results: updatedResults,
+      };
     },
     handleFailure: (payload, state, args) => {
-      const { uid } = args[0];
+      const firstArgWithUid = args.find(item => item.uid);
+      const uid = firstArgWithUid ? firstArgWithUid.uid : undefined;
+      // update the appropriate fetch status
       const updatedFetchStatuses = { ...state.fetchStatuses };
       updatedFetchStatuses[uid] = fetchConstants.FETCH_FAILED;
       return { ...state,
         fetchStatus: fetchConstants.combineFetchStatuses(updatedFetchStatuses),
-        fetchStatuses: updatedFetchStatuses };
+        fetchStatuses: updatedFetchStatuses,
+      };
     },
   };
   // set up a lookup table for any other things the user passed in

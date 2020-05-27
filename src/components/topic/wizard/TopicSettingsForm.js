@@ -8,7 +8,6 @@ import withIntlForm from '../../common/hocs/IntlForm';
 const localMessages = {
   name: { id: 'topic.form.detail.name', defaultMessage: 'Topic Name (what is this about?)' },
   nameError: { id: 'topic.form.detail.name.error', defaultMessage: 'Your topic needs a short dsecriptive name.' },
-  advancedSettings: { id: 'topic.form.detail.advancedSettings', defaultMessage: 'Advanced Settings' },
   description: { id: 'topic.form.detail.description', defaultMessage: 'Description (why are you making this?)' },
   descriptionError: { id: 'topic.form.detail.desciption.error', defaultMessage: 'Your topic need a description.' },
   maxStories: { id: 'topic.form.detail.maxStories', defaultMessage: 'Maximum # of Stories' },
@@ -45,16 +44,6 @@ const TopicSettingsForm = (props) => {
             label={formatMessage(localMessages.description)}
             rows={4}
             multiline
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col lg={8}>
-          <Field
-            name="is_public"
-            component={renderCheckbox}
-            fullWidth
-            label={formatMessage(localMessages.public)}
           />
         </Col>
       </Row>

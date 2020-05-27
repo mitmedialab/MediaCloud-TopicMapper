@@ -9,7 +9,6 @@ import { WarningNotice } from '../../common/Notice';
 import DataCard from '../../common/DataCard';
 import LoginForm from '../../user/LoginForm';
 import SearchForm from './SearchForm';
-import SampleSearchContainer from './SampleSearchContainer';
 import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { DEFAULT_COLLECTION, autoMagicQueryLabel, serializeQueriesForUrl } from '../../../lib/explorerUtil';
 import { emptyString } from '../../../lib/formValidators';
@@ -17,6 +16,8 @@ import ExplorerMarketingFeatureList from './ExplorerMarketingFeatureList';
 import SystemStatsContainer from '../../common/statbar/SystemStatsContainer';
 import messages from '../../../resources/messages';
 import Masthead from '../../common/header/Masthead';
+import { PERMISSION_LOGGED_IN } from '../../../lib/auth';
+import Permissioned from '../../common/Permissioned';
 
 const localMessages = {
   title: { id: 'explorer.intro.title', defaultMessage: 'Explorer' },
@@ -33,16 +34,17 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount }) => (
       descriptionMsg={messages.explorerToolDescription}
       link="https://mediacloud.org/tools/"
     />
-    <div className="search-section">
-      <Grid>
-        <Row>
-          <Col lg={12}>
-            <SearchForm onSearch={val => onKeywordSearch(val, isLoggedIn)} storyCount={storyCount} />
-          </Col>
-        </Row>
-      </Grid>
-    </div>
-    <SampleSearchContainer />
+    <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
+      <div className="search-section">
+        <Grid>
+          <Row>
+            <Col lg={12}>
+              <SearchForm onSearch={val => onKeywordSearch(val, isLoggedIn)} storyCount={storyCount} />
+            </Col>
+          </Row>
+        </Grid>
+      </div>
+    </Permissioned>
     { !isLoggedIn && (
       <Grid>
         <Row>

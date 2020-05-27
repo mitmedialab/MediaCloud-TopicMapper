@@ -51,26 +51,22 @@ class QueryAttentionOverTimeDrillDownContainer extends React.Component {
       const rgbColor = dataPoint.color ? hexToRGBArray(dataPoint.color) : '#000000';
       content = (
         <div className="drill-down" ref={this.rootRef}>
-          <CloseableDataCard
-            title={dateTitle}
-            content={(
-              <>
-                { sentences && (
-                  <Col lg={6}>
-                    <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.sampleSentences} /></h3>
-                    <StorySentencePreview sentences={sentences.slice(0, 8)} />
-                  </Col>
-                )}
-                { words && (
-                  <Col lg={6}>
-                    <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.topWords} /></h3>
-                    <OrderedWordCloud words={words} textColor={`rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`} />
-                  </Col>
-                )}
-              </>
-            )}
-            onClose={handleClose}
-          />
+          <CloseableDataCard title={dateTitle} onClose={handleClose}>
+            <>
+              { sentences && (
+                <Col lg={6}>
+                  <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.sampleSentences} /></h3>
+                  <StorySentencePreview sentences={sentences.slice(0, 8)} />
+                </Col>
+              )}
+              { words && (
+                <Col lg={6}>
+                  <h3 style={{ rgbColor }}><FormattedMessage {...localMessages.topWords} /></h3>
+                  <OrderedWordCloud words={words} textColor={`rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`} />
+                </Col>
+              )}
+            </>
+          </CloseableDataCard>
         </div>
       );
     }

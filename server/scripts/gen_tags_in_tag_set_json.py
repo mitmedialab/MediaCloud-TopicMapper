@@ -27,6 +27,7 @@ def write_tags_in_set_to_json(tag_sets_id_list, only_public_tags=True, filepath=
         logger.info("    wrote {} collections to {}".format(len(tags_list['tags']), filename))
     logger.info("Done")
 
+
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         logger.error("You need to pass in a tag set id (tag_sets_id)!")

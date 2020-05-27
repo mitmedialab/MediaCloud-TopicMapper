@@ -42,7 +42,7 @@ class QuerySampleStoriesResultsContainer extends React.Component {
   }
 
   render() {
-    const { results, queries, selectedTabIndex, tabSelector, internalItemSelected } = this.props;
+    const { results, selectedQuery, tabSelector, internalItemSelected } = this.props;
     const showMoreInfoColHdr = <th />;
     const showMoreInfoCol = story => (
       <td>
@@ -52,14 +52,14 @@ class QuerySampleStoriesResultsContainer extends React.Component {
         />
       </td>
     );
-    if (results && results.length > 0) {
-      const safeResults = results[selectedTabIndex].results ? results[selectedTabIndex].results.slice(0, 10) : [];
+    const selectedResults = results[selectedQuery.uid];
+    if (selectedResults) {
       return (
         <>
           {tabSelector}
           <StoryTable
             className="story-table"
-            stories={safeResults}
+            stories={selectedResults.results.slice(0, 10)}
             onMoreInfo={story => this.onStorySelection(story)}
             maxTitleLength={90}
             selectedStory={internalItemSelected}
@@ -70,10 +70,10 @@ class QuerySampleStoriesResultsContainer extends React.Component {
             <ActionMenu actionTextMsg={messages.downloadOptions}>
               <MenuItem
                 className="action-icon-menu-item"
-                onClick={() => this.downloadCsv(queries[selectedTabIndex])}
+                onClick={() => this.downloadCsv(selectedQuery)}
               >
                 <ListItemText>
-                  <FormattedMessage {...localMessages.downloadCsv} values={{ name: queries[selectedTabIndex].label }} />
+                  <FormattedMessage {...localMessages.downloadCsv} values={{ name: selectedQuery.label }} />
                 </ListItemText>
                 <ListItemIcon>
                   <DownloadButton />
@@ -89,23 +89,23 @@ class QuerySampleStoriesResultsContainer extends React.Component {
 }
 
 QuerySampleStoriesResultsContainer.propTypes = {
-  lastSearchTime: PropTypes.number.isRequired,
-  queries: PropTypes.array.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
   // from hocs
   intl: PropTypes.object.isRequired,
   onShowLoginDialog: PropTypes.func.isRequired,
-  // from dispatch
-  results: PropTypes.array.isRequired,
-  // from mergeProps
-  shouldUpdate: PropTypes.func.isRequired,
-  // from state
-  fetchStatus: PropTypes.string.isRequired,
-  handleStorySelection: PropTypes.func.isRequired,
-  selectedTabIndex: PropTypes.number.isRequired,
+  // from parent
   selectedQuery: PropTypes.object.isRequired,
   tabSelector: PropTypes.object.isRequired,
+  queries: PropTypes.array.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  // from state
+  lastSearchTime: PropTypes.number.isRequired,
+  fetchStatus: PropTypes.string.isRequired,
+  results: PropTypes.object.isRequired,
   internalItemSelected: PropTypes.number,
+  // from dispatch
+  handleStorySelection: PropTypes.func.isRequired,
+  // from mergeProps
+  shouldUpdate: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

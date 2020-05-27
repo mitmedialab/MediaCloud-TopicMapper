@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ActionMenu from '../../common/ActionMenu';
-import { fetchTopicSplitStoryCounts, fetchTopicFocalSetSplitStoryCounts } from '../../../actions/topicActions';
+import { fetchTopicProviderCountOverTime, fetchTopicFocalSetSplitStoryCounts } from '../../../actions/topicActions';
 import withFilteredAsyncData from '../FilteredAsyncDataContainer';
 import withAttentionAggregation from '../../common/hocs/AttentionAggregation';
 import DataCard from '../../common/DataCard';
@@ -178,15 +178,15 @@ FociAttentionComparisonContainer.propTypes = {
   // from state
   fetchStatus: PropTypes.string.isRequired,
   foci: PropTypes.array.isRequired,
-  overallTotal: PropTypes.number.isRequired,
-  overallCounts: PropTypes.array.isRequired,
+  overallTotal: PropTypes.number,
+  overallCounts: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
   fetchStatus: state.topics.selected.attention.fetchStatus,
   foci: state.topics.selected.attention.foci,
-  overallTotal: state.topics.selected.summary.splitStoryCount.total,
-  overallCounts: state.topics.selected.summary.splitStoryCount.counts,
+  overallTotal: state.topics.selected.provider.countOverTime.results.foci ? state.topics.selected.provider.countOverTime.results.foci.total : null,
+  overallCounts: state.topics.selected.provider.countOverTime.results.foci ? state.topics.selected.provider.countOverTime.results.foci.counts : [],
 });
 
 const fetchAsyncData = (dispatch, props) => {
@@ -195,7 +195,7 @@ const fetchAsyncData = (dispatch, props) => {
   if (topicId !== null) {
     if ((focalSetId !== null) && (focalSetId !== undefined)) {
       // fetch the total counts, then counts for each foci
-      dispatch(fetchTopicSplitStoryCounts(topicId, filters))
+      dispatch(fetchTopicProviderCountOverTime(topicId, { ...filters, uid: 'foci' }))
         .then(() => dispatch(fetchTopicFocalSetSplitStoryCounts(topicId, focalSetId, filters)));
     }
   }

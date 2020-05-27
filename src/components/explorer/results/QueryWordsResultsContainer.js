@@ -33,21 +33,21 @@ class QueryWordsResultsContainer extends React.Component {
   }
 
   render() {
-    const { results, queries, tabSelector, selectedTabIndex, internalItemSelected, handleViewSampleSizeClick } = this.props;
-    const selectedQuery = queries[selectedTabIndex];
-    if (results && results.length > 0) {
+    const { results, selectedQuery, tabSelector, internalItemSelected, handleViewSampleSizeClick } = this.props;
+    const selectedResults = results[selectedQuery.uid];
+    if (selectedResults) {
       // save sample size to props somewhere
       return (
         <EditableWordCloudDataCard
           onViewSampleSizeClick={handleViewSampleSizeClick}
-          initSampleSize={results[selectedTabIndex].sample_size}
+          initSampleSize={selectedResults.sample_size}
           subHeaderContent={tabSelector}
-          words={results[selectedTabIndex].results}
+          words={selectedResults.results}
           onViewModeClick={this.handleWordClick}
           border={false}
           domId={WORD_CLOUD_DOM_ID}
           width={585}
-          onDownload={ngramSize => this.handleDownload(selectedQuery, ngramSize, results[selectedTabIndex].sample_size)}
+          onDownload={ngramSize => this.handleDownload(selectedQuery, ngramSize, selectedResults.sample_size)}
           svgDownloadPrefix={`${slugifiedQueryLabel(selectedQuery.label)}-ngram-1`}
           textColor={selectedQuery.color}
           actionsAsLinksUnderneath
@@ -62,24 +62,23 @@ class QueryWordsResultsContainer extends React.Component {
 }
 
 QueryWordsResultsContainer.propTypes = {
+  // from hocs
+  intl: PropTypes.object.isRequired,
+  onShowLoginDialog: PropTypes.func.isRequired,
   // from parent
   lastSearchTime: PropTypes.number.isRequired,
   queries: PropTypes.array.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
-  // from hocs
-  intl: PropTypes.object.isRequired,
-  selectedTabIndex: PropTypes.number.isRequired,
   selectedQuery: PropTypes.object.isRequired,
   tabSelector: PropTypes.object.isRequired,
-  onShowLoginDialog: PropTypes.func.isRequired,
+  // from state
+  fetchStatus: PropTypes.string.isRequired,
+  results: PropTypes.object.isRequired,
+  internalItemSelected: PropTypes.object,
+  sampleSize: PropTypes.number.isRequired,
   // from dispatch
   handleSelectedWord: PropTypes.func.isRequired,
   handleViewSampleSizeClick: PropTypes.func.isRequired,
-  // from state
-  fetchStatus: PropTypes.string.isRequired,
-  results: PropTypes.array.isRequired,
-  internalItemSelected: PropTypes.object,
-  sampleSize: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({

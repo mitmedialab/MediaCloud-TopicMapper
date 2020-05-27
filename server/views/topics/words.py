@@ -3,15 +3,10 @@ from flask import request, jsonify
 import flask_login
 
 from server import app, TOOL_API_KEY, executor
-from server.views import WORD_COUNT_DOWNLOAD_NUM_WORDS, WORD_COUNT_SAMPLE_SIZE, WORD_COUNT_DOWNLOAD_SAMPLE_SIZE, \
-    WORD_COUNT_UI_NUM_WORDS
 import server.util.csv as csv
 from server.util.request import api_error_handler, arguments_required, filters_from_args, json_error_response
-from server.auth import user_mediacloud_key, is_user_logged_in, user_mediacloud_client
-from server.views.topics.attention import stream_topic_split_story_counts_csv
-from server.views.topics.stories import stream_story_list_csv
+from server.auth import user_mediacloud_key
 import server.views.topics.apicache as apicache
-from server.views.topics import access_public_topic
 
 logger = logging.getLogger(__name__)
 
@@ -63,113 +58,6 @@ def topic_word(topics_id, word):
     return jsonify(response)
 
 
-def _find_overall_timespan(topics_id, snapshots_id):
-    selected_snapshot_timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                                      snapshots_id=snapshots_id)
-    for timespan in selected_snapshot_timespans:
-        if timespan['period'] == 'overall':
-            return timespan
-    raise RuntimeError('Missing overall timespan in snapshot {} (topic {})!'.format(snapshots_id, topics_id))
-
-
-@app.route('/api/topics/<topics_id>/words', methods=['GET'])
-@api_error_handler
-def topic_words(topics_id):
-    sample_size = request.args['sample_size'] if 'sample_size' in request.args else WORD_COUNT_SAMPLE_SIZE
-
-    if access_public_topic(topics_id):
-        results = apicache.topic_word_counts(TOOL_API_KEY, topics_id, sample_size=sample_size,
-                                             snapshots_id=None, timespans_id=None, foci_id=None, q=None)
-    elif is_user_logged_in():
-        # grab the top words, respecting all the filters
-        results = apicache.topic_word_counts(user_mediacloud_key(), topics_id, sample_size=sample_size)
-    else:
-        return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
-
-    totals = []  # important so that these get reset on the client when they aren't requested
-    logger.debug(request.args)
-    if (is_user_logged_in()) and ('withTotals' in request.args) and (request.args['withTotals'] == "true"):
-        # return along with the results for the overall timespan, to facilitate comparison
-        snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-        overall_timespan = _find_overall_timespan(topics_id, snapshots_id)
-        totals = apicache.topic_word_counts(user_mediacloud_key(), topics_id, sample_size=sample_size,
-                                            timespans_id=overall_timespan['timespans_id'], foci_id=None, q=None)
-
-    response = {
-        'list': results[:WORD_COUNT_UI_NUM_WORDS],
-        'totals': totals[:WORD_COUNT_UI_NUM_WORDS],
-        'sample_size': str(sample_size)
-    }
-    return jsonify(response)
-
-
-@app.route('/api/topics/<topics_id>/words.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_words_csv(topics_id):
-    query = apicache.add_to_user_query(None)
-    sample_size = request.args['sample_size'] if 'sample_size' in request.args else WORD_COUNT_DOWNLOAD_SAMPLE_SIZE
-    ngram_size = request.args['ngram_size'] if 'ngram_size' in request.args else 1  # default to word count
-    word_counts = apicache.topic_ngram_counts(user_mediacloud_key(), topics_id, ngram_size=ngram_size, q=query,
-                                              num_words=WORD_COUNT_DOWNLOAD_NUM_WORDS, sample_size=sample_size)
-    return csv.stream_response(word_counts, apicache.WORD_COUNT_DOWNLOAD_COLUMNS,
-                               'topic-{}-sampled-ngrams-{}-word'.format(topics_id, ngram_size))
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/split-story/count', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_split_story_counts(topics_id, word):
-    return jsonify(apicache.topic_split_story_counts(user_mediacloud_key(), topics_id, q='\"{}\"'.format(word)))
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/split-story/count.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_split_story_counts_csv(topics_id, word):
-    return stream_topic_split_story_counts_csv(user_mediacloud_key(), 'word-'+word+'-split-story-counts',
-                                               topics_id, q='\"{}\"'.format(word))
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/stories', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_stories(topics_id, word):
-    response = apicache.topic_story_list(user_mediacloud_key(), topics_id, q='\"{}\"'.format(word))
-    return jsonify(response)
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/stories.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_stories_csv(topics_id, word):
-    user_mc = user_mediacloud_client()
-    topic = user_mc.topic(topics_id)
-    return stream_story_list_csv(user_mediacloud_key(), 'word-'+word+'-stories', topic, q='\"{}\"'.format(word))
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/words', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_associated_words(topics_id, word):
-    query = apicache.add_to_user_query('\"{}\"'.format(word))
-    response = apicache.topic_word_counts(user_mediacloud_key(), topics_id, q=query)[:100]
-    return jsonify(response)
-
-
-@app.route('/api/topics/<topics_id>/words/<word>/words.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_associated_words_csv(topics_id, word):
-    query = apicache.add_to_user_query('\"{}\"'.format(word))
-    ngram_size = request.args['ngram_size'] if 'ngram_size' in request.args else 1  # default to word count
-    word_counts = apicache.topic_ngram_counts(user_mediacloud_key(), topics_id, ngram_size=ngram_size, q=query,
-                                              num_words=WORD_COUNT_DOWNLOAD_NUM_WORDS,
-                                              sample_size=WORD_COUNT_DOWNLOAD_SAMPLE_SIZE)
-    return csv.stream_response(word_counts, apicache.WORD_COUNT_DOWNLOAD_COLUMNS,
-                               'topic-{}-{}-sampled-ngrams-{}-word'.format(topics_id, word, ngram_size))
-
-
 @app.route('/api/topics/<topics_id>/words/<word>/sample-usage', methods=['GET'])
 @flask_login.login_required
 @api_error_handler
@@ -207,17 +95,6 @@ def _sentence_fragment_around(keyword, sentence):
         return " ".join(fragment_words)
     except ValueError:
         return None
-
-
-# Can't do this yet because topics/media/list doesn't support q as a parameter :-(
-'''
-@app.route('/api/topics/<topics_id>/words/<word>/media', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def topic_word_media(topics_id, word):
-    response = topic_media_list(user_mediacloud_key(), topics_id, q=word)
-    return jsonify(response)
-'''
 
 
 @app.route('/api/topics/<topics_id>/words/<word>/similar', methods=['GET'])

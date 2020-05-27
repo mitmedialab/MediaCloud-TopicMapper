@@ -26,17 +26,17 @@ def filters_from_args(request_args):
     """
     Helper to centralize reading filters from url params
     """
-    timespans_id = request_args['timespanId'] if 'timespanId' in request_args else None
-    snapshots_id = request_args['snapshotId'] if 'snapshotId' in request_args else None
-    foci_id = request_args['focusId'] if 'focusId' in request_args else None
+    timespans_id = safely_read_arg('timespanId')
+    snapshots_id = safely_read_arg('snapshotId')
+    foci_id = safely_read_arg('focusId')
     q = request_args['q'] if ('q' in request_args) and (request_args['q'] != 'undefined') else None
     return snapshots_id, timespans_id, foci_id, q
 
 
 def arguments_required(*expected_args):
-    '''
+    """
     Handy decorator for ensuring that request params exist
-    '''
+    """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -52,9 +52,9 @@ def arguments_required(*expected_args):
 
 
 def form_fields_required(*expected_form_fields):
-    '''
+    """
     Handy decorator for ensuring that the form has the fields you need
-    '''
+    """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -70,11 +70,11 @@ def form_fields_required(*expected_form_fields):
 
 
 def api_error_handler(func):
-    '''
+    """
     Handy decorator that catches any exception from the Media Cloud API and
     sends it back to the browser as a nicely formatted JSON error.  The idea is
     that the client code can catch these at a low level and display error messages.
-    '''
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -83,3 +83,7 @@ def api_error_handler(func):
             logger.exception(e)
             return json_error_response(e.message, e.status_code)
     return wrapper
+
+
+def safely_read_arg(arg_name, default=None):
+    return request.args[arg_name] if arg_name in request.args else default

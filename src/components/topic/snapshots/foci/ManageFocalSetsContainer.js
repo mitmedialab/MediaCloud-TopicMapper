@@ -13,8 +13,7 @@ import { updateFeedback } from '../../../../actions/appActions';
 import FocalSetDefinitionDetails from './FocalSetDefinitionDetails';
 import BackLinkingControlBar from '../../BackLinkingControlBar';
 import FocusIcon from '../../../common/icons/FocusIcon';
-import NewVersionFociComparisonContainer from './NewVersionFociComparisonContainer';
-import NeedsNewVersionWarning from '../../versions/NeedsNewVersionWarning';
+import VersionComparisonContainer from '../../versions/VersionComparisonContainer';
 import LinkWithFilters from '../../LinkWithFilters';
 import { filteredLinkTo } from '../../../util/location';
 
@@ -58,7 +57,7 @@ class ManageFocalSetsContainer extends React.Component {
   }
 
   render() {
-    const { topicId, focalSetDefinitions, filters } = this.props;
+    const { topicId, focalSetDefinitions, filters, newDefinitions } = this.props;
     const { formatMessage } = this.props.intl;
     return (
       <>
@@ -66,7 +65,6 @@ class ManageFocalSetsContainer extends React.Component {
           message={localMessages.backToTopic}
           linkTo={filteredLinkTo(`/topics/${topicId}/summary`, filters)}
         />
-        <NeedsNewVersionWarning />
         <div className="manage-focal-sets">
           <Grid>
             <Row>
@@ -81,7 +79,7 @@ class ManageFocalSetsContainer extends React.Component {
                 </p>
               </Col>
             </Row>
-            <NewVersionFociComparisonContainer />
+            {newDefinitions && <VersionComparisonContainer />}
             {(focalSetDefinitions.length > 0) && (
               <Row>
                 <Col lg={10} xs={12}>
@@ -134,6 +132,7 @@ ManageFocalSetsContainer.propTypes = {
   fetchStatus: PropTypes.string.isRequired,
   focalSetDefinitions: PropTypes.array.isRequired,
   filters: PropTypes.object.isRequired,
+  newDefinitions: PropTypes.bool.isRequired,
   // from dispatch
   handleDeleteFocalSetDefinition: PropTypes.func.isRequired,
   handleDeleteFocusDefinition: PropTypes.func.isRequired,
@@ -144,6 +143,7 @@ const mapStateToProps = state => ({
   topicInfo: state.topics.selected.info,
   focalSetDefinitions: state.topics.selected.focalSets.definitions.list,
   fetchStatus: state.topics.selected.focalSets.definitions.fetchStatus,
+  newDefinitions: state.topics.selected.focalSets.all.newDefinitions,
   filters: state.topics.selected.filters,
 });
 

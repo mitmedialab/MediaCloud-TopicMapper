@@ -1,11 +1,8 @@
 import { createApiPromise, createPostingApiPromise, acceptParams } from '../apiUtil';
+import { platformQueryParams } from './platforms';
 
 export function topicsPersonalList(linkId) {
   return createApiPromise('/api/topics/personal', linkId ? { linkId } : undefined);
-}
-
-export function topicsPublicList() {
-  return createApiPromise('/api/topics/public');
 }
 
 export function topicsFavoriteList() {
@@ -20,33 +17,9 @@ export function topicSummary(topicId) {
   return createApiPromise(`/api/topics/${topicId}/summary`);
 }
 
-export function topicTopStories(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'linkId', 'sources[]', 'collections[]']);
-  return createApiPromise(`/api/topics/${topicId}/stories`, acceptedParams);
-}
-
-export function topicTopMedia(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort', 'limit', 'linkId']);
-  return createApiPromise(`/api/topics/${topicId}/media`, acceptedParams);
-}
-
-export function fetchTopicTopWords(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'withTotals', 'sample_size']);
-  return createApiPromise(`/api/topics/${topicId}/words`, acceptedParams);
-}
-
-export function topicSnapshotsList(topicId) {
-  return createApiPromise(`/api/topics/${topicId}/snapshots/list`);
-}
-
 export function topicTimespansList(topicId, snapshotId, params) {
   const acceptedParams = acceptParams(params, ['focusId']);
   return createApiPromise(`/api/topics/${topicId}/snapshots/${snapshotId}/timespans/list`, acceptedParams);
-}
-
-export function topicSplitStoryCounts(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/split-story/count`, acceptedParams);
 }
 
 export function topicStoryCounts(topicId, params) {
@@ -59,59 +32,9 @@ export function topicStoryInfo(topicId, storiesId, params) {
   return createApiPromise(`/api/topics/${topicId}/stories/${storiesId}`, acceptedParams);
 }
 
-export function storyUpdate(storiesId, params) {
-  const acceptedParams = acceptParams(params, ['id', 'title', 'url', 'guid', 'language', 'description', 'publish_date', 'confirm_date', 'undateable']);
-  return createPostingApiPromise(`/api/stories/${storiesId}/storyUpdate`, acceptedParams);
-}
-
-export function storyWords(topicId, storiesId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/stories/${storiesId}/words`, acceptedParams);
-}
-
-export function storyInlinks(topicId, storiesId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/stories/${storiesId}/inlinks`, acceptedParams);
-}
-
-export function storyOutlinks(topicId, storiesId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/stories/${storiesId}/outlinks`, acceptedParams);
-}
-
 export function media(topicId, mediaId, params) {
   const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
   return createApiPromise(`/api/topics/${topicId}/media/${mediaId}`, acceptedParams);
-}
-
-export function mediaSplitStoryCounts(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/split-story/count`, acceptedParams);
-}
-
-export function mediaStories(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort', 'limit']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/stories`, acceptedParams);
-}
-
-export function mediaInlinks(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort', 'limit']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/inlinks`, acceptedParams);
-}
-
-export function allMediaInlinks(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/inlinks/all`, acceptedParams);
-}
-
-export function mediaOutlinks(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort', 'limit']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/outlinks`, acceptedParams);
-}
-
-export function allMediaOutlinks(topicId, mediaId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort']);
-  return createApiPromise(`/api/topics/${topicId}/media/${mediaId}/outlinks/all`, acceptedParams);
 }
 
 export function topicFocalSetsList(topicId, params) {
@@ -154,16 +77,6 @@ export function favoriteTopics() {
   return createApiPromise('/api/topics/favorite');
 }
 
-export function topicEnglishStoryCounts(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/stories/english-counts`, acceptedParams);
-}
-
-export function topicUndateableStoryCounts(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/stories/undateable-counts`, acceptedParams);
-}
-
 export function topicFocalSetSplitStoryCounts(topicId, focalSetId, params) {
   const acceptedParams = acceptParams(params, ['snapshotId', 'focusId', 'timespanId', 'q']);
   return createApiPromise(`/api/topics/${topicId}/focal-set/${focalSetId}/split-story-count`, acceptedParams);
@@ -171,16 +84,6 @@ export function topicFocalSetSplitStoryCounts(topicId, focalSetId, params) {
 
 export function word(topicId, wordstem) {
   return createApiPromise(`/api/topics/${topicId}/words/${wordstem}`);
-}
-
-export function wordSplitStoryCounts(topicId, wordstem, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/words/${wordstem}*/split-story/count`, acceptedParams);
-}
-
-export function wordStories(topicId, wordstem, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'sort', 'limit']);
-  return createApiPromise(`/api/topics/${topicId}/words/${wordstem}*/stories`, acceptedParams);
 }
 
 export function wordWords(topicId, wordstem, params) {
@@ -192,13 +95,6 @@ export function wordSampleSentences(topicId, wordstem, params) {
   const acceptedParams = acceptParams(params, ['timespanId', 'q']);
   return createApiPromise(`/api/topics/${topicId}/words/${wordstem}*/sample-usage`, acceptedParams);
 }
-
-/*
-export function wordMedia(topicId, word, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/words/${word}/media`, acceptedParams);
-}
-*/
 
 export function fetchStoryCountByQuery(params) {
   const acceptedParams = acceptParams(params, ['q', 'start_date', 'end_date', 'sources[]', 'collections[]', 'searches[]']);
@@ -221,18 +117,13 @@ export function fetchWordsByQuery(params) {
 }
 
 export function updateTopicSettings(topicId, params) {
-  const acceptedParams = acceptParams(params, ['name', 'description', 'is_public', 'is_logogram']);
+  const acceptedParams = acceptParams(params, ['name', 'description', 'is_logogram', 'start_date', 'end_date', 'max_iterations', 'max_topic_stories']);
   return createPostingApiPromise(`/api/topics/${topicId}/update-settings`, acceptedParams, 'put');
 }
 
 export function topicMapFiles(topicId, params) {
   const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q']);
   return createApiPromise(`/api/topics/${topicId}/map-files/list`, acceptedParams);
-}
-
-export function topicMediaMapFile(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'q', 'timespan_maps_id']);
-  return createApiPromise(`/api/topics/${topicId}/map-files/${acceptedParams.timespan_maps_id}`, acceptedParams);
 }
 
 export function topicTimespanFiles(topicId, params) {
@@ -247,26 +138,6 @@ export function fetchTopicSearchResults(searchStr, params) {
 
 export function fetchTopicWithNameExists(searchStr, topicId) {
   return createApiPromise('/api/topics/name-exists', { searchStr, topicId });
-}
-
-export function topicNytTaggedStoryCoverage(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/nyt-tags/coverage`, acceptedParams);
-}
-
-export function topicNytTaggedStoryCounts(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/nyt-tags/counts`, acceptedParams);
-}
-
-export function topicGeocodedStoryCoverage(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/geo-tags/coverage`, acceptedParams);
-}
-
-export function topicGeocodedStoryCounts(topicId, params) {
-  const acceptedParams = acceptParams(params, ['timespanId', 'q']);
-  return createApiPromise(`/api/topics/${topicId}/geo-tags/counts`, acceptedParams);
 }
 
 export function userQueuedAndRunningTopics() {
@@ -340,16 +211,6 @@ export function topicWord2VecTimespans(topicId, params) {
   return createApiPromise(`/api/topics/${topicId}/word2vec-timespans`, acceptedParams);
 }
 
-export function topicTopPeople(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'linkId']);
-  return createApiPromise(`/api/topics/${topicId}/entities/people`, acceptedParams);
-}
-
-export function topicTopOrgs(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'linkId']);
-  return createApiPromise(`/api/topics/${topicId}/entities/organizations`, acceptedParams);
-}
-
 export function topicSimilarWords(topicId, theWord, params) {
   const acceptedParams = acceptParams(params, ['snapshotId']);
   return createApiPromise(`/api/topics/${topicId}/words/${theWord}/similar`, acceptedParams);
@@ -363,7 +224,7 @@ export function topicSnapshotStoryCounts(topicId) {
   return createApiPromise(`/api/topics/${topicId}/stories/counts-by-snapshot`);
 }
 
-const topicCreateOrUpdateParams = ['name', 'description', 'solr_seed_query', 'is_public',
+const topicCreateOrUpdateParams = ['name', 'description', 'solr_seed_query',
   'max_stories', 'max_iterations', 'ch_monitor_id', 'start_date', 'end_date', 'spidered',
   'sources[]', 'collections[]', 'searches[]', 'is_logogram', 'startSpidering'];
 
@@ -373,13 +234,8 @@ export function createTopic(params) {
 }
 
 export function topicSnapshotGenerate(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId']);
+  const acceptedParams = acceptParams(params, ['snapshotId', 'spider']);
   return createPostingApiPromise(`/api/topics/${topicId}/snapshots/generate`, acceptedParams);
-}
-
-export function topicSnapshotSpider(topicId, params) {
-  const acceptedParams = acceptParams(params, ['snapshotId']);
-  return createPostingApiPromise(`/api/topics/${topicId}/snapshots/spider`, acceptedParams);
 }
 
 export function topicUpdateSeedQuery(topicId, params) {
@@ -391,7 +247,26 @@ export function topicSnapshotCreate(topicId) {
   return createPostingApiPromise(`/api/topics/${topicId}/snapshots/create`);
 }
 
-export function topicTopStoriesOnDates(topicId, params) {
-  const acceptedParams = acceptParams(params, ['startTimestamp', 'endTimestamp', 'snapshotId', 'timespanId', 'focusId', 'sort', 'limit', 'q', 'selectedTimespanId']);
-  return createApiPromise(`/api/topics/${topicId}/stories/top-on-dates`, acceptedParams);
+export function topicCreatePlatform(topicId, params) {
+  const acceptedParams = acceptParams(params, platformQueryParams);
+  return createPostingApiPromise(`/api/topics/${topicId}/platforms/add`, acceptedParams);
+}
+
+export function topicUpdatePlatform(topicId, platformId, params) {
+  const acceptedParams = acceptParams(params, platformQueryParams);
+  return createPostingApiPromise(`/api/topics/${topicId}/platforms/${platformId}/update`, acceptedParams);
+}
+
+export function topicDeletePlatform(topicId, platformId, params) {
+  const acceptedParams = acceptParams(params, []);
+  return createPostingApiPromise(`/api/topics/${topicId}/platforms/${platformId}/remove`, acceptedParams);
+}
+
+export function platformsInTopic(topicId) {
+  return createApiPromise(`/api/topics/${topicId}/platforms/list`);
+}
+
+export function uploadPlatformGenericCsvFile(topicId, params) {
+  const acceptedParams = acceptParams(params, ['file']);
+  return createPostingApiPromise(`/api/topics/${topicId}/platforms/generic-csv/upload`, acceptedParams);
 }

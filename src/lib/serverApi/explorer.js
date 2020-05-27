@@ -1,9 +1,5 @@
 import { createApiPromise, acceptParams, generateParamStr, createPostingApiPromise } from '../apiUtil';
 
-export function fetchSampleSearches() {
-  return createApiPromise('/api/explorer/sample-searches');
-}
-
 export function fetchSavedSearches() {
   return createApiPromise('/api/explorer/saved-searches');
 }
