@@ -4,7 +4,7 @@ import { createAsyncReducer } from '../../../lib/reduxHelpers';
 const initialState = {
   args: { type: 0, mediaKeyword: null },
   list: [],
-  linkId: 0,
+  linkId: { next: 0 },
 };
 
 const collectionSearch = createAsyncReducer({
@@ -19,7 +19,7 @@ const collectionSearch = createAsyncReducer({
       type: 'collection',
       selected: false,
     })),
-    linkId: payload.link_id,
+    linkId: { next: payload.link_id },
   }),
   [RESET_MEDIAPICKER_COLLECTION_SEARCH]: () => initialState,
   [MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST]: (payload, state) => ({

@@ -12,7 +12,10 @@ def media_search_with_page(search_str, tags_id=None, **kwargs):
     link_id = request.args.get('linkId') if 'linkId' in request.args else 0
     user_mc = user_admin_mediacloud_client()
     media_page = user_mc.mediaList(name_like=search_str, tags_id=tags_id, last_media_id=link_id, rows=100, sort="num_stories", **kwargs)
-    last_media_id = media_page[len(media_page)-1]['media_id']
+    if len(media_page) ==0:
+        last_media_id = -1
+    else:
+        last_media_id = media_page[len(media_page)-1]['media_id']
     return media_page, last_media_id
 
 def media_search(search_str, tags_id=None, **kwargs):

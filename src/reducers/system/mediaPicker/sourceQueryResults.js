@@ -5,7 +5,7 @@ const sourceQueryResults = createAsyncReducer({
   initialState: {
     args: { type: 1, mediaKeyword: null },
     list: [],
-    linkId: 0,
+    linkId: { next: 0 },
   },
   action: FETCH_MEDIAPICKER_SOURCE_SEARCH,
   handleSuccess: (payload, state, meta) => ({
@@ -17,7 +17,7 @@ const sourceQueryResults = createAsyncReducer({
       type: 'source',
       selected: false,
     })),
-    linkId: payload.link_id,
+    linkId: { next: payload.link_id },
   }),
   [MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST]: (payload, state) => ({
     list: state.list.map((c) => {

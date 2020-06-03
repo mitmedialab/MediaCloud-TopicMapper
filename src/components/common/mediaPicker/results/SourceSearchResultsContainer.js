@@ -222,6 +222,11 @@ class SourceSearchResultsContainer extends React.Component {
     return (
       <div>
         {content}
+        <Row>
+          <Col lg={12}>
+            {previousButton} {nextButton}
+          </Col>
+        </Row>
         {resultContent}
         <Row>
           <Col lg={12}>
@@ -326,7 +331,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...ownProps,
     pageThroughSources: (values) => {
       if (stateProps.links !== undefined) {
-        dispatchProps.handleUpdateAndSearchWithSelection(values, stateProps.links);
+        dispatchProps.handleUpdateAndSearchWithSelection(values, stateProps.links.next);
       } else {
         dispatchProps.handleUpdateAndSearchWithSelection({ ...values, linkId: 0 });
       }
@@ -334,7 +339,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-const handlePageChange = (dispatch, { values, tags }, links) => dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: links }));
+const handlePageChange = (dispatch, { selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags, links }) => dispatch(fetchMediaPickerSources({ media_keyword: (selectedMediaQueryKeyword || '*'), tags: (selectedMediaQueryAllTags ? -1 : selectedMediaQueryTags), linkId: links.next }));
 
 export default
 injectIntl(
