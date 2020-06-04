@@ -43,5 +43,4 @@ Bug Fixes and Patches
 
 When fixing a bug for production
 * Make a commit to fix the bug on the release branch (e.g. v3.13.x)
-* Cherry-pick the commit to master
 * Deploy the fix to production by following the release process
