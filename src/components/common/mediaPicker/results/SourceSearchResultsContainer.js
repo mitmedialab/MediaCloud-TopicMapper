@@ -7,13 +7,13 @@ import { Row, Col } from 'react-flexbox-grid/lib';
 import { selectMediaPickerQueryArgs, fetchMediaPickerSources, selectMediaCustomColl } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import withHelp from '../../hocs/HelpfulContainer';
-import withPaging from '../../hocs/PagedContainer';
 import SourceResultsTable from './SourceResultsTable';
 import AdvancedMediaPickerSearchForm from '../AdvancedMediaPickerSearchForm';
 import LoadingSpinner from '../../LoadingSpinner';
 import AppButton from '../../AppButton';
 import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil';
 import { notEmptyString } from '../../../../lib/formValidators';
+import messages from '../../../../resources/messages';
 
 const localMessages = {
   fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: 'Top Sources matching<br /> "{keyword}" and {tags}' },
@@ -149,7 +149,7 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, previousButton, nextButton } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
@@ -224,15 +224,15 @@ class SourceSearchResultsContainer extends React.Component {
         {content}
         <Row>
           <Col lg={12}>
-            {previousButton} {nextButton}
+            <AppButton
+              className="select-media-cancel-button"
+              label={formatMessage(messages.ok)}
+              onClick={val => this.updateAndSearchWithSelection(val)}
+              type="submit"
+            />
           </Col>
         </Row>
         {resultContent}
-        <Row>
-          <Col lg={12}>
-            {previousButton} {nextButton}
-          </Col>
-        </Row>
       </div>
     );
   }
@@ -258,15 +258,13 @@ SourceSearchResultsContainer.propTypes = {
   formQuery: PropTypes.object,
   mediaQuery: PropTypes.array,
   helpButton: PropTypes.node.isRequired,
-  // from hoc
-  previousButton: PropTypes.node,
-  nextButton: PropTypes.node,
   links: PropTypes.object,
   // from dispatch
   // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
   pageThroughSources: PropTypes.func.isRequired,
   handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
   handleSelectMediaCustomColl: PropTypes.func.isRequired,
+  handleGetMoreResults: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
 };
 
@@ -323,6 +321,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   handleSelectMediaCustomColl: (values) => {
     dispatch(selectMediaCustomColl(values));
   },
+  handleGetMoreResults: (values) => {
+    dispatch(fetchMediaPickerSources({ media_keyword: (values.mediaKeyword || '*'), tags: (values.allMedia ? -1 : values.tags), linkId: values.links.next }));
+  },
 });
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
@@ -339,15 +340,12 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-const handlePageChange = (dispatch, { selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags, links }) => dispatch(fetchMediaPickerSources({ media_keyword: (selectedMediaQueryKeyword || '*'), tags: (selectedMediaQueryAllTags ? -1 : selectedMediaQueryTags), linkId: links.next }));
 
 export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(
     withHelp(localMessages.customCollTitle, localMessages.customCollDef)(
-      withPaging(handlePageChange)(
-        SourceSearchResultsContainer
-      )
+      SourceSearchResultsContainer
     )
   )
 );
