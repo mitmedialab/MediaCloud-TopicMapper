@@ -30,7 +30,7 @@ const SourceResultsTable = (props) => {
             const ActionButton = s.selected ? DeleteButton : AddButton;
             const actionContent = <ActionButton onClick={() => onToggleSelected(s)} />;
             return (
-              <tr key={`${s.media_id}`} className={(idx % 2 === 0) ? 'even' : 'odd'}>
+              <tr key={`${s.media_id}${idx}`} className={(idx % 2 === 0) ? 'even' : 'odd'}>
                 <td><a href={urlToSource(s.media_id)} target="new">{s.name}</a></td>
                 <td>{s.url}</td>
                 <td className="numeric"><FormattedNumber value={Math.round(s.num_stories_90)} /></td>
