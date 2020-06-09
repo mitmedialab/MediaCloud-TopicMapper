@@ -16,9 +16,9 @@ import { notEmptyString } from '../../../../lib/formValidators';
 import messages from '../../../../resources/messages';
 
 const localMessages = {
-  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: 'Top {numResults} Sources matching<br /> "{keyword}" and {tags}' },
-  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: 'Top {numResults} Sources matching<br />"{keyword}"' },
-  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: 'Top {numResults} Sources matching<br />{tags}' },
+  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: '{numResults} Sources matching<br /> "{keyword}" and {tags}' },
+  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '{numResults} Sources matching<br />"{keyword}"' },
+  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: '{numResults} Sources matching<br />{tags}' },
   hintText: { id: 'system.mediaPicker.sources.hint', defaultMessage: 'Search sources by name or url' },
   noResults: { id: 'system.mediaPicker.sources.noResults', defaultMessage: 'No results. Try searching for the name or URL of a specific source to see if we cover it, like Washington Post, Hindustan Times, or guardian.co.uk.' },
   showAdvancedOptions: { id: 'system.mediaPicker.sources.showAdvancedOptions', defaultMessage: 'Show Advanced Options' },
@@ -200,11 +200,11 @@ class SourceSearchResultsContainer extends React.Component {
         stringifiedTags = stringifyTags(previouslySearchedTags, formatMessage);
       }
       if (notEmptyString(selectedMediaQueryKeyword) && stringifiedTags) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.fullTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags, numResults: sourceResults.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.fullTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags, numResults: sourceResults.list.length }} />;
       } else if (notEmptyString(selectedMediaQueryKeyword)) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword, numResults: sourceResults.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword, numResults: sourceResults.list.length }} />;
       } else {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags, numResults: sourceResults.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags, numResults: sourceResults.list.length }} />;
       }
       resultContent = (
         <div className="source-search-results">
