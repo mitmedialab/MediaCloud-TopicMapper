@@ -16,9 +16,9 @@ import { notEmptyString } from '../../../../lib/formValidators';
 import messages from '../../../../resources/messages';
 
 const localMessages = {
-  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: 'Top Sources matching<br /> "{keyword}" and {tags}' },
-  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: 'Top Sources matching<br />"{keyword}"' },
-  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: 'Top Sources matching<br />{tags}' },
+  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: 'Top {numResults} Sources matching<br /> "{keyword}" and {tags}' },
+  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: 'Top {numResults} Sources matching<br />"{keyword}"' },
+  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: 'Top {numResults} Sources matching<br />{tags}' },
   hintText: { id: 'system.mediaPicker.sources.hint', defaultMessage: 'Search sources by name or url' },
   noResults: { id: 'system.mediaPicker.sources.noResults', defaultMessage: 'No results. Try searching for the name or URL of a specific source to see if we cover it, like Washington Post, Hindustan Times, or guardian.co.uk.' },
   showAdvancedOptions: { id: 'system.mediaPicker.sources.showAdvancedOptions', defaultMessage: 'Show Advanced Options' },
@@ -153,6 +153,7 @@ class SourceSearchResultsContainer extends React.Component {
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
+    let getMoreResultsContent = null;
     content = (
       <div>
         <AdvancedMediaPickerSearchForm
@@ -199,11 +200,11 @@ class SourceSearchResultsContainer extends React.Component {
         stringifiedTags = stringifyTags(previouslySearchedTags, formatMessage);
       }
       if (notEmptyString(selectedMediaQueryKeyword) && stringifiedTags) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.fullTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.fullTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags, numResults: sourceResults.length }} />;
       } else if (notEmptyString(selectedMediaQueryKeyword)) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword, numResults: sourceResults.length }} />;
       } else {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags, numResults: sourceResults.length }} />;
       }
       resultContent = (
         <div className="source-search-results">
@@ -216,22 +217,25 @@ class SourceSearchResultsContainer extends React.Component {
           />
         </div>
       );
+      getMoreResultsContent = (
+        <Row>
+          <Col lg={12}>
+            <AppButton
+              className="select-media-cancel-button"
+              label={formatMessage(messages.getMoreResults)}
+              onClick={val => this.updateAndSearchWithSelection(val)}
+              type="submit"
+            />
+          </Col>
+        </Row>
+      );
     } else {
       resultContent = <FormattedMessage {...localMessages.noResults} />;
     }
     return (
       <div>
         {content}
-        <Row>
-          <Col lg={12}>
-            <AppButton
-              className="select-media-cancel-button"
-              label={formatMessage(messages.ok)}
-              onClick={val => this.updateAndSearchWithSelection(val)}
-              type="submit"
-            />
-          </Col>
-        </Row>
+        {getMoreResultsContent}
         {resultContent}
       </div>
     );

@@ -124,6 +124,7 @@ const messages = {
   allMedia: { id: 'allMedia', defaultMessage: 'All Media' },
   allMediaNotAdvised: { id: 'allMediaNA', defaultMessage: 'All Media (Not Advised)' },
   noMedia: { id: 'noMedia', defaultMessage: 'No Media' },
+  getMoreResults: { id: 'getMoreResults', defaultMessage: 'Get More Results' },
 
   focus: { id: 'focus', defaultMessage: 'Subtopic' },
   focusHeader: { id: 'focus', defaultMessage: 'Subtopics' },
