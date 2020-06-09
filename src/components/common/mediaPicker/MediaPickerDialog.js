@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Modal from '@material-ui/core/Modal';
 import DialogContent from '@material-ui/core/DialogContent';
-import MediaPickerComponentContainer from './MediaPickerResultsContainer';
+import MediaPickerComponentContainer from './MediaPickerComponentContainer';
 import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist } from '../../../actions/systemActions';
 import AppButton from '../AppButton';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
@@ -104,7 +104,7 @@ class MediaPickerDialog extends React.Component {
             onClose={() => this.handleRemoveDialogClose(false)}
           >
             <DialogContent className="select-media-dialog-wrapper">
-              <MediaPickerComponentContainer />
+              <MediaPickerComponentContainer onConfirmSelection={() => this.handleRemoveDialogClose(true)} />
             </DialogContent>
           </Modal>
         </div>

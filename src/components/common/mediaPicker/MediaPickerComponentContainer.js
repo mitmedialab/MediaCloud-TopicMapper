@@ -40,13 +40,13 @@ class MediaPickerComponentContainer extends React.Component {
   }
 
   handleConfirmSelection = (confirm) => {
-    const { onFormChange, selectedMedia, setQueryFormChildDialogOpen, reset } = this.props;
+    const { onConfirmSelection, selectedMedia, setQueryFormChildDialogOpen, reset } = this.props;
     if (confirm) {
       const allTest = selectedMedia.filter(m => m.id === ALL_MEDIA);
       if (allTest.length > 0) {
-        onFormChange('media', allTest); // if selected, this takes precedence
+        onConfirmSelection('media', allTest); // if selected, this takes precedence
       } else {
-        onFormChange('media', selectedMedia); // passed in from containing element
+        onConfirmSelection('media', selectedMedia); // passed in from containing element
       }
     }
     reset();
@@ -89,7 +89,7 @@ class MediaPickerComponentContainer extends React.Component {
       </div>
     );
 
-    return { content };
+    return content;
   }
 }
 
@@ -101,7 +101,7 @@ MediaPickerComponentContainer.propTypes = {
   handleInitialSelectionOfMedia: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired,
   setQueryFormChildDialogOpen: PropTypes.func,
-  onFormChange: PropTypes.func,
+  onConfirmSelection: PropTypes.func,
   // from state
   selectedMedia: PropTypes.array,
 };
