@@ -1,18 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { Row, Col } from 'react-flexbox-grid/lib';
 import { connect } from 'react-redux';
+import AppButton from '../../AppButton';
 import CollectionResultsTable from './CollectionResultsTable';
 import MediaPickerSearchForm from '../MediaPickerSearchForm';
-import withPaging from '../../hocs/PagedContainer';
 import { selectMediaPickerQueryArgs, fetchMediaPickerCollections } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import LoadingSpinner from '../../LoadingSpinner';
 import { notEmptyString } from '../../../../lib/formValidators';
 import { TAG_SET_MC_ID } from '../../../../lib/tagUtil';
+import messages from '../../../../resources/messages';
+
+const NO_MORE_RESULTS = -1;
 
 const localMessages = {
-  title: { id: 'system.mediaPicker.collections.title', defaultMessage: 'Collections matching "{name}"' },
+  title: { id: 'system.mediaPicker.collections.title', defaultMessage: '{numResults} Collections matching "{name}"' },
   hintText: { id: 'system.mediaPicker.collections.hint', defaultMessage: 'Search for collections by name' },
   noResults: { id: 'system.mediaPicker.collections.noResults', defaultMessage: 'No results. Try searching for issues like online news, health, blogs, conservative to see if we have collections made up of those types of sources.' },
 };
@@ -53,20 +57,33 @@ class CollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, updateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly } = this.props;
+    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, updateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly, pageThroughCollections, links } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
+    let getMoreResultsContent = null;
     if (fetchStatus === FETCH_ONGOING) {
       // we have to do this here to show a loading spinner when first searching (and featured collections are showing)
       content = <LoadingSpinner />;
     } else if (collectionResults.list && selectedMediaQueryKeyword) {
       content = (
         <CollectionResultsTable
-          title={formatMessage(localMessages.title, { name: selectedMediaQueryKeyword })}
+          title={formatMessage(localMessages.title, { name: selectedMediaQueryKeyword, numResults: collectionResults.list.length })}
           collections={collectionResults.list}
           onToggleSelected={onToggleSelected}
           viewOnly={viewOnly}
         />
+      );
+      getMoreResultsContent = (links.next > NO_MORE_RESULTS &&
+        <Row>
+          <Col lg={12}>
+            <AppButton
+              className="select-media-cancel-button"
+              label={formatMessage(messages.getMoreResults)}
+              onClick={val => pageThroughCollections(val)}
+              type="submit"
+            />
+          </Col>
+        </Row>
       );
     } else if (initCollections) {
       content = initCollections;
@@ -76,10 +93,11 @@ class CollectionSearchResultsContainer extends React.Component {
     return (
       <div>
         <MediaPickerSearchForm
-          initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
+          initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
           onSearch={val => updateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
           hintText={formatMessage(hintTextMsg || localMessages.hintText)}
         />
+        {getMoreResultsContent}
         {content}
       </div>
     );
@@ -91,7 +109,7 @@ CollectionSearchResultsContainer.propTypes = {
   // form compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
-  onToggleSelected: PropTypes.oneOf([PropTypes.func.isRequired, PropTypes.bool]),
+  onToggleSelected: PropTypes.func.isRequired,
   handleMediaConcurrency: PropTypes.func.isRequired,
   // from state
   fetchStatus: PropTypes.string,
@@ -109,6 +127,7 @@ CollectionSearchResultsContainer.propTypes = {
   initCollections: PropTypes.object,
   updateMediaQuerySelection: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
+  pageThroughCollections: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -121,10 +140,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateMediaQuerySelection: (values, linkId) => {
+  updateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(selectMediaPickerQueryArgs(values));
-      dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId }));
+      dispatch(fetchMediaPickerCollections({ media_keyword: (values.mediaKeyword || '*'), which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId: values.linkId }));
     }
   },
 });
@@ -133,24 +152,19 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   return { ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    pageThroughSources: (values) => {
+    pageThroughCollections: () => {
       if (stateProps.links !== undefined) {
-        dispatchProps.updateMediaQuerySelection(values, stateProps.links);
+        dispatchProps.updateMediaQuerySelection({ mediaKeyword: stateProps.selectedMediaQueryKeyword, which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: stateProps.selectedMediaQueryType, linkId: stateProps.links.next });
       } else {
-        dispatchProps.updateMediaQuerySelection({ ...values, linkId: 0 });
+        dispatchProps.updateMediaQuerySelection({ mediaKeyword: stateProps.selectedMediaQueryKeyword, which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: stateProps.selectedMediaQueryType, linkId: 0 });
       }
     },
   };
 }
 
-
-const handlePageChange = (dispatch, { values, tags }) => dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: values.linkIds }));
-
 export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(
-    withPaging(handlePageChange)(
-      CollectionSearchResultsContainer
-    )
+    CollectionSearchResultsContainer
   )
 );

@@ -52,7 +52,6 @@ class TabSandCSearchResultsContainer extends React.Component {
             fetchStatus={fetchStatus}
             onToggleSelected={onToggleSelected}
             whichTagSet={whichTagSet}
-            selectedMediaQueryKeyword={selectedMediaQueryKeyword}
             initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword, tags: {} } }}
             hintTextMsg={localMessages.hintText}
             handleMediaConcurrency={handleMediaConcurrency}

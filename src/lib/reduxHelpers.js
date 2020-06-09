@@ -13,6 +13,19 @@ export function arrayToDict(arr, keyPropertyName) {
   return dict;
 }
 
+export function concatPrevAndNext(next, prev, type) {
+  const prevState = [...prev];
+  const nextList = next.map(c => ({
+    ...c,
+    name: `${c.name}`,
+    id: parseInt(c.media_id, 10),
+    type,
+    selected: false,
+  }));
+  const updatedState = prevState.concat(nextList);
+  return updatedState;
+}
+
 // if all rows should be selected, or only page rows, or none, checked will tell us
 // arr contains only a chunk of rows at a time... TODO
 export function selectItemInArray(arr, idArr, idField, checked) {

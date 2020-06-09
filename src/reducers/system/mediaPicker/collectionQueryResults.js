@@ -1,5 +1,5 @@
 import { FETCH_MEDIAPICKER_COLLECTION_SEARCH, MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST, RESET_MEDIAPICKER_COLLECTION_SEARCH } from '../../../actions/systemActions';
-import { createAsyncReducer } from '../../../lib/reduxHelpers';
+import { createAsyncReducer, concatPrevAndNext } from '../../../lib/reduxHelpers';
 
 const initialState = {
   args: { type: 0, mediaKeyword: null },
@@ -12,13 +12,7 @@ const collectionSearch = createAsyncReducer({
   action: FETCH_MEDIAPICKER_COLLECTION_SEARCH,
   handleSuccess: (payload, state, meta) => ({
     args: { ...meta.args[0], selected: false }, // for adding/removing from selected list
-    list: payload.list.map(c => ({
-      ...c,
-      name: `${c.label || c.tag}`,
-      id: c.tags_id,
-      type: 'collection',
-      selected: false,
-    })),
+    list: concatPrevAndNext(payload.list, state.list, 'collection'),
     linkId: { next: payload.link_id },
   }),
   [RESET_MEDIAPICKER_COLLECTION_SEARCH]: () => initialState,

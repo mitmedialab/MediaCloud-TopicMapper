@@ -15,6 +15,8 @@ import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil
 import { notEmptyString } from '../../../../lib/formValidators';
 import messages from '../../../../resources/messages';
 
+const NO_MORE_RESULTS = -1;
+
 const localMessages = {
   fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: '{numResults} Sources matching<br /> "{keyword}" and {tags}' },
   mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '{numResults} Sources matching<br />"{keyword}"' },
@@ -149,7 +151,7 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, links } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
@@ -217,7 +219,7 @@ class SourceSearchResultsContainer extends React.Component {
           />
         </div>
       );
-      getMoreResultsContent = (
+      getMoreResultsContent = (links.next > NO_MORE_RESULTS && 
         <Row>
           <Col lg={12}>
             <AppButton
@@ -265,11 +267,10 @@ SourceSearchResultsContainer.propTypes = {
   links: PropTypes.object,
   // from dispatch
   // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
-  pageThroughSources: PropTypes.func.isRequired,
   handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
   handleSelectMediaCustomColl: PropTypes.func.isRequired,
-  handleGetMoreResults: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
+  pageThroughSources: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -304,7 +305,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       }
     }
   },
-  handleUpdateAndSearchWithSelection: (values, linkId) => {
+  handleUpdateAndSearchWithSelection: (values) => {
     if (values.mediaKeyword || values.tags) {
       let tags = null;
       if (!values.allMedia) { // handle the "all media" placeholder selection
@@ -319,14 +320,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         });
         tags = selectedTags.filter(t => t.length > 0).join(',');
       }
-      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId }));
+      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: values.linkId }));
     }
   },
   handleSelectMediaCustomColl: (values) => {
     dispatch(selectMediaCustomColl(values));
-  },
-  handleGetMoreResults: (values) => {
-    dispatch(fetchMediaPickerSources({ media_keyword: (values.mediaKeyword || '*'), tags: (values.allMedia ? -1 : values.tags), linkId: values.links.next }));
   },
 });
 
@@ -336,14 +334,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...ownProps,
     pageThroughSources: (values) => {
       if (stateProps.links !== undefined) {
-        dispatchProps.handleUpdateAndSearchWithSelection(values, stateProps.links.next);
+        dispatchProps.handleUpdateAndSearchWithSelection({ ...values, linkId: stateProps.links.next });
       } else {
         dispatchProps.handleUpdateAndSearchWithSelection({ ...values, linkId: 0 });
       }
     },
   };
 }
-
 
 export default
 injectIntl(

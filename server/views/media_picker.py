@@ -15,7 +15,7 @@ import server.views.apicache as base_api_cache
 from server.auth import user_has_auth_role, ROLE_MEDIA_EDIT
 from server.util.tags import VALID_COLLECTION_TAG_SETS_IDS
 from server.views.sources import FEATURED_COLLECTION_LIST
-from server.views.media_search import collection_search, media_search, media_search_with_page
+from server.views.media_search import collection_search, collection_search_with_page, media_search, media_search_with_page
 from server.util.request import api_error_handler, arguments_required
 from server.util.tags import cached_media_with_tag_page
 
@@ -45,7 +45,7 @@ def api_mediapicker_source_search():
     last_media_id = 0
     if querying_all_media:
         tags = [{'tags_id': ALL_MEDIA, 'id': ALL_MEDIA, 'label': "All Media", 'tag_sets_id': ALL_MEDIA}]
-        matching_sources = media_search(cleaned_search_str, tags)
+        matching_sources = media_search_with_page(cleaned_search_str, tags, link_id=link_id)
     elif 'tags' in request.args and len(request.args['tags']) > 0:
         # group the tags by tags_sets_id to support boolean searches
         tags_id_list = request.args['tags'].split(',')
@@ -92,7 +92,8 @@ def api_mediapicker_collection_search():
     search_str = request.args['media_keyword']
     tag_sets_id_list = request.args['which_set'].split(',')
     t1 = time.time()
-    results = collection_search(search_str, public_only, tag_sets_id_list)
+    link_id = request.args['link_id'] if 'link_id' in request.args else 0
+    results, last_tags_id = collection_search_with_page(search_str, public_only, tag_sets_id_list, last_tags_id=link_id)
     t2 = time.time()
     trimmed_collections = results[:MAX_COLLECTIONS]
     # flat_list_of_collections = [item for sublist in trimmed_collections for item in sublist]
@@ -117,7 +118,7 @@ def api_mediapicker_collection_search():
     logger.debug("  search: {}".format(t2 - t1))
     logger.debug("  media_count: {}".format(t3 - t2))
     logger.debug("  sort: {}".format(t4 - t3))
-    return jsonify({'list': set_of_queried_collections})
+    return jsonify({'list': set_of_queried_collections, 'link_id': last_tags_id})
 
 
 @app.route('/api/mediapicker/collections/featured', methods=['GET'])

@@ -44,16 +44,17 @@ class MediaPickerSearchForm extends React.Component {
     const { initValues, hintText, children, pristine } = this.props;
     const { formatMessage } = this.props.intl;
 
-    const { storedKeyword } = initValues;
-    if (storedKeyword.mediaKeyword === undefined || storedKeyword.mediaKeyword === null) {
-      storedKeyword.mediaKeyword = '';
+    const { mediaKeyword } = initValues;
+    let mKeyword = mediaKeyword;
+    if (mediaKeyword === undefined || mediaKeyword === null) {
+      mKeyword = '';
     }
     const defaultFormChildren = (
       <Row>
         <Col lg={8}>
           <TextField
             name="mediaKeyword"
-            defaultValue={storedKeyword.mediaKeyword}
+            defaultValue={mKeyword}
             onKeyPress={this.handleMenuItemKeyDown}
             fullWidth
             label={hintText}
