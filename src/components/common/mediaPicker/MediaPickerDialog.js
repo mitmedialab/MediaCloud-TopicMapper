@@ -91,7 +91,7 @@ class MediaPickerDialog extends React.Component {
   };
 
   render() {
-    const { initMedia, setQueryFormChildDialogOpen } = this.props;
+    const { initMedia } = this.props;
     const { formatMessage } = this.props.intl;
     let modalContent = null;
     const containingEl = document.getElementById('mediaPicker') ? document.getElementById('mediaPicker') : document.getElementById('app');
@@ -104,7 +104,7 @@ class MediaPickerDialog extends React.Component {
             onClose={() => this.handleRemoveDialogClose(false)}
           >
             <DialogContent className="select-media-dialog-wrapper">
-              <MediaPickerComponentContainer setQueryFormChildDialogOpen={() => setQueryFormChildDialogOpen()} onConfirmSelection={(okOrCancel) => this.handleRemoveDialogClose(okOrCancel)} />
+              <MediaPickerComponentContainer onConfirmSelection={(okOrCancel) => this.handleRemoveDialogClose(okOrCancel)} />
             </DialogContent>
           </Modal>
         </div>

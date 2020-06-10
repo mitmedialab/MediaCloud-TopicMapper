@@ -208,7 +208,7 @@ class QueryForm extends React.Component {
                       <MediaPickerDialog
                         initMedia={selectedCopy.media ? selectedCopy.media : cleanedInitialValues.media}
                         onConfirmSelection={selections => onMediaChange(selections)}
-                        setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
+                        setQueryFormChildDialogOpen={() => this.setQueryFormChildDialogOpen()}
                       />
                     )}
                   </div>

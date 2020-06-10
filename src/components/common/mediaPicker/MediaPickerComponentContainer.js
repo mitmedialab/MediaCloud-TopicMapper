@@ -39,24 +39,8 @@ class MediaPickerComponentContainer extends React.Component {
     reset();
   }
 
-  handleConfirmSelection = (confirm) => {
-    const { onConfirmSelection, selectedMedia, setQueryFormChildDialogOpen, reset } = this.props;
-    if (confirm) {
-      const allTest = selectedMedia.filter(m => m.id === ALL_MEDIA);
-      if (allTest.length > 0) {
-        onConfirmSelection('media', allTest); // if selected, this takes precedence
-      } else {
-        onConfirmSelection('media', selectedMedia); // passed in from containing element
-      }
-    }
-    reset();
-    if (setQueryFormChildDialogOpen) {
-      setQueryFormChildDialogOpen(false);
-    }
-  };
-
   render() {
-    const { selectedMedia } = this.props;
+    const { selectedMedia, onConfirmSelection } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     content = (
@@ -69,14 +53,14 @@ class MediaPickerComponentContainer extends React.Component {
             <AppButton
               className="select-media-ok-button"
               label={formatMessage(messages.ok)}
-              onClick={() => this.handleConfirmSelection(true)}
+              onClick={() => onConfirmSelection(true)}
               type="submit"
               primary
             />
             <AppButton
               className="select-media-cancel-button"
               label={formatMessage(messages.cancel)}
-              onClick={() => this.handleConfirmSelection(false)}
+              onClick={() => onConfirmSelection(false)}
               type="submit"
             />
           </div>
