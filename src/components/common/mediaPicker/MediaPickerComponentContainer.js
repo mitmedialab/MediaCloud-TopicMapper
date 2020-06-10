@@ -7,7 +7,7 @@ import PickedMediaContainer from './PickedMediaContainer';
 import MediaPickerResultsContainer from './MediaPickerResultsContainer';
 import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist } from '../../../actions/systemActions';
 import AppButton from '../AppButton';
-import { ALL_MEDIA } from '../../../lib/mediaUtil';
+// import { ALL_MEDIA } from '../../../lib/mediaUtil';
 
 class MediaPickerComponentContainer extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {

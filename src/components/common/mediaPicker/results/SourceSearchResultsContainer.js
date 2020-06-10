@@ -299,6 +299,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   updateMediaQuerySelection: (values) => {
     if (values && values.tags) {
+      dispatch(resetMediaPickerSources()); // clear prev results
       if (values.allMedia) { // handle the "all media" placeholder selection
         ownProps.updateMediaQuerySelection({ media_keyword: values.mediaKeyword, type: values.type, allMedia: true });
       } else {
@@ -310,7 +311,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     if (values.mediaKeyword || values.tags) {
       let tags = null;
       if (!values.allMedia) { // handle the "all media" placeholder selection
-        dispatch(resetMediaPickerSources());
         dispatch(selectMediaPickerQueryArgs(values));
         tags = Object.values(values.tags).filter(t => t.length > 0);
         const selectedTags = [];

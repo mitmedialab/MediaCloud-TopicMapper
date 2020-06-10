@@ -57,7 +57,7 @@ class CollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, updateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly, pageThroughCollections, links } = this.props;
+    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, resetAndUpdateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly, pageThroughCollections, links } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let getMoreResultsContent = null;
@@ -94,7 +94,7 @@ class CollectionSearchResultsContainer extends React.Component {
       <div>
         <MediaPickerSearchForm
           initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
-          onSearch={val => updateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
+          onSearch={val => resetAndUpdateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
           hintText={formatMessage(hintTextMsg || localMessages.hintText)}
         />
         {getMoreResultsContent}
@@ -129,6 +129,7 @@ CollectionSearchResultsContainer.propTypes = {
   updateMediaQuerySelection: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
   pageThroughCollections: PropTypes.func.isRequired,
+  resetAndUpdateMediaQuerySelection: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -141,9 +142,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateMediaQuerySelection: (values) => {
+  resetAndUpdateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(resetMediaPickerCollections());
+      dispatch(selectMediaPickerQueryArgs(values));
+      dispatch(fetchMediaPickerCollections({ media_keyword: (values.mediaKeyword || '*'), which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId: values.linkId }));
+    }
+  },
+  updateMediaQuerySelection: (values) => {
+    if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(selectMediaPickerQueryArgs(values));
       dispatch(fetchMediaPickerCollections({ media_keyword: (values.mediaKeyword || '*'), which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId: values.linkId }));
     }

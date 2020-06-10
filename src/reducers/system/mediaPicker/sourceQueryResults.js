@@ -24,7 +24,7 @@ const sourceQueryResults = createAsyncReducer({
       return c;
     }),
   }),
-  [RESET_MEDIAPICKER_SOURCE_SEARCH]: () => ({ args: { type: 1, mediaKeyword: null }, list: [] }),
+  [RESET_MEDIAPICKER_SOURCE_SEARCH]: () => ({ args: { type: 1, mediaKeyword: null }, list: [], linkId: { next: 0 } }),
 });
 
 export default sourceQueryResults;
