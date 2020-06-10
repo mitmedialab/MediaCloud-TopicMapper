@@ -4,7 +4,7 @@ import { injectIntl, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import { Row, Col } from 'react-flexbox-grid/lib';
-import { selectMediaPickerQueryArgs, fetchMediaPickerSources, selectMediaCustomColl } from '../../../../actions/systemActions';
+import { selectMediaPickerQueryArgs, fetchMediaPickerSources, selectMediaCustomColl, resetMediaPickerSources } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import withHelp from '../../hocs/HelpfulContainer';
 import SourceResultsTable from './SourceResultsTable';
@@ -219,7 +219,7 @@ class SourceSearchResultsContainer extends React.Component {
           />
         </div>
       );
-      getMoreResultsContent = (links.next > NO_MORE_RESULTS && 
+      getMoreResultsContent = (links.next > NO_MORE_RESULTS && (
         <Row>
           <Col lg={12}>
             <AppButton
@@ -230,7 +230,7 @@ class SourceSearchResultsContainer extends React.Component {
             />
           </Col>
         </Row>
-      );
+      ));
     } else {
       resultContent = <FormattedMessage {...localMessages.noResults} />;
     }
@@ -239,6 +239,7 @@ class SourceSearchResultsContainer extends React.Component {
         {content}
         {getMoreResultsContent}
         {resultContent}
+        {getMoreResultsContent}
       </div>
     );
   }
@@ -309,6 +310,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     if (values.mediaKeyword || values.tags) {
       let tags = null;
       if (!values.allMedia) { // handle the "all media" placeholder selection
+        dispatch(resetMediaPickerSources());
         dispatch(selectMediaPickerQueryArgs(values));
         tags = Object.values(values.tags).filter(t => t.length > 0);
         const selectedTags = [];

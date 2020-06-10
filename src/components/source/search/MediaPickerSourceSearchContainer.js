@@ -3,9 +3,10 @@ import React from 'react';
 import { Grid } from 'react-flexbox-grid/lib';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import withAsyncData from '../../common/hocs/AsyncDataContainer';
 import PickedMediaContainer from '../../common/mediaPicker/PickedMediaContainer';
 import MediaPickerResultsContainer from '../../common/mediaPicker/MediaPickerResultsContainer';
-import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist } from '../../../actions/systemActions';
+import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist, selectMediaPickerQueryArgs } from '../../../actions/systemActions';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
 
 class MediaPickerSourceSearchContainer extends React.Component {
@@ -100,9 +101,13 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
+const fetchAsyncData = (dispatch, ownProps) => dispatch(selectMediaPickerQueryArgs({ media_keyword: (ownProps.mediaKeyword || '*'), which_set: 1, type: 1, linkId: 0 }));
+
 export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps)(
-    MediaPickerSourceSearchContainer
+    withAsyncData(fetchAsyncData)(
+      MediaPickerSourceSearchContainer
+    )
   )
 );
