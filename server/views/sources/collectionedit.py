@@ -93,7 +93,7 @@ def remove_sources_from_collection(collection_id):
 def upload_file():
     time_start = time.time()
     uploaded_file = request.files['file']
-    save_file_to_upload_folder(uploaded_file, uploaded_file.filename)
+    filepath = save_file_to_upload_folder(uploaded_file, uploaded_file.filename)
     time_file_saved = time.time()
     # parse all the source data out of the file
     try:
