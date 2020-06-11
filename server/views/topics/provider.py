@@ -18,8 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def _parse_optional_args(arg_names: List, custom_defaults: Dict) -> Dict:
-    if custom_defaults is None:
-        custom_defaults = {}
+    custom_defaults = [] if None else custom_defaults
     parsed_args = {}
     for js_name in arg_names:
         python_name = camel_to_snake(js_name)
