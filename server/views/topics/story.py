@@ -28,7 +28,7 @@ def story(topics_id, stories_id):
             if tag['tag_sets_id'] == tag_util.GEO_TAG_SET:
                 geonames_id = int(tag['tag'][9:])
                 try:
-                    tag['geoname'] = _cached_geoname(geonames_id, story['language'])
+                    tag['geoname'] = _cached_geoname(geonames_id, story_info['language'])
                 except Exception as e:
                     # query to CLIFF failed :-( handle it gracefully
                     logger.exception(e)

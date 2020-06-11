@@ -92,7 +92,7 @@ def activation_confirm():
                                           results['error'])
     except MCException as mce:
         # this is long stack trace so we have to trim it for url length support
-        redirect_to_return = redirect(AUTH_MANAGEMENT_DOMAIN + '/#/user/activated?success=0&msg=' + str(mce[:300]))
+        redirect_to_return = redirect(AUTH_MANAGEMENT_DOMAIN + '/#/user/activated?success=0&msg=' + str(mce)[:300])
     return redirect_to_return
 
 
