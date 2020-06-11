@@ -17,7 +17,9 @@ from server.views.topics.media import stream_media_list_csv
 logger = logging.getLogger(__name__)
 
 
-def _parse_optional_args(arg_names: List, custom_defaults: Dict = {}) -> Dict:
+def _parse_optional_args(arg_names: List, custom_defaults: Dict) -> Dict:
+    if custom_defaults is None:
+        custom_defaults = {}
     parsed_args = {}
     for js_name in arg_names:
         python_name = camel_to_snake(js_name)
