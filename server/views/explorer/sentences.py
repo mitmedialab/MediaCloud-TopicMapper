@@ -20,8 +20,8 @@ def api_explorer_sentences_list():
     if only_queries_reddit(request.form):
         start_date, end_date = parse_query_dates(request.form)
         provider = RedditPushshiftProvider()
-        results = provider.samples(query=request.args['q'], start_date=start_date, end_date=end_date,
-                                   subreddits=NEWS_SUBREDDITS)
+        results = provider.sample(query=request.args['q'], start_date=start_date, end_date=end_date,
+                                  subreddits=NEWS_SUBREDDITS)
         results = [{
             'sentence': r['title'],
             'publish_date': r['publish_date'],

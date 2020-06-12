@@ -80,7 +80,7 @@ def topic_focal_set_split_stories_compare(topics_id, focal_sets_id):
         base_timespan = base_snapshot_timespan(topics_id)
         focal_set = apicache.topic_focal_set(user_mediacloud_key(), topics_id, snapshots_id, focal_sets_id)
     except ValueError as e:
-        return json_error_response(e.message)
+        return json_error_response(str(e))
     # collect the story split counts for each foci
     timespans = apicache.matching_timespans_in_foci(topics_id, base_timespan, focal_set['foci'])
     for idx in range(0, len(timespans)):
@@ -96,7 +96,7 @@ def _add_story_counts_to_foci(topics_id, focal_sets):
     try:
         base_timespan = base_snapshot_timespan(topics_id)
     except ValueError as e:
-        return json_error_response(e.message)
+        return json_error_response(str(e))
     # now find the story count in each foci in this
     for fs in focal_sets:
         timespans = apicache.matching_timespans_in_foci(topics_id, base_timespan, fs['foci'])
