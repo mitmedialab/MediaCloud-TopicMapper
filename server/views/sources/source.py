@@ -56,7 +56,7 @@ def source_stats(media_id):
     results = {}
     # story count
     media_query = "(media_id:{})".format(media_id)
-    source_specific_story_count = apicache.source_story_count(user_mediacloud_key(), media_query)
+    source_specific_story_count = apicache.source_story_count(media_query)
     results['story_count'] = source_specific_story_count
     # health
     media_health = _cached_media_source_health(username, media_id)
@@ -69,14 +69,14 @@ def source_stats(media_id):
                                ((c['show_on_media'] == 1) or user_can_see_private_collections))]
     results['collection_count'] = len(visible_collections)
     # geography tags
-    results['geoPct'] = apicache.tag_coverage_pct(user_mediacloud_key(), media_query, TAG_SET_GEOCODER_VERSION)
+    results['geoPct'] = apicache.tag_coverage_pct(media_query, TAG_SET_GEOCODER_VERSION)
     # nyt theme
-    results['nytPct'] = apicache.tag_coverage_pct(user_mediacloud_key(), media_query, TAG_SET_NYT_LABELS_VERSION)
+    results['nytPct'] = apicache.tag_coverage_pct(media_query, TAG_SET_NYT_LABELS_VERSION)
     return jsonify(results)
 
 
 @cache.cache_on_arguments()
-def _cached_media_source_health(user_mc_key, media_id):
+def _cached_media_source_health(_user_mc_key, media_id):
     user_mc = user_admin_mediacloud_client()
     results = None
     try:
@@ -278,7 +278,7 @@ def api_source_review_info(media_id):
     active_syndicated_feeds = [f for f in feeds if f['active'] and f['type'] == 'syndicated']
     active_feed_count = len(active_syndicated_feeds)
     query = "media_id:{}".format(media_id)
-    full_count = apicache.timeperiod_story_count(user_mc, query, QUERY_LAST_YEAR)['count']
+    full_count = apicache.timeperiod_story_count(query, QUERY_LAST_YEAR)['count']
     info = {
         'media_id': int(media_id),
         'latest_scrape_job': latest_scrape_job,

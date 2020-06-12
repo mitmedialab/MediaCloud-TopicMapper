@@ -11,10 +11,10 @@ logger = logging.getLogger(__name__)
 
 
 @cache.cache_on_arguments()
-def cached_geotag_count(user_mc_key, query):
+def cached_geotag_count(_user_mc_key, query):
     user_mc = user_admin_mediacloud_client()
     res = user_mc.storyTagCount(query, [QUERY_LAST_MONTH, QUERY_ENGLISH_LANGUAGE], tag_sets_id=tag_utl.GEO_TAG_SET)
-    full_count = apicache.timeperiod_story_count(user_mc, query, QUERY_LAST_MONTH)['count']
+    full_count = apicache.timeperiod_story_count(query, QUERY_LAST_MONTH)['count']
     for r in res:
         r['pct'] = (float(r['count'])/float(full_count))
         r['value'] = (float(r['count']))

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @flask_login.login_required
 @api_error_handler
 def api_metadata_download(collection_id):
-    all_media = media_with_tag(user_mediacloud_key(), collection_id)
+    all_media = media_with_tag(collection_id)
 
     metadata_counts = {}  # from tag_sets_id to info
     for media_source in all_media:
@@ -87,7 +87,7 @@ def api_collections_by_ids():
     collection_ids = request.args['coll[]'].split(',')
     sources_list = []
     for tags_id in collection_ids:
-        all_media = media_with_tag(user_mediacloud_key(), tags_id)
+        all_media = media_with_tag(tags_id)
         info = [{'media_id': m['media_id'], 'name': m['name'], 'url': m['url'], 'public_notes': m['public_notes']} for m
                 in all_media]
         add_user_favorite_flag_to_sources(info)
@@ -128,9 +128,9 @@ def api_collection_details(collection_id):
     info = user_mc.tag(collection_id)
     add_user_favorite_flag_to_collections([info])
     info['id'] = collection_id
-    info['tag_set'] = _tag_set_info(user_mediacloud_key(), info['tag_sets_id'])
+    info['tag_set'] = _tag_set_info(info['tag_sets_id'])
     if add_in_sources:
-        media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+        media_in_collection = media_with_tag(collection_id)
         info['sources'] = media_in_collection
     analytics_db.increment_count(analytics_db.TYPE_COLLECTION, collection_id, analytics_db.ACTION_SOURCE_MGR_VIEW)
     return jsonify({'results': info})
@@ -144,7 +144,7 @@ def api_collection_sources(collection_id):
     results = {
         'tags_id': collection_id
     }
-    media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+    media_in_collection = media_with_tag(collection_id)
     add_user_favorite_flag_to_sources(media_in_collection)
     results['sources'] = media_in_collection
     return jsonify(results)
@@ -167,7 +167,7 @@ def api_download_sources_template():
 def api_collection_sources_csv(collection_id):
     user_mc = user_mediacloud_client()
     collection = user_mc.tag(collection_id)    # not cached because props can change often
-    all_media = media_with_tag(user_mediacloud_key(), collection_id)
+    all_media = media_with_tag(collection_id)
     file_prefix = "Collection {} ({}) - sources ".format(collection_id, collection['tag'])
     properties_to_include = SOURCE_LIST_CSV_EDIT_PROPS
     return csv.download_media_csv(all_media, file_prefix, properties_to_include)
@@ -180,7 +180,7 @@ def api_collection_sources_feed_status_csv(collection_id, source_type):
     user_mc = user_mediacloud_client()
     collection = user_mc.tag(collection_id)
     list_type = str(source_type).lower()
-    media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+    media_in_collection = media_with_tag(collection_id)
     media_info_in_collection = _media_list_edit_job.map(media_in_collection)
     if list_type == 'review':
         filtered_media = [m for m in media_info_in_collection
@@ -215,7 +215,7 @@ def _media_list_edit_job(media):
     active_syndicated_feeds = [f for f in feeds if f['active'] and f['type'] == 'syndicated']
     active_feed_count = len(active_syndicated_feeds)
     query = "media_id:{}".format(media['media_id'])
-    full_count = apicache.timeperiod_story_count(user_mc, query, QUERY_LAST_YEAR)['count']
+    full_count = apicache.timeperiod_story_count(query, QUERY_LAST_YEAR)['count']
     # add the details to the media object and return it
     media['latest_scrape_job'] = latest_scrape_job
     media['active_feed_count'] = active_feed_count
@@ -270,7 +270,7 @@ def _source_story_split_count_job(info):
 
 
 def _collection_source_story_split_historical_counts(collection_id):
-    media_list = media_with_tag(user_mediacloud_key(), collection_id)
+    media_list = media_with_tag(collection_id)
     jobs = [{'media': m} for m in media_list]
     # fetch in parallel to make things faster
     #return [_source_story_split_count_job(j) for j in jobs]
@@ -278,7 +278,7 @@ def _collection_source_story_split_historical_counts(collection_id):
     return [d for d in _source_story_split_count_job.map(jobs)]
 
 
-def _tag_set_info(user_mc_key, tag_sets_id):
+def _tag_set_info(tag_sets_id):
     user_mc = user_mediacloud_client()
     return user_mc.tagSet(tag_sets_id)
 

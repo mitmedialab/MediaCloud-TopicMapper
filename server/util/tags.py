@@ -197,7 +197,7 @@ def cached_tag_set_file(file_path):
         return data
 
 
-def media_with_tag(user_mc_key, tags_id, cached=False):
+def media_with_tag(tags_id, cached=False):
     more_media = True
     all_media = []
     max_media_id = 0

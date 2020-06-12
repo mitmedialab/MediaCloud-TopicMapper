@@ -61,7 +61,7 @@ def _cached_collection_source_representation(mc_api_key, collection_id, sample_s
     return sorted(list(media_representation.values()), key=operator.itemgetter('stories'))
 
 
-def timeperiod_story_count(user_mc_key, query, time_period):
+def timeperiod_story_count(query, time_period):
     return _cached_timeperiod_story_count(query, time_period)
 
 
@@ -78,8 +78,9 @@ YESTERDAY = datetime.datetime.now()-datetime.timedelta(1)  # yesterday
 MC_START_DATE = datetime.datetime(2010, 1, 1, 0, 0, 0)  # kind of when media cloud started
 
 
-# you can specify last_n_days to be 365 if you only want the last year of results
-def split_story_count(user_mc_key, q='*', last_n_days=None):
+@cache.cache_on_arguments()
+def split_story_count(_user_mc_key, q='*', last_n_days=None):
+    # you can specify last_n_days to be 365 if you only want the last year of results
     start_date = None
     end_date = None
     if last_n_days is not None:
@@ -109,7 +110,7 @@ def _cached_split_story_counts(q='*', fq=''):
     return results
 
 
-def source_story_count(user_mc_key, query):
+def source_story_count(query):
     return cached_source_story_count(query)
 
 
@@ -120,7 +121,7 @@ def cached_source_story_count(query):
     return user_mc.storyCount(query)['count']
 
 
-def tag_coverage_pct(user_mc_key, query, tag_sets_id):
+def tag_coverage_pct(query, tag_sets_id):
     # What pct of stories matching the query been tagged with any tag in the set specified?
     # cache can be user-agnostic here because source stats aren't permissioned
     return _cached_tag_coverage_pct(query, tag_sets_id)
@@ -129,7 +130,7 @@ def tag_coverage_pct(user_mc_key, query, tag_sets_id):
 @cache.cache_on_arguments()
 def _cached_tag_coverage_pct(query, tag_sets_id):
     user_mc = user_mediacloud_client()
-    story_count = source_story_count(user_mediacloud_key(), query)
+    story_count = source_story_count(query)
     tagged_story_counts = user_mc.storyTagCount(solr_query=query, tag_sets_id=tag_sets_id)
     # sum tagged articles because there are different versions
     tagged_sum = sum([tag_info['count'] for tag_info in tagged_story_counts])

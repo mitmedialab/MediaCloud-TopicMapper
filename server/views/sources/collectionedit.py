@@ -45,7 +45,7 @@ def collection_update(collection_id):
                                            show_on_stories=(show_on_stories == 'true'),
                                            show_on_media=(show_on_media == 'true'))
     # get the sources in the collection first, then remove and add as needed
-    existing_source_ids = [int(m['media_id']) for m in media_with_tag(user_mediacloud_key(), collection_id)]
+    existing_source_ids = [int(m['media_id']) for m in media_with_tag(collection_id)]
     source_ids_to_remove = list(set(existing_source_ids) - set(source_ids))
     source_ids_to_add = [sid for sid in source_ids if sid not in existing_source_ids]
     # logger.debug(existing_source_ids)
@@ -70,7 +70,7 @@ def remove_sources_from_collection(collection_id):
     source_ids_to_remove = [int(s) for s in source_ids_to_remove]
     user_mc = user_admin_mediacloud_client()
     # get the sources in the collection first, then remove and add as needed
-    existing_source_ids = [int(m['media_id']) for m in media_with_tag(user_mediacloud_key(), collection_id)]
+    existing_source_ids = [int(m['media_id']) for m in media_with_tag(collection_id)]
     source_ids_to_remain = list(set(existing_source_ids) - set(source_ids_to_remove))
 
     media_to_remove = [MediaTag(sid, tags_id=collection_id, action=TAG_ACTION_REMOVE) for sid in source_ids_to_remove]
