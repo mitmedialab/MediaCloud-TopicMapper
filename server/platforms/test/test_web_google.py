@@ -17,6 +17,6 @@ class WebGoogleProviderTest(unittest.TestCase):
             TERM,
             start_date=dt.datetime.now() - dt.timedelta(days=DAY_WINDOW),
             end_date=dt.datetime.now(),
-            limit=1
+            limit=10
         )
         assert isinstance(results, list) is True
