@@ -24,11 +24,11 @@ def story(topics_id, stories_id):
         story_info = base_apicache.story(stories_id)  # add in other fields from regular call
         for k in story_info.keys():
             story_topic_info[k] = story_info[k]
-        for tag in story_info['story_tags']:
+        for tag in story_topic_info['story_tags']:
             if tag['tag_sets_id'] == tag_util.GEO_TAG_SET:
                 geonames_id = int(tag['tag'][9:])
                 try:
-                    tag['geoname'] = _cached_geoname(geonames_id, story_info['language'])
+                    tag['geoname'] = _cached_geoname(geonames_id, story_topic_info['language'])
                 except Exception as e:
                     # query to CLIFF failed :-( handle it gracefully
                     logger.exception(e)
