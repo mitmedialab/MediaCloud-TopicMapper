@@ -121,7 +121,7 @@ def is_bad_theme(tag_id):
 
 
 def format_name_from_label(user_label):
-    formatted_name = re.sub('\W|^(?=\d)', '_', user_label)
+    formatted_name = re.sub(r'\W|^(?=\d)', '_', user_label)
     return formatted_name
 
 
