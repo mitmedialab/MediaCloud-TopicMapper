@@ -41,7 +41,7 @@ const CollectionResultsTable = (props) => {
             }
             return (
               <tr key={`${c.tags_id}`} className={(idx % 2 === 0) ? 'even' : 'odd'}>
-                <td><a href={urlToCollection(c.tags_id)} target="new">{c.name !== "undefined" ? c.name : c.label}</a></td>
+                <td><a href={urlToCollection(c.tags_id)} target="new">{c.name !== 'undefined' ? c.name : c.label}</a></td>
                 <td>{c.tag_set_label}</td>
                 <td>{c.description}</td>
                 {mediaCountValue}

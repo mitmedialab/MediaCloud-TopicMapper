@@ -9,6 +9,10 @@ import MediaPickerDialog from '../../../../common/mediaPicker/MediaPickerDialog'
 import QueryHelpDialog from '../../../../common/help/QueryHelpDialog';
 import OpenWebMediaFieldArray from '../../../../common/form/OpenWebMediaFieldArray';
 
+setQueryFormChildDialogOpen = () => {
+  this.setState(prevState => ({ childDialogOpen: !prevState.childDialogOpen }));
+}
+
 const EditOpenWebForm = ({ initialValues, renderSolrTextField, intl, onFormChange }) => (
   <>
     <Row>
@@ -51,6 +55,7 @@ const EditOpenWebForm = ({ initialValues, renderSolrTextField, intl, onFormChang
           <MediaPickerDialog
             initMedia={initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
             onConfirmSelection={selections => onFormChange('media', selections)}
+            setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
           />
         </div>
       </Col>

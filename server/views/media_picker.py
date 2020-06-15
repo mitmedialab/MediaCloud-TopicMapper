@@ -42,10 +42,10 @@ def api_mediapicker_source_search():
         # ie. request.args['tags'] is not an int (ie. it is a list of collections like a normal query)
         querying_all_media = False
     tags_fq = "media_source_tags: {tag_sets_id: " + str(VALID_COLLECTION_TAG_SETS_IDS) + "}"
-    last_media_id = 0
+
     if querying_all_media:
         tags = [{'tags_id': ALL_MEDIA, 'id': ALL_MEDIA, 'label': "All Media", 'tag_sets_id': ALL_MEDIA}]
-        matching_sources = media_search_with_page(cleaned_search_str, tags, link_id=link_id)
+        matching_sources, last_media_id = media_search_with_page(cleaned_search_str, tags, link_id=link_id)
     elif 'tags' in request.args and len(request.args['tags']) > 0:
         # group the tags by tags_sets_id to support boolean searches
         tags_id_list = request.args['tags'].split(',')
