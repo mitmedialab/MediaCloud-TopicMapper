@@ -78,8 +78,7 @@ YESTERDAY = datetime.datetime.now()-datetime.timedelta(1)  # yesterday
 MC_START_DATE = datetime.datetime(2010, 1, 1, 0, 0, 0)  # kind of when media cloud started
 
 
-@cache.cache_on_arguments()
-def split_story_count(_user_mc_key, q='*', last_n_days=None):
+def split_story_count(q='*', last_n_days=None):
     # you can specify last_n_days to be 365 if you only want the last year of results
     start_date = None
     end_date = None

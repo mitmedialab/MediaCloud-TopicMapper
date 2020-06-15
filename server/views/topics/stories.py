@@ -214,8 +214,7 @@ def story_counts_by_snapshot(topics_id):
     counts = {}
     for s in snapshots:
         # get the count of stories in the overally timespan for this snapshot
-        timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                        snapshots_id=s['snapshots_id'], foci_id=None)
+        timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id=s['snapshots_id'], foci_id=None)
         try:
             total = timespans[0]['story_count']
         except mediacloud.error.MCException:

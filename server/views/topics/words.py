@@ -23,8 +23,7 @@ def topic_compare_subtopic_top_words(topics_id):
     selected_focal_sets_id = request.args['focal_sets_id']
     word_count = request.args['word_count'] if 'word_count' in request.args else 20
     # first we need to figure out which timespan they are working on
-    selected_snapshot_timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                                      snapshots_id=snapshots_id)
+    selected_snapshot_timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id=snapshots_id)
     selected_timespan = None
     for t in selected_snapshot_timespans:
         if t['timespans_id'] == int(timespans_id):
@@ -143,7 +142,7 @@ def topic_w2v_timespan_embeddings(topics_id):
     overall_embeddings = {x['term']: (x['google_w2v_x'], x['google_w2v_y']) for x in overall_word_counts}
 
     # Retrieve top words for each timespan
-    timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id, foci_id)
 
     # Retrieve embeddings for each timespan
     jobs = [{

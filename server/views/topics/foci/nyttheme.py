@@ -19,7 +19,7 @@ def get_top_themes_by_story_tag_counts(topics_id, num_themes):
     nyt_counts = []
 
     #get overall timespan
-    timespans = cached_topic_timespan_list(user_mediacloud_key(), topics_id)
+    timespans = cached_topic_timespan_list(topics_id)
     overall_timespan = [t for t in timespans if t['period'] == "overall"]
     overall_timespan = next(iter(overall_timespan))
     timespan_query = "timespans_id:{}".format(overall_timespan['timespans_id'])

@@ -258,7 +258,7 @@ def collection_source_story_split_historical_counts_csv(collection_id):
 def _source_story_split_count_job(info):
     source = info['media']
     q = "media_id:{}".format(source['media_id'])
-    split_stories = apicache.split_story_count(user_mediacloud_key(), q, 360)
+    split_stories = apicache.split_story_count(q, 360)
     source_data = {
         'media_id': source['media_id'],
         'media_name': source['name'],

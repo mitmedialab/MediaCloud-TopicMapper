@@ -120,7 +120,7 @@ def _topic_summary(topics_id):
 @api_error_handler
 def topic_timespan_list(topics_id, snapshots_id):
     ignored_snapshots_id, _timespans_id, foci_id, _q = filters_from_args(request.args)
-    timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id, foci_id)
     # add the focal_set type to the timespan so we can use that in the client (ie. decide what to show or not
     # based on what type of focal_set this timespan is part of)
     focal_sets = apicache.topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)

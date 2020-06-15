@@ -61,8 +61,7 @@ def topic_focal_set_definition_delete(topics_id, focal_set_definitions_id):
 def base_snapshot_timespan(topics_id):
     # find the timespan matching this one in the base snapshot (ie. with no foci_id)
     snapshots_id, timespans_id, foci_id, _q = filters_from_args(request.args)
-    base_snapshot_timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                                  snapshots_id=snapshots_id, foci_id=None)
+    base_snapshot_timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id=snapshots_id, foci_id=None)
     timespan = apicache.topic_timespan(topics_id, snapshots_id, foci_id, timespans_id)  # the selected timespan
     for t in base_snapshot_timespans:
         if apicache.is_timespans_match(timespan, t):

@@ -6,7 +6,7 @@ import mediacloud.error
 from server import mc, TOOL_API_KEY
 from server.views import WORD_COUNT_SAMPLE_SIZE, WORD_COUNT_UI_NUM_WORDS
 from server.cache import cache
-from server.util.tags import STORY_UNDATEABLE_TAG, is_bad_theme
+from server.util.tags import STORY_UNDATEABLE_TAG
 import server.util.wordembeddings as wordembeddings
 from server.auth import user_mediacloud_client, user_admin_mediacloud_client, user_mediacloud_key
 from server.util.request import filters_from_args
@@ -320,8 +320,7 @@ def topic_focal_set(user_mc_key, topics_id, snapshots_id, focal_sets_id):
     raise ValueError("Unknown subtopic set id of {}".format(focal_sets_id))
 
 
-@cache.cache_on_arguments()
-def cached_topic_timespan_list(_user_mc_key, topics_id, snapshots_id=None, foci_id=None):
+def cached_topic_timespan_list(topics_id, snapshots_id=None, foci_id=None):
     # this includes the user_mc_key as a first param so the cache works right
     user_mc = user_mediacloud_client()
     timespans = user_mc.topicTimespanList(topics_id, snapshots_id=snapshots_id, foci_id=foci_id)
@@ -405,7 +404,7 @@ def topic_timespan(topics_id, snapshots_id, foci_id, timespans_id):
     :param foci_id:
     :return: info about one timespan as specified
     """
-    timespans_list = cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    timespans_list = cached_topic_timespan_list(topics_id, snapshots_id, foci_id)
     matching_timespans = [t for t in timespans_list if t['timespans_id'] == int(timespans_id)]
     if len(matching_timespans) == 0:
         raise ValueError("Unknown timespans_id {}".format(timespans_id))
@@ -435,8 +434,7 @@ def matching_timespans_in_foci(topics_id, timespan_to_match, foci):
     timespans = []
     for focus in foci:
         # find the matching timespan within this focus
-        snapshot_timespans = cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                        snapshots_id=snapshots_id, foci_id=focus['foci_id'])
+        snapshot_timespans = cached_topic_timespan_list(topics_id, snapshots_id=snapshots_id, foci_id=focus['foci_id'])
         timespan = _matching_timespan(timespan_to_match, snapshot_timespans)
         timespans.append(timespan)
 #        if timespan is None:
