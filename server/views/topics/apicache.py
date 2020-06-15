@@ -365,7 +365,8 @@ def _cached_topic_tag_counts(_user_mc_key, _topics_id, tag_sets_id, query):
 
 def topic_sentence_sample(user_mc_key, sample_size=1000, **kwargs):
     """
-    Return a sample of sentences based on the filters.
+    Return a sample of sentences based on the filters. A topic ID isn't needed because there is no topicSentenceList
+    endpoint. Random sentence samples are pulled by using the timespans_id with a regular sentenceList call.
     """
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     merged_args = {
