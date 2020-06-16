@@ -6,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { selectMediaPickerQueryArgs, selectMedia, unselectMedia, clearSelectedMedia, resetMetadataShortlist } from '../../../actions/systemActions';
+import { selectMediaPickerQueryArgs, selectMedia, unselectMedia, clearSelectedMedia, resetMetadataShortlist, resetMediaPickerSources, resetMediaPickerCollections } from '../../../actions/systemActions';
 import { PICK_SOURCE_AND_COLLECTION, PICK_FEATURED } from '../../../lib/explorerUtil';
 import OpenWebMediaItem from '../OpenWebMediaItem';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
@@ -145,9 +145,9 @@ const mapDispatchToProps = dispatch => ({
     if (values.type >= 0) {
       dispatch(selectMediaPickerQueryArgs(values.type));
     }
-    // dispatch(resetMediaPickerSources());
-    // dispatch(resetMediaPickerCollections());
-    // dispatch(resetMetadataShortlist());
+    dispatch(resetMediaPickerSources());
+    dispatch(resetMediaPickerCollections());
+    dispatch(resetMetadataShortlist());
     if (values.allMedia) { // handle the "all media" placeholder selection
       dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword, type: values.type, allMedia: true }));
       dispatch(clearSelectedMedia());
