@@ -1,4 +1,3 @@
-import re
 import logging
 import os
 from mediacloud.api import MediaCloud
@@ -118,11 +117,6 @@ def is_bad_theme(tag_id):
     if int(tag_id) in BAD_THEMES:
         return True
     return False
-
-
-def format_name_from_label(user_label):
-    formatted_name = re.sub(r'\W|^(?=\d)', '_', user_label)
-    return formatted_name
 
 
 def label_for_metadata_tag(tag):

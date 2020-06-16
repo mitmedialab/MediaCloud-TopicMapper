@@ -13,7 +13,8 @@ from server.util.file import save_file_to_upload_folder
 from server.util.mail import send_html_email
 from server.util.request import csv_required, form_fields_required, api_error_handler
 from server.util.tags import VALID_METADATA_IDS, METADATA_PUB_COUNTRY_NAME, \
-    format_name_from_label, tags_in_tag_set, media_with_tag
+    tags_in_tag_set, media_with_tag
+from server.util.stringutil import as_tag_name
 from server.views.sources import SOURCE_LIST_CSV_EDIT_PROPS
 import server.views.sources.apicache as apicache
 
@@ -32,7 +33,7 @@ def collection_update(collection_id):
     show_on_stories = request.form['showOnStories'] if 'showOnStories' in request.form else None
     show_on_media = request.form['showOnMedia'] if 'showOnMedia' in request.form else None
 
-    formatted_name = format_name_from_label(label)
+    formatted_name = as_tag_name(label)
 
     source_ids = []
     if len(request.form['sources[]']) > 0:

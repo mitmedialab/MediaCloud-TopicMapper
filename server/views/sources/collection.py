@@ -10,7 +10,8 @@ from server import app, mc, user_db, analytics_db, executor
 from server.auth import user_mediacloud_key, user_admin_mediacloud_client, user_mediacloud_client, user_name,\
     user_has_auth_role, ROLE_MEDIA_EDIT
 from server.util.request import arguments_required, form_fields_required, api_error_handler
-from server.util.tags import TAG_SETS_ID_COLLECTIONS, format_name_from_label, media_with_tag
+from server.util.tags import TAG_SETS_ID_COLLECTIONS, media_with_tag
+from server.util.stringutil import as_tag_name
 from server.views.sources import SOURCE_LIST_CSV_EDIT_PROPS, SOURCE_FEED_LIST_CSV_PROPS
 from server.views.sources.feeds import source_feed_list
 from server.views.favorites import add_user_favorite_flag_to_collections, add_user_favorite_flag_to_sources
@@ -332,7 +333,7 @@ def collection_create():
     if len(request.form['sources[]']) > 0:
         source_ids = request.form['sources[]'].split(',')
 
-    formatted_name = format_name_from_label(label)
+    formatted_name = as_tag_name(label)
     # first create the collection
     new_collection = user_mc.createTag(TAG_SETS_ID_COLLECTIONS, formatted_name, label, description,
                                        is_static=(static == 'true'),
