@@ -68,7 +68,7 @@ class PickedMediaContainer extends React.Component {
     );
     let warningInfo = null;
     let selectedMediaContent = null;
-    if (selectedMedia && selectedMedia.length === 0) {
+    if (!selectedMedia || (selectedMedia && selectedMedia.length === 0)) {
       warningInfo = (
         <div className="media-picker-no-media-warning">
           <FormattedMessage {...messages.noMedia} />
