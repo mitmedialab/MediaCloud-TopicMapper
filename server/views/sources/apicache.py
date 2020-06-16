@@ -3,7 +3,7 @@ import operator
 
 import server.util.tags as tags
 from server import mc
-from server.auth import user_mediacloud_client, user_mediacloud_key
+from server.auth import user_mediacloud_client
 from server.cache import cache
 from server.util.api_helper import add_missing_dates_to_split_story_counts
 from server.views.sources import FEATURED_COLLECTION_LIST
