@@ -245,6 +245,7 @@ const reduxFormConfig = {
   form: 'advanced-media-picker-search',
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
+  destroyOnUnmount: false,
 };
 
 export default

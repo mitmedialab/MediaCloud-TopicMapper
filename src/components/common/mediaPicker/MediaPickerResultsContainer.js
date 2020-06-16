@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { toggleMedia, selectMedia, selectMediaPickerQueryArgs, resetMediaPickerQueryArgs, resetMediaPickerSources, resetMediaPickerCollections, resetMetadataShortlist } from '../../../actions/systemActions';
+import { toggleMedia, selectMedia, selectMediaPickerQueryArgs, resetMediaPickerSources, resetMediaPickerCollections, resetMetadataShortlist } from '../../../actions/systemActions';
 import { PICK_SOURCE_AND_COLLECTION, PICK_FEATURED } from '../../../lib/explorerUtil';
 import * as fetchConstants from '../../../lib/fetchConstants';
 import AllMediaSearchResultsContainer from './results/AllMediaSearchResultsContainer';
@@ -10,7 +10,7 @@ import FeaturedFavoriteGeoSearchResultsContainer from './results/FeaturedFavorit
 import { VALID_COLLECTION_IDS } from '../../../lib/tagUtil';
 
 class MediaPickerResultsContainer extends React.Component {
-  UNSAFE_componentWillMount() {
+  /* UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
@@ -24,16 +24,17 @@ class MediaPickerResultsContainer extends React.Component {
       || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
-  }
+  } */
 
+  /* unmounting & resetting after query, not what we want
   componentWillUnmount() {
     const { resetComponents } = this.props;
     resetComponents();
-  }
+  } */
 
   updateMediaQuery(values) {
     const { updateMediaQuerySelection } = this.props;
-    updateMediaQuerySelection(values);
+    updateMediaQuerySelection(values, { mediaKeyword: this.props.selectedMediaQueryKeyword });
   }
 
   correlateSelection(whichProps) {
@@ -126,6 +127,7 @@ MediaPickerResultsContainer.propTypes = {
   handleToggleSelected: PropTypes.func.isRequired,
   updateMediaQuerySelection: PropTypes.func.isRequired,
   selectedMediaQueryType: PropTypes.number,
+  selectedMediaQueryKeyword: PropTypes.string,
   resetComponents: PropTypes.func.isRequired,
   featured: PropTypes.object,
   favoritedCollections: PropTypes.object,
@@ -140,6 +142,7 @@ const mapStateToProps = state => ({
   fetchStatus: (state.system.mediaPicker.sourceQueryResults.fetchStatus === fetchConstants.FETCH_SUCCEEDED || state.system.mediaPicker.collectionQueryResults.fetchStatus === fetchConstants.FETCH_SUCCEEDED || state.system.mediaPicker.favoritedCollections.fetchStatus === fetchConstants.FETCH_SUCCEEDED) ? fetchConstants.FETCH_SUCCEEDED : fetchConstants.FETCH_INVALID,
   selectedMedia: state.system.mediaPicker.selectMedia.list,
   selectedMediaQueryType: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.type : null,
+  selectedMediaQueryKeyword: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.mediaKeyword : null,
   collectionResults: state.system.mediaPicker.collectionQueryResults,
   featured: state.system.mediaPicker.featured ? state.system.mediaPicker.featured : null,
   sourceResults: state.system.mediaPicker.sourceQueryResults,
@@ -164,7 +167,7 @@ const mapDispatchToProps = dispatch => ({
     }
   },
   resetComponents: () => {
-    dispatch(resetMediaPickerQueryArgs());
+    // dispatch(resetMediaPickerQueryArgs());
     dispatch(resetMediaPickerSources());
     dispatch(resetMediaPickerCollections());
     dispatch(resetMetadataShortlist());

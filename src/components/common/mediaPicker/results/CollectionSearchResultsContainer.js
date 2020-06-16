@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import AppButton from '../../AppButton';
 import CollectionResultsTable from './CollectionResultsTable';
 import MediaPickerSearchForm from '../MediaPickerSearchForm';
-import { selectMediaPickerQueryArgs, fetchMediaPickerCollections, resetMediaPickerCollections } from '../../../../actions/systemActions';
+import { selectMediaPickerQueryArgs, fetchMediaPickerCollections } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import LoadingSpinner from '../../LoadingSpinner';
 import { notEmptyString } from '../../../../lib/formValidators';
@@ -23,7 +23,7 @@ const localMessages = {
 
 
 class CollectionSearchResultsContainer extends React.Component {
-  UNSAFE_componentWillMount() {
+  /* UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
@@ -33,7 +33,7 @@ class CollectionSearchResultsContainer extends React.Component {
       || (nextProps.collectionResults && nextProps.collectionResults.lastFetchSuccess !== this.props.collectionResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
-  }
+  } */
 
   correlateSelection(whichProps) {
     const whichList = whichProps.collectionResults.list;
@@ -144,7 +144,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   resetAndUpdateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
-      dispatch(resetMediaPickerCollections());
+      // dispatch(resetMediaPickerCollections());
       dispatch(selectMediaPickerQueryArgs(values));
       dispatch(fetchMediaPickerCollections({ media_keyword: (values.mediaKeyword || '*'), which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId: values.linkId }));
     }

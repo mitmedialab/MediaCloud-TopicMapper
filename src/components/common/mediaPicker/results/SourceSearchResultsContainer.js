@@ -34,10 +34,10 @@ const localMessages = {
 const formSelector = formValueSelector('advanced-media-picker-search');
 
 class SourceSearchResultsContainer extends React.Component {
-  UNSAFE_componentWillMount() {
-    const { selectedMediaQueryType, updateMediaQuerySelection } = this.props;
+  /* UNSAFE_componentWillMount() {
+    const { selectedMediaQueryKeyword, selectedMediaQueryType, updateMediaQuerySelection } = this.props;
     this.correlateSelection(this.props);
-    updateMediaQuerySelection({ type: selectedMediaQueryType, tags: {} }); // clear out previous selections
+    updateMediaQuerySelection({ mediaKeyword: selectedMediaQueryKeyword, type: selectedMediaQueryType, tags: {} }); // clear out previous selections
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -46,7 +46,7 @@ class SourceSearchResultsContainer extends React.Component {
       || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
-  }
+  } */
 
   // values may contain mediaKeyword, tags, allMedia, customColl
   processQuery = (values) => {
@@ -124,9 +124,16 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   updateAndSearchWithSelection = (values) => {
+    const { clearPreviousSources, handleUpdateAndSearchWithSelection } = this.props;
+    const updatedQueryObj = this.processQuery(values);
+    clearPreviousSources(); // do this here and not for paging
+    handleUpdateAndSearchWithSelection(updatedQueryObj);
+  }
+
+  updateAndSearchWithPaging = (values) => {
     const { pageThroughSources } = this.props;
     const updatedQueryObj = this.processQuery(values);
-    pageThroughSources(updatedQueryObj);
+    pageThroughSources(updatedQueryObj); // mergeProps for paging
   }
 
   correlateSelection(whichProps) {
@@ -163,7 +170,6 @@ class SourceSearchResultsContainer extends React.Component {
           onQueryUpdateSelection={(metadataType, values) => this.updateQuerySelection(metadataType, values)}
           onSearch={val => this.updateAndSearchWithSelection(val)}
           hintText={formatMessage(localMessages.hintText)}
-          keepDirtyOnReinitialize
         />
       </div>
     );
@@ -223,9 +229,9 @@ class SourceSearchResultsContainer extends React.Component {
         <Row>
           <Col lg={12}>
             <AppButton
-              className="select-media-cancel-button"
+              className="select-media-button"
               label={formatMessage(messages.getMoreResults)}
-              onClick={val => this.updateAndSearchWithSelection(val)}
+              onClick={val => this.updateAndSearchWithPaging(val)}
               type="submit"
             />
           </Col>
@@ -267,9 +273,9 @@ SourceSearchResultsContainer.propTypes = {
   helpButton: PropTypes.node.isRequired,
   links: PropTypes.object,
   // from dispatch
-  // updateAdvancedMediaQuerySelection: PropTypes.func.isRequired,
   handleUpdateAndSearchWithSelection: PropTypes.func.isRequired,
   handleSelectMediaCustomColl: PropTypes.func.isRequired,
+  clearPreviousSources: PropTypes.func.isRequired,
   viewOnly: PropTypes.bool,
   pageThroughSources: PropTypes.func.isRequired,
 };
@@ -301,12 +307,14 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     if (values && values.tags) {
       dispatch(resetMediaPickerSources()); // clear prev results
       if (values.allMedia) { // handle the "all media" placeholder selection
-        ownProps.updateMediaQuerySelection({ media_keyword: values.mediaKeyword, type: values.type, allMedia: true });
+        ownProps.updateMediaQuerySelection({ media_keyword: values.mediaKeyword || '*', type: values.type, allMedia: true });
       } else {
-        dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword, type: values.type, tags: { ...values.tags } }));
+        dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword || '*', type: values.type, tags: { ...values.tags } }));
       }
     }
   },
+  clearPreviousSources: () => dispatch(resetMediaPickerSources()), // clear prev results
+
   handleUpdateAndSearchWithSelection: (values) => {
     if (values.mediaKeyword || values.tags) {
       let tags = null;
@@ -322,7 +330,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         });
         tags = selectedTags.filter(t => t.length > 0).join(',');
       }
-      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), linkId: values.linkId }));
+      dispatch(fetchMediaPickerSources({ media_keyword: values.mediaKeyword || '*', tags: (values.allMedia ? -1 : tags), type: values.type, linkId: values.linkId }));
     }
   },
   handleSelectMediaCustomColl: (values) => {

@@ -35,8 +35,9 @@ def api_mediapicker_source_search():
     cleaned_search_str = None if search_str == '*' else search_str
     querying_all_media = False
     link_id = request.args['link_id'] if 'link_id' in request.args else 0
+    tags_id = request.args['tags'] if 'tags' in request.args else 0
     try:
-        if int(request.args['tags']) == int(ALL_MEDIA):
+        if int(tags_id) == int(ALL_MEDIA):
             querying_all_media = True
     except ValueError:
         # ie. request.args['tags'] is not an int (ie. it is a list of collections like a normal query)
