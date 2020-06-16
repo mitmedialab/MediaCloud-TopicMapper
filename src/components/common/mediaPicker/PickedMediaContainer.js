@@ -74,6 +74,7 @@ class PickedMediaContainer extends React.Component {
           <FormattedMessage {...messages.noMedia} />
         </div>
       );
+    } else {
       selectedMediaContent = (
         <div className="select-media-selected-list">
           <FormattedMessage {...localMessages.selectedMedia} />

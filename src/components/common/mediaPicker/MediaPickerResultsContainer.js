@@ -10,7 +10,7 @@ import FeaturedFavoriteGeoSearchResultsContainer from './results/FeaturedFavorit
 import { VALID_COLLECTION_IDS } from '../../../lib/tagUtil';
 
 class MediaPickerResultsContainer extends React.Component {
-  /* UNSAFE_componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
@@ -24,7 +24,7 @@ class MediaPickerResultsContainer extends React.Component {
       || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
-  } */
+  }
 
   /* unmounting & resetting after query, not what we want
   componentWillUnmount() {
@@ -45,7 +45,7 @@ class MediaPickerResultsContainer extends React.Component {
         whichList = whichProps.collectionResults;
         break; */
       case PICK_SOURCE_AND_COLLECTION:
-        whichList = whichProps.collectionResults;
+        whichList = whichProps.sourceResults;
         break;
       default:
         break;
