@@ -26,7 +26,7 @@ class CountryCollectionSearchResultsContainer extends React.Component {
     return (
       <CollectionSearchResultsContainer
         fetchStatus={fetchCountryStatus}
-        whichTagSet={TAG_SET_ABYZ_GEO_COLLECTIONS}
+        whichTagSet={[TAG_SET_ABYZ_GEO_COLLECTIONS]}
         onToggleSelected={onToggleSelected}
         selectedMediaQueryType={selectedMediaQueryType}
         selectedMediaQueryKeyword={selectedMediaQueryKeyword}
