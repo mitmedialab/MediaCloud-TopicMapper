@@ -23,7 +23,7 @@ const localMessages = {
 
 
 class CollectionSearchResultsContainer extends React.Component {
-  /* UNSAFE_componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.correlateSelection(this.props);
   }
 
@@ -33,7 +33,7 @@ class CollectionSearchResultsContainer extends React.Component {
       || (nextProps.collectionResults && nextProps.collectionResults.lastFetchSuccess !== this.props.collectionResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
-  } */
+  }
 
   correlateSelection(whichProps) {
     const whichList = whichProps.collectionResults.list;

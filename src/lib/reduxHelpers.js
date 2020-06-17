@@ -18,7 +18,7 @@ export function concatPrevAndNext(next, prev, type) {
   const nextList = next.map(c => ({
     ...c,
     name: `${c.name}`,
-    id: parseInt(c.media_id, 10),
+    id: parseInt((type === 'source' ? c.media_id : c.tags_id), 10),
     type,
     selected: false,
   }));
