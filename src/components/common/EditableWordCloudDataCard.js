@@ -123,7 +123,7 @@ class EditableWordCloudDataCard extends React.Component {
   };
 
   buildActionMenu = (uniqueDomId) => {
-    const { onDownload, includeTopicWord2Vec, hideGoogleWord2Vec, actionMenuHeaderText, actionsAsLinksUnderneath, svgDownloadPrefix, onViewSampleSizeClick, initSampleSize, extraActionMenu } = this.props;
+    const { includeTopicWord2Vec, hideGoogleWord2Vec, actionMenuHeaderText, actionsAsLinksUnderneath, svgDownloadPrefix, onViewSampleSizeClick, initSampleSize, extraActionMenu } = this.props;
     const { formatMessage } = this.props.intl;
     let wcChoice = <FormattedMessage {...messages.editWordCloud} />;
     if (this.state.editing) {
@@ -207,27 +207,23 @@ class EditableWordCloudDataCard extends React.Component {
           <DownloadButton />
         </ListItemIcon>
       </MenuItem>,
-      !onDownload && (
-        <MenuItem
-          className="action-icon-menu-item"
-          disabled={this.state.editing} // can't download until done editing
-          onClick={() => this.downloadCsv(2)}
-        >
-          <ListItemText><FormattedMessage {...localMessages.downloadBigramCSV} /></ListItemText>
-          <ListItemIcon>
-            <DownloadButton />
-          </ListItemIcon>
-        </MenuItem>
-      ),
-      !onDownload && (
-        <MenuItem
-          className="action-icon-menu-item"
-          disabled={this.state.editing} // can't download until done editing
-          onClick={() => this.downloadCsv(3)}
-        >
-          <FormattedMessage {...localMessages.downloadTrigramCSV} />
-        </MenuItem>
-      ),
+      <MenuItem
+        className="action-icon-menu-item"
+        disabled={this.state.editing} // can't download until done editing
+        onClick={() => this.downloadCsv(2)}
+      >
+        <ListItemText><FormattedMessage {...localMessages.downloadBigramCSV} /></ListItemText>
+        <ListItemIcon>
+          <DownloadButton />
+        </ListItemIcon>
+      </MenuItem>,
+      <MenuItem
+        className="action-icon-menu-item"
+        disabled={this.state.editing} // can't download until done editing
+        onClick={() => this.downloadCsv(3)}
+      >
+        <FormattedMessage {...localMessages.downloadTrigramCSV} />
+      </MenuItem>,
       <MenuItem
         className="action-icon-menu-item"
         disabled={this.state.editing} // can't download until done editing
