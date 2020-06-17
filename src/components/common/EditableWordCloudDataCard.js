@@ -197,33 +197,18 @@ class EditableWordCloudDataCard extends React.Component {
       </MenuItem>,
     ];
     const downloadOptions = [
-      <MenuItem
-        className="action-icon-menu-item"
-        disabled={this.state.editing} // can't download until done editing
-        onClick={() => this.downloadCsv(1)}
-      >
-        <ListItemText><FormattedMessage {...localMessages.downloadWordCSV} /></ListItemText>
-        <ListItemIcon>
-          <DownloadButton />
-        </ListItemIcon>
-      </MenuItem>,
-      <MenuItem
-        className="action-icon-menu-item"
-        disabled={this.state.editing} // can't download until done editing
-        onClick={() => this.downloadCsv(2)}
-      >
-        <ListItemText><FormattedMessage {...localMessages.downloadBigramCSV} /></ListItemText>
-        <ListItemIcon>
-          <DownloadButton />
-        </ListItemIcon>
-      </MenuItem>,
-      <MenuItem
-        className="action-icon-menu-item"
-        disabled={this.state.editing} // can't download until done editing
-        onClick={() => this.downloadCsv(3)}
-      >
-        <FormattedMessage {...localMessages.downloadTrigramCSV} />
-      </MenuItem>,
+      [localMessages.downloadWordCSV, localMessages.downloadBigramCSV, localMessages.downloadTrigramCSV].map((msg, i) => (
+        <MenuItem
+          className="action-icon-menu-item"
+          disabled={this.state.editing} // can't download until done editing
+          onClick={() => this.downloadCsv(i+1)}
+        >
+          <ListItemText><FormattedMessage {...msg} /></ListItemText>
+          <ListItemIcon>
+            <DownloadButton />
+          </ListItemIcon>
+        </MenuItem>
+      )),
       <MenuItem
         className="action-icon-menu-item"
         disabled={this.state.editing} // can't download until done editing
