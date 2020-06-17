@@ -36,7 +36,7 @@ def _get_word_count():
 @api_error_handler
 def explorer_wordcount_csv():
     data = request.form
-    ngram_size = data['ngramSize'] if 'ngramSize' in data else 1    # defaul to words if ngram not specified
+    ngram_size = data['ngramSize'] if 'ngramSize' in data else 1    # default to words if ngram not specified
     sample_size = data['sample_size'] if 'sample_size' in data else WORD_COUNT_SAMPLE_SIZE
     filename = 'sampled-{}-ngrams-{}'.format(sample_size, ngram_size)
     query_object = json.loads(data['q'])
