@@ -21,6 +21,7 @@ const collectionSearch = createAsyncReducer({
       if (c.id === payload.selectedMedia.id) {
         return ({
           ...c,
+          name: payload.selectedMedia.label,
           selected: payload.setSelected,
         });
       }

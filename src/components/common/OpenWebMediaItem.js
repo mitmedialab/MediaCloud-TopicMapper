@@ -25,7 +25,7 @@ const OpenWebMediaItem = ({ object, onDelete, intl, justText }) => {
   if (isCollection) {
     typeClass = 'collection';
     objectId = object.tags_id;
-    name = (object.name || object.label || object.tag);
+    name = (object.name && object.name !== 'undefined' ? object.name : (object.label || object.tag));
   } else if (isSearch) {
     typeClass = 'search';
     objectId = 'custom'; //  maybe create a unique id
