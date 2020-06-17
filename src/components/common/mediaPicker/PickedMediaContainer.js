@@ -74,23 +74,22 @@ class PickedMediaContainer extends React.Component {
           <FormattedMessage {...messages.noMedia} />
         </div>
       );
-    } else {
-      selectedMediaContent = (
-        <div className="select-media-selected-list">
-          <FormattedMessage {...localMessages.selectedMedia} />
-          <IconButton className="select-media-options" onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
-          { allMedia }
-          {selectedMedia.map(obj => (
-            <OpenWebMediaItem
-              key={obj.id || obj.tags_id || obj.media_id || obj.tag_sets_id || obj.tags.name}
-              object={obj}
-              onDelete={() => handleUnselectMedia(obj)}
-            />
-          ))}
-          { warningInfo }
-        </div>
-      );
     }
+    selectedMediaContent = (
+      <div className="select-media-selected-list">
+        <FormattedMessage {...localMessages.selectedMedia} />
+        <IconButton className="select-media-options" onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
+        { allMedia }
+        {selectedMedia && selectedMedia.length && selectedMedia.map(obj => (
+          <OpenWebMediaItem
+            key={obj.id || obj.tags_id || obj.media_id || obj.tag_sets_id || obj.tags.name}
+            object={obj}
+            onDelete={() => handleUnselectMedia(obj)}
+          />
+        ))}
+        { warningInfo }
+      </div>
+    );
 
     return (
       <div>
