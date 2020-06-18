@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga';
 import doNotTrack from 'donottrack';
-import { setAppName, setVersion, APP_EXPLORER } from './config';
+import { setAppName, APP_EXPLORER } from './config';
 import { setAppColors } from './styles/colors';
 import initializeApp from './index';
 import routes from './routes/explorerRoutes';
@@ -10,8 +10,6 @@ import routes from './routes/explorerRoutes';
  */
 
 if (!doNotTrack(false)) ReactGA.initialize('UA-60744513-11');
-
-setVersion('3.14.1');
 
 setAppName(APP_EXPLORER);
 

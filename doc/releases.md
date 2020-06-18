@@ -22,7 +22,7 @@ Building and Pushing a Release
 
 1. Make or enter release branch such as 3.5.x, and create a milestone if we don't have one (ie. v3.5.1)
 1. Test the changes locally to make sure they worked (after pulling into release branch)
-1. Update the version number in the appropriate `src/[tool]Index.js` file.
+1. Update the version number in `./package.json`.
 1. Update release notes in `server/static/data/release_history.json`
    1. Commit these files
 1. Build the release version of the JS and CSS: `npm run topics-release`, or `npm run sources-release`, etc.

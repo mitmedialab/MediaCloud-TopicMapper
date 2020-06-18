@@ -22,6 +22,7 @@ const baseConfig = {
     new MomentLocalesPlugin(),
     // provide much cleaner feedback while building on the command line
     new WebpackBar(),
+    new webpack.DefinePlugin({ MC_VERSION: JSON.stringify(require('../package.json').version) }),
   ],
   stats: 'minimal',
   module: {
