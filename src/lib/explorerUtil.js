@@ -79,7 +79,7 @@ export function ensureSafeResults(queries, results) {
   const resultUids = Object.keys(results);
   const validQueries = queries
     .filter(q => q.deleted !== true) // undeleted queries
-    .filter(q => resultUids.includes(q.uid)); // and those that have results
+    .filter(q => resultUids.includes(`${q.uid}`)); // and those that have results
   const validQueriesWithResults = validQueries.map(q => ({
     ...q,
     results: results[q.uid],
