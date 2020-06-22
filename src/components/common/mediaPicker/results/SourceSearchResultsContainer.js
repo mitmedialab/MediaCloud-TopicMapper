@@ -15,8 +15,6 @@ import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil
 import { notEmptyString } from '../../../../lib/formValidators';
 import messages from '../../../../resources/messages';
 
-const NO_MORE_RESULTS = -1;
-
 const localMessages = {
   fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: '{numResults} Sources matching<br /> "{keyword}" and {tags}' },
   mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '{numResults} Sources matching<br />"{keyword}"' },
@@ -34,20 +32,6 @@ const localMessages = {
 const formSelector = formValueSelector('advanced-media-picker-search');
 
 class SourceSearchResultsContainer extends React.Component {
-  /* UNSAFE_componentWillMount() {
-    const { selectedMediaQueryKeyword, selectedMediaQueryType, updateMediaQuerySelection } = this.props;
-    this.correlateSelection(this.props);
-    updateMediaQuerySelection({ mediaKeyword: selectedMediaQueryKeyword, type: selectedMediaQueryType, tags: {} }); // clear out previous selections
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedMedia !== this.props.selectedMedia
-      // if the results have changed from a keyword entry, we need to update the UI
-      || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {
-      this.correlateSelection(nextProps);
-    }
-  } */
-
   // values may contain mediaKeyword, tags, allMedia, customColl
   processQuery = (values) => {
     const { formQuery, selectedMediaQueryType, selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags } = this.props;
@@ -225,7 +209,7 @@ class SourceSearchResultsContainer extends React.Component {
           />
         </div>
       );
-      getMoreResultsContent = (links.next > NO_MORE_RESULTS && (
+      getMoreResultsContent = (
         <Row>
           <Col lg={12}>
             <AppButton
@@ -233,10 +217,11 @@ class SourceSearchResultsContainer extends React.Component {
               label={formatMessage(messages.getMoreResults)}
               onClick={val => this.updateAndSearchWithPaging(val)}
               type="submit"
+              disabled={links.next <= 0}
             />
           </Col>
         </Row>
-      ));
+      );
     } else {
       resultContent = <FormattedMessage {...localMessages.noResults} />;
     }

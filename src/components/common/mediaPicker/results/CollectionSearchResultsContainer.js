@@ -13,8 +13,6 @@ import { notEmptyString } from '../../../../lib/formValidators';
 import { TAG_SET_MC_ID } from '../../../../lib/tagUtil';
 import messages from '../../../../resources/messages';
 
-const NO_MORE_RESULTS = -1;
-
 const localMessages = {
   title: { id: 'system.mediaPicker.collections.title', defaultMessage: '{numResults} Collections matching "{name}"' },
   hintText: { id: 'system.mediaPicker.collections.hint', defaultMessage: 'Search for collections by name' },
@@ -73,7 +71,7 @@ class CollectionSearchResultsContainer extends React.Component {
           viewOnly={viewOnly}
         />
       );
-      getMoreResultsContent = (links.next > NO_MORE_RESULTS && (
+      getMoreResultsContent = (
         <Row>
           <Col lg={12}>
             <AppButton
@@ -81,10 +79,11 @@ class CollectionSearchResultsContainer extends React.Component {
               label={formatMessage(messages.getMoreResults)}
               onClick={val => pageThroughCollections(val)}
               type="submit"
+              disabled={links.next <= 0}
             />
           </Col>
         </Row>
-      ));
+      );
     } else if (initCollections) {
       content = initCollections;
     } else {

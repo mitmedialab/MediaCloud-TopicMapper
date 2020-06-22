@@ -3,7 +3,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import withAsyncData from '../../hocs/AsyncDataContainer';
-import { selectMediaPickerQueryArgs, fetchMediaPickerFeaturedCollections, fetchFavoriteCollections, fetchFavoriteSources, fetchMediaPickerCountryCollections } from '../../../../actions/systemActions';
+import { selectMediaPickerQueryArgs, fetchMediaPickerFeaturedCollections, fetchFavoriteCollections, fetchFavoriteSources, fetchMediaPickerCollections } from '../../../../actions/systemActions';
 import TabSearchResultsContainer from './TabSearchResultsContainer';
 import { TAG_SET_ABYZ_GEO_COLLECTIONS, TAG_SET_MC_ID } from '../../../../lib/tagUtil';
 
@@ -125,7 +125,7 @@ const mapStateToProps = state => ({
   featured: state.system.mediaPicker.featured ? state.system.mediaPicker.featured : null,
   favoritedCollections: state.system.mediaPicker.favoritedCollections ? state.system.mediaPicker.favoritedCollections : null,
   favoritedSources: state.system.mediaPicker.favoritedSources ? state.system.mediaPicker.favoritedSources : null,
-  collectionResults: state.system.mediaPicker.countryCollectionQueryResults,
+  collectionResults: state.system.mediaPicker.collectionQueryResults,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -135,7 +135,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(fetchMediaPickerFeaturedCollections(TAG_SET_MC_ID));
       dispatch(fetchFavoriteCollections());
       dispatch(fetchFavoriteSources());
-      dispatch(fetchMediaPickerCountryCollections());
+      dispatch(fetchMediaPickerCollections());
     }
   },
 });
@@ -145,7 +145,7 @@ const fetchAsyncData = (dispatch) => {
   dispatch(fetchMediaPickerFeaturedCollections(TAG_SET_MC_ID));
   dispatch(fetchFavoriteCollections());
   dispatch(fetchFavoriteSources());
-  dispatch(fetchMediaPickerCountryCollections({ media_keyword: '', which_set: TAG_SET_ABYZ_GEO_COLLECTIONS }));
+  dispatch(fetchMediaPickerCollections({ media_keyword: '', which_set: TAG_SET_ABYZ_GEO_COLLECTIONS }));
 };
 
 export default
