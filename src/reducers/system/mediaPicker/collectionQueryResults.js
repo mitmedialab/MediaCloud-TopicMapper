@@ -2,7 +2,7 @@ import { FETCH_MEDIAPICKER_COLLECTION_SEARCH, MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST,
 import { createAsyncReducer, concatPrevAndNext } from '../../../lib/reduxHelpers';
 
 const initialState = {
-  args: { type: 0, mediaKeyword: null },
+  args: { type: 1, mediaKeyword: null },
   list: [],
   linkId: { next: 0 },
 };
@@ -15,7 +15,6 @@ const collectionSearch = createAsyncReducer({
     list: concatPrevAndNext(payload.list, state.list, 'collection'),
     linkId: { next: payload.link_id },
   }),
-  [RESET_MEDIAPICKER_COLLECTION_SEARCH]: () => initialState,
   [MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST]: (payload, state) => ({
     list: state.list.map((c) => {
       if (c.id === payload.selectedMedia.id) {
@@ -28,6 +27,7 @@ const collectionSearch = createAsyncReducer({
       return c;
     }),
   }),
+  [RESET_MEDIAPICKER_COLLECTION_SEARCH]: () => ({ args: { type: 1, mediaKeyword: null }, list: [], linkId: { next: 0 } }),
 });
 
 export default collectionSearch;
