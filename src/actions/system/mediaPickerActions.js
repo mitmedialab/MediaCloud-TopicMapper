@@ -16,11 +16,6 @@ export const fetchMediaPickerCollections = createAsyncAction(FETCH_MEDIAPICKER_C
 export const RESET_MEDIAPICKER_COLLECTION_SEARCH = 'RESET_MEDIAPICKER_COLLECTION_SEARCH';
 export const resetMediaPickerCollections = createAction(RESET_MEDIAPICKER_COLLECTION_SEARCH, params => params);
 
-export const FETCH_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH = 'FETCH_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH';
-export const fetchMediaPickerCountryCollections = createAsyncAction(FETCH_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH, api.fetchMediaPickerCollections, params => params);
-export const RESET_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH = 'RESET_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH';
-export const resetMediaPickerCountryCollections = createAction(RESET_MEDIAPICKER_COUNTRY_COLLECTION_SEARCH, params => params);
-
 export const FETCH_MEDIAPICKER_SOURCE_SEARCH = 'FETCH_MEDIAPICKER_SOURCE_SEARCH';
 export const fetchMediaPickerSources = createAsyncAction(FETCH_MEDIAPICKER_SOURCE_SEARCH, api.fetchMediaPickerSources, params => params);
 export const RESET_MEDIAPICKER_SOURCE_SEARCH = 'RESET_MEDIAPICKER_SOURCE_SEARCH';

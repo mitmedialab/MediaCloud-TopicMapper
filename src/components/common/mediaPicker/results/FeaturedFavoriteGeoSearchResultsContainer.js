@@ -83,7 +83,7 @@ class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
           onToggleSelected={onToggleSelected}
           selectedMediaQueryType={selectedMediaQueryType}
           queryResults={queryResults}
-          initValues={{ storedKeyword: { mediaKeyword: '' } }}
+          initValues={{ mediaKeyword: '' }}
           onSearch={val => this.updateMediaQuery(val)}
           hintTextMsg={localMessages.hintText}
           handleMediaConcurrency={this.props.handleMediaConcurrency}

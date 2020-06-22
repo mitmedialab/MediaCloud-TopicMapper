@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { selectMediaPickerQueryArgs, fetchMediaPickerCountryCollections } from '../../../../actions/systemActions';
+import { selectMediaPickerQueryArgs, fetchMediaPickerCollections, resetMediaPickerCollections } from '../../../../actions/systemActions';
 import CollectionSearchResultsContainer from './CollectionSearchResultsContainer';
 import { notEmptyString } from '../../../../lib/formValidators';
 import { TAG_SET_ABYZ_GEO_COLLECTIONS } from '../../../../lib/tagUtil';
@@ -22,16 +22,16 @@ class CountryCollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchCountryStatus, viewOnly } = this.props;
+    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchStatus, viewOnly } = this.props;
     return (
       <CollectionSearchResultsContainer
-        fetchStatus={fetchCountryStatus}
+        fetchStatus={fetchStatus}
         whichTagSet={[TAG_SET_ABYZ_GEO_COLLECTIONS]}
         onToggleSelected={onToggleSelected}
         selectedMediaQueryType={selectedMediaQueryType}
         selectedMediaQueryKeyword={selectedMediaQueryKeyword}
         collectionResults={collectionResults}
-        initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword } }}
+        initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
         onSearch={val => this.updateMediaQuery(val)}
         hintTextMsg={localMessages.countrySearchHintText}
         handleMediaConcurrency={this.props.handleMediaConcurrency}
@@ -54,22 +54,23 @@ CountryCollectionSearchResultsContainer.propTypes = {
   selectedMediaQueryKeyword: PropTypes.string,
   selectedMediaQueryType: PropTypes.number,
   collectionResults: PropTypes.object,
-  fetchCountryStatus: PropTypes.string,
+  fetchStatus: PropTypes.string,
   viewOnly: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
-  fetchCountryStatus: state.system.mediaPicker.countryCollectionQueryResults.fetchStatus,
+  fetchStatus: state.system.mediaPicker.collectionQueryResults.fetchStatus,
   selectedMediaQueryType: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.type : 0,
   selectedMediaQueryKeyword: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.mediaKeyword : null,
-  collectionResults: state.system.mediaPicker.countryCollectionQueryResults,
+  collectionResults: state.system.mediaPicker.collectionQueryResults,
 });
 
 const mapDispatchToProps = dispatch => ({
   updateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
+      dispatch(resetMediaPickerCollections());
       dispatch(selectMediaPickerQueryArgs(values));
-      dispatch(fetchMediaPickerCountryCollections({ media_keyword: values.mediaKeyword, which_set: TAG_SET_ABYZ_GEO_COLLECTIONS }));
+      dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: TAG_SET_ABYZ_GEO_COLLECTIONS }));
     }
   },
 });
