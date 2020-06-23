@@ -15,6 +15,7 @@ import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil
 import { notEmptyString } from '../../../../lib/formValidators';
 import messages from '../../../../resources/messages';
 
+
 const localMessages = {
   fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: '{numResults} Sources matching<br /> "{keyword}" and {tags}' },
   mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '{numResults} Sources matching<br />"{keyword}"' },

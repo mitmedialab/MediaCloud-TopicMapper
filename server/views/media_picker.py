@@ -34,7 +34,7 @@ def api_mediapicker_source_search():
     search_str = request.args['media_keyword']
     cleaned_search_str = None if search_str == '*' else search_str
     querying_all_media = False
-    link_id = request.args['link_id'] if 'link_id' in request.args else 0
+    link_id = request.args.get('link_id', 0)
     tags_id = request.args['tags'] if 'tags' in request.args else 0
     try:
         if int(tags_id) == int(ALL_MEDIA):
