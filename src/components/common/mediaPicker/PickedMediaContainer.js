@@ -80,7 +80,7 @@ class PickedMediaContainer extends React.Component {
         <FormattedMessage {...localMessages.selectedMedia} />
         <IconButton className="select-media-options" onClick={this.handleClick} aria-haspopup="true" aria-owns="logged-in-header-menu"><MoreVertIcon /></IconButton>
         { allMedia }
-        {selectedMedia && selectedMedia.length && selectedMedia.map(obj => (
+        {selectedMedia && selectedMedia.length > 0 && selectedMedia.map(obj => (
           <OpenWebMediaItem
             key={obj.id || obj.tags_id || obj.media_id || obj.tag_sets_id || obj.tags.name}
             object={obj}
