@@ -17,9 +17,10 @@ import messages from '../../../../resources/messages';
 
 
 const localMessages = {
-  fullTitle: { id: 'system.mediaPicker.sources.combinedTitle', defaultMessage: '{numResults} Sources matching<br /> "{keyword}" and {tags}' },
-  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '{numResults} Sources matching<br />"{keyword}"' },
-  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: '{numResults} Sources matching<br />{tags}' },
+  prefixTitle: { id: 'system.mediaPicker.sources.prefixTitle', defaultMessage: '{numResults} Sources matching ' },
+  ktTitle: { id: 'system.mediaPicker.sources.combinedKeywordAndTags', defaultMessage: '"{keyword}" and {tags}' },
+  mTitle: { id: 'system.mediaPicker.sources.mediaTitle', defaultMessage: '"{keyword}"' },
+  tTitle: { id: 'system.mediaPicker.sources.tagsTitle', defaultMessage: '{tags}' },
   hintText: { id: 'system.mediaPicker.sources.hint', defaultMessage: 'Search sources by name or url' },
   noResults: { id: 'system.mediaPicker.sources.noResults', defaultMessage: 'No results. Try searching for the name or URL of a specific source to see if we cover it, like Washington Post, Hindustan Times, or guardian.co.uk.' },
   showAdvancedOptions: { id: 'system.mediaPicker.sources.showAdvancedOptions', defaultMessage: 'Show Advanced Options' },
@@ -162,7 +163,7 @@ class SourceSearchResultsContainer extends React.Component {
       <Col lg={12}>
         { helpButton }
         <AppButton
-          style={{ marginTop: -30, float: 'right' }}
+          style={{ float: 'right' }}
           label={formatMessage(localMessages.customColl)}
           onClick={() => this.addCustomSelection({ customColl: true })}
           color="primary"
@@ -192,24 +193,15 @@ class SourceSearchResultsContainer extends React.Component {
       if (tagNames.length > 0) {
         stringifiedTags = stringifyTags(previouslySearchedTags, formatMessage);
       }
+      const prefixTitle = <FormattedHTMLMessage {...localMessages.prefixTitle} values={{ numResults: sourceResults.list.length }} />;
+
       if (notEmptyString(selectedMediaQueryKeyword) && stringifiedTags) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.fullTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags, numResults: sourceResults.list.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.ktTitle} values={{ keyword: selectedMediaQueryKeyword, tags: stringifiedTags }} />;
       } else if (notEmptyString(selectedMediaQueryKeyword)) {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword, numResults: sourceResults.list.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.mTitle} values={{ keyword: selectedMediaQueryKeyword }} />;
       } else {
-        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags, numResults: sourceResults.list.length }} />;
+        conditionalTitle = <FormattedHTMLMessage {...localMessages.tTitle} values={{ tags: stringifiedTags }} />;
       }
-      resultContent = (
-        <div className="source-search-results">
-          <h2>{ conditionalTitle }</h2>
-          { !viewOnly && addCustomButton }
-          <SourceResultsTable
-            sources={sourceResults.list}
-            onToggleSelected={onToggleSelected}
-            viewOnly={viewOnly}
-          />
-        </div>
-      );
       getMoreResultsContent = (
         <Row>
           <Col lg={12}>
@@ -223,15 +215,27 @@ class SourceSearchResultsContainer extends React.Component {
           </Col>
         </Row>
       );
+
+      resultContent = (
+        <div className="media-picker-source-search-results">
+          <h2><span className="source-search-keys">{prefixTitle}</span>{ conditionalTitle }</h2>
+          { !viewOnly && addCustomButton }
+          { getMoreResultsContent }
+          <SourceResultsTable
+            sources={sourceResults.list}
+            onToggleSelected={onToggleSelected}
+            viewOnly={viewOnly}
+          />
+        </div>
+      );
     } else {
       resultContent = <FormattedMessage {...localMessages.noResults} />;
     }
     return (
       <div>
         {content}
-        {getMoreResultsContent}
         {resultContent}
-        {getMoreResultsContent}
+        { getMoreResultsContent }
       </div>
     );
   }
