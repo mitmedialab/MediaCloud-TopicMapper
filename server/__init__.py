@@ -18,6 +18,7 @@ from flask_executor import Executor
 
 from server.sessions import RedisSessionInterface
 from server.util.config import get_default_config, ConfigException
+from server.commands import sync_frontend_db
 from server.database import UserDatabase, AnalyticsDatabase
 
 SERVER_MODE_DEV = "dev"
@@ -172,6 +173,9 @@ def create_app():
         my_app.config['REMEMBER_COOKIE_DOMAIN'] = cookie_domain
     # connect to the shared session storage
     my_app.session_interface = RedisSessionInterface(redis.StrictRedis.from_url(config.get('SESSION_REDIS_URL')))
+
+    my_app.cli.add_command(sync_frontend_db)
+
     return my_app
 
 

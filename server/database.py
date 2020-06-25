@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 
 
 class AppDatabase:
-    # DB wrapper for accessing local storge that supports the app.
-    # In theory this makes switching out storage backends easier, by gauranteeing _conn is private.
+    # DB wrapper for accessing local storage that supports the app.
+    # In theory this makes switching out storage backends easier, by guaranteeing _conn is private.
 
     def __init__(self, db_uri):
         self.uri = db_uri
@@ -65,6 +65,12 @@ class UserDatabase(AppDatabase):
 
     def update_user(self, username, values_to_update):
         return self._conn.users.update_one({'username': username}, {'$set': values_to_update})
+
+    def get_users(self, query_operator=None):
+        return self._conn.users.find(query_operator or {})
+
+    def delete_users(self, query_operator=None):
+        return self._conn.users.delete_many(query_operator or {})
 
 
 class AnalyticsDatabase(AppDatabase):
