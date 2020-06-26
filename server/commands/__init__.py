@@ -4,7 +4,7 @@ import click
 from flask.cli import with_appcontext
 
 
-def fetch_backend_emails():
+def _fetch_backend_emails():
     from server import mc
     first = True
     link_id = None
@@ -27,7 +27,7 @@ def sync_frontend_db(test):
     will be deleted.
     """
     from server import user_db
-    backend_emails = fetch_backend_emails()
+    backend_emails = _fetch_backend_emails()
     print("'{}' backend users".format(len(backend_emails)))
 
     users_to_remove = user_db.get_users({

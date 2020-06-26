@@ -69,8 +69,8 @@ class UserDatabase(AppDatabase):
     def get_users(self, query_operator=None):
         return self._conn.users.find(query_operator or {})
 
-    def delete_users(self, query_operator=None):
-        return self._conn.users.delete_many(query_operator or {})
+    def delete_users(self, query_operator):
+        return self._conn.users.delete_many(query_operator)
 
 
 class AnalyticsDatabase(AppDatabase):
