@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2020-06-29",
+      "version": "v3.14.2",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "New explorer queries missing from charts"
+        }
+      ]
+    },
+    {
       "date": "2020-06-17",
       "version": "v3.14.1",
       "notes": [
