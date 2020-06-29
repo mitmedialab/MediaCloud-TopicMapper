@@ -65,7 +65,7 @@ def api_explorer_story_split_count():
         solr_open_query = concatenate_query_for_solr(solr_seed_query='*',
                                                      media_ids=request.form['sources'],
                                                      tags_ids=request.form['collections'],
-                                                     custom_ids=request.form['searches'])
+                                                     custom_collection=request.form['searches'])
         results = apicache.normalized_and_story_split_count(solr_q, solr_open_query, start_date, end_date)
     return jsonify({'results': results})
 
@@ -91,7 +91,7 @@ def api_explorer_story_split_count_csv():
         solr_open_query = concatenate_query_for_solr(solr_seed_query='*',
                                                      media_ids=q['sources'],
                                                      tags_ids=q['collections'],
-                                                     custom_ids=q['searches'])
+                                                     custom_collection=q['searches'])
         story_counts = apicache.normalized_and_story_split_count(solr_q, solr_open_query, start_date, end_date)
     props = ['date', 'count', 'total_count', 'ratio']
     return csv.stream_response(story_counts['counts'], props, filename)
@@ -120,7 +120,7 @@ def api_explorer_combined_story_split_count_csv():
             solr_q, solr_fq = parse_query_with_keywords(q)
             solr_open_query = concatenate_query_for_solr(solr_seed_query='*', media_ids=q['sources'],
                                                          tags_ids=q['collections'],
-                                                     custom_ids=q['searches'])
+                                                     custom_collection=q['searches'])
             story_counts = apicache.normalized_and_story_split_count(solr_q, solr_open_query, start_date, end_date)
         story_count_results.append({
             'label': q['label'],

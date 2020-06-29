@@ -100,7 +100,7 @@ def parse_query_with_keywords(args):
         solr_q = concatenate_query_for_solr(solr_seed_query=current_query,
                                             media_ids=media_ids,
                                             tags_ids=collections,
-                                            custom_ids=searches)
+                                            custom_collection=searches)
         solr_fq = dates_as_filter_query(start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
     # otherwise, default
     except Exception as e:
