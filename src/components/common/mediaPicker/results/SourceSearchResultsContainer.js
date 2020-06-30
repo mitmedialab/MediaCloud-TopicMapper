@@ -167,7 +167,14 @@ class SourceSearchResultsContainer extends React.Component {
           label={formatMessage(localMessages.customColl)}
           onClick={() => this.addCustomSelection({ customColl: true })}
           color="primary"
-          disabled={!selectedMediaQueryTags || Object.keys(selectedMediaQueryTags).length === 0 || sourceResults === undefined || sourceResults.list.length === 0}
+          disabled={!selectedMediaQueryTags
+            || Object.values(selectedMediaQueryTags)
+              .filter((t) => t.length > 0)
+              .map((p, idx) => p[idx])
+              .filter((i) => i.selected)
+              .length < 1
+            || sourceResults === undefined
+            || sourceResults.list.length === 0}
         />
       </Col>
     );
