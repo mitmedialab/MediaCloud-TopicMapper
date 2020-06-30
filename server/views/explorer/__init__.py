@@ -87,8 +87,6 @@ def only_queries_reddit(args):
 def parse_query_with_keywords(args):
     solr_q = ''
     solr_fq = None
-    # should I break this out into just a demo routine where we add in the start/end date without relying that the
-    # try statement will fail?
     try:    # if user arguments are present and allowed by the client endpoint, use them, otherwise use defaults
         current_query = args['q']
         if current_query == '':

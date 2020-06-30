@@ -156,8 +156,8 @@ def _cached_featured_collection_list(tag_id_list):
 def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_collection=[]):
     query = '({})'.format(solr_seed_query)
 
-    query_custom_ids, query_custom_id_len = custom_collection_as_solr_query(custom_collection)
-    if len(media_ids) > 0 or len(tags_ids) > 0 or len(query_custom_ids):
+    has_custom_collections = len(json.loads(custom_collection))
+    if len(media_ids) > 0 or len(tags_ids) > 0 or has_custom_collections:
         if tags_ids == [ALL_MEDIA] or tags_ids == ALL_MEDIA:
             return query
         query += " AND ("
@@ -170,7 +170,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             query += '('+query_media_ids+')'
 
         # conjunction
-        if len(media_ids) > 0 and (len(tags_ids) > 0 or query_custom_id_len > 0):
+        if len(media_ids) > 0 and (len(tags_ids) > 0 or has_custom_collections):
             query += " OR "
 
         # add in the collections they specified
@@ -179,19 +179,18 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             query_tags_ids = " ".join([str(t) for t in tags_ids])
             query_tags_ids = re.sub(r'\[*\]*', '', str(query_tags_ids))
             query_tags_ids = " tags_id_media:({})".format(query_tags_ids)
-            if query_custom_id_len == 0:
+            if not has_custom_collections:
                 query += '('+query_tags_ids+')'
             else:
                 query += '(' + query_tags_ids
 
-        # grab any custom collections and turn it into a boolean tags_id_media phrase
-        if query_custom_id_len > 0:
-            # we may not have tags_id_media
-
-
-            if query_custom_id_len > 0 and len(tags_ids) > 0:
-                query = "{} OR {} )".format(query, query_custom_ids)  # OR all the sets with the other Collection ids
-            query += query_custom_ids
+        # grab any custom collections (there may be multiple) and turn it into a boolean tags_id_media phrase
+        if has_custom_collections:
+            # we may not have tags_id_media but we may have a keyword
+            #how many?
+            custom_collection_dict = json.loads(custom_collection)
+            has_custom_collections, custom_collection_string  = custom_collection_as_solr_query(custom_collection_dict)
+            query = "{} {}".format(query, custom_collection_string)
 
             # else nothing
         # add the sets to the query (the OR was added before)
@@ -200,15 +199,18 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
     return query
 
 
-def custom_collection_as_solr_query(custom_ids_str):
-    if (custom_ids_str is None) or (len(custom_ids_str) == 0):
-        return ''
-    custom_ids_dict = json.loads(custom_ids_str)
+def custom_collection_as_solr_query(custom_coll_dict):
+    if (len(custom_coll_dict) == 0):
+        return False
     len_custom = 0
-    query_custom_ids = ''
-    for sets_of_tags in custom_ids_dict:  # for each custom collections
-        custom_tag_groups = json.loads(sets_of_tags['tags_id_media'])  # expect tags in format [[x, ...], ...]
-        custom_sets = []
+    query_custom_ids_string = ''
+    query_keywords = ''
+    custom_query_partial = ''
+    for sets_of_tags in custom_coll_dict:  # for each custom collections
+        query_keywords = sets_of_tags.get('media_keyword', '')
+        query_tags = sets_of_tags.get('tags_id_media', '')
+        custom_tag_groups = json.loads(query_tags)  # expect tags in format [[x, ...], ...]
+        custom_sets = [] # result
         for tag_grp in custom_tag_groups:
             if len(tag_grp) > 1:  # handle singular [] vs groups of tags [x, y,z]
                 custom_id_set_string = " OR ".join(str(tag) for tag in tag_grp)  # OR tags in same set
@@ -218,7 +220,19 @@ def custom_collection_as_solr_query(custom_ids_str):
                 custom_id_set_string = re.sub(r'\[*\]*', '', str(tag_grp))
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
                 custom_sets.append(custom_id_set_string)
-        query_custom_ids = " AND ".join(custom_sets)  # AND the metadata sets together
-        query_custom_ids = "({})".format(query_custom_ids)
-        len_custom  = len(custom_sets)
-    return query_custom_ids, len_custom
+
+            query_custom_ids_string = " AND ".join(custom_sets)  # AND the metadata sets together
+            query_custom_ids_string = "({})".format(query_custom_ids_string)
+            len_custom  = len(custom_sets)
+
+        if len(query_keywords) > 0:
+            if len(custom_tag_groups) > 0:
+                custom_query_partial = "OR '{}' AND {} )".format(query_keywords,
+                                                                 query_custom_ids_string)  # OR all the sets with the other Collection ids
+            else:
+                custom_query_partial = "OR '{}'".format(query_keywords)
+
+        elif len(custom_tag_groups) > 0:
+            custom_query_partial = "OR '*' AND tags_id_media:{}".format(query_custom_ids_string)
+    custom_query = custom_query_partial.join(" OR ")
+    return True, custom_query
