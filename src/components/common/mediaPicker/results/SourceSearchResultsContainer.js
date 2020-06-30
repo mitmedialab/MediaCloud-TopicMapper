@@ -169,10 +169,10 @@ class SourceSearchResultsContainer extends React.Component {
           color="primary"
           disabled={!selectedMediaQueryTags
             || Object.values(selectedMediaQueryTags)
-              .filter((t) => t.length > 0)
-              .map((p, idx) => p[idx])
-              .filter((i) => i.selected)
-              .length < 1
+              // .filter(t => metadataQueryFields.has(t) > 0 selectedMediaQueryTags[t].length > 0)
+              .filter((t) => t.length > 0 && t !== 'search') // values greater than 0
+              .map((p,) => p.filter((e) => e.selected).length) // for each element eg "US" in metadata category array
+              .filter((e) => e > 0).length < 1
             || sourceResults === undefined
             || sourceResults.list.length === 0}
         />
