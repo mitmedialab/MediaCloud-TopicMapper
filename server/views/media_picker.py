@@ -205,13 +205,14 @@ def custom_collection_as_solr_query(custom_coll_dict):
     len_custom = 0
     query_custom_ids_string = ''
     query_keywords = ''
+    full_custom_query = ''
     custom_query_partial = ''
     for sets_of_tags in custom_coll_dict:  # for each custom collections
         query_keywords = sets_of_tags.get('media_keyword', '')
         query_tags = sets_of_tags.get('tags_id_media', '')
         custom_tag_groups = json.loads(query_tags)  # expect tags in format [[x, ...], ...]
         custom_sets = [] # result
-        for tag_grp in custom_tag_groups:
+        for tag_grp in custom_tag_groups: # for all the metadata tags, serialize
             if len(tag_grp) > 1:  # handle singular [] vs groups of tags [x, y,z]
                 custom_id_set_string = " OR ".join(str(tag) for tag in tag_grp)  # OR tags in same set
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
@@ -231,8 +232,8 @@ def custom_collection_as_solr_query(custom_coll_dict):
                                                                  query_custom_ids_string)  # OR all the sets with the other Collection ids
             else:
                 custom_query_partial = "OR '{}'".format(query_keywords)
-
         elif len(custom_tag_groups) > 0:
             custom_query_partial = "OR '*' AND tags_id_media:{}".format(query_custom_ids_string)
-    custom_query = custom_query_partial.join(" OR ")
-    return True, custom_query
+
+        full_custom_query = "{} {}".format(full_custom_query, custom_query_partial)
+    return True, full_custom_query
