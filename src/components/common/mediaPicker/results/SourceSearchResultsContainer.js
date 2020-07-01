@@ -84,10 +84,12 @@ class SourceSearchResultsContainer extends React.Component {
     if (typeof values === 'object' && 'allMedia' in values) {
       updatedQueryObj.allMedia = values.allMedia;
     } else if (typeof values === 'object' && 'customColl' in values) {
-      updatedQueryObj.tags.name = 'search';
-      updatedQueryObj.tags.label = 'search';
-      updatedQueryObj.customColl = values.customColl;
-      updatedQueryObj.id = Math.random(0, 100000);
+      if (values.selected === true) {
+        updatedQueryObj.tags.name = 'search';
+        updatedQueryObj.tags.label = 'search';
+        updatedQueryObj.customColl = values.customColl;
+        updatedQueryObj.id = Math.random(0, 100000);
+      }
     }
     updatedQueryObj.mediaKeyword = formQuery.advancedSearchQueryString;
     return updatedQueryObj;
@@ -105,7 +107,7 @@ class SourceSearchResultsContainer extends React.Component {
     const { handleSelectMediaCustomColl } = this.props;
     // get current selected tags and current selected media
     const updatedQueryObj = this.processQuery(values);
-
+    // remove unselected metadata tags
     handleSelectMediaCustomColl(updatedQueryObj);
   }
 
