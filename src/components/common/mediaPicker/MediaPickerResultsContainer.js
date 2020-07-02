@@ -51,10 +51,13 @@ class MediaPickerResultsContainer extends React.Component {
         break;
     }
     // if selected media has changed, update current results
-    if (whichProps.selectedMedia && whichProps.selectedMedia.length > 0
+    if (whichProps.selectedMedia
       // we can't be sure we have received results yet
       && whichList.list && whichList.list.length > 0) {
       // sync up selectedMedia and push to result sets.
+      // this doesn't work for the custom collection tests
+      // special case for custom collection
+      // customCollMedia
       whichList.list.map((m) => {
         const mediaIndex = whichProps.selectedMedia.findIndex(q => q.id === m.id);
         if (mediaIndex < 0) {
