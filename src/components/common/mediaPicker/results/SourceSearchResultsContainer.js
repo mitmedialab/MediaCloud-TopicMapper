@@ -84,12 +84,11 @@ class SourceSearchResultsContainer extends React.Component {
     if (typeof values === 'object' && 'allMedia' in values) {
       updatedQueryObj.allMedia = values.allMedia;
     } else if (typeof values === 'object' && 'customColl' in values) {
-      if (values.selected === true) {
-        updatedQueryObj.tags.name = 'search';
-        updatedQueryObj.tags.label = 'search';
-        updatedQueryObj.customColl = values.customColl;
-        updatedQueryObj.id = Math.random(0, 100000);
-      }
+      updatedQueryObj.tags.name = 'search';
+      updatedQueryObj.tags.label = 'search';
+      updatedQueryObj.customColl = values.customColl;
+      updatedQueryObj.id = Math.random(0, 100000);
+
     }
     updatedQueryObj.mediaKeyword = formQuery.advancedSearchQueryString;
     return updatedQueryObj;
