@@ -40,7 +40,7 @@ function selectMedia(state = INITIAL_STATE, action) {
         const testObj = {};
         Object.keys(action.payload.tags).forEach((t) => { // for each tag
           const valArray = Object.values(action.payload.tags[t]);
-          const onlySelectedTags = [...valArray].filter((t) => t.selected); // if it is selected!
+          const onlySelectedTags = [...valArray].filter((g) => g.selected); // if it is selected!
           testObj[t] = [...onlySelectedTags]; // explicitly clone each array that is in each tags obj
         });
         newObj.tags = testObj;

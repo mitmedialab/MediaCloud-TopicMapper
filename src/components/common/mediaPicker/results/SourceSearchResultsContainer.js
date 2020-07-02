@@ -88,7 +88,6 @@ class SourceSearchResultsContainer extends React.Component {
       updatedQueryObj.tags.label = 'search';
       updatedQueryObj.customColl = values.customColl;
       updatedQueryObj.id = Math.random(0, 100000);
-
     }
     updatedQueryObj.mediaKeyword = formQuery.advancedSearchQueryString;
     return updatedQueryObj;
@@ -225,7 +224,7 @@ class SourceSearchResultsContainer extends React.Component {
       );
 
       resultContent = (
-        <div className="media-picker-source-search-results">
+        <div className="media-picker-search-results">
           <h2><span className="source-search-keys">{prefixTitle}</span>{ conditionalTitle }</h2>
           { !viewOnly && addCustomButton }
           { getMoreResultsContent }

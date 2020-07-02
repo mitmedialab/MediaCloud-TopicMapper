@@ -65,7 +65,6 @@ class CollectionSearchResultsContainer extends React.Component {
     } else if (collectionResults.list && selectedMediaQueryKeyword) {
       content = (
         <CollectionResultsTable
-          title={formatMessage(localMessages.title, { name: selectedMediaQueryKeyword, numResults: collectionResults.list.length })}
           collections={collectionResults.list}
           onToggleSelected={onToggleSelected}
           viewOnly={viewOnly}
@@ -90,15 +89,15 @@ class CollectionSearchResultsContainer extends React.Component {
       content = <FormattedMessage {...localMessages.noResults} />;
     }
     return (
-      <div>
+      <div className="media-picker-search-results">
         <MediaPickerSearchForm
           initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
           onSearch={val => resetAndUpdateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
           hintText={formatMessage(hintTextMsg || localMessages.hintText)}
         />
+        <h2><span className="source-search-keys"><FormattedMessage {...localMessages.title} values={{ name: selectedMediaQueryKeyword, numResults: collectionResults.list.length }} /></span></h2>
         {getMoreResultsContent}
         {content}
-        {getMoreResultsContent}
       </div>
     );
   }
