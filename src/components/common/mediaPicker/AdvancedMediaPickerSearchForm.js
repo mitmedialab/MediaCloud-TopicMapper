@@ -87,7 +87,7 @@ class AdvancedMediaPickerSearchForm extends React.Component {
         name={MEDIA_TYPE}
         form="advanced-media-picker-search"
         label={formatMessage(messages.mediaTypeShort)}
-        onChange={obj => this.selectMetaData(formatMessage(messages.mediaTypeShort), obj, MEDIA_TYPE)}
+        onChange={args => this.selectMetaData(formatMessage(messages.mediaTypeShort), args, MEDIA_TYPE)}
         previouslySelected={initialValues.tags}
       />
     ) : null;

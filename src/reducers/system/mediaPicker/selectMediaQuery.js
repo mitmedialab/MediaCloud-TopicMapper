@@ -10,7 +10,7 @@ function selectMediaQuery(state = INITIAL_STATE, action) {
         const testArray = [];
         if (action.payload.tags) { // custom Collections in source search
           Object.keys(action.payload.tags).forEach((t) => { // for each tag, specifically clone it or we have a reference issue
-            const vals = Object.values(action.payload.tags[t]).filter(o => o.name).map(obj => ({ ...obj }));
+            const vals = Object.values(action.payload.tags[t]).filter(o => o && o.name).map(obj => ({ ...obj }));
             testArray[t] = [...vals];
           });
         }
