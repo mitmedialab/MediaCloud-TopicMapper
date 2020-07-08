@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { formValueSelector } from 'redux-form';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import { selectMediaPickerQueryArgs, fetchMediaPickerSources, selectMediaCustomColl, resetMediaPickerSources } from '../../../../actions/systemActions';
@@ -13,6 +14,7 @@ import LoadingSpinner from '../../LoadingSpinner';
 import AppButton from '../../AppButton';
 import { metadataQueryFields, stringifyTags } from '../../../../lib/explorerUtil';
 import { notEmptyString } from '../../../../lib/formValidators';
+import { decodeQueryParamString } from '../../../../lib/mediaUtil';
 import messages from '../../../../resources/messages';
 
 
@@ -144,15 +146,18 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, links } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, links, location } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
     let getMoreResultsContent = null;
+    const searchParams = decodeQueryParamString(location);
+    const keywordOrUrl = selectedMediaQueryKeyword || searchParams.q;
+    const tagsOrUrl = selectedMediaQueryTags || searchParams.searches;
     content = (
       <div>
         <AdvancedMediaPickerSearchForm
-          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: selectedMediaQueryKeyword, tags: selectedMediaQueryTags, allMedia: selectedMediaQueryAllTags }}
+          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: keywordOrUrl, tags: tagsOrUrl, allMedia: selectedMediaQueryAllTags }}
           onQueryUpdateSelection={(metadataType, values) => this.updateQuerySelection(metadataType, values)}
           onSearch={val => this.updateAndSearchWithSelection(val)}
           hintText={formatMessage(localMessages.hintText)}
@@ -250,6 +255,8 @@ class SourceSearchResultsContainer extends React.Component {
 
 SourceSearchResultsContainer.propTypes = {
   intl: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired, // params from router
+  location: PropTypes.object,
   // from parent
   onToggleSelected: PropTypes.func.isRequired,
   handleMediaConcurrency: PropTypes.func.isRequired,
@@ -353,7 +360,7 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(
     withHelp(localMessages.customCollTitle, localMessages.customCollDef)(
-      SourceSearchResultsContainer
+      withRouter(SourceSearchResultsContainer)
     )
   )
 );
