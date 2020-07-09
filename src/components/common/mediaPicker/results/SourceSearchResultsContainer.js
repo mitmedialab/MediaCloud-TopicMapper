@@ -44,7 +44,7 @@ class SourceSearchResultsContainer extends React.Component {
     const { viewOnly, updateMediaQuerySelection, location, selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags, selectedMediaQueryType } = this.props;
     if (viewOnly && location && location.query) {
       const urlParams = decodeQueryParamString(location);
-       
+
       // we must provide all parameters when updating state
       // minimally, the type which selects the tabular setting
       updateMediaQuerySelection({
@@ -167,19 +167,16 @@ class SourceSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, links, location } = this.props;
+    const { fetchStatus, selectedMediaQueryKeyword, sourceResults, onToggleSelected, selectedMediaQueryTags, selectedMediaQueryAllTags, helpButton, viewOnly, links } = this.props;
     const { formatMessage } = this.props.intl;
     let content = null;
     let resultContent = null;
     let getMoreResultsContent = null;
-    let urlSelectedOrSelectedTags = selectedMediaQueryTags;
-    if (viewOnly && location) {
-      urlSelectedOrSelectedTags = selectedMediaQueryTags || decodeQueryParamString(location).tags;
-    }
+
     content = (
       <div>
         <AdvancedMediaPickerSearchForm
-          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: selectedMediaQueryKeyword, tags: urlSelectedOrSelectedTags, allMedia: selectedMediaQueryAllTags }}
+          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: selectedMediaQueryKeyword, tags: selectedMediaQueryTags, allMedia: selectedMediaQueryAllTags }}
           onQueryUpdateSelection={(metadataType, values) => this.updateQuerySelection(metadataType, values)}
           onSearch={val => this.updateAndSearchWithSelection(val)}
           hintText={formatMessage(localMessages.hintText)}

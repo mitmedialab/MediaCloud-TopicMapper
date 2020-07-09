@@ -25,7 +25,7 @@ const localMessages = {
 
 class AdvancedMediaPickerSearchForm extends React.Component {
   state = {
-    mode: null,
+    mode: TAG_SET_PUBLICATION_COUNTRY, // default
   }
 
   componentDidMount() {
