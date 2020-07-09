@@ -36,7 +36,28 @@ const localMessages = {
 const formSelector = formValueSelector('advanced-media-picker-search');
 
 class SourceSearchResultsContainer extends React.Component {
-  // values may contain mediaKeyword, tags, allMedia, customColl
+  componentDidMount() {
+    /* if we are viewOnly, (eg non-modal use for Source Manager)
+     we may have urlParameters to ingest. In particular, a search parameter
+     or tags from a custom collection reference coming from Explorer or Topic Mapper
+    */
+    const { viewOnly, updateMediaQuerySelection, location, selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags, selectedMediaQueryType } = this.props;
+    if (viewOnly && location && location.query) {
+      const urlParams = decodeQueryParamString(location);
+       
+      // we must provide all parameters when updating state
+      // minimally, the type which selects the tabular setting
+      updateMediaQuerySelection({
+        type: selectedMediaQueryType,
+        mediaKeyword: selectedMediaQueryKeyword,
+        advancedSearchQueryString: selectedMediaQueryKeyword,
+        tags: selectedMediaQueryTags,
+        allMedia: selectedMediaQueryAllTags,
+        ...urlParams,
+      });
+    }
+  }
+
   processQuery = (values) => {
     const { formQuery, selectedMediaQueryType, selectedMediaQueryKeyword, selectedMediaQueryTags, selectedMediaQueryAllTags } = this.props;
     // essentially reselect all values that are currently selected, plus the newly clicked/entered ones
@@ -151,13 +172,14 @@ class SourceSearchResultsContainer extends React.Component {
     let content = null;
     let resultContent = null;
     let getMoreResultsContent = null;
-    const searchParams = decodeQueryParamString(location);
-    const keywordOrUrl = selectedMediaQueryKeyword || searchParams.q;
-    const tagsOrUrl = selectedMediaQueryTags || searchParams.searches;
+    let urlSelectedOrSelectedTags = selectedMediaQueryTags;
+    if (viewOnly && location) {
+      urlSelectedOrSelectedTags = selectedMediaQueryTags || decodeQueryParamString(location).tags;
+    }
     content = (
       <div>
         <AdvancedMediaPickerSearchForm
-          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: keywordOrUrl, tags: tagsOrUrl, allMedia: selectedMediaQueryAllTags }}
+          initialValues={{ mediaKeyword: selectedMediaQueryKeyword, advancedSearchQueryString: selectedMediaQueryKeyword, tags: urlSelectedOrSelectedTags, allMedia: selectedMediaQueryAllTags }}
           onQueryUpdateSelection={(metadataType, values) => this.updateQuerySelection(metadataType, values)}
           onSearch={val => this.updateAndSearchWithSelection(val)}
           hintText={formatMessage(localMessages.hintText)}
@@ -255,7 +277,7 @@ class SourceSearchResultsContainer extends React.Component {
 
 SourceSearchResultsContainer.propTypes = {
   intl: PropTypes.object.isRequired,
-  params: PropTypes.object.isRequired, // params from router
+  params: PropTypes.object, // params from router
   location: PropTypes.object,
   // from parent
   onToggleSelected: PropTypes.func.isRequired,
