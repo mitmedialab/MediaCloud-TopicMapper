@@ -169,7 +169,7 @@ export function stringifyTags(tags, formatMessage) {
     .filter(t => metadataQueryFields.has(t) > 0 && Array.isArray(tags[t]) && tags[t].length > 0)
     .map((i, index) => {
       const obj = tags[i];
-      const metadataName = getShortName((obj.map(a => a.tag_set_name).reduce(l => l)), formatMessage);
+      const metadataName = getShortName((obj.map(a => (a && a.tag_set_name ? a.tag_set_name : '')).reduce(l => l)), formatMessage);
       const tagsObj = obj.map(a => (a.selected ? a.label : '')).filter(l => notEmptyString(l));
       if (tagsObj.length > 0) {
         const tagsString = tagsObj.length > 1 ? tagsObj.join(' OR ') : tagsObj;
