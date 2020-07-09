@@ -31,7 +31,7 @@ ALL_MEDIA = '-1'
 @flask_login.login_required
 @api_error_handler
 def api_mediapicker_source_search():
-    search_str = request.args['media_keyword']
+    search_str = request.args['media_keyword'] if 'media_keyword' in request.args else ''
     cleaned_search_str = None if search_str == '*' else search_str
     querying_all_media = False
     link_id = request.args.get('link_id', 0)
@@ -49,6 +49,7 @@ def api_mediapicker_source_search():
         matching_sources, last_media_id = media_search_with_page(cleaned_search_str, tags, link_id=link_id)
     elif 'tags' in request.args and len(request.args['tags']) > 0:
         # group the tags by tags_sets_id to support boolean searches
+        # the format for this metadata is a list of tags_id. the following finds the right metadata tag set for the tags
         tags_id_list = request.args['tags'].split(',')
         tags = [base_api_cache.tag(tid) for tid in tags_id_list]  # ok to use cache here (metadata tags don't change)
         tags_by_set = defaultdict(list)
