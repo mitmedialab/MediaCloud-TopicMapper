@@ -6,6 +6,7 @@ import withAsyncData from '../../hocs/AsyncDataContainer';
 import { selectMediaPickerQueryArgs, fetchMediaPickerFeaturedCollections, fetchFavoriteCollections, fetchFavoriteSources, fetchMediaPickerCollections } from '../../../../actions/systemActions';
 import TabSearchResultsContainer from './TabSearchResultsContainer';
 import { TAG_SET_ABYZ_GEO_COLLECTIONS, TAG_SET_MC_ID } from '../../../../lib/tagUtil';
+import { MEDIAPICKER_FEATURED_QUERY_SETTING } from '../../../../lib/mediaUtil';
 
 const localMessages = {
   title: { id: 'system.mediaPicker.collections.title', defaultMessage: 'Collections matching "{name}"' },
@@ -44,7 +45,7 @@ class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
     whichList = whichList.concat(whichProps.featured.list);
 
     // if selected media has changed, update current results
-    if (whichProps.selectedMedia && whichProps.selectedMedia.length > 0
+    if (whichProps.selectedMedia
       // we can't be sure we have received results yet
       && whichList && whichList.length > 0) {
       // sync up selectedMedia and push to result sets.
@@ -141,7 +142,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const fetchAsyncData = (dispatch) => {
-  dispatch(selectMediaPickerQueryArgs({ type: 0 }));
+  dispatch(selectMediaPickerQueryArgs({ type: MEDIAPICKER_FEATURED_QUERY_SETTING }));
   dispatch(fetchMediaPickerFeaturedCollections(TAG_SET_MC_ID));
   dispatch(fetchFavoriteCollections());
   dispatch(fetchFavoriteSources());

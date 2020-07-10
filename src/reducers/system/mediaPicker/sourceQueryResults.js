@@ -1,9 +1,10 @@
 import { FETCH_MEDIAPICKER_SOURCE_SEARCH, MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST, RESET_MEDIAPICKER_SOURCE_SEARCH } from '../../../actions/systemActions';
 import { createAsyncReducer, concatPrevAndNext } from '../../../lib/reduxHelpers';
+import { MEDIAPICKER_SOURCES_COLLECTIONS_QUERY_SETTING } from '../../../lib/mediaUtil';
 
 const sourceQueryResults = createAsyncReducer({
   initialState: {
-    args: { type: 1, mediaKeyword: null },
+    args: { type: MEDIAPICKER_SOURCES_COLLECTIONS_QUERY_SETTING, mediaKeyword: null },
     list: [],
     linkId: { next: 0 },
   },
@@ -24,7 +25,7 @@ const sourceQueryResults = createAsyncReducer({
       return c;
     }),
   }),
-  [RESET_MEDIAPICKER_SOURCE_SEARCH]: () => ({ args: { type: 1, mediaKeyword: null }, list: [], linkId: { next: 0 } }),
+  [RESET_MEDIAPICKER_SOURCE_SEARCH]: () => ({ args: { type: MEDIAPICKER_SOURCES_COLLECTIONS_QUERY_SETTING, mediaKeyword: null }, list: [], linkId: { next: 0 } }),
 });
 
 export default sourceQueryResults;

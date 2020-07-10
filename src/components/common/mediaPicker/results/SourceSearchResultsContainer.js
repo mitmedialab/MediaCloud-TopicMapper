@@ -17,7 +17,6 @@ import { notEmptyString } from '../../../../lib/formValidators';
 import { decodeQueryParamString } from '../../../../lib/mediaUtil';
 import messages from '../../../../resources/messages';
 
-
 const localMessages = {
   prefixTitle: { id: 'system.mediaPicker.sources.prefixTitle', defaultMessage: '{numResults} Sources matching ' },
   ktTitle: { id: 'system.mediaPicker.sources.combinedKeywordAndTags', defaultMessage: '"{keyword}" and {tags}' },
@@ -143,27 +142,6 @@ class SourceSearchResultsContainer extends React.Component {
     const { pageThroughSources } = this.props;
     const updatedQueryObj = this.processQuery(values);
     pageThroughSources(updatedQueryObj); // mergeProps for paging
-  }
-
-  correlateSelection(whichProps) {
-    const whichList = whichProps.sourceResults.list;
-
-    // if selected media has changed, update current results
-    if (whichProps.selectedMedia && whichProps.selectedMedia.length > 0
-      // we can't be sure we have received results yet
-      && whichList && whichList.length > 0) {
-      // sync up selectedMedia and push to result sets.
-      whichList.map((m) => {
-        const mediaIndex = whichProps.selectedMedia.findIndex(q => q.id === m.id);
-        if (mediaIndex < 0) {
-          this.props.handleMediaConcurrency(m, false);
-        } else if (mediaIndex >= 0) {
-          this.props.handleMediaConcurrency(m, true);
-        }
-        return m;
-      });
-    }
-    return 0;
   }
 
   render() {

@@ -13,8 +13,12 @@ const localMessages = {
   noResults: { id: 'system.mediaPicker.collections.noResults', defaultMessage: 'No results. Try searching for issues like online news, health, blogs, conservative to see if we have collections made up of those types of sources.' },
 };
 
-
 class CountryCollectionSearchResultsContainer extends React.Component {
+  componentDidMount() {
+    const { clearPreviousCollections } = this.props;
+    clearPreviousCollections();
+  }
+
   updateMediaQuery(values) {
     const { updateMediaQuerySelection, selectedMediaQueryType } = this.props;
     const updatedQueryObj = { ...values, type: selectedMediaQueryType };
@@ -22,7 +26,7 @@ class CountryCollectionSearchResultsContainer extends React.Component {
   }
 
   render() {
-    const { selectedMediaQueryType, selectedMediaQueryKeyword, collectionResults, onToggleSelected, fetchStatus, viewOnly } = this.props;
+    const { selectedMediaQueryType, selectedMediaQueryKeyword, onToggleSelected, fetchStatus, viewOnly } = this.props;
     return (
       <CollectionSearchResultsContainer
         fetchStatus={fetchStatus}
@@ -30,7 +34,6 @@ class CountryCollectionSearchResultsContainer extends React.Component {
         onToggleSelected={onToggleSelected}
         selectedMediaQueryType={selectedMediaQueryType}
         selectedMediaQueryKeyword={selectedMediaQueryKeyword}
-        collectionResults={collectionResults}
         initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
         onSearch={val => this.updateMediaQuery(val)}
         hintTextMsg={localMessages.countrySearchHintText}
@@ -50,6 +53,7 @@ CountryCollectionSearchResultsContainer.propTypes = {
   handleMediaConcurrency: PropTypes.func.isRequired,
   // from dispatch
   updateMediaQuerySelection: PropTypes.func.isRequired,
+  clearPreviousCollections: PropTypes.func.isRequired,
   // from state
   selectedMediaQueryKeyword: PropTypes.string,
   selectedMediaQueryType: PropTypes.number,
@@ -73,6 +77,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(fetchMediaPickerCollections({ media_keyword: values.mediaKeyword, which_set: TAG_SET_ABYZ_GEO_COLLECTIONS }));
     }
   },
+  clearPreviousCollections: () => dispatch(resetMediaPickerCollections()), // clear prev results
 });
 
 export default
