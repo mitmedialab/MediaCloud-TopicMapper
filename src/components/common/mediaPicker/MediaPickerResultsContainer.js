@@ -21,16 +21,11 @@ class MediaPickerResultsContainer extends React.Component {
     }
     if (nextProps.selectedMedia !== this.props.selectedMedia
       // if the results have changed from a keyword entry, we need to update the UI
-      || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)) {
+      || (nextProps.sourceResults && nextProps.sourceResults.lastFetchSuccess !== this.props.sourceResults.lastFetchSuccess)
+      || (nextProps.collectionResults && nextProps.collectionResults.lastFetchSuccess !== this.props.collectionResults.lastFetchSuccess)) {
       this.correlateSelection(nextProps);
     }
   }
-
-  /* unmounting & resetting after query, not what we want
-  componentWillUnmount() {
-    const { resetComponents } = this.props;
-    resetComponents();
-  } */
 
   updateMediaQuery(values) {
     const { updateMediaQuerySelection } = this.props;
@@ -39,13 +34,13 @@ class MediaPickerResultsContainer extends React.Component {
 
   correlateSelection(whichProps) {
     let whichList = {};
-    if (!whichProps.selectedMediaQueryType) return 0;
+    if (whichProps.selectedMediaQueryType === undefined) return 0;
     switch (whichProps.selectedMediaQueryType) {
-      /* case PICK_COUNTRY:
-        whichList = whichProps.collectionResults;
-        break; */
+      case PICK_FEATURED: // this case is handled in FeaturedFavoriteGeo...Container
+        whichList = whichProps.collectionResults.list;
+        break;
       case PICK_SOURCE_AND_COLLECTION:
-        whichList = whichProps.sourceResults;
+        whichList = [].concat(whichProps.sourceResults.list).concat(whichProps.collectionResults.list);
         break;
       default:
         break;
@@ -53,12 +48,9 @@ class MediaPickerResultsContainer extends React.Component {
     // if selected media has changed, update current results
     if (whichProps.selectedMedia
       // we can't be sure we have received results yet
-      && whichList.list && whichList.list.length > 0) {
+      && whichList && whichList.length > 0) {
       // sync up selectedMedia and push to result sets.
-      // this doesn't work for the custom collection tests
-      // special case for custom collection
-      // customCollMedia
-      whichList.list.map((m) => {
+      whichList.map((m) => {
         const mediaIndex = whichProps.selectedMedia.findIndex(q => q.id === m.id);
         if (mediaIndex < 0) {
           this.props.toggleConcurrency(m, false);

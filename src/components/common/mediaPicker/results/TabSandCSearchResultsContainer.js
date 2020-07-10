@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Grid, Row } from 'react-flexbox-grid/lib';
 import CollectionSearchResultsContainer from './CollectionSearchResultsContainer';
 import SourceSearchResultsContainer from './SourceSearchResultsContainer';
-import { resetMediaPickerSources } from '../../../../actions/systemActions';
+import { resetMediaPickerSources, resetMediaPickerCollections } from '../../../../actions/systemActions';
 import { FETCH_ONGOING } from '../../../../lib/fetchConstants';
 import LoadingSpinner from '../../LoadingSpinner';
 import TabSelector from '../../TabSelector';
@@ -68,7 +68,7 @@ class TabSandCSearchResultsContainer extends React.Component {
       tabContent = (
         <div className="media-picker-tabbed-content-wrapper">
           <SourceSearchResultsContainer
-            initValues={{ storedKeyword: { mediaKeyword: selectedMediaQueryKeyword, tags: {} } }} // empty
+            initValues={{ searchKeyword: selectedMediaQueryKeyword, tags: {} }} // empty
             onToggleSelected={onToggleSelected}
             handleMediaConcurrency={handleMediaConcurrency}
             updateMediaQuerySelection={updateMediaQuerySelection}
@@ -113,7 +113,9 @@ TabSandCSearchResultsContainer.propTypes = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  clearPreviousQueries: () => dispatch(resetMediaPickerSources()), // clear prev results
+  clearPreviousQueries: () => {
+    dispatch(resetMediaPickerSources());
+    dispatch(resetMediaPickerCollections()); // clear prev results
 });
 
 export default

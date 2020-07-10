@@ -7,10 +7,6 @@ import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataSho
 function composeMediaPickerSidebarContainer() {
   return (ChildComponent) => {
     class MediaPickerSidebarContainer extends React.Component {
-      state = {
-        // queryInStore: false,
-      };
-
       UNSAFE_componentWillReceiveProps(nextProps) {
         // select the media so we fill the reducer with the previously selected media
         const { initMedia, handleInitialSelectionOfMedia } = this.props;

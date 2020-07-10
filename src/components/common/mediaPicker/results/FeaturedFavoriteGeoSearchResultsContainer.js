@@ -59,7 +59,6 @@ class FeaturedFavoriteGeoSearchResultsContainer extends React.Component {
         return m;
       });
     }
-    return 0;
   }
 
   updateMediaQuery(values) {
