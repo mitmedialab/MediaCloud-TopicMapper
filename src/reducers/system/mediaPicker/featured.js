@@ -1,4 +1,4 @@
-import { FETCH_FEATURED_COLLECTIONS_FOR_QUERY, MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST, RESET_MEDIAPICKER_COLLECTION_SEARCH } from '../../../actions/systemActions';
+import { FETCH_FEATURED_COLLECTIONS_FOR_QUERY, MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST, RESET_MEDIAPICKER_FEATURED_COLLECTION_SEARCH } from '../../../actions/systemActions';
 import { createAsyncReducer } from '../../../lib/reduxHelpers';
 
 const featured = createAsyncReducer({
@@ -16,7 +16,7 @@ const featured = createAsyncReducer({
       selected: false, // for adding/removing from selected list
     })),
   }),
-  [RESET_MEDIAPICKER_COLLECTION_SEARCH]: () => ({ list: [] }),
+  [RESET_MEDIAPICKER_FEATURED_COLLECTION_SEARCH]: () => ({ list: [] }),
   [MEDIA_PICKER_TOGGLE_MEDIA_IN_LIST]: (payload, state) => ({
     list: state.list.map((c) => {
       if (c.id === payload.selectedMedia.id) {
