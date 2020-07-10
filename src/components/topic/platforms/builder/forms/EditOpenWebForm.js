@@ -9,64 +9,72 @@ import MediaPickerDialog from '../../../../common/mediaPicker/MediaPickerDialog'
 import QueryHelpDialog from '../../../../common/help/QueryHelpDialog';
 import OpenWebMediaFieldArray from '../../../../common/form/OpenWebMediaFieldArray';
 
-const setQueryFormChildDialogOpen = () => {
-  this.setState(prevState => ({ childDialogOpen: !prevState.childDialogOpen }));
-};
+class EditOpenWebForm extends React.Component {
+  state = {
+    childDialogOpen: false,
+  };
 
-const EditOpenWebForm = ({ initialValues, renderSolrTextField, intl, onFormChange }) => (
-  <>
-    <Row>
-      <Col lg={6}>
-        <label htmlFor="query"><FormattedMessage {...messages.query} /></label>
-        <Row>
-          <Col lg={12}>
-            <div>
-              <Field
-                className="query-field"
-                name="query"
-                component={renderSolrTextField}
-                multiline
-                rows={2}
-                rowsMax={4}
-                fullWidth
-              />
-              <small>
-                <b><QueryHelpDialog trigger={intl.formatMessage(messages.queryHelpLink)} /></b>
-              </small>
-            </div>
-          </Col>
-        </Row>
-      </Col>
-      <Col lg={6}>
-        <div className="media-field-wrapper">
-          <label htmlFor="media"><FormattedMessage {...messages.topicSourceCollectionsProp} /></label>
-          <OpenWebMediaFieldArray
-            formatMessage={intl.formatMessage}
-            className="query-field"
-            form="platform"
-            enableReinitialize
-            keepDirtyOnReinitialize
-            destroyOnUnmount={false}
-            fieldName="media"
-            initialValues={initialValues} // to and from MediaPicker
-            allowRemoval
-            onDelete={onFormChange}
-          />
-          <MediaPickerDialog
-            initMedia={initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
-            onConfirmSelection={selections => onFormChange('media', selections)}
-            setQueryFormChildDialogOpen={setQueryFormChildDialogOpen}
-          />
-        </div>
-      </Col>
-    </Row>
-  </>
-);
+  setQueryFormChildDialogOpen = () => {
+    this.setState(prevState => ({ childDialogOpen: !prevState.childDialogOpen }));
+  };
+
+  render() {
+    const { renderSolrTextField, intl, initialValues, onFormChange } = this.props;
+    return (
+      <Row>
+        <Col lg={6}>
+          <label htmlFor="query"><FormattedMessage {...messages.query} /></label>
+          <Row>
+            <Col lg={12}>
+              <div>
+                <Field
+                  className="query-field"
+                  name="query"
+                  component={renderSolrTextField}
+                  multiline
+                  rows={2}
+                  rowsMax={4}
+                  fullWidth
+                />
+                <small>
+                  <b><QueryHelpDialog trigger={intl.formatMessage(messages.queryHelpLink)} /></b>
+                </small>
+              </div>
+            </Col>
+          </Row>
+        </Col>
+        <Col lg={6}>
+          <div className="media-field-wrapper">
+            <label htmlFor="media"><FormattedMessage {...messages.topicSourceCollectionsProp} /></label>
+            <OpenWebMediaFieldArray
+              formatMessage={intl.formatMessage}
+              className="query-field"
+              form="platform"
+              enableReinitialize
+              keepDirtyOnReinitialize
+              destroyOnUnmount={false}
+              fieldName="media"
+              initialValues={initialValues} // to and from MediaPicker
+              allowRemoval
+              onDelete={onFormChange}
+            />
+            <MediaPickerDialog
+              initMedia={initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
+              onConfirmSelection={selections => onFormChange('media', selections)}
+              setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
+            />
+          </div>
+        </Col>
+      </Row>
+    );
+  }
+}
 
 EditOpenWebForm.propTypes = {
   // from parent
   initialValues: PropTypes.object,
   onEnterKey: PropTypes.func,
+  state: PropTypes.object,
   // from state
   change: PropTypes.func.isRequired,
   // from dispatch

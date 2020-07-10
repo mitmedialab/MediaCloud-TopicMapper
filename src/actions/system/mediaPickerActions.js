@@ -36,6 +36,8 @@ export const selectMediaCustomColl = createAction(MEDIA_PICKER_SELECT_MEDIA_CUST
 export const MEDIA_PICKER_UNSELECT_MEDIA = 'MEDIA_PICKER_UNSELECT_MEDIA';
 export const unselectMedia = createAction(MEDIA_PICKER_UNSELECT_MEDIA, media => media);
 
-
 export const MEDIA_PICKER_CLEAR_SELECTED_MEDIA = 'MEDIA_PICKER_CLEAR_SELECTED_MEDIA';
 export const clearSelectedMedia = createAction(MEDIA_PICKER_CLEAR_SELECTED_MEDIA, media => media);
+
+// noop
+export const RESET_MEDIAPICKER_FEATURED_COLLECTION_SEARCH = 'RESET_MEDIAPICKER_FEATURED_COLLECTION_SEARCH';
