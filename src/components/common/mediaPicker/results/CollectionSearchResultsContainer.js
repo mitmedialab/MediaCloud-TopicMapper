@@ -19,89 +19,53 @@ const localMessages = {
   noResults: { id: 'system.mediaPicker.collections.noResults', defaultMessage: 'No results. Try searching for issues like online news, health, blogs, conservative to see if we have collections made up of those types of sources.' },
 };
 
-
-class CollectionSearchResultsContainer extends React.Component {
-  UNSAFE_componentWillMount() {
-    this.correlateSelection(this.props);
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedMedia !== this.props.selectedMedia
-      // if the results have changed from a keyword entry, we need to update the UI
-      || (nextProps.collectionResults && nextProps.collectionResults.lastFetchSuccess !== this.props.collectionResults.lastFetchSuccess)) {
-      this.correlateSelection(nextProps);
-    }
-  }
-
-  correlateSelection(whichProps) {
-    const whichList = whichProps.collectionResults.list;
-
-    // if selected media has changed, update current results
-    if (whichProps.selectedMedia && whichProps.selectedMedia.length > 0
-      // we can't be sure we have received results yet
-      && whichList && whichList.length > 0) {
-      // sync up selectedMedia and push to result sets.
-      whichList.map((m) => {
-        const mediaIndex = whichProps.selectedMedia.findIndex(q => q.id === m.id);
-        if (mediaIndex < 0) {
-          this.props.handleMediaConcurrency(m, false);
-        } else if (mediaIndex >= 0) {
-          this.props.handleMediaConcurrency(m, true);
-        }
-        return m;
-      });
-    }
-    return 0;
-  }
-
-  render() {
-    const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, resetAndUpdateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly, pageThroughCollections, links } = this.props;
-    const { formatMessage } = this.props.intl;
-    let content = null;
-    let getMoreResultsContent = null;
-    if (fetchStatus === FETCH_ONGOING) {
-      // we have to do this here to show a loading spinner when first searching (and featured collections are showing)
-      content = <LoadingSpinner />;
-    } else if (collectionResults.list && selectedMediaQueryKeyword) {
-      content = (
-        <CollectionResultsTable
-          collections={collectionResults.list}
-          onToggleSelected={onToggleSelected}
-          viewOnly={viewOnly}
-        />
-      );
-      getMoreResultsContent = (
-        <Row>
-          <Col lg={12}>
-            <AppButton
-              className="select-media-cancel-button"
-              label={formatMessage(messages.getMoreResults)}
-              onClick={val => pageThroughCollections(val)}
-              type="submit"
-              disabled={links.next <= 0}
-            />
-          </Col>
-        </Row>
-      );
-    } else if (initCollections) {
-      content = initCollections;
-    } else {
-      content = <FormattedMessage {...localMessages.noResults} />;
-    }
-    return (
-      <div className="media-picker-search-results">
-        <MediaPickerSearchForm
-          initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
-          onSearch={val => resetAndUpdateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
-          hintText={formatMessage(hintTextMsg || localMessages.hintText)}
-        />
-        <h2><span className="source-search-keys"><FormattedMessage {...localMessages.title} values={{ name: selectedMediaQueryKeyword, numResults: collectionResults.list.length }} /></span></h2>
-        {getMoreResultsContent}
-        {content}
-      </div>
+const CollectionSearchResultsContainer = props => {
+  const { selectedMediaQueryKeyword, selectedMediaQueryType, initCollections, collectionResults, resetAndUpdateMediaQuerySelection, onToggleSelected, fetchStatus, hintTextMsg, viewOnly, pageThroughCollections, links } = props;
+  const { formatMessage } = props.intl;
+  let content = null;
+  let getMoreResultsContent = null;
+  if (fetchStatus === FETCH_ONGOING) {
+    // we have to do this here to show a loading spinner when first searching (and featured collections are showing)
+    content = <LoadingSpinner />;
+  } else if (collectionResults.list && selectedMediaQueryKeyword) {
+    content = (
+      <CollectionResultsTable
+        collections={collectionResults.list}
+        onToggleSelected={onToggleSelected}
+        viewOnly={viewOnly}
+      />
     );
+    getMoreResultsContent = (
+      <Row>
+        <Col lg={12}>
+          <AppButton
+            className="select-media-cancel-button"
+            label={formatMessage(messages.getMoreResults)}
+            onClick={val => pageThroughCollections(val)}
+            type="submit"
+            disabled={links.next <= 0}
+          />
+        </Col>
+      </Row>
+    );
+  } else if (initCollections) {
+    content = initCollections;
+  } else {
+    content = <FormattedMessage {...localMessages.noResults} />;
   }
-}
+  return (
+    <div className="media-picker-search-results">
+      <MediaPickerSearchForm
+        initValues={{ mediaKeyword: selectedMediaQueryKeyword }}
+        onSearch={val => resetAndUpdateMediaQuerySelection({ ...val, type: selectedMediaQueryType })}
+        hintText={formatMessage(hintTextMsg || localMessages.hintText)}
+      />
+      <h2><span className="source-search-keys"><FormattedMessage {...localMessages.title} values={{ name: selectedMediaQueryKeyword, numResults: collectionResults.list.length }} /></span></h2>
+      {getMoreResultsContent}
+      {content}
+    </div>
+  );
+};
 
 
 CollectionSearchResultsContainer.propTypes = {
