@@ -31,13 +31,13 @@ ALL_MEDIA = '-1'
 @flask_login.login_required
 @api_error_handler
 def api_mediapicker_source_search():
-    search_str = request.args['media_keyword'] if 'media_keyword' in request.args else ''
+    search_str = request.args.get('media_keyword', '')
     cleaned_search_str = None if search_str == '*' else search_str
     querying_all_media = False
     link_id = request.args.get('link_id', 0)
-    tags_id = request.args['tags'] if 'tags' in request.args else 0
+    tags_ids = request.args.get('tags', 0)
     try:
-        if int(tags_id) == int(ALL_MEDIA):
+        if int(tags_ids) == int(ALL_MEDIA):
             querying_all_media = True
     except ValueError:
         # ie. request.args['tags'] is not an int (ie. it is a list of collections like a normal query)
@@ -47,10 +47,10 @@ def api_mediapicker_source_search():
     if querying_all_media:
         tags = [{'tags_id': ALL_MEDIA, 'id': ALL_MEDIA, 'label': "All Media", 'tag_sets_id': ALL_MEDIA}]
         matching_sources, last_media_id = media_search_with_page(cleaned_search_str, tags, link_id=link_id)
-    elif 'tags' in request.args and len(request.args['tags']) > 0:
+    elif len(tags_ids) > 0:
         # group the tags by tags_sets_id to support boolean searches
         # the format for this metadata is a list of tags_id. the following finds the right metadata tag set for the tags
-        tags_id_list = request.args['tags'].split(',')
+        tags_id_list = tags_ids.split(',')
         tags = [base_api_cache.tag(tid) for tid in tags_id_list]  # ok to use cache here (metadata tags don't change)
         tags_by_set = defaultdict(list)
         for tag in tags:
@@ -91,10 +91,10 @@ def api_mediapicker_collection_search():
     use_pool = None
     add_source_counts = False
     public_only = False if user_has_auth_role(ROLE_MEDIA_EDIT) else True
-    search_str = request.args['media_keyword']
-    tag_sets_id_list = request.args['which_set'].split(',')
+    search_str = request.args.get('media_keyword', '')
+    tag_sets_id_list = request.args.get('which_set','').split(',')
     t1 = time.time()
-    link_id = request.args['link_id'] if 'link_id' in request.args else 0
+    link_id = request.args.get('link_id', 0)
     results, last_tags_id = collection_search_with_page(search_str, public_only, tag_sets_id_list, last_tags_id=link_id)
     t2 = time.time()
     trimmed_collections = results[:MAX_COLLECTIONS]
@@ -162,7 +162,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             return query
         query += " AND ("
         # add in the media sources they specified
-        if len(media_ids) > 0: # this format is a list of media_idds
+        if len(media_ids) > 0: # this format is a string of media_idds
             media_ids = media_ids.split(',') if isinstance(media_ids, str) else media_ids
             query_media_ids = " ".join([str(m) for m in media_ids])
             query_media_ids = re.sub(r'\[*\]*', '', str(query_media_ids))
@@ -174,7 +174,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             query += " OR "
 
         # add in the collections they specified
-        if len(tags_ids) > 0: # this format is a list of tags_id_medias
+        if len(tags_ids) > 0: # this format is a string of tags_id_medias
             tags_ids = tags_ids.split(',') if isinstance(tags_ids, str) else tags_ids
             query_tags_ids = " ".join([str(t) for t in tags_ids])
             query_tags_ids = re.sub(r'\[*\]*', '', str(query_tags_ids))
