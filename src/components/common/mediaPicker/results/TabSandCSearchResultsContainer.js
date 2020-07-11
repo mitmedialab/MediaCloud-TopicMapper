@@ -116,6 +116,7 @@ const mapDispatchToProps = dispatch => ({
   clearPreviousQueries: () => {
     dispatch(resetMediaPickerSources());
     dispatch(resetMediaPickerCollections()); // clear prev results
+  },
 });
 
 export default
