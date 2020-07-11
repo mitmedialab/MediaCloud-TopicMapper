@@ -22,3 +22,7 @@ pattern = re.compile(r'(?<!^)(?=[A-Z])')
 def camel_to_snake(camel_case: str) -> str:
     return pattern.sub('_', camel_case).lower()
 
+
+def as_tag_name(user_label):
+    formatted_name = re.sub(r'\W|^(?=\d)', '_', user_label)
+    return formatted_name

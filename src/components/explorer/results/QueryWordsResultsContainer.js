@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import withLoginRequired from '../../common/hocs/LoginRequiredDialog';
-import { fetchQueryTopWords, fetchDemoQueryTopWords, resetTopWords, selectWord, setQueryWordCountSampleSize }
+import { fetchQueryTopWords, selectWord, setQueryWordCountSampleSize }
   from '../../../actions/explorerActions';
 import { postToDownloadUrl, slugifiedQueryLabel, prepSearches } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
@@ -125,7 +125,7 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(
     withSummary(messages.topWords, localMessages.descriptionIntro, messages.wordcloudHelpText)(
-      withQueryResults(resetTopWords, fetchQueryTopWords, fetchDemoQueryTopWords, ['sampleSize'])(
+      withQueryResults(fetchQueryTopWords, ['sampleSize'])(
         withLoginRequired(
           QueryWordsResultsContainer
         )

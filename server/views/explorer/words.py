@@ -8,7 +8,6 @@ from server.views import WORD_COUNT_SAMPLE_SIZE, WORD_COUNT_DOWNLOAD_NUM_WORDS, 
 from server.util.request import api_error_handler
 import server.util.csv as csv
 from server.views.explorer import parse_query_with_keywords, file_name_for_download
-import server.views.explorer.apicache as apicache
 import server.views.apicache as base_apicache
 
 logger = logging.getLogger(__name__)
@@ -18,12 +17,6 @@ logger = logging.getLogger(__name__)
 @flask_login.login_required
 @api_error_handler
 def api_explorer_words():
-    return _get_word_count()
-
-
-@app.route('/api/explorer/demo/words/count', methods=['GET'])
-@api_error_handler
-def api_explorer_demo_words():
     return _get_word_count()
 
 
@@ -38,11 +31,11 @@ def _get_word_count():
 # if this is a sample search, we will have a search id and a query index
 # if this is a custom search, we will have a query will q,start_date, end_date, sources and collections
 @app.route('/api/explorer/words/wordcount.csv', methods=['POST'])
-@api_error_handler
 @flask_login.login_required
+@api_error_handler
 def explorer_wordcount_csv():
     data = request.form
-    ngram_size = data['ngramSize'] if 'ngramSize' in data else 1    # defaul to words if ngram not specified
+    ngram_size = data['ngramSize'] if 'ngramSize' in data else 1    # default to words if ngram not specified
     sample_size = data['sample_size'] if 'sample_size' in data else WORD_COUNT_SAMPLE_SIZE
     filename = 'sampled-{}-ngrams-{}'.format(sample_size, ngram_size)
     query_object = json.loads(data['q'])
@@ -62,25 +55,11 @@ def api_explorer_compare_words():
         solr_q, solr_fq = parse_query_with_keywords(dictq)
         word_count_result = query_wordcount(solr_q, solr_fq)
         results.append(word_count_result)
-    return jsonify({"list": results})  
-
-
-@app.route('/api/explorer/demo/words/compare/count')
-@api_error_handler
-@flask_login.login_required
-def api_explorer_demo_compare_words():
-    compared_queries = request.args['compared_queries[]'].split(',')
-    results = []
-    for cq in compared_queries:
-        dictq = {x[0]: x[1] for x in [x.split("=") for x in cq[1:].split("&")]}
-        solr_q, solr_fq = parse_query_with_keywords(dictq)
-        word_count_result = query_wordcount(solr_q, solr_fq)
-        results.append(word_count_result)
-    return jsonify({"results": results})
+    return jsonify({"list": results})
 
 
 def query_wordcount(q, fq, ngram_size=1, num_words=WORD_COUNT_UI_NUM_WORDS, sample_size=WORD_COUNT_SAMPLE_SIZE):
-    word_data = apicache.word_count(q, fq, ngram_size, num_words, sample_size)
+    word_data = base_apicache.word_count(q, fq, ngram_size=ngram_size, num_words=num_words, sample_size=sample_size)
     # add in word2vec results
     words = [w['term'] for w in word_data]
     # and now add in word2vec model position data

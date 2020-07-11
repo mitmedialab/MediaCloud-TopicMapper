@@ -9,9 +9,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { getBrandDarkColor } from '../../../styles/colors';
 import withAttentionAggregation from '../../common/hocs/AttentionAggregation';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
-import { fetchSourceSplitStoryCount } from '../../../actions/sourceActions';
+import { fetchPlatformCountOverTime } from '../../../actions/platformActions';
 import DataCard from '../../common/DataCard';
-import AttentionOverTimeChart, { dataAsSeries } from '../../vis/AttentionOverTimeChart';
+import AttentionOverTimeChart, { dataAsSeries, downloadData } from '../../vis/AttentionOverTimeChart';
 import messages from '../../../resources/messages';
 import withHelp from '../../common/hocs/HelpfulContainer';
 import ActionMenu from '../../common/ActionMenu';
@@ -19,7 +19,7 @@ import { DownloadButton } from '../../common/IconButton';
 import { urlToExplorerQuery } from '../../../lib/urlUtil';
 import { VIEW_REGULARLY_COLLECTED, VIEW_ALL_STORIES } from '../../../lib/mediaUtil';
 import { PAST_WEEK } from '../../../lib/dateUtil';
-
+import { TAG_SPIDERED_STORY } from '../../../lib/tagUtil';
 
 const localMessages = {
   partialTitle: { id: 'source.summary.splitCount.title', defaultMessage: 'Volume of Stories Over Time (regularly collected stories)' },
@@ -34,11 +34,11 @@ const localMessages = {
 
 class SourceSplitStoryCountContainer extends React.Component {
   state = {
-    storyMode: VIEW_REGULARLY_COLLECTED,
+    viewMode: VIEW_REGULARLY_COLLECTED,
   }
 
   onIncludeSpidered = (d) => {
-    this.setState({ storyMode: d }); // reset this to trigger a re-render
+    this.setState({ viewMode: d }); // reset this to trigger a re-render
   }
 
   handleDataPointClick = (startDate, endDate) => {
@@ -50,16 +50,19 @@ class SourceSplitStoryCountContainer extends React.Component {
   }
 
   downloadCsv = () => {
-    const { sourceId } = this.props;
-    const url = `/api/sources/${sourceId}/story-split/count.csv`;
-    window.location = url;
+    // generate and download client side
+    const { sourceId, allStories, partialStories } = this.props;
+    const data = (this.state.viewMode === VIEW_ALL_STORIES) ? allStories : partialStories;
+    const prefix = (this.state.viewMode === VIEW_ALL_STORIES) ? 'all' : 'regularly-collected';
+    const filename = `source-${sourceId}-${prefix}-attention.csv`;
+    downloadData(filename, data.counts);
   }
 
   render() {
     const { allStories, partialStories, filename, helpButton, sourceName, attentionAggregationMenuItems, selectedTimePeriod } = this.props;
     let stories = partialStories;
     let title = localMessages.partialTitle;
-    if (this.state.storyMode === VIEW_ALL_STORIES) {
+    if (this.state.viewMode === VIEW_ALL_STORIES) {
       stories = allStories;
       title = localMessages.allTitle;
     }
@@ -70,14 +73,14 @@ class SourceSplitStoryCountContainer extends React.Component {
             <ActionMenu actionTextMsg={messages.viewOptions}>
               <MenuItem
                 className="action-icon-menu-item"
-                disabled={this.state.storyMode === VIEW_REGULARLY_COLLECTED}
+                disabled={this.state.viewMode === VIEW_REGULARLY_COLLECTED}
                 onClick={() => this.onIncludeSpidered(VIEW_REGULARLY_COLLECTED)}
               >
                 <FormattedMessage {...localMessages.regularlyCollectedStories} />
               </MenuItem>
               <MenuItem
                 className="action-icon-menu-item"
-                disabled={this.state.storyMode === VIEW_ALL_STORIES}
+                disabled={this.state.viewMode === VIEW_ALL_STORIES}
                 onClick={() => this.onIncludeSpidered(VIEW_ALL_STORIES)}
               >
                 <FormattedMessage {...localMessages.allStories} />
@@ -103,13 +106,12 @@ class SourceSplitStoryCountContainer extends React.Component {
         <AttentionOverTimeChart
           total={stories.total}
           series={[{
-            ...dataAsSeries(stories.list),
+            ...dataAsSeries(stories.counts),
             id: 0,
             name: sourceName,
             color: getBrandDarkColor(),
             showInLegend: false,
           }]}
-          health={stories.health}
           height={250}
           filename={filename}
           onDataPointClick={this.handleDataPointClick}
@@ -137,12 +139,17 @@ SourceSplitStoryCountContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.sources.sources.selected.splitStoryCount.fetchStatus,
-  allStories: state.sources.sources.selected.splitStoryCount.all_stories,
-  partialStories: state.sources.sources.selected.splitStoryCount.partial_stories,
+  fetchStatus: state.platforms.countOverTime.fetchStatus,
+  allStories: state.platforms.countOverTime.results.sourceTotal,
+  partialStories: state.platforms.countOverTime.results.sourceNonSpidered,
 });
 
-const fetchAsyncData = (dispatch, { sourceId }) => dispatch(fetchSourceSplitStoryCount(sourceId, { separate_spidered: true }));
+const fetchAsyncData = (dispatch, { sourceId }) => {
+  // grab all results
+  dispatch(fetchPlatformCountOverTime({ uid: 'sourceTotal', platform_query: `media_id:${sourceId}` }));
+  // and also grab just the non-spidered stories
+  dispatch(fetchPlatformCountOverTime({ uid: 'sourceNonSpidered', platform_query: `media_id:${sourceId} AND NOT tags_id_stories:${TAG_SPIDERED_STORY}` }));
+};
 
 export default
 injectIntl(

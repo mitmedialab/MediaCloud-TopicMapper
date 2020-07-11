@@ -4,10 +4,10 @@ import { injectIntl } from 'react-intl';
 import TabSelector from '../../common/TabSelector';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
 import { queryChangedEnoughToUpdate /* , ensureSafeResults */, ensureSafeTabIndex, ensureSafeSortedQueries,
-  formatQueryForServer, formatDemoQueryForServer } from '../../../lib/explorerUtil';
+  formatQueryForServer } from '../../../lib/explorerUtil';
 
 
-function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPropertiesForServer) {
+function withQueryResults(fetchResults, extraPropertiesForServer) {
   const innerWithQueryResults = (ChildComponent) => {
     class QueryResultsSelector extends React.Component {
       state = {
@@ -83,38 +83,22 @@ function withQueryResults(resetResults, fetchResults, fetchDemoResults, extraPro
     };
 
     const fetchAsyncQueryResultsData = (dispatch, props) => {
-      const { isLoggedIn, queries } = props;
+      const { queries } = props;
       // this should trigger when the user clicks the Search button or changes the URL
       // for n queries, run the dispatch with each parsed query
-      if (Array.isArray(resetResults)) {
-        resetResults.map(reset => dispatch(reset()));
-      } else {
-        dispatch(resetResults()); // necessary if a query deletion has occurred
-      }
-      if (isLoggedIn) {
-        queries.map((q) => {
-          let infoToQuery = formatQueryForServer(q);
-          if (extraPropertiesForServer) {
-            const extraDataforServer = extraPropertiesForServer.reduce((map, item) => ({ ...map, [item]: props[item] }), {});
-            infoToQuery = { ...infoToQuery, ...extraDataforServer };
-          }
-          return dispatch(fetchResults(infoToQuery));
-        });
-      } else if (queries) { // else assume DEMO mode, but assume the queries have been loaded
-        queries.map((q, index) => {
-          let demoInfo = formatDemoQueryForServer(q, index);
-          if (extraPropertiesForServer) {
-            const extraDataforServer = extraPropertiesForServer.reduce((map, item) => ({ ...map, [item]: props[item] }), {});
-            demoInfo = { ...demoInfo, ...extraDataforServer };
-          }
-          return dispatch(fetchDemoResults(demoInfo));
-        });
-      }
+      queries.map((q) => {
+        let infoToQuery = formatQueryForServer(q);
+        if (extraPropertiesForServer) {
+          const extraDataforServer = extraPropertiesForServer.reduce((map, item) => ({ ...map, [item]: props[item] }), {});
+          infoToQuery = { ...infoToQuery, ...extraDataforServer };
+        }
+        return dispatch(fetchResults(infoToQuery));
+      });
     };
 
     // don't force the child to use an async fetcher if it doesn't need one
     let fetcher = () => null;
-    if (resetResults && fetchResults && fetchDemoResults) {
+    if (fetchResults) {
       fetcher = fetchAsyncQueryResultsData;
     }
 

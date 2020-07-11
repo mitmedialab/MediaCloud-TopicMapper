@@ -7,7 +7,7 @@ from server.util.api_helper import combined_split_and_normalized_counts
 MC_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
-class ContentProvider(object):
+class ContentProvider():
     """
     An abstract wrapper to be implemented for each platform we want to preview content from.
     Any unimplemented methods raise an Exception
@@ -18,17 +18,20 @@ class ContentProvider(object):
 
     def sample(self, query: str, start_date: dt.datetime, end_date: dt.datetime, limit: int = 20,
                **kwargs) -> List[Dict]:
-        raise NotImplementedError("Subclasses should implement sampleContent!")
+        raise NotImplementedError("Subclasses should implement sample!")
 
     def count(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> int:
-        raise NotImplementedError("Subclasses should implement contentCount!")
+        raise NotImplementedError("Subclasses should implement count!")
 
     def count_over_time(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> Dict:
-        raise NotImplementedError("Subclasses should implement contentCountOverTime!")
+        raise NotImplementedError("Subclasses should implement count_over_time!")
 
     def words(self, query: str, start_date: dt.datetime, end_date: dt.datetime, limit: int = 100,
               **kwargs) -> List[Dict]:
-        raise NotImplementedError("Subclasses should implement contentWords!")
+        raise NotImplementedError("Subclasses should implement words!")
+
+    def tags(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> List[Dict]:
+        raise NotImplementedError("Subclasses should implement tag_use!")
 
     def normalized_count_over_time(self, query: str, start_date: dt.datetime, end_date: dt.datetime,
                                    **kwargs) -> Dict:

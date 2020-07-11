@@ -1,46 +1,70 @@
 {
   "releases": [
     {
-      "date": "2020-06-01",
+      "date": "2020-06-29",
+      "version": "v3.14.2",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "New explorer queries missing from charts"
+        }
+      ]
+    },
+    {
+      "date": "2020-06-17",
+      "version": "v3.14.1",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fixed",
+          "note": "Missing bigram / trigram downloads"
+        }
+      ]
+    },
+    {
+      "date": "2020-06-05",
       "version": "v3.14.0",
       "notes": [
         {
-          "apps": [ "topics" ],
-          "type": "New",
-          "note": "Topics can now import links shared on a variety of platforms"
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "Collection content history download"
         },
         {
-          "apps": [ "topics" ],
+          "apps": [ "explorer" ],
           "type": "New",
-          "note": "Import top related Google search results into a topic"
+          "note": "Removed support for sample queries"
         },
         {
-          "apps": [ "topics" ],
+          "apps": [ "sources" ],
           "type": "New",
-          "note": "Import links shared on Reddit into a topic"
+          "note": "System generated feeds marked as such"
         },
         {
-          "apps": [ "topics" ],
+          "apps": [ "explorer" ],
           "type": "New",
-          "note": "Import links in content from a CSV you upload into a topic"
+          "note": "Added SVG download for total attention widget"
         },
         {
-          "apps": [ "topics" ],
+          "apps": [ "explorer" ],
           "type": "New",
-          "note": "Sharing metrics at the author and post level for topic platforms"
-        },
-        {
-          "apps": [ "topics" ],
-          "type": "New",
-          "note": "Quickly export CSVs of all the stories or media in a topic"
-        },
-        {
-          "apps": [ "topics" ],
-          "type": "Fix",
-          "note": "Top words for a media source in a topic work again"
+          "note": "Removed demo mode"
         }
       ]
-    }, {
+    },
+    {
+      "date": "2020-05-27",
+      "version": "v3.13.20",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fixed",
+          "note": "Correctly display stories/day on media pages"
+        }
+      ]
+    },
+    {
       "date": "2020-05-18",
       "version": "v3.13.19",
       "notes": [

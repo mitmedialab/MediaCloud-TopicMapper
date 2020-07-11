@@ -1,4 +1,4 @@
-import { UPDATE_QUERY, UPDATE_QUERY_COLLECTION_LOOKUP_INFO, UPDATE_QUERY_SOURCE_LOOKUP_INFO, UPDATE_QUERY_SEARCH_LOOKUP_INFO, ADD_CUSTOM_QUERY, SAVE_PARSED_QUERIES, MARK_AS_DELETED_QUERY, RESET_QUERIES, REMOVE_DELETED_QUERIES, COPY_AND_REPLACE_QUERY_FIELD, REMOVE_NEW_STATUS, SWAP_SORT_QUERIES } from '../../../actions/explorerActions';
+import { UPDATE_QUERY, UPDATE_QUERY_COLLECTION_LOOKUP_INFO, UPDATE_QUERY_SOURCE_LOOKUP_INFO, UPDATE_QUERY_SEARCH_LOOKUP_INFO, ADD_CUSTOM_QUERY, SAVE_PARSED_QUERIES, MARK_AS_DELETED_QUERY, REMOVE_DELETED_QUERIES, COPY_AND_REPLACE_QUERY_FIELD, REMOVE_NEW_STATUS, SWAP_SORT_QUERIES } from '../../../actions/explorerActions';
 import { autoMagicQueryLabel, lookupReadableMetadataName } from '../../../lib/explorerUtil';
 
 const INITIAL_STATE = [];
@@ -147,8 +147,6 @@ function queries(state = INITIAL_STATE, action) {
     case SWAP_SORT_QUERIES:
       updatedState = [...state];
       return swapSortPositions(state, action.payload.from, action.payload.to);
-    case RESET_QUERIES:
-      return INITIAL_STATE;
     default:
       return state;
   }

@@ -6,7 +6,7 @@ import mediacloud.error
 from server import mc, TOOL_API_KEY
 from server.views import WORD_COUNT_SAMPLE_SIZE, WORD_COUNT_UI_NUM_WORDS
 from server.cache import cache
-from server.util.tags import STORY_UNDATEABLE_TAG, is_bad_theme
+from server.util.tags import STORY_UNDATEABLE_TAG
 import server.util.wordembeddings as wordembeddings
 from server.auth import user_mediacloud_client, user_admin_mediacloud_client, user_mediacloud_key
 from server.util.request import filters_from_args
@@ -220,7 +220,7 @@ def _word2vec_topic_2d_results(topics_id, snapshots_id, words):
 
 def topic_similar_words(topics_id, word):
     # no need for user-specific cache on this
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    snapshots_id, _timespans_id, _foci_id, _q = filters_from_args(request.args)
     results = _word2vec_topic_similar_words(topics_id, snapshots_id, [word])
     if len(results):
         return results[0]['results']
@@ -320,7 +320,7 @@ def topic_focal_set(user_mc_key, topics_id, snapshots_id, focal_sets_id):
     raise ValueError("Unknown subtopic set id of {}".format(focal_sets_id))
 
 
-def cached_topic_timespan_list(user_mc_key, topics_id, snapshots_id=None, foci_id=None):
+def cached_topic_timespan_list(topics_id, snapshots_id=None, foci_id=None):
     # this includes the user_mc_key as a first param so the cache works right
     user_mc = user_mediacloud_client()
     timespans = user_mc.topicTimespanList(topics_id, snapshots_id=snapshots_id, foci_id=foci_id)
@@ -347,7 +347,7 @@ def topic_tag_counts(user_mc_key, topics_id, tag_sets_id):
      This supports just timespan_id and q from the request, because it has to use sentenceFieldCount,
      not a topicSentenceFieldCount method that takes filters (which doesn't exit)
     """
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    _snapshots_id, timespans_id, _foci_id, q = filters_from_args(request.args)
     timespan_query = "timespans_id:{}".format(timespans_id)
     if (q is None) or (len(q) == 0):
         query = timespan_query
@@ -357,20 +357,16 @@ def topic_tag_counts(user_mc_key, topics_id, tag_sets_id):
 
 
 @cache.cache_on_arguments()
-def _cached_topic_tag_counts(user_mc_key, topics_id, tag_sets_id, query):
-    user_mc = user_mediacloud_client(user_mc_key)
-    # we don't need ot use topics_id here because the timespans_id is in the query argument
-    tag_counts = user_mc.storyTagCount(query, tag_sets_id=tag_sets_id)
-    # add in the pct so we can show relative values within the sample
-    for t in tag_counts:
-        if is_bad_theme(t['tags_id']):
-            tag_counts.remove(t)
-    return tag_counts
+def _cached_topic_tag_counts(_user_mc_key, _topics_id, tag_sets_id, query):
+    # even though we call base_apicache under the hood here, we want to make sure the cache is keyed by
+    # API key, because topics have user-level permissioning
+    return base_apicache.top_tags(query, None, tag_sets_id=tag_sets_id)
 
 
-def topic_sentence_sample(user_mc_key, topics_id, sample_size=1000, **kwargs):
+def topic_sentence_sample(user_mc_key, sample_size=1000, **kwargs):
     """
-    Return a sample of sentences based on the filters.
+    Return a sample of sentences based on the filters. A topic ID isn't needed because there is no topicSentenceList
+    endpoint. Random sentence samples are pulled by using the timespans_id with a regular sentenceList call.
     """
     snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
     merged_args = {
@@ -409,7 +405,7 @@ def topic_timespan(topics_id, snapshots_id, foci_id, timespans_id):
     :param foci_id:
     :return: info about one timespan as specified
     """
-    timespans_list = cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    timespans_list = cached_topic_timespan_list(topics_id, snapshots_id, foci_id)
     matching_timespans = [t for t in timespans_list if t['timespans_id'] == int(timespans_id)]
     if len(matching_timespans) == 0:
         raise ValueError("Unknown timespans_id {}".format(timespans_id))
@@ -435,12 +431,11 @@ def matching_timespans_in_foci(topics_id, timespan_to_match, foci):
     For cross-subtopic analysis within a subtopic set, we need to identify the timespan that has the same date
     range in each subtopic within the set.  This helper does that annoying work for you.
     """
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    snapshots_id, _timespans_id, _foci_id, _q = filters_from_args(request.args)
     timespans = []
     for focus in foci:
         # find the matching timespan within this focus
-        snapshot_timespans = cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                        snapshots_id=snapshots_id, foci_id=focus['foci_id'])
+        snapshot_timespans = cached_topic_timespan_list(topics_id, snapshots_id=snapshots_id, foci_id=focus['foci_id'])
         timespan = _matching_timespan(timespan_to_match, snapshot_timespans)
         timespans.append(timespan)
 #        if timespan is None:

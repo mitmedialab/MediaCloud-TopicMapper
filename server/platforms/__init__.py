@@ -34,7 +34,7 @@ PLATFORM_SOURCE_YOUTUBE = 'youtube'  # coming soon
 
 def provider_for(platform: str, source: str) -> ContentProvider:
     """
-    A factory method that returns the appropriate data provider. Trhows an exception to let you know if the
+    A factory method that returns the appropriate data provider. Throws an exception to let you know if the
     arguments are unsupported.
     :param platform: One of the PLATFORM_* constants above.
     :param source: One of the PLATFORM_SOURCE>* constants above.
@@ -59,4 +59,4 @@ def provider_for(platform: str, source: str) -> ContentProvider:
 
 class UnknownProviderException(Exception):
     def __init__(self, platform, source):
-        self.message = "Unknown provider {} from {}".format(platform, source)
+        super().__init__("Unknown provider {} from {}".format(platform, source))

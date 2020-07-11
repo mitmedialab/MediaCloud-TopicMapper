@@ -1,13 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import MenuItem from '@material-ui/core/MenuItem';
+import ActionMenu from '../ActionMenu';
 import { calculateTimePeriods, PAST_WEEK, PAST_MONTH, PAST_YEAR, PAST_ALL } from '../../../lib/dateUtil';
 
 const localMessages = {
-  pastWeek: { id: 'wordcloud.time.pastWeek', defaultMessage: 'past week' },
-  pastMonth: { id: 'wordcloud.time.pastMonth', defaultMessage: 'past month' },
-  pastYear: { id: 'wordcloud.time.pastYear', defaultMessage: 'past year' },
-  all: { id: 'wordcloud.time.all', defaultMessage: 'all time' },
+  timePeriodMenuTitle: { id: 'periodic.menuTitle', defaultMessage: 'Change Time Period...' },
+  pastWeek: { id: 'periodic.pastWeek', defaultMessage: 'past week' },
+  pastMonth: { id: 'periodic.pastMonth', defaultMessage: 'past month' },
+  pastYear: { id: 'periodic.pastYear', defaultMessage: 'past year' },
+  all: { id: 'periodic.all', defaultMessage: 'all time' },
 };
 
 /**
@@ -26,20 +29,6 @@ const withTimePeriods = (ChildComponent, hideAllTimeOption = false) => {
 
     render() {
       const { selectedTimePeriod } = this.props;
-      let allTimeOptionContent;
-      if (!hideAllTimeOption) {
-        allTimeOptionContent = (
-          <a
-            href="#"
-            role="button"
-            tabIndex="0"
-            className={selectedTimePeriod === PAST_ALL ? 'selected' : ''}
-            onClick={e => this.saveStateAndTriggerFetch(PAST_ALL, e)}
-          >
-            <FormattedMessage {...localMessages.all} />
-          </a>
-        );
-      }
       const timePeriodControls = (
         <div className="periodic-controls">
           <a
@@ -69,14 +58,59 @@ const withTimePeriods = (ChildComponent, hideAllTimeOption = false) => {
           >
             <FormattedMessage {...localMessages.pastYear} />
           </a>
-          {allTimeOptionContent}
+          {!hideAllTimeOption && (
+            <a
+              href="#"
+              role="button"
+              tabIndex="0"
+              className={selectedTimePeriod === PAST_ALL ? 'selected' : ''}
+              onClick={e => this.saveStateAndTriggerFetch(PAST_ALL, e)}
+            >
+              <FormattedMessage {...localMessages.all} />
+            </a>
+          )}
         </div>
+      );
+      const timePeriodMenu = (
+        <ActionMenu actionTextMsg={localMessages.timePeriodMenuTitle}>
+          <MenuItem
+            className="action-icon-menu-item"
+            disabled={selectedTimePeriod === PAST_WEEK}
+            onClick={e => this.saveStateAndTriggerFetch(PAST_WEEK, e)}
+          >
+            <FormattedMessage {...localMessages.pastWeek} />
+          </MenuItem>
+          <MenuItem
+            className="action-icon-menu-item"
+            disabled={selectedTimePeriod === PAST_MONTH}
+            onClick={e => this.saveStateAndTriggerFetch(PAST_MONTH, e)}
+          >
+            <FormattedMessage {...localMessages.pastMonth} />
+          </MenuItem>
+          <MenuItem
+            className="action-icon-menu-item"
+            disabled={selectedTimePeriod === PAST_YEAR} // can only edit in ordered mode
+            onClick={e => this.saveStateAndTriggerFetch(PAST_YEAR, e)}
+          >
+            <FormattedMessage {...localMessages.pastYear} />
+          </MenuItem>
+          {!hideAllTimeOption && (
+            <MenuItem
+              className="action-icon-menu-item"
+              disabled={selectedTimePeriod === PAST_ALL} // can only edit in ordered mode
+              onClick={e => this.saveStateAndTriggerFetch(PAST_ALL, e)}
+            >
+              <FormattedMessage {...localMessages.all} />
+            </MenuItem>
+          )}
+        </ActionMenu>
       );
       return (
         <span className="periodic-container">
           <ChildComponent
             {...this.props}
             timePeriodControls={timePeriodControls}
+            timePeriodMenu={timePeriodMenu}
           />
         </span>
       );

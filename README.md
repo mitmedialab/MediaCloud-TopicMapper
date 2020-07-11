@@ -26,7 +26,9 @@ Node and npm:
  * `npm install` to install all the package dependencies (as specified in the `package.json`)
 
 MongoDB:
-[Install MongoDb](https://docs.mongodb.com/manual/installation/).  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install mongodb`
+[Install MongoDb](https://docs.mongodb.com/manual/administration/install-community/):
+* `brew tap mongodb/brew`
+* `brew install mongodb-community@4.2`
 
 Redis:
 [Install Redis](http://redis.io/)  We develop on OS X and install via the [HomeBrew package manager](http://brew.sh): `brew install redis`
@@ -61,3 +63,18 @@ You will make your life easier by installing these tools:
  * Set up your environment with [SublimeText](https://www.sublimetext.com) and linting following [these instructions](https://medium.com/planet-arkency/catch-mistakes-before-you-run-you-javascript-code-6e524c36f0c8#.1mela5864).
  * Note - you need to tell Sublime to install the Sublime package control manager and then you need to install the necessary packages using Sublime's command line. That's all there in the link, just make sure you follow the prompts explicity.
  * To browse your local DB on a Mac use [MongoHub](https://github.com/bububa/MongoHub-Mac), or [MongoExpress for a web-based UI](https://github.com/mongo-express/mongo-express)
+
+Development
+-----------
+
+Python linting rules can be found in `.pylintrc`. To run linting run:
+
+```
+make lint.py
+```
+
+We use PyCharm and run linting on the flying using the 
+[pylint-pycharm](https://github.com/leinardi/pylint-pycharm) plugin.
+After installing it, enable real-time inspection:
+* Preferences > Editor > Inspections > Pylint
+* Check "Pylint real-time scan"

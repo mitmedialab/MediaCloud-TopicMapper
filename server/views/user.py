@@ -10,7 +10,7 @@ import io
 import zipfile
 
 from server import app, auth, mc, user_db
-from server.auth import user_mediacloud_client, user_name
+from server.auth import user_mediacloud_client, user_name, user_is_admin
 from server.util.request import api_error_handler, form_fields_required, arguments_required, json_error_response
 from server.views.topics.topiclist import topics_user_can_access
 
@@ -92,7 +92,7 @@ def activation_confirm():
                                           results['error'])
     except MCException as mce:
         # this is long stack trace so we have to trim it for url length support
-        redirect_to_return = redirect(AUTH_MANAGEMENT_DOMAIN + '/#/user/activated?success=0&msg=' + str(mce[:300]))
+        redirect_to_return = redirect(AUTH_MANAGEMENT_DOMAIN + '/#/user/activated?success=0&msg=' + str(mce)[:300])
     return redirect_to_return
 
 
@@ -213,7 +213,7 @@ def api_user_update():
     }
     cached_user = flask_login.current_user
     # need to update user with the tool admin client, because user doesn't have permission to do this themselves
-    results = mc.userUpdate(cached_user.profile['auth_users_id'], **valid_params)
+    mc.userUpdate(cached_user.profile['auth_users_id'], **valid_params)
     user_mc = user_mediacloud_client()
     updated_user = user_mc.userProfile()
     cached_user.profile = updated_user
@@ -258,7 +258,7 @@ def _save_user_data_dir(u, user_mc):
     # topic-level permissions
     with open(os.path.join(temp_dir, 'topic-permissions.csv'), 'w') as outfile:
         topics = user_mc.topicList(limit=1000)['topics']
-        user_owned_topics = topics_user_can_access(topics, u.profile['email'])
+        user_owned_topics = topics_user_can_access(topics, u.profile['email'], user_is_admin())
         topic_permission_list = [{
             'topics_id': t['topics_id'],
             'topic_name': t['name'],

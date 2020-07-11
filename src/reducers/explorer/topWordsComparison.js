@@ -1,5 +1,5 @@
 import { createAsyncReducer } from '../../lib/reduxHelpers';
-import { FETCH_QUERY_TOP_WORDS_COMPARISON, RESET_QUERY_TOP_WORDS_COMPARISON, SELECT_COMPARATIVE_WORD_FIELD } from '../../actions/explorerActions';
+import { FETCH_QUERY_TOP_WORDS_COMPARISON, SELECT_COMPARATIVE_WORD_FIELD } from '../../actions/explorerActions';
 // import { cleanDateCounts } from '../../lib/dateUtil';
 // import * as fetchConstants from '../../lib/fetchConstants';
 const LEFT = 0;
@@ -23,8 +23,5 @@ const topWordsComparison = createAsyncReducer({
     if (payload.target === LEFT) return { left: value };
     return { right: value };
   },
-  [RESET_QUERY_TOP_WORDS_COMPARISON]: () => ({
-    results: [],
-  }),
 });
 export default topWordsComparison;

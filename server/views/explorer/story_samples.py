@@ -13,7 +13,6 @@ from server.platforms.reddit_pushshift import RedditPushshiftProvider,  NEWS_SUB
 from server.util.request import api_error_handler
 from server.views.explorer import only_queries_reddit, parse_query_dates, \
     parse_query_with_keywords, file_name_for_download
-import server.views.explorer.apicache as apicache
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +32,9 @@ def api_explorer_story_sample():
                                   subreddits=NEWS_SUBREDDITS)
     else:
         solr_q, solr_fq = parse_query_with_keywords(request.form)
-        results = apicache.random_story_list(solr_q, solr_fq, SAMPLE_STORY_COUNT)
-        for story in results:  # add in media info so we can show it to user
+        results = base_cache.story_list(None, solr_q, solr_fq, rows=SAMPLE_STORY_COUNT,
+                                        sort=MediaCloud.SORT_RANDOM)
+        for story in results:  # add in media info so we can show it to user if they click into the drill-down
             story["media"] = base_cache.media(story["media_id"])
     return jsonify({"results": results})
 
@@ -96,7 +96,8 @@ def _story_list_by_page(api_key, q, fq, stories_per_page, sort, page_limit=None)
     while True:
         if (page_limit is not None) and (page_count >= page_limit):
             break
-        story_page = apicache.story_list_page(api_key, q, fq, last_processed_stories_id, stories_per_page, sort)
+        story_page = base_cache.story_list(api_key, q, fq, sort=sort, rows=stories_per_page,
+                                           last_processed_stories_id=last_processed_stories_id)
         if len(story_page) == 0:  # this is the last page so bail out
             break
         for s in story_page:
@@ -116,7 +117,7 @@ def _story_list_by_page(api_key, q, fq, stories_per_page, sort, page_limit=None)
             if tag_util.NYT_LABELER_1_0_0_TAG_ID in story_tag_ids:
                         s['themes'] = ", ".join([t['tag'] for t in s['story_tags']
                                                 if t['tag_sets_id'] == tag_util.NYT_LABELS_TAG_SET_ID])
-        if story_page != None:
+        if story_page is not None:
             yield story_page
         last_processed_stories_id = story_page[-1]['processed_stories_id']
         page_count += 1

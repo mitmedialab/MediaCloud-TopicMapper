@@ -12,7 +12,6 @@ class BaseAppTest(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.admin_mc = mc
-        pass
 
     def tearDown(self):
         pass

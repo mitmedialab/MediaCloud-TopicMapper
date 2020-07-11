@@ -9,7 +9,7 @@ import withSummary from '../../common/hocs/SummarizedVizualization';
 import { DownloadButton } from '../../common/IconButton';
 import ActionMenu from '../../common/ActionMenu';
 import EntitiesTable from '../../common/EntitiesTable';
-import { resetEntitiesOrgs, fetchTopEntitiesOrgs, fetchDemoTopEntitiesOrgs } from '../../../actions/explorerActions';
+import { fetchTopEntitiesOrgs } from '../../../actions/explorerActions';
 import { postToDownloadUrl, COVERAGE_REQUIRED, ENTITY_DISPLAY_TOP_TEN } from '../../../lib/explorerUtil';
 import messages from '../../../resources/messages';
 import withQueryResults from './QueryResultsSelector';
@@ -120,7 +120,7 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps)(
     withSummary(localMessages.title, localMessages.helpIntro, [messages.entityHelpDetails])(
-      withQueryResults(resetEntitiesOrgs, fetchTopEntitiesOrgs, fetchDemoTopEntitiesOrgs)(
+      withQueryResults(fetchTopEntitiesOrgs)(
         QueryTopEntitiesOrgsResultsContainer
       )
     )

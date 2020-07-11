@@ -50,13 +50,13 @@ def api_collection_search(search_str):
 def api_sources_name_exists():
     """
     Check if source with name/url exists already
-    :return: boolean indicating if source with this name exists or not (case insensive check)
+    :return: boolean indicating if source with this name exists or not (case insensitive check)
     """
     mc = user_mediacloud_client()
     search_str = request.args['searchStr']
     media_id = int(request.args['id']) if 'id' in request.args else None
     matching_sources = mc.mediaList(name_like=search_str)[:MAX_SOURCES]
-    if id:
+    if media_id:
         matching_source_names = [s['name'].lower().strip() for s in matching_sources
                                  if s['media_id'] != media_id
                                  and s['name'].strip().lower() != search_str.strip().lower()]

@@ -40,7 +40,6 @@ def topic_focus_definition_update_or_create(topics_id):
         if int(request.form['focalSetDefinitionId']) is NEW_FOCAL_SET_PLACEHOLDER_ID:
             fs_name = request.form['focalSetName']
             fs_description = request.form['focalSetDescription']
-            focal_technique = request.form['focalTechnique']
             new_focal_set = user_mc.topicFocalSetDefinitionCreate(topics_id, fs_name, fs_description, 'Boolean Query')
             focal_set_definitions_id = new_focal_set['focal_set_definitions_id']
         else:

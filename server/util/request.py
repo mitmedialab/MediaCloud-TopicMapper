@@ -1,4 +1,5 @@
 import logging
+import os
 from functools import wraps
 from flask import jsonify, request
 
@@ -78,6 +79,32 @@ def api_error_handler(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
+            return func(*args, **kwargs)
+        except MCException as e:
+            logger.exception(e)
+            return json_error_response(e.message, e.status_code)
+    return wrapper
+
+
+def is_csv(filename):
+    filename, file_extension = os.path.splitext(filename)
+    return file_extension.lower() in ['.csv']
+
+
+def csv_required(func):
+    """
+    Validates a file is supplied in the request and that it has a csv extension.
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            if 'file' not in request.files:
+                return json_error_response('No file part')
+            uploaded_file = request.files['file']
+            if uploaded_file.filename == '':
+                return json_error_response('No selected file')
+            if not (uploaded_file and is_csv(uploaded_file.filename)):
+                return json_error_response('Invalid file')
             return func(*args, **kwargs)
         except MCException as e:
             logger.exception(e)

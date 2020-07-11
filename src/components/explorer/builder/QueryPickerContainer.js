@@ -3,21 +3,17 @@ import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Grid } from 'react-flexbox-grid/lib';
 import * as d3 from 'd3';
-import messages from '../../../resources/messages';
 import QueryForm from './QueryForm';
-import AppButton from '../../common/AppButton';
 import ItemSlider from '../../common/ItemSlider';
 import QueryPickerItem from './QueryPickerItem';
 import { QUERY_COLORS } from '../../common/ColorPicker';
 import { updateFeedback } from '../../../actions/appActions';
-import QueryHelpDialog from '../../common/help/QueryHelpDialog';
 import { selectQuery, updateQuery, addCustomQuery, loadUserSearches, saveUserSearch, deleteUserSearch, markAsDeletedQuery, copyAndReplaceQueryField, swapSortQueries } from '../../../actions/explorerActions';
 import { AddQueryButton } from '../../common/IconButton';
 import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
-import { autoMagicQueryLabel, KEYWORD, DATES, MEDIA,
-  DEFAULT_COLLECTION_OBJECT_ARRAY, uniqueQueryId, LEFT, prepSearches, getQFromCodeMirror } from '../../../lib/explorerUtil';
+import { KEYWORD, DATES, MEDIA, uniqueQueryId, LEFT, prepSearches, getQFromCodeMirror } from '../../../lib/explorerUtil';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
 import { queryAsString, replaceCurlyQuotes } from '../../../lib/stringUtil';
 
@@ -91,23 +87,8 @@ class QueryPickerContainer extends React.Component {
   saveAndSearch = () => {
     // wrap the save handler here because we need to save the changes to the selected query the user
     // might have made on the form, and then search
-    const { onSearch, queries, isLoggedIn, updateOneQuery } = this.props;
-    if (isLoggedIn) {
-      this.saveChangesToSelectedQuery();
-    } else {
-      // for demo mode we have to save all the queries they entered first, and then search
-      const nonDeletedQueries = queries.filter(q => q.deleted !== true);
-      nonDeletedQueries.forEach((q) => {
-        const queryText = document.getElementById(`query-${q.uid}-q`).value; // not super robust,
-        const cleanedQueryText = replaceCurlyQuotes(queryText);
-        const updatedQuery = {
-          ...q,
-          q: cleanedQueryText,
-        };
-        updatedQuery.label = updatedQuery.autoNaming ? autoMagicQueryLabel(updatedQuery) : updatedQuery.label; // have to call this alone because input is the whole query
-        updateOneQuery(updatedQuery);
-      });
-    }
+    const { onSearch } = this.props;
+    this.saveChangesToSelectedQuery();
     onSearch();
   }
 
@@ -169,16 +150,6 @@ class QueryPickerContainer extends React.Component {
     return unDeletedQueries.length >= 2; // because we always have an empty query in the query array
   }
 
-  updateDemoQueryLabel = (query, newValue) => {
-    // update both label and q for query
-    const { updateCurrentQuery } = this.props;
-    const updatedQuery = { ...query };
-    updatedQuery.label = newValue;
-    updatedQuery.q = newValue;
-    updatedQuery.autoNaming = false;
-    updateCurrentQuery(updatedQuery, 'label');
-  }
-
   // called by query picker to update things like label or color
   updateQueryProperty = (query, propertyName, newValue) => {
     const { updateCurrentQuery, formQuery } = this.props;
@@ -204,13 +175,10 @@ class QueryPickerContainer extends React.Component {
   }
 
   render() {
-    const { isLoggedIn, selected, queries, isEditable, addAQuery, handleLoadUserSearches, formQuery,
+    const { selected, queries, addAQuery, handleLoadUserSearches, formQuery,
       handleDeleteUserSearch, savedSearches, handleCopyAll, handleDuplicateQuery, handleMoveAndSwap } = this.props;
     const { formatMessage } = this.props.intl;
-    let queryPickerContent; // editable if demo mode
-    let queryFormContent; // hidden if demo mode
     let fixedQuerySlides;
-    let canSelectMedia = false;
 
     const unDeletedQueries = this.getAllActiveQueries(queries);
     if (unDeletedQueries && unDeletedQueries.length > 0 && selected) {
@@ -218,11 +186,9 @@ class QueryPickerContainer extends React.Component {
       fixedQuerySlides = fixedQuerySlides.map((query, index) => (
         <div key={index}>
           <QueryPickerItem
-            isLoggedIn={isLoggedIn}
             key={index}
             query={query}
             isSelected={selected.uid === query.uid}
-            isLabelEditable={isEditable} // if custom, true for either mode, else if logged in no
             isDeletable={() => this.isDeletable()}
             displayLabel={false}
             onQuerySelected={(newlySelectedQuery) => {
@@ -231,7 +197,6 @@ class QueryPickerContainer extends React.Component {
               }
             }}
             updateQueryProperty={(propertyName, newValue) => this.updateQueryProperty(query, propertyName, newValue)}
-            updateDemoQueryLabel={newValue => this.updateDemoQueryLabel(query, newValue)}
             onSearch={this.saveAndSearch}
             onDelete={() => this.handleDeleteAndSelectQuery(query)}
             onMove={direction => handleMoveAndSwap(query, direction, queries)}
@@ -240,86 +205,58 @@ class QueryPickerContainer extends React.Component {
           />
         </div>
       ));
-      canSelectMedia = isLoggedIn;
       // provide the add Query button, load with default values when Added is clicked
-      if (isLoggedIn || isEditable) {
-        const colorPallette = idx => d3.schemeCategory10[idx % 10];
-        const dateObj = getDateRange(PAST_MONTH);
-        dateObj.start = solrFormat(dateObj.start);
-        dateObj.end = solrFormat(dateObj.end);
-        if (unDeletedQueries.length > 0) {
-          dateObj.start = unDeletedQueries[unDeletedQueries.length - 1].startDate;
-          dateObj.end = unDeletedQueries[unDeletedQueries.length - 1].endDate;
-        }
-        const newUid = Math.floor((Math.random() * 10000) + 1);
-        const newPosition = queries.reduce((a, b) => (a.sortPosition > b.sortPosition ? a : b)).sortPosition + 1;
-        const genDefColor = colorPallette(newPosition);
-        const newQueryLabel = `Query ${String.fromCharCode('A'.charCodeAt(0) + newPosition)}`;
-        const defaultQueryField = '';
-        const defaultDemoQuery = { uid: newUid, sortPosition: newPosition, new: true, label: newQueryLabel, q: defaultQueryField, description: 'new', startDate: dateObj.start, endDate: dateObj.end, collections: DEFAULT_COLLECTION_OBJECT_ARRAY, sources: [], color: genDefColor, autoNaming: true };
-        const defaultQuery = { uid: newUid, sortPosition: newPosition, new: true, label: newQueryLabel, q: defaultQueryField, description: 'new', startDate: dateObj.start, endDate: dateObj.end, searches: [], collections: [], sources: [], color: genDefColor, autoNaming: true };
+      const colorPallette = idx => d3.schemeCategory10[idx % 10];
+      const dateObj = getDateRange(PAST_MONTH);
+      dateObj.start = solrFormat(dateObj.start);
+      dateObj.end = solrFormat(dateObj.end);
+      if (unDeletedQueries.length > 0) {
+        dateObj.start = unDeletedQueries[unDeletedQueries.length - 1].startDate;
+        dateObj.end = unDeletedQueries[unDeletedQueries.length - 1].endDate;
+      }
+      const newUid = Math.floor((Math.random() * 10000) + 1);
+      const newPosition = queries.reduce((a, b) => (a.sortPosition > b.sortPosition ? a : b)).sortPosition + 1;
+      const genDefColor = colorPallette(newPosition);
+      const newQueryLabel = `Query ${String.fromCharCode('A'.charCodeAt(0) + newPosition)}`;
+      const defaultQueryField = '';
+      const defaultQuery = { uid: newUid, sortPosition: newPosition, new: true, label: newQueryLabel, q: defaultQueryField, description: 'new', startDate: dateObj.start, endDate: dateObj.end, searches: [], collections: [], sources: [], color: genDefColor, autoNaming: true };
 
-        const emptyQuerySlide = (
-          <div key={fixedQuerySlides.length}>
-            <div className="query-picker-item">
-              <div className="add-query-item">
-                <AddQueryButton
-                  key={fixedQuerySlides.length} // this isn't working
-                  tooltip={formatMessage(localMessages.addQuery)}
-                  onClick={() => addAQuery(isLoggedIn ? defaultQuery : defaultDemoQuery)}
-                />
-                <a
-                  href="#add-query"
-                  onClick={(evt) => { evt.preventDefault(); addAQuery(isLoggedIn ? defaultQuery : defaultDemoQuery); }}
-                >
-                  <FormattedMessage {...localMessages.addQuery} />
-                </a>
-              </div>
+      const emptyQuerySlide = (
+        <div key={fixedQuerySlides.length}>
+          <div className="query-picker-item">
+            <div className="add-query-item">
+              <AddQueryButton
+                key={fixedQuerySlides.length} // this isn't working
+                tooltip={formatMessage(localMessages.addQuery)}
+                onClick={() => addAQuery(defaultQuery)}
+              />
+              <a
+                href="#add-query"
+                onClick={(evt) => { evt.preventDefault(); addAQuery(defaultQuery); }}
+              >
+                <FormattedMessage {...localMessages.addQuery} />
+              </a>
             </div>
           </div>
-        );
-
-        fixedQuerySlides.push(emptyQuerySlide);
-      }
-      let demoSearchButtonContent; // in demo mode we need a search button outside the form (cause we can't see the form)
-      if (!isLoggedIn) {
-        demoSearchButtonContent = (
-          <Grid>
-            <Row>
-              <Col lg={10}>
-                <div className="query-help-info">
-                  <QueryHelpDialog trigger={formatMessage(messages.queryHelpLink)} />
-                </div>
-              </Col>
-              <Col lg={1}>
-                <AppButton
-                  style={{ marginTop: 30 }}
-                  type="submit"
-                  label={formatMessage(messages.search)}
-                  color="primary"
-                  onClick={this.saveAndSearch}
-                />
-              </Col>
-            </Row>
-          </Grid>
-        );
-      }
-      queryPickerContent = (
-        <div className="query-picker-wrapper">
-          <div className="query-picker">
-            <Grid>
-              <ItemSlider
-                title={formatMessage(localMessages.intro)}
-                slides={fixedQuerySlides}
-                settings={{ height: 60, dots: false, slidesToShow: 4, slidesToScroll: 1, infinite: false, arrows: fixedQuerySlides.length > 4 }}
-              />
-            </Grid>
-          </div>
-          {demoSearchButtonContent}
         </div>
       );
-      if (isLoggedIn) { // if logged in show full form
-        queryFormContent = (
+
+      fixedQuerySlides.push(emptyQuerySlide);
+      // indicate which queryPickerItem is selected -
+      // const selectedWithSandCLabels = queries.find(q => q.index === selected.index);
+      return (
+        <>
+          <div className="query-picker-wrapper">
+            <div className="query-picker">
+              <Grid>
+                <ItemSlider
+                  title={formatMessage(localMessages.intro)}
+                  slides={fixedQuerySlides}
+                  settings={{ height: 60, dots: false, slidesToShow: 4, slidesToScroll: 1, infinite: false, arrows: fixedQuerySlides.length > 4 }}
+                />
+              </Grid>
+            </div>
+          </div>
           <QueryForm
             initialValues={selected}
             selected={selected}
@@ -338,17 +275,8 @@ class QueryPickerContainer extends React.Component {
             onSaveSearch={l => this.saveThisSearch(l)}
             onDeleteSearch={l => handleDeleteUserSearch(l)}
             onCopyAll={property => handleCopyAll(property, selected.uid, queries, formQuery)}
-            isEditable={canSelectMedia}
           />
-        );
-      }
-      // indicate which queryPickerItem is selected -
-      // const selectedWithSandCLabels = queries.find(q => q.index === selected.index);
-      return (
-        <div>
-          {queryPickerContent}
-          {queryFormContent}
-        </div>
+        </>
       );
     }
     return (
@@ -361,7 +289,6 @@ QueryPickerContainer.propTypes = {
   // from state
   selected: PropTypes.object,
   queries: PropTypes.array,
-  isLoggedIn: PropTypes.bool.isRequired,
   formQuery: PropTypes.object,
   // from composition
   intl: PropTypes.object.isRequired,
@@ -380,7 +307,6 @@ QueryPickerContainer.propTypes = {
   updateOneQuery: PropTypes.func.isRequired,
   handleMoveAndSwap: PropTypes.func.isRequired,
   // from parent
-  isEditable: PropTypes.bool.isRequired,
   isDeletable: PropTypes.func,
   onSearch: PropTypes.func.isRequired,
 };
@@ -388,11 +314,9 @@ QueryPickerContainer.propTypes = {
 const mapStateToProps = state => ({
   selected: state.explorer.selected,
   queries: state.explorer.queries.queries ? state.explorer.queries.queries : null,
-  isLoggedIn: state.user.isLoggedIn,
   formQuery: formSelector(state, 'q', 'color', 'media', 'startDate', 'endDate'),
   savedSearches: state.explorer.savedSearches.list,
 });
-
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   handleQuerySelected: (query) => {

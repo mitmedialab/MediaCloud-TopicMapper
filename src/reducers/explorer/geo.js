@@ -1,12 +1,8 @@
 import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
-import { FETCH_QUERY_GEO, RESET_GEO } from '../../actions/explorerActions';
-import { FETCH_INVALID } from '../../lib/fetchConstants';
+import { FETCH_QUERY_GEO } from '../../actions/explorerActions';
 
 const geo = createIndexedAsyncReducer({
   action: FETCH_QUERY_GEO,
-  [RESET_GEO]: () => ({
-    fetchStatus: FETCH_INVALID, fetchStatuses: {}, results: {},
-  }),
 });
 
 export default geo;

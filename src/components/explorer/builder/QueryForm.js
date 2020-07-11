@@ -83,7 +83,7 @@ class QueryForm extends React.Component {
   }
 
   render() {
-    const { initialValues, onWillSearch, isEditable, selected, buttonLabel, onMediaDelete, onDateChange,
+    const { initialValues, onWillSearch, selected, buttonLabel, onMediaDelete, onDateChange,
       onDeleteSearch, onLoadSearches, savedSearches, searchNickname, onSaveSearch,
       submitting, handleSubmit, onSave, onMediaChange, renderSolrTextField, renderTextField, /* renderTextFieldWithFocus, */
       onCopyAll } = this.props;
@@ -135,9 +135,7 @@ class QueryForm extends React.Component {
     }
     const currentQ = selectedCopy.q;
     let mediaLabel = formatMessage(localMessages.SandC);
-    if (isEditable) {
-      mediaLabel = formatMessage(localMessages.selectSandC);
-    }
+    mediaLabel = formatMessage(localMessages.selectSandC);
     const queriesMissingMedia = this.evalAllQueriesForValidMedia();
     if (!selectedCopy) { return null; }
 
@@ -197,20 +195,17 @@ class QueryForm extends React.Component {
                     keepDirtyOnReinitialize
                     destroyOnUnmount={false}
                     onDelete={onMediaDelete}
-                    allowRemoval={isEditable}
+                    allowRemoval
                     initialValues={selectedCopy || cleanedInitialValues}
                     title="title"
                     intro="intro"
                   />
                   <div>
-                    {isEditable
-                    && (
-                      <MediaPickerDialog
-                        initMedia={selectedCopy.media ? selectedCopy.media : cleanedInitialValues.media}
-                        onConfirmSelection={selections => onMediaChange(selections)}
-                        setQueryFormChildDialogOpen={() => this.setQueryFormChildDialogOpen()}
-                      />
-                    )}
+                    <MediaPickerDialog
+                      initMedia={selectedCopy.media ? selectedCopy.media : cleanedInitialValues.media}
+                      onConfirmSelection={selections => onMediaChange(selections)}
+                      setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
+                    />
                   </div>
                   <div className="query-field-desc">
                     <FormattedMessage {...localMessages.selectSandCDesc} />
@@ -237,7 +232,6 @@ class QueryForm extends React.Component {
                     type="inline"
                     component={renderTextField}
                     disableunderline="true"
-                    disabled={!isEditable}
                     onChange={onDateChange}
                   />
                   <div className="date-for-wrapper"><FormattedMessage {...localMessages.dateTo} /></div>
@@ -248,7 +242,6 @@ class QueryForm extends React.Component {
                     type="inline"
                     component={renderTextField}
                     disableunderline="true"
-                    disabled={!isEditable}
                     onChange={onDateChange}
                   />
                   <div className="query-field-desc"><FormattedMessage {...localMessages.datesDesc} /></div>
@@ -320,7 +313,6 @@ QueryForm.propTypes = {
   handleSubmit: PropTypes.func,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
-  isEditable: PropTypes.bool.isRequired,
   focusRequested: PropTypes.func,
   mediaUpdates: PropTypes.object,
 };

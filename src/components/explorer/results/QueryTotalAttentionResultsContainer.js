@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { fetchQuerySplitStoryCount, fetchDemoQuerySplitStoryCount, resetSentenceCounts } from '../../../actions/explorerActions';
+import { fetchQuerySplitStoryCount } from '../../../actions/explorerActions';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import { DownloadButton } from '../../common/IconButton';
 import AppButton from '../../common/AppButton';
@@ -224,7 +224,7 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(
     withSummary(localMessages.title, localMessages.helpIntro, [localMessages.helpDetails, messages.countsVsPercentageHelp], null, true)(
-      withQueryResults(resetSentenceCounts, fetchQuerySplitStoryCount, fetchDemoQuerySplitStoryCount)(
+      withQueryResults(fetchQuerySplitStoryCount)(
         QueryTotalAttentionResultsContainer
       )
     )

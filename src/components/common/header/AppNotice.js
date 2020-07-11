@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import SanitizedHTML from 'react-sanitized-html';
 import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { LEVEL_INFO, LEVEL_WARNING, LEVEL_ERROR, ErrorNotice, InfoNotice, WarningNotice } from '../Notice';
 
@@ -51,7 +52,7 @@ const AppNotice = (props) => {
     }
   // handle html messages
   } else if (htmlMessage) {
-    messageContent = (<span dangerouslySetInnerHTML={{ __html: htmlMessage }} />);
+    messageContent = (<SanitizedHTML html={htmlMessage} />);
   }
   // each level will render differently
   let content = null;

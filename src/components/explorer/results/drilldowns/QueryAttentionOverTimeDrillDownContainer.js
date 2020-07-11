@@ -3,8 +3,8 @@ import React from 'react';
 import { Col } from 'react-flexbox-grid/lib';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { fetchQueryPerDateTopWords, fetchDemoQueryPerDateTopWords, fetchQueryPerDateSampleStories,
-  fetchDemoQueryPerDateSampleStories, resetQueriesPerDateTopWords, resetQueriesPerDateSampleStories,
+import { fetchQueryPerDateTopWords, fetchQueryPerDateSampleStories,
+  resetQueriesPerDateTopWords, resetQueriesPerDateSampleStories,
   resetSentenceDataPoint } from '../../../../actions/explorerActions';
 import withAsyncData from '../../../common/hocs/AsyncDataContainer';
 import CloseableDataCard from '../../../common/CloseableDataCard';
@@ -103,18 +103,13 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-const fetchAsyncData = (dispatch, { isLoggedIn, dataPoint }) => {
+const fetchAsyncData = (dispatch, { dataPoint }) => {
   // this should trigger when the user clicks a data point on the attention over time chart
   dispatch(resetQueriesPerDateSampleStories());
   dispatch(resetQueriesPerDateTopWords());
   if (dataPoint) {
-    if (isLoggedIn) {
-      dispatch(fetchQueryPerDateSampleStories({ ...dataPoint }));
-      dispatch(fetchQueryPerDateTopWords({ ...dataPoint }));
-    } else {
-      dispatch(fetchDemoQueryPerDateTopWords(dataPoint));
-      dispatch(fetchDemoQueryPerDateSampleStories(dataPoint));
-    }
+    dispatch(fetchQueryPerDateSampleStories({ ...dataPoint }));
+    dispatch(fetchQueryPerDateTopWords({ ...dataPoint }));
   }
 };
 

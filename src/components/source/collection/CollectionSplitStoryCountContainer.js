@@ -7,9 +7,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
-import { fetchCollectionSplitStoryCount } from '../../../actions/sourceActions';
+import { fetchPlatformCountOverTime } from '../../../actions/platformActions';
 import DataCard from '../../common/DataCard';
-import AttentionOverTimeChart, { dataAsSeries } from '../../vis/AttentionOverTimeChart';
+import AttentionOverTimeChart, { dataAsSeries, downloadData } from '../../vis/AttentionOverTimeChart';
 import { getBrandDarkColor } from '../../../styles/colors';
 import messages from '../../../resources/messages';
 import ActionMenu from '../../common/ActionMenu';
@@ -19,6 +19,7 @@ import { DownloadButton } from '../../common/IconButton';
 import { urlToExplorerQuery } from '../../../lib/urlUtil';
 import { VIEW_REGULARLY_COLLECTED, VIEW_ALL_STORIES } from '../../../lib/mediaUtil';
 import { PAST_WEEK } from '../../../lib/dateUtil';
+import { TAG_SPIDERED_STORY } from '../../../lib/tagUtil';
 
 const localMessages = {
   partialTitle: { id: 'sentenceCount.title', defaultMessage: 'Last Year of Coverage (regularly collected stories)' },
@@ -36,17 +37,20 @@ const localMessages = {
 
 class CollectionSplitStoryCountContainer extends React.Component {
   state = {
-    storyCollection: VIEW_REGULARLY_COLLECTED,
+    viewMode: VIEW_REGULARLY_COLLECTED,
   }
 
   onIncludeSpidered = (d) => {
-    this.setState({ storyCollection: d }); // reset this to trigger a re-render
+    this.setState({ viewMode: d }); // reset this to trigger a re-render
   }
 
   downloadCsv = () => {
-    const { collectionId } = this.props;
-    const url = `/api/collections/${collectionId}/story-split/count.csv`;
-    window.location = url;
+    // generate and download client side
+    const { collectionId, allStories, partialStories } = this.props;
+    const data = (this.state.viewMode === VIEW_ALL_STORIES) ? allStories : partialStories;
+    const prefix = (this.state.viewMode === VIEW_ALL_STORIES) ? 'all' : 'regularly-collected';
+    const filename = `collection-${collectionId}-${prefix}-attention.csv`;
+    downloadData(filename, data.counts);
   }
 
   handleDataPointClick = (startDate, endDate) => {
@@ -64,7 +68,7 @@ class CollectionSplitStoryCountContainer extends React.Component {
     const { formatMessage, formatNumber } = intl;
     let stories = partialStories;
     let title = localMessages.partialTitle;
-    if (this.state.storyCollection === VIEW_ALL_STORIES) {
+    if (this.state.viewMode === VIEW_ALL_STORIES) {
       stories = allStories;
       title = localMessages.allTitle;
     }
@@ -106,7 +110,7 @@ class CollectionSplitStoryCountContainer extends React.Component {
         <AttentionOverTimeChart
           total={stories.total}
           series={[{
-            ...dataAsSeries(stories.list),
+            ...dataAsSeries(stories.counts),
             id: 0,
             name: collectionName,
             color: getBrandDarkColor(),
@@ -136,7 +140,6 @@ CollectionSplitStoryCountContainer.propTypes = {
   collectionId: PropTypes.number.isRequired,
   collectionName: PropTypes.string.isRequired,
   filename: PropTypes.string,
-  // from dispatch
   // from composition
   intl: PropTypes.object.isRequired,
   helpButton: PropTypes.node.isRequired,
@@ -145,14 +148,17 @@ CollectionSplitStoryCountContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.sources.collections.selected.collectionSplitStoryCount.fetchStatus,
-  allStories: state.sources.collections.selected.collectionSplitStoryCount.all_stories,
-  partialStories: state.sources.collections.selected.collectionSplitStoryCount.partial_stories,
+  fetchStatus: state.platforms.countOverTime.fetchStatus,
+  allStories: state.platforms.countOverTime.results.collectionTotal,
+  partialStories: state.platforms.countOverTime.results.collectionNonSpidered,
 });
 
-const fetchAsyncData = (dispatch, { collectionId }) => dispatch(
-  fetchCollectionSplitStoryCount(collectionId, { separate_spidered: true })
-);
+const fetchAsyncData = (dispatch, { collectionId }) => {
+  // grab all results
+  dispatch(fetchPlatformCountOverTime({ uid: 'collectionTotal', platform_query: `tags_id_media:${collectionId}` }));
+  // and also grab just the non-spidered stories
+  dispatch(fetchPlatformCountOverTime({ uid: 'collectionNonSpidered', platform_query: `tags_id_media:${collectionId} AND NOT tags_id_stories:${TAG_SPIDERED_STORY}` }));
+};
 
 export default
 injectIntl(

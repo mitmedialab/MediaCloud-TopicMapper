@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import logging
 from flask import request, jsonify
 import flask_login
@@ -12,10 +11,7 @@ from server.auth import user_mediacloud_key, user_admin_mediacloud_client, user_
 from server.util.request import arguments_required, form_fields_required, api_error_handler
 from server.util.tags import TAG_SETS_ID_PUBLICATION_COUNTRY, TAG_SETS_ID_PUBLICATION_STATE, VALID_COLLECTION_TAG_SETS_IDS, \
     TAG_SETS_ID_PRIMARY_LANGUAGE, TAG_SETS_ID_COUNTRY_OF_FOCUS, TAG_SETS_ID_MEDIA_TYPE, TAG_SET_GEOCODER_VERSION, \
-    TAG_SET_NYT_LABELS_VERSION, is_metadata_tag_set, TAG_SPIDERED_STORY
-from server.views.sources.words import word_count, stream_wordcount_csv
-from server.views.sources.geocount import stream_geo_csv, cached_geotag_count
-from server.views.sources.stories_split_by_time import stream_split_stories_csv
+    TAG_SET_NYT_LABELS_VERSION, is_metadata_tag_set
 import server.views.sources.apicache as apicache
 from server.views.favorites import add_user_favorite_flag_to_sources, add_user_favorite_flag_to_collections
 from server.views.sources.feeds import source_feed_list
@@ -57,11 +53,10 @@ def source_set_favorited(media_id):
 @api_error_handler
 def source_stats(media_id):
     username = user_name()
-    user_mc = user_admin_mediacloud_client()
     results = {}
     # story count
     media_query = "(media_id:{})".format(media_id)
-    source_specific_story_count = apicache.source_story_count(user_mediacloud_key(), media_query)
+    source_specific_story_count = apicache.source_story_count(media_query)
     results['story_count'] = source_specific_story_count
     # health
     media_health = _cached_media_source_health(username, media_id)
@@ -74,14 +69,14 @@ def source_stats(media_id):
                                ((c['show_on_media'] == 1) or user_can_see_private_collections))]
     results['collection_count'] = len(visible_collections)
     # geography tags
-    results['geoPct'] = apicache.tag_coverage_pct(user_mediacloud_key(), media_query, TAG_SET_GEOCODER_VERSION)
+    results['geoPct'] = apicache.tag_coverage_pct(media_query, TAG_SET_GEOCODER_VERSION)
     # nyt theme
-    results['nytPct'] = apicache.tag_coverage_pct(user_mediacloud_key(), media_query, TAG_SET_NYT_LABELS_VERSION)
+    results['nytPct'] = apicache.tag_coverage_pct(media_query, TAG_SET_NYT_LABELS_VERSION)
     return jsonify(results)
 
 
 @cache.cache_on_arguments()
-def _cached_media_source_health(user_mc_key, media_id):
+def _cached_media_source_health(_user_mc_key, media_id):
     user_mc = user_admin_mediacloud_client()
     results = None
     try:
@@ -149,87 +144,10 @@ def api_media_source_scrape_feeds(media_id):
     return jsonify(results)
 
 
-@app.route('/api/sources/<media_id>/story-split/count.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def source_split_stories_csv(media_id):
-    return stream_split_stories_csv(user_mediacloud_key(), 'splitStoryCounts-Source-{}'.format(media_id),
-                                    "media_id:{}".format(media_id))
-
-
-@app.route('/api/sources/<media_id>/story-split/count')
-@flask_login.login_required
-@api_error_handler
-def api_media_source_split_stories(media_id):
-    media_query = 'media_id:' + str(media_id)
-    exclude_spidered_stories = " media_id:{} AND NOT tags_id_stories:{}".format(str(media_id), TAG_SPIDERED_STORY)\
-        if 'separate_spidered' in request.args else media_query
-
-    health = _cached_media_source_health(user_mediacloud_key(), media_id)
-
-    all_results = apicache.split_story_count(user_mediacloud_key(), media_query, None)
-    # returns same results if request.args doesn't ask to exclude_spidered
-    non_spidered_results = apicache.split_story_count(user_mediacloud_key(), exclude_spidered_stories, None)
-
-    all_stories = {
-        'total_story_count': all_results['total_story_count'],
-        'health': health,
-        'list': all_results['counts'],
-    }
-    partial_stories = {
-        'total_story_count': non_spidered_results['total_story_count'],
-        'health': health,
-        'list': non_spidered_results['counts'],
-    }
-    return jsonify({'results': {'all_stories': all_stories, 'partial_stories': partial_stories}})
-
-
-@app.route('/api/sources/<media_id>/geography')
-@flask_login.login_required
-@api_error_handler
-def api_media_source_geography(media_id):
-    info = {
-        'geography': cached_geotag_count(user_mediacloud_key(), 'media_id:'+str(media_id))
-    }
-    return jsonify({'results': info})
-
-
-@app.route('/api/sources/<media_id>/geography/geography.csv')
-@flask_login.login_required
-@api_error_handler
-def source_geo_csv(media_id):
-    return stream_geo_csv(user_mediacloud_key(), 'geography-Source-'+media_id, media_id, "media_id")
-
-
-@app.route('/api/sources/<media_id>/words/wordcount.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def source_wordcount_csv(media_id):
-    solr_q = 'media_id:'+str(media_id)
-    solr_fq = None
-    if ('q' in request.args) and (len(request.args['q']) > 0):
-        solr_fq = request.args['q']
-    return stream_wordcount_csv(user_mediacloud_key(), 'wordcounts-Source-'+media_id, solr_q, solr_fq)
-
-
-@app.route('/api/sources/<media_id>/words')
-@flask_login.login_required
-@api_error_handler
-def media_source_words(media_id):
-    solr_q = 'media_id:'+str(media_id)
-    solr_fq = None
-    if ('q' in request.args) and (len(request.args['q']) > 0):
-        solr_fq = request.args['q']
-    info = {
-        'wordcounts': word_count(user_mediacloud_key(), solr_q, solr_fq)
-    }
-    return jsonify({'results': info})
-
-
 @app.route('/api/sources/create', methods=['POST'])
 @form_fields_required('name', 'url')
 @flask_login.login_required
-@api_error_handler  
+@api_error_handler
 def source_create():
     user_mc = user_admin_mediacloud_client()
     name = request.form['name']
@@ -286,7 +204,7 @@ def source_create_from_urls():
 @app.route('/api/sources/<media_id>/update', methods=['POST'])
 @form_fields_required('name', 'url')
 @flask_login.login_required
-@api_error_handler  
+@api_error_handler
 def source_update(media_id):
     user_mc = user_admin_mediacloud_client()
     # update the basic info
@@ -300,7 +218,7 @@ def source_update(media_id):
     # now we need to update the collections separately, because they are tags on the media source
     source = user_mc.media(media_id)
     existing_tag_ids = [t['tags_id'] for t in source['media_source_tags']
-                        if (t['tag_sets_id'] in VALID_COLLECTION_TAG_SETS_IDS)]
+                        if t['tag_sets_id'] in VALID_COLLECTION_TAG_SETS_IDS]
     tag_ids_to_add = tag_ids_from_collections_param()
     tag_ids_to_remove = list(set(existing_tag_ids) - set(tag_ids_to_add))
     tags_to_add = [MediaTag(media_id, tags_id=cid, action=TAG_ACTION_ADD)
@@ -360,7 +278,7 @@ def api_source_review_info(media_id):
     active_syndicated_feeds = [f for f in feeds if f['active'] and f['type'] == 'syndicated']
     active_feed_count = len(active_syndicated_feeds)
     query = "media_id:{}".format(media_id)
-    full_count = apicache.timeperiod_story_count(user_mc, query, QUERY_LAST_YEAR)['count']
+    full_count = apicache.timeperiod_story_count(query, QUERY_LAST_YEAR)['count']
     info = {
         'media_id': int(media_id),
         'latest_scrape_job': latest_scrape_job,

@@ -12,7 +12,7 @@ from server.platforms import provider_for, PLATFORM_REDDIT, PLATFORM_OPEN_WEB, P
 logger = logging.getLogger(__name__)
 
 PLATFORM_PREVIEW_FIELDS = ['platform_type', 'platform_source', 'platform_channel',
-                         'platform_query', 'start_date', 'end_date']
+                           'platform_query', 'start_date', 'end_date']
 
 
 def _info_from_request():
@@ -30,10 +30,17 @@ def _info_from_request():
     if platform == PLATFORM_REDDIT:
         options = {'subreddits': json.loads(channel)}
     elif (platform == PLATFORM_OPEN_WEB) and (source == PLATFORM_SOURCE_MEDIA_CLOUD):
-        media = json.loads(channel)
-        sources = media['sources[]'] if 'sources[]' in media and 'sources' not in [None, ''] else ''
-        collections = media['collections[]'] if 'collections[]' in media else ''
-        options = {'sources': sources, 'collections': collections}
+        # the sources and collections might be encoded in the query string, so don't require them separately
+        if channel and len(channel) > 0:
+            channel_options = json.loads(channel)
+            sources = channel_options['sources[]'] if 'sources[]' in channel_options and 'sources' not in [None, ''] else ''
+            collections = channel_options['collections[]'] if 'collections[]' in channel_options else ''
+            options = {'sources': sources, 'collections': collections}
+            if 'tags_sets_id' in channel_options.keys():
+                # parse out tag_sets_id for calls to `tags`
+                options['tags_sets_id'] = channel_options['tags_sets_id']
+        else:
+            options = {}
     elif (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_CRIMSON_HEXAGON):
         options = {'monitor_id': query}
         query = ''
@@ -49,7 +56,7 @@ def _info_from_request():
 @form_fields_required(*PLATFORM_PREVIEW_FIELDS)
 @flask_login.login_required
 @api_error_handler
-def api_platforms_preview_sample():
+def api_platforms_sample():
     provider, query, start_date, end_date, options = _info_from_request()
     try:
         content_list = provider.sample(query, start_date, end_date, **options)
@@ -64,7 +71,7 @@ def api_platforms_preview_sample():
 @form_fields_required(*PLATFORM_PREVIEW_FIELDS)
 @flask_login.login_required
 @api_error_handler
-def api_platforms_preview_total_content():
+def api_platforms_total_content():
     provider, query, start_date, end_date, options = _info_from_request()
     try:
         content_count = provider.count(query, start_date, end_date, **options)
@@ -79,7 +86,7 @@ def api_platforms_preview_total_content():
 @form_fields_required(*PLATFORM_PREVIEW_FIELDS)
 @flask_login.login_required
 @api_error_handler
-def api_platforms_preview_split_story_count():
+def api_platforms_split_story_count():
     provider, query, start_date, end_date, options = _info_from_request()
     try:
         content_count_over_time = provider.count_over_time(query, start_date, end_date, **options)
@@ -100,7 +107,7 @@ def api_platforms_preview_split_story_count():
 @form_fields_required(*PLATFORM_PREVIEW_FIELDS)
 @flask_login.login_required
 @api_error_handler
-def api_platforms_preview_top_words():
+def api_platforms_top_words():
     provider, query, start_date, end_date, options = _info_from_request()
     try:
         content_words = provider.words(query, start_date, end_date, **options)
@@ -109,6 +116,21 @@ def api_platforms_preview_top_words():
         content_words = []
         supported = False
     return jsonify({'results': content_words, 'supported': supported})
+
+
+@app.route('/api/platforms/tags', methods=['POST'])
+@form_fields_required(*PLATFORM_PREVIEW_FIELDS)
+@flask_login.login_required
+@api_error_handler
+def api_platforms_tags():
+    provider, query, start_date, end_date, options = _info_from_request()
+    try:
+        content_tags = provider.tags(query, start_date, end_date, **options)
+        supported = True
+    except NotImplementedError:  # if this provider doesn't support previewing the data, let the client know
+        content_tags = []
+        supported = False
+    return jsonify({'results': content_tags, 'supported': supported})
 
 
 def _parse_query_dates():

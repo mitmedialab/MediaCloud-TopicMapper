@@ -8,7 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import withSummary from '../../common/hocs/SummarizedVizualization';
 import withQueryResults from './QueryResultsSelector';
 import GeoChart from '../../vis/GeoChart';
-import { fetchDemoQueryGeo, fetchQueryGeo, resetGeo } from '../../../actions/explorerActions';
+import { fetchQueryGeo } from '../../../actions/explorerActions';
 import { DownloadButton } from '../../common/IconButton';
 import ActionMenu from '../../common/ActionMenu';
 import messages from '../../../resources/messages';
@@ -109,7 +109,7 @@ export default
 injectIntl(
   connect(mapStateToProps, mapDispatchToProps)(
     withSummary(localMessages.title, localMessages.help, [messages.heatMapHelpText])(
-      withQueryResults(resetGeo, fetchQueryGeo, fetchDemoQueryGeo)(
+      withQueryResults(fetchQueryGeo)(
         QueryGeoResultsContainer
       )
     )

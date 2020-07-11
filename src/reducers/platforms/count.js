@@ -1,7 +1,7 @@
 import { FETCH_PLATFORM_COUNT } from '../../actions/platformActions';
-import { createAsyncReducer } from '../../lib/reduxHelpers';
+import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
 
-const counts = createAsyncReducer({
+const counts = createIndexedAsyncReducer({
   initialState: {
     count: null,
     supported: true,

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def _variables_from_file(filepath):
-    vars = {}
+    config_vars = {}
     logger.info("Loading configuration from {}".format(filepath))
     try:
         f = codecs.open(filepath, 'r', 'utf-8')
@@ -21,13 +21,13 @@ def _variables_from_file(filepath):
             key = parts[0].strip().upper()
             value = parts[1].strip()
             logger.debug("  {}={}".format(key, value))
-            if key in vars:
+            if key in config_vars:
                 raise ConfigException("Config variable '{}' is declared twice in {}".format(key, filepath))
-            vars[key] = value
+            config_vars[key] = value
     except IOError:
         logger.info("No local app.config file found; relying on environment variables for configuration")
 
-    return vars
+    return config_vars
 
 
 class ConfigException(Exception):
@@ -36,7 +36,7 @@ class ConfigException(Exception):
         self.status_code = status_code
 
 
-class EnvOrFileBasedConfig(object):
+class EnvOrFileBasedConfig():
     # Simple wrapper around a text config file; lets us load from a text file (dev) or from env-vars (prod)
 
     def __init__(self, absolute_filepath):

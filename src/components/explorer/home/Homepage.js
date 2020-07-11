@@ -24,7 +24,6 @@ const localMessages = {
   subtitle: { id: 'explorer.intro.subtitle', defaultMessage: 'Explore Online News with Media Cloud' },
   description: { id: 'explorer.intro.description', defaultMessage: 'Use the Media Cloud Explorer to search half a billion stories from more than 50,000 sources. We pull in stories from online news media, blogs, and other sources to let you research media attention to issues you are interested in. Track shifts in media attention, identify competing media narratives, compare coverage in different media sectors - these are all tasks Media Cloud can help you with.' },
   loginTitle: { id: 'explorer.intro.login.title', defaultMessage: 'Have an Account? Login Now' },
-  security: { id: 'login.securitynotice', defaultMessage: 'We recently noticed a security problem and reset all passwords. We emailed everyone a link to reset your password. <br />If you can\'t find that email, <a href={link}> reset your password here.</a>' },
 };
 
 const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount }) => (
@@ -39,7 +38,7 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount }) => (
         <Grid>
           <Row>
             <Col lg={12}>
-              <SearchForm onSearch={val => onKeywordSearch(val, isLoggedIn)} storyCount={storyCount} />
+              <SearchForm onSearch={val => onKeywordSearch(val)} storyCount={storyCount} />
             </Col>
           </Row>
         </Grid>
@@ -55,10 +54,6 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount }) => (
           </Col>
           <Col lg={1} />
           <Col lg={4}>
-            <WarningNotice>
-              <br />
-              <FormattedHTMLMessage {...localMessages.security} values={{ link: '#/user/request-password-reset' }} /><br />
-            </WarningNotice>
             <DataCard leftBorder>
               <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
               <LoginForm />
@@ -91,26 +86,19 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onKeywordSearch: (values, isLoggedIn) => {
-    let urlParamString;
+  onKeywordSearch: (values) => {
     const keyword = emptyString(values.keyword) ? '' : values.keyword;
-    if (isLoggedIn) {
-      const defaultDates = getDateRange(PAST_MONTH);
-      const queries = [{
-        q: keyword,
-        startDate: solrFormat(defaultDates.start),
-        endDate: solrFormat(defaultDates.end),
-        color: schemeCategory10[0],
-        collections: [DEFAULT_COLLECTION],
-        sources: [],
-      }];
-      queries[0].label = autoMagicQueryLabel(queries[0]);
-      urlParamString = `search?qs=${serializeQueriesForUrl(queries)}`;
-    } else {
-      const queries = [{ q: keyword }];
-      urlParamString = `demo/search?qs=${serializeQueriesForUrl(queries)}`;
-    }
-    dispatch(push(`/queries/${urlParamString}&auto=true`));
+    const defaultDates = getDateRange(PAST_MONTH);
+    const queries = [{
+      q: keyword,
+      startDate: solrFormat(defaultDates.start),
+      endDate: solrFormat(defaultDates.end),
+      color: schemeCategory10[0],
+      collections: [DEFAULT_COLLECTION],
+      sources: [],
+    }];
+    queries[0].label = autoMagicQueryLabel(queries[0]);
+    dispatch(push(`/queries/search?qs=${serializeQueriesForUrl(queries)}&auto=true`));
   },
 });
 

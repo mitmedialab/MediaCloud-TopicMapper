@@ -3,7 +3,6 @@ from flask import jsonify, request
 import flask_login
 
 from server import app
-from server.views import TAG_COUNT_SAMPLE_SIZE
 from server.util.request import api_error_handler, json_error_response, form_fields_required, arguments_required
 from server.views.topics.apicache import topic_story_count
 from server.auth import user_mediacloud_key, user_mediacloud_client
@@ -16,11 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 def get_top_themes_by_story_tag_counts(topics_id, num_themes):
-    user_mc_key = user_mediacloud_key()
     nyt_counts = []
 
     #get overall timespan
-    timespans = cached_topic_timespan_list(user_mediacloud_key(), topics_id)
+    timespans = cached_topic_timespan_list(topics_id)
     overall_timespan = [t for t in timespans if t['period'] == "overall"]
     overall_timespan = next(iter(overall_timespan))
     timespan_query = "timespans_id:{}".format(overall_timespan['timespans_id'])
@@ -58,8 +56,6 @@ def nyt_theme_story_counts(topics_id):
 @arguments_required('numThemes')
 @api_error_handler
 def nyt_theme_coverage(topics_id):
-    # grab the total stories
-    total_stories = topic_story_count(user_mediacloud_key(), topics_id)['count']
     num_themes = int(request.args['numThemes'])
 
     nyt_top_themes = get_top_themes_by_story_tag_counts(topics_id, num_themes)
@@ -68,7 +64,7 @@ def nyt_theme_coverage(topics_id):
     coverage = topic_tag_coverage(topics_id, query_nyt_tags)   # gets count and total
 
     if coverage is None:
-       return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
+        return jsonify({'status': 'Error', 'message': 'Invalid attempt'})
     return jsonify(coverage)
 
 

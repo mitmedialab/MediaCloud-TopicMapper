@@ -46,8 +46,8 @@ PlatformContentPreviewContainer.propTypes = {
 const mapStateToProps = state => ({
   topic: state.topics.selected.info,
   fetchStatus: state.platforms.sample.fetchStatus,
-  stories: state.platforms.sample.list,
-  supported: state.platforms.sample.supported,
+  stories: state.platforms.sample.results.topicPreview ? state.platforms.sample.results.topicPreview.list : [],
+  supported: state.platforms.sample.results.topicPreview ? state.platforms.sample.results.topicPreview.supported : false,
   formValues: formSelector(state, 'media', 'query', 'channel'),
   selectedPlatform: state.topics.selected.platforms.selected,
 });
@@ -55,6 +55,7 @@ const mapStateToProps = state => ({
 const fetchAsyncData = (dispatch, { topic, formValues, selectedPlatform, formatPlatformChannelData }) => {
   // call the fetcher the parent passed in to fetch the data we want to show
   dispatch(fetchPlatformSample({
+    uid: 'topicPreview',
     platform_type: selectedPlatform.platform,
     platform_query: topicQueryAsString(formValues.query),
     platform_source: selectedPlatform.source,

@@ -1,3 +1,5 @@
+# pylint: disable=protected-access
+
 import unittest
 import datetime as dt
 

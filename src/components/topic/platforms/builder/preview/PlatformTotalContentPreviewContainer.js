@@ -45,10 +45,11 @@ PlatformTotalContentPreviewContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  uid: 'topicPreview',
   topic: state.topics.selected.info,
   fetchStatus: state.platforms.count.fetchStatus,
-  total: state.platforms.count.count,
-  supported: state.platforms.count.supported,
+  total: state.platforms.count.results.topicPreview ? state.platforms.count.results.topicPreview.count : null,
+  supported: state.platforms.count.results.topicPreview ? state.platforms.count.results.topicPreview.supported : false,
   formValues: formSelector(state, 'media', 'query', 'channel'),
   selectedPlatform: state.topics.selected.platforms.selected,
 });
@@ -56,6 +57,7 @@ const mapStateToProps = state => ({
 const fetchAsyncData = (dispatch, { topic, formValues, selectedPlatform, formatPlatformChannelData }) => {
   // call the fetcher the parent passed in to fetch the data we want to show
   dispatch(fetchPlatformCount({
+    uid: 'topicPreview',
     platform_type: selectedPlatform.platform,
     platform_query: topicQueryAsString(formValues.query),
     platform_source: selectedPlatform.source,

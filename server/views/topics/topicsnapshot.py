@@ -43,7 +43,7 @@ def topic_update(topics_id):
         tag_ids_to_add = None
     # update the seed query (the client will start the spider themselves
     user_mc = user_mediacloud_client()
-    result = user_mc.topicUpdate(topics_id, media_ids=media_ids_to_add, media_tags_ids=tag_ids_to_add, **args)
+    user_mc.topicUpdate(topics_id, media_ids=media_ids_to_add, media_tags_ids=tag_ids_to_add, **args)
     return topic_summary(topics_id)  # give them back new data, so they can update the client
 
 
@@ -60,7 +60,7 @@ def _next_snapshot_number(topics_id):
 def topic_snapshot_create(topics_id):
     user_mc = user_mediacloud_client()
     # make a new snapshot
-    new_snapshot = user_mc.topicCreateSnapshot(topics_id, note=_next_snapshot_number(topics_id))['snapshot']
+    user_mc.topicCreateSnapshot(topics_id, note=_next_snapshot_number(topics_id))
     return topic_summary(topics_id)
 
 
@@ -85,7 +85,7 @@ def topic_snapshot_spider(topics_id):
         snapshots_id = new_snapshot['snapshots_id']
     # and now spider into the existing or the new snapshot
     if request.form['spider'] == '1':
-        job = user_mc.topicSpider(topics_id, snapshots_id=snapshots_id)
+        user_mc.topicSpider(topics_id, snapshots_id=snapshots_id)
     else:
-        job = user_mc.topicGenerateSnapshot(topics_id, snapshots_id=snapshots_id)
+        user_mc.topicGenerateSnapshot(topics_id, snapshots_id=snapshots_id)
     return topic_summary(topics_id)

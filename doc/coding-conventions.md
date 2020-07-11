@@ -11,6 +11,12 @@ You can pick what works for you:
   * use the [linter-eslint package for ESLint support](https://atom.io/packages/linter-eslint)
  * Use [PyCharm](https://www.jetbrains.com/pycharm/) for server Python work.
 
+Norm for apicache importing
+---------------------------
+* no direct importing of methods from apicache (you gotta bring in the module with an alias) - this helps ensure you always know when a cached method is being called
+* tool-specific apicache get imported as apicache - this makes calling the methods terse and readable
+* the top-level cross-tool apicache helper gets imported as base_apicache - this helps delineate between a broader cache and an app-specific one (and lets you import both types easily in one module)
+
 Notes
 -----
 

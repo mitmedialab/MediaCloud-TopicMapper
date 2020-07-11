@@ -6,6 +6,13 @@ from werkzeug.utils import secure_filename
 from server import app
 
 
+def save_file_to_upload_folder(file_to_save, filename):
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(filename))
+    # have to save b/c otherwise we can't locate the file path (security restriction)... can delete afterwards
+    file_to_save.save(filepath)
+    return filepath
+
+
 def save_url_to_temp_file(remote_url: str) -> str:
     """
     Save the content at the URL to a local temp file.

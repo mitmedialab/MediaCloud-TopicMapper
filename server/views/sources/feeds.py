@@ -22,7 +22,7 @@ def api_source_feed(media_id):
 @app.route('/api/sources/<media_id>/feeds/<feed_id>/single', methods=['GET'])
 @flask_login.login_required
 @api_error_handler
-def feed_details(media_id, feed_id):
+def feed_details(_media_id, feed_id):
     user_mc = user_admin_mediacloud_client()
     feed = user_mc.feed(feed_id)
     return jsonify({'feed': feed})

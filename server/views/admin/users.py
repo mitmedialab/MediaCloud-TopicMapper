@@ -1,8 +1,8 @@
 import logging
-from flask import jsonify, request
+from flask import abort, jsonify, request
 import flask_login
 
-from server import app, mc
+from server import app, mc, user_db
 from server.cache import cache
 from server.util.request import form_fields_required
 from server.auth import user_admin_mediacloud_client
@@ -19,7 +19,7 @@ def api_system_user_search():
     user_mc = user_admin_mediacloud_client()
     search = request.args.get('searchStr') if 'searchStr' in request.args else None,
     link_id = request.args.get('linkId') if 'linkId' in request.args else None,
-    page = user_mc .userList(search=search, link_id=link_id)
+    page = user_mc.userList(search=search, link_id=link_id)
     return jsonify(page)
 
 
@@ -59,5 +59,12 @@ def api_system_user_update(user_id):
 @flask_login.login_required
 def api_system_user_delete(user_id):
     user_mc = user_admin_mediacloud_client()
-    results = user_mc.userDelete(user_id)
-    return jsonify(results)
+    users_list = user_mc.user(user_id)['users']
+    if len(users_list) == 1:
+        # delete on frontend db
+        user_to_delete = users_list[0]
+        user_db.delete_user(user_to_delete['email'])
+        # delete on backend
+        results = user_mc.userDelete(user_id)
+        return jsonify(results)
+    return abort(404)

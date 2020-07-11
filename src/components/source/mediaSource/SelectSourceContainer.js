@@ -86,10 +86,6 @@ SelectSourceContainer.propTypes = {
   source: PropTypes.object,
 };
 
-SelectSourceContainer.contextTypes = {
-  store: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = (state, ownProps) => ({
   sourceId: parseInt(ownProps.params.sourceId, 10),
   fetchStatus: state.sources.sources.selected.sourceDetails.fetchStatus,

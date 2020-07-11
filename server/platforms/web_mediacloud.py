@@ -27,7 +27,7 @@ class WebMediaCloudProvider(ContentProvider):
         :return:
         """
         q, fq = self._as_query_and_filter_query(query, start_date, end_date, **kwargs)
-        story_list = base_apicache.story_list(self._api_key, q, fq)
+        story_list = base_apicache.story_list(None, q, fq)
         return story_list
 
     def count(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> int:
@@ -40,7 +40,7 @@ class WebMediaCloudProvider(ContentProvider):
         :return:
         """
         q, fq = self._as_query_and_filter_query(query, start_date, end_date, **kwargs)
-        story_count_result = base_apicache.story_count(self._api_key, q, fq)
+        story_count_result = base_apicache.story_count(q, fq)
         return story_count_result['count']
 
     def count_over_time(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> List[Dict]:
@@ -53,7 +53,7 @@ class WebMediaCloudProvider(ContentProvider):
         :return:
         """
         q, fq = self._as_query_and_filter_query(query, start_date, end_date, **kwargs)
-        story_count_result = base_apicache.story_count(self._api_key, q, fq, split=True)
+        story_count_result = base_apicache.story_count(q, fq, split=True)
         return story_count_result
 
     def words(self, query: str, start_date: dt.datetime, end_date: dt.datetime, limit: int = 100,
@@ -68,11 +68,17 @@ class WebMediaCloudProvider(ContentProvider):
         :return:
         """
         q, fq = self._as_query_and_filter_query(query, start_date, end_date, **kwargs)
-        results = base_apicache.word_count(self._api_key, q, fq)[:limit]
-        return results
+        top_words = base_apicache.word_count(q, fq)[:limit]
+        return top_words
+
+    def tags(self, query: str, start_date: dt.datetime, end_date: dt.datetime, **kwargs) -> List[Dict]:
+        _q, fq = self._as_query_and_filter_query(query, start_date, end_date, **kwargs)
+        tags_sets_id = kwargs['tags_sets_id'] if 'tags_sets_id' in kwargs else None
+        top_tags = base_apicache.top_tags(query, fq, tags_sets_id)
+        return top_tags
 
     @classmethod
-    def _as_query_and_filter_query(self, query: str, start_date: dt.datetime, end_date: dt.datetime,
+    def _as_query_and_filter_query(cls, query: str, start_date: dt.datetime, end_date: dt.datetime,
                                    **kwargs) -> (str, str):
         """
         Take all the query params and return q and fq suitable for a media cloud solr-syntax query
@@ -85,5 +91,5 @@ class WebMediaCloudProvider(ContentProvider):
         media_ids = kwargs['sources'] if 'sources' in kwargs else []
         tags_ids = kwargs['collections'] if 'collections' in kwargs else []
         q = concatenate_query_for_solr(query, media_ids, tags_ids)
-        fq = MediaCloud.publish_date_query(start_date, end_date)
+        fq = MediaCloud.dates_as_query_clause(start_date, end_date)
         return q, fq

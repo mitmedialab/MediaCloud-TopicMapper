@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { updateTimestampForQueries, resetSelected, resetSentenceCounts, resetSampleStories,
-  resetStoryCounts, resetGeo, selectQuery, removeDeletedQueries, removeNewStatusFromQueries,
+import { updateTimestampForQueries, resetSelected, selectQuery, removeDeletedQueries, removeNewStatusFromQueries,
   countSourceCollectionUsage } from '../../../actions/explorerActions';
-import { resetStory } from '../../../actions/storyActions';
 import QueryPickerContainer from './QueryPickerContainer';
 import QueryResultsContainer from '../results/QueryResultsContainer';
 import composeUrlBasedQueryContainer from '../UrlBasedQueryContainer';
@@ -74,12 +72,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   resetExplorerData: () => {
     dispatch(resetSelected());
-    // dispatch(resetQueries());
-    dispatch(resetSentenceCounts());
-    dispatch(resetSampleStories());
-    dispatch(resetStory());
-    dispatch(resetStoryCounts());
-    dispatch(resetGeo());
   },
   handleSearch: (queries) => {
     // track usage here because we don't know what results tab the user is on and only wanna count it once

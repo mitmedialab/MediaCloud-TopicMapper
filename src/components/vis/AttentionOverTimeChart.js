@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
+import * as CSV from 'csv-string';
+import { downloadText } from 'download.js';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import initHighcharts from './initHighcharts';
 import { getBrandDarkColor } from '../../styles/colors';
-import { getVisDate, PAST_DAY, PAST_WEEK, PAST_MONTH, groupDatesByWeek, groupDatesByMonth } from '../../lib/dateUtil';
+import { getVisDate, PAST_DAY, PAST_WEEK, PAST_MONTH, groupDatesByWeek, groupDatesByMonth, getDateFromTimestamp } from '../../lib/dateUtil';
 import { STACKED_VIEW } from '../../lib/visUtil';
 import messages from '../../resources/messages';
 
@@ -286,3 +288,10 @@ AttentionOverTimeChart.defaultProps = {
 };
 
 export default injectIntl(AttentionOverTimeChart);
+
+export const downloadData = (filename, data) => {
+  const headers = ['date', 'stories'];
+  const dataAsRows = data.map(item => [getDateFromTimestamp(item.date).toJSON().substring(0, 10), item.count]);
+  const csvStr = CSV.stringify([headers, ...dataAsRows]);
+  downloadText(filename, csvStr);
+};

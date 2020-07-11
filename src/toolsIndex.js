@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga';
 import doNotTrack from 'donottrack';
-import { setAppName, setVersion, APP_TOOLS } from './config';
+import { setAppName, APP_TOOLS } from './config';
 import { setAppColors } from './styles/colors';
 import routes from './routes/toolsRoutes';
 import initializeApp from './index';
@@ -10,8 +10,6 @@ import initializeApp from './index';
  */
 
 if (!doNotTrack(false)) ReactGA.initialize('UA-60744513-9');
-
-setVersion('3.13.19');
 
 setAppName(APP_TOOLS);
 

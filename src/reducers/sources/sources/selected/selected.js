@@ -1,9 +1,6 @@
 import { combineReducers } from 'redux';
 import { SELECT_SOURCE } from '../../../../actions/sourceActions';
 import sourceDetails from './sourceDetails';
-import topWords from './topWords';
-import splitStoryCount from './splitStoryCount';
-import geoTag from './geoTag';
 import feed from './feed/feed';
 import stats from './stats';
 
@@ -21,9 +18,6 @@ function id(state = INITIAL_STATE, action) {
 const selected = combineReducers({
   id,
   sourceDetails,
-  topWords,
-  splitStoryCount,
-  geoTag,
   feed,
   stats,
 });

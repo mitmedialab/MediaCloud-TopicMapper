@@ -22,7 +22,6 @@ ARRAY_BASE_ONE = 1
 def _topic_seed_story_count(topic):
     try:
         seed_query_count = shared_apicache.story_count(
-            user_mediacloud_key(),
             q=concatenate_query_for_solr(solr_seed_query=topic['solr_seed_query'],
                                          media_ids=[m['media_id'] for m in topic['media'] if 'media_id' in m],
                                          tags_ids=[t['tags_id'] for t in topic['media_tags'] if 'tags_id' in t]),
@@ -120,8 +119,8 @@ def _topic_summary(topics_id):
 @flask_login.login_required
 @api_error_handler
 def topic_timespan_list(topics_id, snapshots_id):
-    ignored_snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-    timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id, snapshots_id, foci_id)
+    ignored_snapshots_id, _timespans_id, foci_id, _q = filters_from_args(request.args)
+    timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id, foci_id)
     # add the focal_set type to the timespan so we can use that in the client (ie. decide what to show or not
     # based on what type of focal_set this timespan is part of)
     focal_sets = apicache.topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)

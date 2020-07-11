@@ -52,11 +52,15 @@ def source_suggestion_update(suggestion_id):
             'name': suggestion['name'],
             'feeds': [suggestion['feed_url']],
             'tags_ids': flattend_tags,
-            'editor_notes': 'Suggested approved by {} on because {}.  Suggested by {} on {} because {}'
-                            '(id #{}).'.format(user_name(),  datetime.now().strftime("%I:%M%p on %B %d, %Y"), reason,
-                                               suggestion['email'], suggestion['date_submitted'], suggestion['reason'],
-                                               suggestion['media_suggestions_id']
-                                               )
+            'editor_notes': 'Suggested approved by {name} on {date} because {reason}. Suggested by {email} on '
+                            '{submitted} because {suggestion_reason}'
+                            '(id #{suggestion_id}).'.format(name=user_name(),
+                                                            date=datetime.now().strftime("%I:%M%p on %B %d, %Y"),
+                                                            reason=reason, email=suggestion['email'],
+                                                            submitted=suggestion['date_submitted'],
+                                                            suggestion_reason=suggestion['reason'],
+                                                            suggestion_id=suggestion['media_suggestions_id']
+                                                            )
         }
         creation_results = user_mc.mediaCreate([media_source_to_create])[0]
         if creation_results['status'] == 'error':

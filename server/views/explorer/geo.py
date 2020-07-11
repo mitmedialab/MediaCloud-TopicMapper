@@ -23,7 +23,7 @@ def api_explorer_geotag_count():
 
 
 @app.route('/api/explorer/geography/geography.csv', methods=['POST'])
-@api_error_handler
+@flask_login.login_required
 def explorer_geo_csv():
     filename = 'sampled-geographic-coverage'
     data = request.form

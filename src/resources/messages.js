@@ -160,7 +160,7 @@ const messages = {
   heatMapHelpText: { id: 'heatmap.help.text',
     defaultMessage: '<p>The country map shows you an intensity of how often countries are the main focus of stories. This uses our <a href="https://cliff.mediacloud.org" target="_top">CLIFF-CLAVIN</a> geolocation engine to determine which countries each story is about (based on the places mentioned). The darker the color, the more a country was focused on. Note that this is using a sampling of the stories, not all of them. If you download a CSV of the results, the counts you see are also based on this sampling.</p><p>We have been tagging all english language stories with the places they mention since June 1, 2016.</p>',
   },
-  supportOptions: { id: 'app.supportOptions', defaultMessage: 'Need help? Join our <a href="https://support">discussion group</a> or fill out the  <a href="https://mediacloud.org/support-form">support form</a>.' },
+  supportOptions: { id: 'app.supportOptions', defaultMessage: 'Need help? Join our <a href="https://groups.io/g/mediacloud">discussion group</a> or fill out the  <a href="https://mediacloud.org/support-form">support form</a>.' },
   word: { id: 'word', defaultMessage: 'Word' },
   score: { id: 'score', defaultMessage: 'Score' },
   ok: { id: 'ok', defaultMessage: 'OK' },

@@ -41,7 +41,7 @@ class SimpleDialog extends React.Component {
         >
           <DialogTitle id="simple-dialog-title">{intlIfObject(formatHTMLMessage, title)}</DialogTitle>
           <DialogContent>
-            <SanitizedHTML html={intlIfObject(formatHTMLMessage, content)} />,
+            <SanitizedHTML html={intlIfObject(formatHTMLMessage, content)} />
             {children}
           </DialogContent>
           <DialogActions>
@@ -51,7 +51,7 @@ class SimpleDialog extends React.Component {
               onClick={this.handleClose}
             >
               <FormattedMessage {...messages.ok} />
-            </AppButton>,
+            </AppButton>
           </DialogActions>
         </Dialog>
       </span>

@@ -2,12 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { fetchSourceTopWords } from '../../../actions/sourceActions';
+import { fetchPlatformWords } from '../../../actions/platformActions';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
 import withHelp from '../../common/hocs/HelpfulContainer';
 import messages from '../../../resources/messages';
-import EditableWordCloudDataCard from '../../common/EditableWordCloudDataCard';
-import { calculateTimePeriods, getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
+import PeriodicEditableWordCloudDataCard from '../../common/PeriodicEditableWordCloudDataCard';
+import { downloadData } from '../../common/EditableWordCloudDataCard';
+import { getCurrentDate, oneMonthBefore, getDateRange, PAST_WEEK } from '../../../lib/dateUtil';
 import { urlToExplorerQuery } from '../../../lib/urlUtil';
 
 const localMessages = {
@@ -17,10 +18,29 @@ const localMessages = {
   helpTitle: { id: 'source.summary.sentenceCount.help.title', defaultMessage: 'About Top Words' },
 };
 
+const fetchAsyncData = (dispatch, { source, timePeriod }) => {
+  // the first time this is called, timePeriod isn't set becuase it isn't a prop; but future calls set it manually from the state variable
+  const dateObj = getDateRange(timePeriod || PAST_WEEK);
+  dateObj.start = dateObj.start.format('YYYY-MM-DD');
+  dateObj.end = dateObj.end.format('YYYY-MM-DD');
+  dispatch(fetchPlatformWords({ uid: 'mediaSource', platform_query: `media_id:${source.media_id}`, start_date: dateObj.start, end_date: dateObj.end }));
+};
+
 class SourceTopWordsContainer extends React.Component {
+  state = {
+    timePeriod: PAST_WEEK,
+  };
+
   fetchWordsByTimePeriod = (dateQuery, timePeriod) => {
-    const { fetchData } = this.props;
-    fetchData(timePeriod, dateQuery);
+    const { source, dispatch } = this.props;
+    this.setState({ timePeriod });
+    fetchAsyncData(dispatch, { source, timePeriod });
+  }
+
+  handleDownload = (ngramSize, sampleSize, words) => {
+    const { source } = this.props;
+    const filename = `source-${source.media_id}-ngram-${ngramSize}-words.csv`;
+    downloadData(filename, words, sampleSize);
   }
 
   defaultOnWordClick = (word) => {
@@ -33,16 +53,14 @@ class SourceTopWordsContainer extends React.Component {
   }
 
   render() {
-    const { source, words, helpButton, timePeriod } = this.props;
+    const { source, words, helpButton } = this.props;
     const { formatMessage } = this.props.intl;
-    const downloadUrl = `/api/sources/${source.media_id}/words/wordcount.csv`;
     return (
-      <EditableWordCloudDataCard
+      <PeriodicEditableWordCloudDataCard
         words={words}
         handleTimePeriodClick={this.fetchWordsByTimePeriod}
-        selectedTimePeriod={timePeriod}
-        downloadUrl={downloadUrl}
-        targetURL={`/sources/${source.media_id}`}
+        selectedTimePeriod={this.state.timePeriod}
+        onDownload={this.handleDownload}
         onViewModeClick={this.defaultOnWordClick}
         title={formatMessage(localMessages.title)}
         domId={`media-source-top-words-${source.media_id}`}
@@ -57,35 +75,22 @@ SourceTopWordsContainer.propTypes = {
   // from parent
   source: PropTypes.object.isRequired,
   // from state
-  fetchData: PropTypes.func.isRequired,
   fetchStatus: PropTypes.string.isRequired,
   words: PropTypes.array,
-  timePeriod: PropTypes.string.isRequired,
   // from composition
   intl: PropTypes.object.isRequired,
   helpButton: PropTypes.node.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.sources.sources.selected.topWords.fetchStatus,
-  words: state.sources.sources.selected.topWords.list.wordcounts,
-  timePeriod: state.sources.sources.selected.topWords.timePeriod,
+  fetchStatus: state.platforms.words.fetchStatus,
+  words: state.platforms.words.results.mediaSource ? state.platforms.words.results.mediaSource.list : [],
 });
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  fetchData: (timePeriod, dateQuery) => {
-    dispatch(fetchSourceTopWords(ownProps.source.media_id, { timePeriod, q: dateQuery }));
-  },
-});
-
-const fetchAsyncData = (dispatch, { source, timePeriod }) => {
-  // need to calculateTimePeriods here in order to default to week correctly
-  dispatch(fetchSourceTopWords(source.media_id, { timePeriod, q: calculateTimePeriods(timePeriod) }));
-};
 
 export default
 injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(
+  connect(mapStateToProps)(
     withHelp(localMessages.helpTitle, [localMessages.intro, messages.wordSpaceLayoutHelp])(
       withAsyncData(fetchAsyncData)(
         SourceTopWordsContainer

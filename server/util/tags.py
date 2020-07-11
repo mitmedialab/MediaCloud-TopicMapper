@@ -1,4 +1,3 @@
-import re
 import logging
 import os
 from mediacloud.api import MediaCloud
@@ -120,11 +119,6 @@ def is_bad_theme(tag_id):
     return False
 
 
-def format_name_from_label(user_label):
-    formatted_name = re.sub('\W|^(?=\d)', '_', user_label)
-    return formatted_name
-
-
 def label_for_metadata_tag(tag):
     label = None
     tag_sets_id = tag['tag_sets_id']
@@ -197,7 +191,7 @@ def cached_tag_set_file(file_path):
         return data
 
 
-def media_with_tag(user_mc_key, tags_id, cached=False):
+def media_with_tag(tags_id, cached=False):
     more_media = True
     all_media = []
     max_media_id = 0

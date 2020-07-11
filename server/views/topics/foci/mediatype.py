@@ -3,7 +3,6 @@ from flask import jsonify, request
 import flask_login
 
 from server import app, TOOL_API_KEY
-from server.views import TAG_COUNT_SAMPLE_SIZE
 from server.util.request import api_error_handler, json_error_response, form_fields_required
 from server.views.topics.apicache import topic_story_count
 from server.auth import user_mediacloud_key, user_mediacloud_client

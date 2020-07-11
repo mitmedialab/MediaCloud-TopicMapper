@@ -4,7 +4,6 @@ import os
 import datetime as dt
 import flask_login
 import json
-import datetime
 from slugify import slugify
 
 from server import mc, app, analytics_db
@@ -19,16 +18,16 @@ DEFAULT_COLLECTION_IDS = [9139487]
 def dates_as_filter_query(start_date, end_date):
     date_query = ""
     if start_date:
-        testa = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
-        testb = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
-        date_query = mc.publish_date_query(testa, testb, True, True)
+        testa = dt.datetime.strptime(start_date, '%Y-%m-%d').date()
+        testb = dt.datetime.strptime(end_date, '%Y-%m-%d').date()
+        date_query = mc.dates_as_query_clause(testa, testb)
     return date_query
 
 
 def _default_query_dates():
-    one_month_before_now = datetime.datetime.now() - datetime.timedelta(days=30)
+    one_month_before_now = dt.datetime.now() - dt.timedelta(days=30)
     default_start_date = one_month_before_now
-    default_end_date = datetime.datetime.now()
+    default_end_date = dt.datetime.now()
     return default_start_date, default_end_date
 
 

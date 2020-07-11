@@ -5,7 +5,7 @@ import flask_login
 from server import app
 from server.util.request import arguments_required, api_error_handler, filters_from_args, json_error_response
 from server.auth import user_mediacloud_client, user_mediacloud_key
-from server.views.topics import apicache as apicache
+from server.views.topics import apicache
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def is_url_sharing_focal_set(fs):
 @flask_login.login_required
 @api_error_handler
 def topic_focal_set_list(topics_id):
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    snapshots_id, _timespans_id, _foci_id, _q = filters_from_args(request.args)
     include_story_counts = request.args.get('includeStoryCounts')
     focal_sets = apicache.topic_focal_sets_list(user_mediacloud_key(), topics_id, snapshots_id)
     # now mark the ones that are the magically added URL sharing platform ones
@@ -60,9 +60,8 @@ def topic_focal_set_definition_delete(topics_id, focal_set_definitions_id):
 
 def base_snapshot_timespan(topics_id):
     # find the timespan matching this one in the base snapshot (ie. with no foci_id)
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
-    base_snapshot_timespans = apicache.cached_topic_timespan_list(user_mediacloud_key(), topics_id,
-                                                                  snapshots_id=snapshots_id, foci_id=None)
+    snapshots_id, timespans_id, foci_id, _q = filters_from_args(request.args)
+    base_snapshot_timespans = apicache.cached_topic_timespan_list(topics_id, snapshots_id=snapshots_id, foci_id=None)
     timespan = apicache.topic_timespan(topics_id, snapshots_id, foci_id, timespans_id)  # the selected timespan
     for t in base_snapshot_timespans:
         if apicache.is_timespans_match(timespan, t):
@@ -74,13 +73,13 @@ def base_snapshot_timespan(topics_id):
 @flask_login.login_required
 @api_error_handler
 def topic_focal_set_split_stories_compare(topics_id, focal_sets_id):
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    snapshots_id, _timespans_id, _foci_id, _q = filters_from_args(request.args)
     # need the timespan info, to find the appropriate timespan with each focus
     try:
         base_timespan = base_snapshot_timespan(topics_id)
         focal_set = apicache.topic_focal_set(user_mediacloud_key(), topics_id, snapshots_id, focal_sets_id)
     except ValueError as e:
-        return json_error_response(e.message)
+        return json_error_response(str(e))
     # collect the story split counts for each foci
     timespans = apicache.matching_timespans_in_foci(topics_id, base_timespan, focal_set['foci'])
     for idx in range(0, len(timespans)):
@@ -91,12 +90,12 @@ def topic_focal_set_split_stories_compare(topics_id, focal_sets_id):
 
 
 def _add_story_counts_to_foci(topics_id, focal_sets):
-    snapshots_id, timespans_id, foci_id, q = filters_from_args(request.args)
+    snapshots_id, _timespans_id, _foci_id, q = filters_from_args(request.args)
     # need the timespan info, to find the appropriate timespan with each focus
     try:
         base_timespan = base_snapshot_timespan(topics_id)
     except ValueError as e:
-        return json_error_response(e.message)
+        return json_error_response(str(e))
     # now find the story count in each foci in this
     for fs in focal_sets:
         timespans = apicache.matching_timespans_in_foci(topics_id, base_timespan, fs['foci'])

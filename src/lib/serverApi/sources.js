@@ -65,11 +65,6 @@ export function collectionDetails(id, params) {
   return createApiPromise(`/api/collections/${id}/details`, acceptedParams);
 }
 
-export function sourceSplitStoryCount(id, params) {
-  const acceptedParams = acceptParams(params, ['separate_spidered']);
-  return createApiPromise(`api/sources/${id}/story-split/count`, acceptedParams);
-}
-
 export function collectionSplitStoryCount(id, params) {
   const acceptedParams = acceptParams(params, ['separate_spidered']);
   return createApiPromise(`api/collections/${id}/story-split/count`, acceptedParams);

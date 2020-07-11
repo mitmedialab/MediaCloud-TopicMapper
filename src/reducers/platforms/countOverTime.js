@@ -1,8 +1,8 @@
 import { FETCH_PLATFORM_COUNT_OVER_TIME } from '../../actions/platformActions';
-import { createAsyncReducer } from '../../lib/reduxHelpers';
+import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
 import { cleanDateCounts } from '../../lib/dateUtil';
 
-const countOverTime = createAsyncReducer({
+const countOverTime = createIndexedAsyncReducer({
   initialState: {
     total: null,
     counts: [],

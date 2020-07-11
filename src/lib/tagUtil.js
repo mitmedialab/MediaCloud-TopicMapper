@@ -57,6 +57,7 @@ export const MEDIA_TYPE_TAG_NAME = 'media_format';
 
 export const TAG_STORY_UNDATEABLE = 8877812; // if a story has this tag, that means it was undateable
 
+export const TAG_SPIDERED_STORY = 8875452; // this story was ingested via spidering
 
 /**
  * Call this to verify a tag set id is one of the metadata options for a media source

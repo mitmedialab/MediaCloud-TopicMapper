@@ -1,5 +1,5 @@
 import slugify from 'slugify';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { trimToMaxLength, queryAsString } from './stringUtil';
 import { notEmptyString } from './formValidators';
 import { downloadViaFormPost } from './apiUtil';
@@ -79,7 +79,7 @@ export function ensureSafeResults(queries, results) {
   const resultUids = Object.keys(results);
   const validQueries = queries
     .filter(q => q.deleted !== true) // undeleted queries
-    .filter(q => resultUids.includes(q.uid)); // and those that have results
+    .filter(q => resultUids.includes(`${q.uid}`)); // and those that have results
   const validQueriesWithResults = validQueries.map(q => ({
     ...q,
     results: results[q.uid],
@@ -297,7 +297,7 @@ export function downloadExplorerSvg(queryLabel, type, domIdOrElement) {
 }
 
 export function uniqueQueryId() {
-  return uuidv4();
+  return `${uuidv4()}`;
 }
 
 export const formatQueryForServer = q => ({
@@ -309,13 +309,4 @@ export const formatQueryForServer = q => ({
   sources: q.sources.map(s => s.id),
   collections: q.collections.map(c => c.id),
   searches: serializeSearchTags(q.searches),
-});
-
-export const formatDemoQueryForServer = (q, index) => ({
-  index, // should be same as q.index btw
-  search_id: q.searchId, // may or may not have these
-  query_id: q.id,
-  q: q.q, // only if no query id, means demo user added a keyword
-  uid: q.uid,
-  sortPosition: q.sortPosition,
 });

@@ -173,8 +173,8 @@ Platform2ValidateContainer.propTypes = {
 const mapStateToProps = state => ({
   currentStep: state.topics.selected.platforms.create.workflow.currentStep,
   fetchStatus: state.platforms.sample.fetchStatus,
-  total: state.platforms.sample.total,
-  stories: state.platforms.sample.list,
+  total: state.platforms.sample.results.topicPreview ? state.platforms.sample.results.topicPreview.total : null,
+  stories: state.platforms.sample.results.topicPreview ? state.platforms.sample.results.topicPreview.list : [],
   topic: state.topics.selected.info,
   formValues: formSelector(state, 'media', 'channel', 'query'),
   selectedPlatform: state.topics.selected.platforms.selected,
@@ -195,6 +195,7 @@ const mapDispatchToProps = dispatch => ({
 const fetchAsyncData = (dispatch, { topic, formValues, selectedPlatform }) => {
   const formatPlatformChannelData = platformChannelDataFormatter(selectedPlatform.platform);
   return dispatch(fetchPlatformSample({
+    uid: 'topicPreview',
     platform_type: selectedPlatform.platform,
     platform_query: topicQueryAsString(formValues.query),
     platform_source: selectedPlatform.source,

@@ -86,8 +86,8 @@ def _stream_media_by_page(user_mc_key, topics_id, props, **kwargs):
     more_media = True
     while more_media:
         page = apicache.topic_media_list_page(user_mc_key, topics_id, **kwargs)
-        media = page['media']
-        for m in media:
+        page_media = page['media']
+        for m in page_media:
             row = csv.dict2row(props, m)
             row_string = ','.join(row) + '\n'
             yield row_string

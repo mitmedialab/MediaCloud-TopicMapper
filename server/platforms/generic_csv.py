@@ -16,7 +16,7 @@ MC_DAY_FORMAT = "%Y-%m-%d"
 
 class GenericCsvProvider(ContentProvider):
     """
-    User uploads a CSV with content they've gotten from some platofrm we don't provide.
+    User uploads a CSV with content they've gotten from some platform we don't provide.
     Required fields: content, author, publish_date
     Optional fields: channel, url, post_id
     """
@@ -29,7 +29,7 @@ class GenericCsvProvider(ContentProvider):
 
     def set_filename(self, filename: str):
         path_to_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        self._load_from_file(path_to_file)
+        self._data = self._load_from_file(path_to_file)
 
     def _load_from_file(self, path_to_file: str) -> List[Dict]:
         data = []
@@ -40,7 +40,7 @@ class GenericCsvProvider(ContentProvider):
         for row in data:
             # this validates the date the same way to back-end parses it
             row['publish_date'] = dateutil.parser.parse(row['publish_date'])
-        self._data = data
+        return data
 
     @cache.cache_on_arguments()
     def sample(self, query: str, start_date: dt.datetime, end_date: dt.datetime, limit: int = 20,

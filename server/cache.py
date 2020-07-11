@@ -11,6 +11,8 @@ def _keyword_safe_key_generator(namespace, fn):
     else:
         namespace = '%s:%s|%s' % (fn.__module__, fn.__name__, namespace)
 
+    # Seems like in later versions this isn't deprecated
+    # pylint: disable=deprecated-method
     args = compat.inspect_getargspec(fn)
     has_self = args[0] and args[0][0] in ('self', 'cls')
 

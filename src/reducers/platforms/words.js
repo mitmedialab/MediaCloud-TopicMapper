@@ -1,7 +1,7 @@
 import { FETCH_PLATFORM_WORDS } from '../../actions/platformActions';
-import { createAsyncReducer } from '../../lib/reduxHelpers';
+import { createIndexedAsyncReducer } from '../../lib/reduxHelpers';
 
-const words = createAsyncReducer({
+const words = createIndexedAsyncReducer({
   initialState: {
     list: [], // the thing you queried for
     totals: [], // options topic/focus-level totals to compare to

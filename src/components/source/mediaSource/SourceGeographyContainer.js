@@ -3,28 +3,29 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
-import GeoChart from '../../vis/GeoChart';
+import GeoChart, { downloadData } from '../../vis/GeoChart';
 import DataCard from '../../common/DataCard';
-import { fetchSourceGeo } from '../../../actions/sourceActions';
+import { fetchPlatformTags } from '../../../actions/platformActions';
 import messages from '../../../resources/messages';
 import withHelp from '../../common/hocs/HelpfulContainer';
 import { DownloadButton } from '../../common/IconButton';
 import { getBrandLightColor } from '../../../styles/colors';
 import { getCurrentDate, oneMonthBefore } from '../../../lib/dateUtil';
+import { TAG_SET_GEOGRAPHIC_PLACES } from '../../../lib/tagUtil';
 import { urlToExplorerQuery } from '../../../lib/urlUtil';
 
 const localMessages = {
   title: { id: 'source.summary.map.title', defaultMessage: 'Geographic Attention' },
   helpTitle: { id: 'source.summary.map.help.title', defaultMessage: 'Geographic Attention' },
   intro: { id: 'source.summary.map.intro',
-    defaultMessage: '<p>Here is a heatmap of countries stories from this source are about (based on a sample of stories). Darker countried are mentioned more. Click a country to load an Explorer search showing you how the this source covers it.</p>' },
+    defaultMessage: '<p>Here is a heatmap of countries stories from this source are about. Darker countried are mentioned more. Click a country to load an Explorer search showing you how the this source covers it.</p>' },
 };
 
 class SourceGeographyContainer extends React.Component {
-  downloadCsv = () => {
-    const { source } = this.props;
-    const url = `/api/sources/${source.media_id}/geography/geography.csv`;
-    window.location = url;
+  handleDownload = () => {
+    const { source, geolist } = this.props;
+    const filename = `source-${source.media_id}-geo-tags.csv`;
+    downloadData(filename, geolist);
   }
 
   handleCountryClick= (event, geo) => {
@@ -44,7 +45,7 @@ class SourceGeographyContainer extends React.Component {
     return (
       <DataCard>
         <div className="actions">
-          <DownloadButton tooltip={formatMessage(messages.download)} onClick={this.downloadCsv} />
+          <DownloadButton tooltip={formatMessage(messages.download)} onClick={this.handleDownload} />
         </div>
         <h2>
           <FormattedMessage {...localMessages.title} />
@@ -71,12 +72,15 @@ SourceGeographyContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  fetchStatus: state.sources.sources.selected.geoTag.fetchStatus,
-  total: state.sources.sources.selected.geoTag.total,
-  geolist: state.sources.sources.selected.geoTag.list,
+  fetchStatus: state.platforms.tags.fetchStatus,
+  geolist: state.platforms.tags.results.mediaSource ? state.platforms.tags.results.mediaSource.results : [],
 });
 
-const fetchAsyncData = (dispatch, { source }) => dispatch(fetchSourceGeo(source.media_id));
+const fetchAsyncData = (dispatch, { source }) => dispatch(fetchPlatformTags({
+  uid: 'mediaSource',
+  platform_query: `media_id:${source.media_id}`,
+  platform_channel: JSON.stringify({ tags_sets_id: TAG_SET_GEOGRAPHIC_PLACES }),
+}));
 
 export default
 injectIntl(

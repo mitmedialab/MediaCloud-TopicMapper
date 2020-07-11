@@ -154,6 +154,7 @@ def _cached_featured_collection_list(tag_id_list):
 
 # helper for preview queries
 # tags_id is either a string or a list, which is handled in either case by the len() test. ALL_MEDIA is the exception
+
 def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_collection=[]):
     query = '({})'.format(solr_seed_query)
 

@@ -10,29 +10,22 @@ from server import app, mc, user_db, analytics_db, executor
 from server.auth import user_mediacloud_key, user_admin_mediacloud_client, user_mediacloud_client, user_name,\
     user_has_auth_role, ROLE_MEDIA_EDIT
 from server.util.request import arguments_required, form_fields_required, api_error_handler
-from server.util.tags import TAG_SETS_ID_COLLECTIONS, format_name_from_label, media_with_tag, TAG_SPIDERED_STORY
+from server.util.tags import TAG_SETS_ID_COLLECTIONS, media_with_tag
+from server.util.stringutil import as_tag_name
 from server.views.sources import SOURCE_LIST_CSV_EDIT_PROPS, SOURCE_FEED_LIST_CSV_PROPS
 from server.views.sources.feeds import source_feed_list
 from server.views.favorites import add_user_favorite_flag_to_collections, add_user_favorite_flag_to_sources
-from server.views.sources.geocount import stream_geo_csv, cached_geotag_count
 from server.views.stories import QUERY_LAST_YEAR
-from server.views.sources.stories_split_by_time import stream_split_stories_csv
 import server.views.sources.apicache as apicache
-from server.views.sources.words import word_count, stream_wordcount_csv
 
 logger = logging.getLogger(__name__)
-
-
-def allowed_file(filename):
-    filename, file_extension = os.path.splitext(filename)
-    return file_extension.lower() in ['.csv']
 
 
 @app.route('/api/collections/<collection_id>/metadatacoverage.csv')
 @flask_login.login_required
 @api_error_handler
 def api_metadata_download(collection_id):
-    all_media = media_with_tag(user_mediacloud_key(), collection_id)
+    all_media = media_with_tag(collection_id)
 
     metadata_counts = {}  # from tag_sets_id to info
     for media_source in all_media:
@@ -95,7 +88,7 @@ def api_collections_by_ids():
     collection_ids = request.args['coll[]'].split(',')
     sources_list = []
     for tags_id in collection_ids:
-        all_media = media_with_tag(user_mediacloud_key(), tags_id)
+        all_media = media_with_tag(tags_id)
         info = [{'media_id': m['media_id'], 'name': m['name'], 'url': m['url'], 'public_notes': m['public_notes']} for m
                 in all_media]
         add_user_favorite_flag_to_sources(info)
@@ -136,9 +129,9 @@ def api_collection_details(collection_id):
     info = user_mc.tag(collection_id)
     add_user_favorite_flag_to_collections([info])
     info['id'] = collection_id
-    info['tag_set'] = _tag_set_info(user_mediacloud_key(), info['tag_sets_id'])
+    info['tag_set'] = _tag_set_info(info['tag_sets_id'])
     if add_in_sources:
-        media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+        media_in_collection = media_with_tag(collection_id)
         info['sources'] = media_in_collection
     analytics_db.increment_count(analytics_db.TYPE_COLLECTION, collection_id, analytics_db.ACTION_SOURCE_MGR_VIEW)
     return jsonify({'results': info})
@@ -152,7 +145,7 @@ def api_collection_sources(collection_id):
     results = {
         'tags_id': collection_id
     }
-    media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+    media_in_collection = media_with_tag(collection_id)
     add_user_favorite_flag_to_sources(media_in_collection)
     results['sources'] = media_in_collection
     return jsonify(results)
@@ -175,7 +168,7 @@ def api_download_sources_template():
 def api_collection_sources_csv(collection_id):
     user_mc = user_mediacloud_client()
     collection = user_mc.tag(collection_id)    # not cached because props can change often
-    all_media = media_with_tag(user_mediacloud_key(), collection_id)
+    all_media = media_with_tag(collection_id)
     file_prefix = "Collection {} ({}) - sources ".format(collection_id, collection['tag'])
     properties_to_include = SOURCE_LIST_CSV_EDIT_PROPS
     return csv.download_media_csv(all_media, file_prefix, properties_to_include)
@@ -188,7 +181,7 @@ def api_collection_sources_feed_status_csv(collection_id, source_type):
     user_mc = user_mediacloud_client()
     collection = user_mc.tag(collection_id)
     list_type = str(source_type).lower()
-    media_in_collection = media_with_tag(user_mediacloud_key(), collection_id)
+    media_in_collection = media_with_tag(collection_id)
     media_info_in_collection = _media_list_edit_job.map(media_in_collection)
     if list_type == 'review':
         filtered_media = [m for m in media_info_in_collection
@@ -223,7 +216,7 @@ def _media_list_edit_job(media):
     active_syndicated_feeds = [f for f in feeds if f['active'] and f['type'] == 'syndicated']
     active_feed_count = len(active_syndicated_feeds)
     query = "media_id:{}".format(media['media_id'])
-    full_count = apicache.timeperiod_story_count(user_mc, query, QUERY_LAST_YEAR)['count']
+    full_count = apicache.timeperiod_story_count(query, QUERY_LAST_YEAR)['count']
     # add the details to the media object and return it
     media['latest_scrape_job'] = latest_scrape_job
     media['active_feed_count'] = active_feed_count
@@ -266,7 +259,7 @@ def collection_source_story_split_historical_counts_csv(collection_id):
 def _source_story_split_count_job(info):
     source = info['media']
     q = "media_id:{}".format(source['media_id'])
-    split_stories = apicache.split_story_count(user_mediacloud_key(), q, 360)
+    split_stories = apicache.split_story_count(q, 360)
     source_data = {
         'media_id': source['media_id'],
         'media_name': source['name'],
@@ -278,7 +271,7 @@ def _source_story_split_count_job(info):
 
 
 def _collection_source_story_split_historical_counts(collection_id):
-    media_list = media_with_tag(user_mediacloud_key(), collection_id)
+    media_list = media_with_tag(collection_id)
     jobs = [{'media': m} for m in media_list]
     # fetch in parallel to make things faster
     #return [_source_story_split_count_job(j) for j in jobs]
@@ -286,40 +279,7 @@ def _collection_source_story_split_historical_counts(collection_id):
     return [d for d in _source_story_split_count_job.map(jobs)]
 
 
-@app.route('/api/collections/<collection_id>/story-split/count')
-@flask_login.login_required
-@api_error_handler
-def collection_source_split_stories(collection_id):
-    collections_query = "tags_id_media:{}".format(collection_id)
-    exclude_spidered_stories = " tags_id_media:{} AND NOT tags_id_stories:{}".format(
-        str(collection_id), TAG_SPIDERED_STORY)\
-        if 'separate_spidered' in request.args else collections_query
-    interval = 'day'  # default, and not currently passed to the calls above
-
-    all_results = apicache.split_story_count(user_mediacloud_key(), collections_query)
-    # same if request.args doesn't ask to exclude_spidered
-    non_spidered_results = apicache.split_story_count(user_mediacloud_key(), exclude_spidered_stories)
-
-    all_stories = {
-        'total_story_count': all_results['total_story_count'],
-        'list': all_results['counts'],
-    }
-    partial_stories = {
-        'total_story_count': non_spidered_results['total_story_count'],
-        'list': non_spidered_results['counts'],
-    }
-    return jsonify({'results': {'all_stories': all_stories, 'partial_stories': partial_stories, 'interval': interval}})
-
-
-@app.route('/api/collections/<collection_id>/story-split/count.csv')
-@flask_login.login_required
-@api_error_handler
-def collection_split_stories_csv(collection_id):
-    return stream_split_stories_csv(user_mediacloud_key(), 'splitStoryCounts-Collection-' + collection_id,
-                                    "tags_id_media:{}".format(collection_id))
-
-
-def _tag_set_info(user_mc_key, tag_sets_id):
+def _tag_set_info(tag_sets_id):
     user_mc = user_mediacloud_client()
     return user_mc.tagSet(tag_sets_id)
 
@@ -348,51 +308,6 @@ def api_collection_source_representation_csv(collection_id):
     return csv.stream_response(source_representation, props, filename)
 
 
-@app.route('/api/collections/<collection_id>/geography')
-@flask_login.login_required
-@api_error_handler
-def geo_geography(collection_id):
-    info = {
-        'geography': cached_geotag_count(user_mediacloud_key(), 'tags_id_media:' + str(collection_id))
-    }
-    return jsonify({'results': info})
-
-
-@app.route('/api/collections/<collection_id>/geography/geography.csv')
-@flask_login.login_required
-@api_error_handler
-def collection_geo_csv(collection_id):
-    return stream_geo_csv(user_mediacloud_key(), 'geography-Collection-' + collection_id, collection_id,
-                          "tags_id_media")
-
-
-@app.route('/api/collections/<collection_id>/words')
-@flask_login.login_required
-@api_error_handler
-def collection_words(collection_id):
-    solr_q = 'tags_id_media:' + str(collection_id)
-    solr_fq = None
-    # add in the publish_date clause if there is one
-    if ('q' in request.args) and (len(request.args['q']) > 0):
-        solr_fq = request.args['q']
-    info = {
-        'wordcounts': word_count(user_mediacloud_key, solr_q, solr_fq)
-    }
-    return jsonify({'results': info})
-
-
-@app.route('/api/collections/<collection_id>/words/wordcount.csv', methods=['GET'])
-@flask_login.login_required
-@api_error_handler
-def collection_wordcount_csv(collection_id):
-    solr_q = 'tags_id_media:' + str(collection_id)
-    solr_fq = None
-    # add in the publish_date clause if there is one
-    if ('q' in request.args) and (len(request.args['q']) > 0):
-        solr_fq = request.args['q']
-    return stream_wordcount_csv(user_mediacloud_key(), 'wordcounts-Collection-' + collection_id, solr_q, solr_fq)
-
-
 @app.route('/api/collections/<collection_id>/similar-collections', methods=['GET'])
 @flask_login.login_required
 @api_error_handler
@@ -418,7 +333,7 @@ def collection_create():
     if len(request.form['sources[]']) > 0:
         source_ids = request.form['sources[]'].split(',')
 
-    formatted_name = format_name_from_label(label)
+    formatted_name = as_tag_name(label)
     # first create the collection
     new_collection = user_mc.createTag(TAG_SETS_ID_COLLECTIONS, formatted_name, label, description,
                                        is_static=(static == 'true'),

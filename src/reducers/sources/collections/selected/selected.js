@@ -1,9 +1,6 @@
 import { combineReducers } from 'redux';
 import { SELECT_COLLECTION } from '../../../../actions/sourceActions';
 import collectionDetails from './collectionDetails';
-import collectionTopWords from './collectionTopWords';
-import collectionSplitStoryCount from './collectionSplitStoryCount';
-import collectionGeoTag from './collectionGeoTag';
 import collectionSourceRepresentation from './collectionSourceRepresentation';
 import collectionSimilar from './collectionSimilar';
 import historicalSplitStoryCounts from './historicalSplitStoryCounts';
@@ -23,9 +20,6 @@ function id(state = INITIAL_STATE, action) {
 const selected = combineReducers({
   id,
   collectionDetails,
-  collectionTopWords,
-  collectionSplitStoryCount,
-  collectionGeoTag,
   collectionSourceRepresentation,
   collectionSimilar,
   collectionSourceList,

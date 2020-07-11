@@ -3,6 +3,8 @@ import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import * as CSV from 'csv-string';
+import { downloadText } from 'download.js';
 import initHighcharts from './initHighcharts';
 import { getBrandDarkColor } from '../../styles/colors';
 import { highchartsRobinsonLowRes } from '../../lib/mapUtil';
@@ -154,3 +156,10 @@ GeoChart.propTypes = {
 };
 
 export default injectIntl(GeoChart);
+
+export const downloadData = (filename, data) => {
+  const headers = ['tags_id', 'label', 'count', 'description', 'tag'];
+  const dataAsRows = data.map(item => headers.map(prop => item[prop]));
+  const csvStr = CSV.stringify([headers, ...dataAsRows]);
+  downloadText(filename, csvStr);
+};

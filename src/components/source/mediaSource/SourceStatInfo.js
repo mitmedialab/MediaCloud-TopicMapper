@@ -12,9 +12,10 @@ const localMessages = {
   nytPct: { id: 'source.summary.statbar.nyt', defaultMessage: 'With Themes' },
   geoPct: { id: 'source.summary.statbar.geo', defaultMessage: 'With Entities' },
   collections: { id: 'source.summary.statbar.collections', defaultMessage: 'Collections' },
-  storiesPerWeek: { id: 'source.summary.statbar.storiesPerWeek', defaultMessage: 'Stories Per Week' },
   coveredSince: { id: 'source.summary.statbar.coveredSince', defaultMessage: 'Covered Since' },
   storyCount: { id: 'source.summary.statbar.storyCount', defaultMessage: 'Total Stories' },
+  storiesPerDayHelpTitle: { id: 'source.summary.statbar.perDay.title', defaultMessage: 'About Stories per Day' },
+  storiesPerDayHelpContent: { id: 'source.summary.statbar.perDay.content', defaultMessage: 'This is average of the number of stories per day we have ingested over the last 90 days.' },
 };
 
 const SourceStatInfo = (props) => {
@@ -37,7 +38,11 @@ const SourceStatInfo = (props) => {
         { message: localMessages.storyCount, data: formatNumber(sourceInfo.story_count) },
         { message: localMessages.coveredSince, data: formattedDateStr },
         { message: localMessages.collections, data: formatNumber(sourceInfo.collection_count) },
-        { message: localMessages.storiesPerWeek, data: formatNumber(Math.round(sourceInfo.num_stories_90)) },
+        { message: messages.storiesPerDay,
+          data: formatNumber(Math.round(sourceInfo.num_stories_90)),
+          helpTitleMsg: localMessages.storiesPerDayHelpTitle,
+          helpContentMsg: localMessages.storiesPerDayHelpContent,
+        },
         { message: localMessages.geoPct,
           data: formatNumber(sourceInfo.geoPct, { style: 'percent', maximumFractionDigits: 0 }),
           helpTitleMsg: messages.entityHelpTitle,

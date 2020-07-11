@@ -2,14 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
-import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import messages from '../../resources/messages';
 import { urlToExplorer, urlToTopicMapper, urlToSourceManager } from '../../lib/urlUtil';
 import ToolDescription from './ToolDescription';
 import Faq from './faq/ToolsFaq';
 import SystemStatsContainer from '../common/statbar/SystemStatsContainer';
 import LoginForm from '../user/LoginForm';
-import { WarningNotice } from '../common/Notice';
 import DataCard from '../common/DataCard';
 import { assetUrl } from '../../lib/assetUtil';
 import PageTitle from '../common/PageTitle';
@@ -18,7 +17,6 @@ const localMessages = {
   title: { id: 'tools.home.title', defaultMessage: 'Welcome to Media Cloud' },
   intro: { id: 'tools.home.intro', defaultMessage: 'Understanding attention and influence within media ecosystems.' },
   loginTitle: { id: 'tools.home.login.title', defaultMessage: 'Login or Signup Now' },
-  security: { id: 'login.securitynotice', defaultMessage: 'We recently noticed a security problem and reset all passwords. We emailed everyone a link to reset your password. <br />If you can\'t find that email, <a href={link}> reset your password here.</a>' },
 };
 
 const ToolsHomeContainer = (props) => {
@@ -29,10 +27,6 @@ const ToolsHomeContainer = (props) => {
         <Faq />
       </Col>
       <Col lg={4}>
-        <WarningNotice>
-          <br />
-          <FormattedHTMLMessage {...localMessages.security} values={{ link: '#/user/request-password-reset' }} /><br />
-        </WarningNotice>
         <DataCard>
           <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
           <LoginForm redirect="/" />

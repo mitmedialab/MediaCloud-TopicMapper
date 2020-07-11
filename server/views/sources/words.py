@@ -31,6 +31,6 @@ def _cached_word_count(user_mc_key, q, fq, num_words, sample_size=WORD_COUNT_SAM
             word_data[i]['google_w2v_x'] = word2vec_data[i]['x']
             word_data[i]['google_w2v_y'] = word2vec_data[i]['y']
     except KeyError as e:
-        logger.warn("Didn't get valid data back from word2vec call")
+        logger.warning("Didn't get valid data back from word2vec call")
         logger.exception(e)
     return word_data

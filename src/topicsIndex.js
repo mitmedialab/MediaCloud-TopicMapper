@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga';
 import doNotTrack from 'donottrack';
-import { setAppName, setVersion, APP_TOPIC_MAPPER } from './config';
+import { setAppName, APP_TOPIC_MAPPER } from './config';
 import { setAppColors } from './styles/colors';
 import routes from './routes/topicRoutes';
 import initializeApp from './index';
@@ -10,8 +10,6 @@ import initializeApp from './index';
  */
 
 if (!doNotTrack(false)) ReactGA.initialize('UA-60744513-7');
-
-setVersion('3.14.0-alpha18');
 
 setAppName(APP_TOPIC_MAPPER);
 

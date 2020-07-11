@@ -20,11 +20,11 @@ const middlewares = [
 
 function configDevelopmentStore(appName) {
   /* eslint-disable no-underscore-dangle */
-  return createStore(getRootReducer(appName), {}, compose(
-    applyMiddleware(...middlewares),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  ));
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   /* eslint-enable */
+  return createStore(getRootReducer(appName), {}, composeEnhancers(
+    applyMiddleware(...middlewares)
+  ));
 }
 
 function configProductionStore(appName) {

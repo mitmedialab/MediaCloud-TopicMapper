@@ -16,12 +16,9 @@ export function getAppName() {
 }
 
 /**
- * Specify a version number
+ * Version injected via webpack from package.json
  */
-let version = null;
-export function setVersion(newVersion) {
-  version = newVersion;
-}
+const version = MC_VERSION; // eslint-disable-line no-undef
 export function getVersion() {
   return version;
 }

@@ -9,11 +9,6 @@ export function fetchQueryTopWords(params) {
   return createPostingApiPromise('/api/explorer/words/count', acceptedParams);
 }
 
-export function fetchDemoQueryTopWords(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q', 'sampleSize']);
-  return createApiPromise('/api/explorer/demo/words/count', acceptedParams);
-}
-
 export function fetchWordSampleSentences(params) {
   const acceptedParams = acceptParams(params, ['q', 'start_date', 'end_date', 'sources', 'collections', 'searches', 'rows', 'word']);
   return createPostingApiPromise('/api/explorer/sentences/list', acceptedParams);
@@ -22,32 +17,6 @@ export function fetchWordSampleSentences(params) {
 export function fetchQueryPerDateTopWords(params) {
   const acceptedParams = acceptParams(params, ['uid', 'q', 'start_date', 'end_date', 'sources', 'collections', 'searches']);
   return createPostingApiPromise('/api/explorer/words/count', acceptedParams);
-}
-
-export function fetchDemoQueryPerDateTopWords(params) {
-  const acceptedParams = acceptParams(params, ['index', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/words/count', acceptedParams);
-}
-
-// top words is not like the other widgets. Will either have a search id, or will have comparedQueries
-export function fetchDemoQueryTopWordsComparison(queryA, queryB) {
-  let acceptedParamsA = null;
-  let acceptedParamsB = null;
-  const acceptedParams = [];
-
-  const testParams = acceptParams(queryA, ['search_id']);
-  if (testParams.search_id !== undefined) { // by demo search id
-    acceptedParamsA = acceptParams(queryA, ['index', 'search_id', 'query_id', 'q']);
-    acceptedParamsB = acceptParams(queryB, ['index', 'search_id', 'query_id', 'q']);
-  } else { // by demo keyword
-    acceptedParamsA = acceptParams(queryA, ['index', 'q', 'start_date', 'end_date', 'sources', 'collections']);
-    acceptedParamsB = acceptParams(queryB, ['index', 'q', 'start_date', 'end_date', 'sources', 'collections']);
-  }
-  acceptedParams['compared_queries[]'] = [generateParamStr(acceptedParamsA)];
-  if (queryB) {
-    acceptedParams['compared_queries[]'] = acceptedParams['compared_queries[]'].concat(generateParamStr(acceptedParamsB));
-  }
-  return createApiPromise('/api/explorer/demo/words/compare/count', acceptedParams);
 }
 
 export function fetchQueryTopWordsComparison(queryA, queryB) {
@@ -61,42 +30,6 @@ export function fetchQueryTopWordsComparison(queryA, queryB) {
   return createPostingApiPromise('/api/explorer/words/compare/count', acceptedParams);
 }
 
-export function fetchDemoQueryTopEntitiesPeople(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/entities/people', acceptedParams);
-}
-
-export function fetchDemoQueryTopEntitiesOrgs(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/entities/organizations', acceptedParams);
-}
-
-export function fetchDemoQuerySampleStories(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/stories/sample', acceptedParams);
-}
-
-export function fetchDemoQueryPerDateSampleStories(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/stories/sample', acceptedParams);
-}
-
-export function fetchDemoQueryGeo(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('api/explorer/demo/geo-tags/counts', acceptedParams);
-}
-
-export function demoQuerySourcesByIds(params) {
-  const acceptedParams = acceptParams(params, ['index', 'sources']);
-  acceptedParams['sources[]'] = params.sources;
-  return createApiPromise('api/explorer/demo/sources/list', acceptedParams);
-}
-
-export function demoQueryCollectionsByIds(params) {
-  const acceptedParams = acceptParams(params, ['index', 'collections']);
-  acceptedParams['collections[]'] = params.collections;
-  return createApiPromise('api/explorer/demo/collections/list', acceptedParams);
-}
 export function fetchQueryTopEntitiesPeople(params) {
   const acceptedParams = acceptParams(params, ['uid', 'q', 'start_date', 'end_date', 'sources', 'collections', 'searches']);
   return createPostingApiPromise('/api/explorer/entities/people', acceptedParams);
@@ -110,11 +43,6 @@ export function fetchQueryTopEntitiesOrgs(params) {
 export function fetchQuerySplitStoryCount(params) {
   const acceptedParams = acceptParams(params, ['uid', 'q', 'start_date', 'end_date', 'sources', 'collections', 'searches']);
   return createPostingApiPromise('/api/explorer/stories/split-count', acceptedParams);
-}
-
-export function fetchDemoQuerySplitStoryCount(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/stories/split-count', acceptedParams);
 }
 
 export function fetchQuerySampleStories(params) {
@@ -175,11 +103,6 @@ export function deleteUserSearch(params) {
 export function fetchQueryTopThemes(params) {
   const acceptedParams = acceptParams(params, ['uid', 'q', 'start_date', 'end_date', 'sources', 'collections', 'searches']);
   return createPostingApiPromise('/api/explorer/themes', acceptedParams);
-}
-
-export function fetchDemoQueryTopThemes(params) {
-  const acceptedParams = acceptParams(params, ['index', 'search_id', 'query_id', 'q']);
-  return createApiPromise('/api/explorer/demo/themes', acceptedParams);
 }
 
 export function countSourceCollectionUsage(params) {
