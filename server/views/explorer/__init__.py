@@ -1,12 +1,10 @@
 import logging
-from flask import request, jsonify, send_from_directory
-import os
+from flask import request, jsonify
 import datetime as dt
 import flask_login
-import json
 from slugify import slugify
-
-from server import mc, app, analytics_db
+from mediacloud.api import MediaCloud
+from server import app, analytics_db
 from server.util.request import api_error_handler
 from server.views.media_picker import concatenate_query_for_solr
 
@@ -20,7 +18,7 @@ def dates_as_filter_query(start_date, end_date):
     if start_date:
         testa = dt.datetime.strptime(start_date, '%Y-%m-%d').date()
         testb = dt.datetime.strptime(end_date, '%Y-%m-%d').date()
-        date_query = mc.dates_as_query_clause(testa, testb)
+        date_query = MediaCloud.dates_as_query_clause(testa, testb)
     return date_query
 
 

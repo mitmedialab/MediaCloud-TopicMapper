@@ -7,6 +7,7 @@ from server import app
 import server.util.csv as csv
 from server.platforms.reddit_pushshift import RedditPushshiftProvider,  NEWS_SUBREDDITS
 from server.util.request import api_error_handler
+from server.views import WILDCARD_ASTERISK
 from server.views.explorer import parse_query_with_keywords, file_name_for_download, only_queries_reddit, parse_query_dates
 from server.views.media_picker import concatenate_query_for_solr
 import server.views.explorer.apicache as apicache
@@ -35,7 +36,7 @@ def explorer_story_count_csv():
                                                                subreddits=NEWS_SUBREDDITS)
         else:
             solr_q, solr_fq = parse_query_with_keywords(q)
-            solr_open_query = concatenate_query_for_solr(solr_seed_query='*', media_ids=q['sources'],
+            solr_open_query = concatenate_query_for_solr(solr_seed_query=WILDCARD_ASTERISK, media_ids=q['sources'],
                                                          tags_ids=q['collections'])
             story_counts = apicache.normalized_and_story_count(solr_q, solr_fq, solr_open_query)
         story_count_results.append({
@@ -62,7 +63,7 @@ def api_explorer_story_split_count():
         # get specific stories by keyword
         solr_q, _solr_fq = parse_query_with_keywords(request.form)
         # get all the stories (no keyword) so we can support normalization
-        solr_open_query = concatenate_query_for_solr(solr_seed_query='*',
+        solr_open_query = concatenate_query_for_solr(solr_seed_query=WILDCARD_ASTERISK,
                                                      media_ids=request.form['sources'],
                                                      tags_ids=request.form['collections'],
                                                      custom_collection=request.form['searches'])
@@ -88,7 +89,7 @@ def api_explorer_story_split_count_csv():
                                                            subreddits=NEWS_SUBREDDITS)
     else:
         solr_q, _solr_fq = parse_query_with_keywords(q)
-        solr_open_query = concatenate_query_for_solr(solr_seed_query='*',
+        solr_open_query = concatenate_query_for_solr(solr_seed_query=WILDCARD_ASTERISK,
                                                      media_ids=q['sources'],
                                                      tags_ids=q['collections'],
                                                      custom_collection=q['searches'])
@@ -118,7 +119,7 @@ def api_explorer_combined_story_split_count_csv():
                                                                subreddits=NEWS_SUBREDDITS)
         else:
             solr_q, _solr_fq = parse_query_with_keywords(q)
-            solr_open_query = concatenate_query_for_solr(solr_seed_query='*', media_ids=q['sources'],
+            solr_open_query = concatenate_query_for_solr(solr_seed_query=WILDCARD_ASTERISK, media_ids=q['sources'],
                                                          tags_ids=q['collections'],
                                                      custom_collection=q['searches'])
             story_counts = apicache.normalized_and_story_split_count(solr_q, solr_open_query, start_date, end_date)

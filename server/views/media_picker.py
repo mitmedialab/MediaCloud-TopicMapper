@@ -11,11 +11,12 @@ from collections import defaultdict
 
 from server import app, mc
 from server.cache import cache
+from server.views import WILDCARD_ASTERISK
 import server.views.apicache as base_api_cache
 from server.auth import user_has_auth_role, ROLE_MEDIA_EDIT
 from server.util.tags import VALID_COLLECTION_TAG_SETS_IDS
 from server.views.sources import FEATURED_COLLECTION_LIST
-from server.views.media_search import collection_search, collection_search_with_page, media_search, media_search_with_page
+from server.views.media_search import collection_search_with_page, media_search_with_page
 from server.util.request import api_error_handler, arguments_required
 from server.util.tags import cached_media_with_tag_page
 
@@ -32,7 +33,7 @@ ALL_MEDIA = '-1'
 @api_error_handler
 def api_mediapicker_source_search():
     search_str = request.args.get('media_keyword', '')
-    cleaned_search_str = None if search_str == '*' else search_str
+    cleaned_search_str = None if search_str == WILDCARD_ASTERISK else search_str
     querying_all_media = False
     link_id = request.args.get('link_id', 0)
     tags_ids = request.args.get('tags', 0)
@@ -94,8 +95,7 @@ def api_mediapicker_collection_search():
     search_str = request.args.get('media_keyword', '')
     tag_sets_id_list = request.args.get('which_set','').split(',')
     t1 = time.time()
-    link_id = request.args.get('link_id', 0)
-    results, last_tags_id = collection_search_with_page(search_str, public_only, tag_sets_id_list, last_tags_id=link_id)
+    results, last_tags_id = collection_search_with_page(search_str, public_only, tag_sets_id_list)
     t2 = time.time()
     trimmed_collections = results[:MAX_COLLECTIONS]
     # flat_list_of_collections = [item for sublist in trimmed_collections for item in sublist]
@@ -155,7 +155,7 @@ def _cached_featured_collection_list(tag_id_list):
 # helper for preview queries
 # tags_id is either a string or a list, which is handled in either case by the len() test. ALL_MEDIA is the exception
 
-def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_collection=[]):
+def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_collection=None):
     query = '({})'.format(solr_seed_query)
 
     if len(media_ids) > 0 or len(tags_ids) > 0 or len(custom_collection) > 0:
@@ -187,22 +187,19 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
 
         # grab any custom collections (there may be multiple) and turn it into a boolean tags_id_media phrase
         if len(custom_collection) > 0: #this format is for each metadata tag, each sub-list is OR'd together, and every list is AND'ed together
-            # we may not have tags_id_media but we may have a keyword
-            #how many?
             custom_collection_dict = json.loads(custom_collection)
             has_custom_collections, custom_collection_string  = custom_collection_as_solr_query(custom_collection_dict)
-            query = "{} {}".format(query, custom_collection_string)
-
-            # else nothing
-        # add the sets to the query (the OR was added before)
+            if has_custom_collections:
+                query = "{} {}".format(query, custom_collection_string)
             query += ')'
         query += ')'
     return query
 
-
+# we don't know if custom collections is empty, either return False, '' or True and the string of ids
+# we only care about tags_id_media  (keywords are irrelevant for these solr searches)
 def custom_collection_as_solr_query(custom_coll_dict):
-    if (len(custom_coll_dict) == 0):
-        return False
+    if len(custom_coll_dict) == 0:
+        return False, ''
     full_custom_query = ''
     custom_query_partial = ''
     for sets_of_tags in custom_coll_dict:  # for each custom collections

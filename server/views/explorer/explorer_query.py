@@ -4,6 +4,7 @@ import flask_login
 import random
 from server import app
 from server.util.request import api_error_handler, arguments_required
+from server.views import WILDCARD_ASTERISK
 from server.views.media_picker import ALL_MEDIA
 import server.views.apicache as base_apicache
 import json
@@ -56,7 +57,7 @@ def api_explorer_searches_by_ids():
     searches_results = []
     searches_list = json.loads(request.args['searches[]'])
     for s in searches_list:
-        keyword = s['media_keyword'] if 'media_keyword' not in ['undefined'] and 'media_keyword' in s else '*'
+        keyword = s['media_keyword'] if 'media_keyword' not in ['undefined'] and 'media_keyword' in s else WILDCARD_ASTERISK
         tag_set_tag_obj = {'tags': {}}
 
         for key_tag_set in s.keys():  # grab tagsets and corresponding tags
