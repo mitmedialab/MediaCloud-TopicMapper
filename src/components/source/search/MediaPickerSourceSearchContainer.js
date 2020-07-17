@@ -5,10 +5,8 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { PICK_SOURCE_AND_COLLECTION } from '../../../lib/explorerUtil';
 import composeMediaPickerSidebarContainer from '../../common/mediaPicker/MediaPickerSidebarContainer';
-// import withAsyncData from '../../common/hocs/AsyncDataContainer';
 import PickedMediaContainer from '../../common/mediaPicker/PickedMediaContainer';
 import MediaPickerResultsContainer from '../../common/mediaPicker/MediaPickerResultsContainer';
-// import { selectMediaPickerQueryArgs, fetchMediaPickerSources } from '../../../actions/systemActions';
 
 const MediaPickerSourceSearchContainer = () => (
   <Grid>
@@ -43,11 +41,6 @@ const mapStateToProps = state => ({
   selectedMediaQueryType: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.type : 1,
   selectedMediaQueryKeyword: state.system.mediaPicker.selectMediaQuery ? state.system.mediaPicker.selectMediaQuery.args.mediaKeyword : null,
 });
-
-/* const fetchAsyncData = (dispatch, ownProps) => {
-  dispatch(selectMediaPickerQueryArgs({ media_keyword: (ownProps.mediaKeyword || '*'), which_set: 2, type: PICK_SOURCE_AND_COLLECTION, linkId: 0 }));
-  dispatch(fetchMediaPickerSources({ media_keyword: (ownProps.mediaKeyword || '*'), linkId: 0 }));
-}; */
 
 export default
 injectIntl(
