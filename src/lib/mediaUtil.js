@@ -1,4 +1,3 @@
-// import { notEmptyString } from './formValidators';
 import { lookupReadableMetadataName } from './explorerUtil';
 
 export const VIEW_ALL_STORIES = 'VIEW_ALL_STORIES';

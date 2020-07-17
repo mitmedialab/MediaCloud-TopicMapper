@@ -1,5 +1,6 @@
 import LogicQueryParser from 'logic-query-parser';
 
+export const WILDCARD_ASTERISK = '*';
 // Trim a string to a max length, adding '...' if it is too long
 export function trimToMaxLength(originalString, maxLength) {
   if ((originalString === undefined) || (originalString === null)) {
