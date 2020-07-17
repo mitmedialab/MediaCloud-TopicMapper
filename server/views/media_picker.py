@@ -211,8 +211,8 @@ def custom_collection_as_solr_query(custom_coll_dict):
         custom_tag_groups = json.loads(query_tags)  # expect tags in format [[x, ...], ...]
         custom_sets = [] # result
         for tag_grp in custom_tag_groups: # for all the metadata tags, serialize
-            if len(tag_grp) > 1:  # handle singular [] vs groups of tags [x, y,z]
-                custom_id_set_string = " OR ".join(str(tag) for tag in tag_grp)  # OR tags in same metadata set
+            if len(tag_grp) > 1:  # handle singular [] vs groups of metadata tags [x, y,z]
+                custom_id_set_string = " OR ".join(str(tag) for tag in tag_grp)  # OR tags in same metadata set eg #US OR #UK
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
                 custom_sets.append(custom_id_set_string)
             elif len(tag_grp) == 1:
@@ -220,11 +220,14 @@ def custom_collection_as_solr_query(custom_coll_dict):
                 custom_id_set_string = "tags_id_media:({})".format(custom_id_set_string)
                 custom_sets.append(custom_id_set_string)
 
-            query_custom_ids_string = " AND ".join(custom_sets)  # AND the metadata sets together
+            query_custom_ids_string = " AND ".join(custom_sets)  # AND the metadata sets together eg #US OR #UK AND #DIGITAL_NATIVE
             query_custom_ids_string = "{}".format(query_custom_ids_string)
 
             if len(custom_coll_dict) > 1:
-                custom_query_partial = "OR {}".format(query_custom_ids_string) #OR each custom collection together
+                if len(custom_query_partial) == 0:
+                    custom_query_partial = query_custom_ids_string
+                else:
+                    custom_query_partial = "OR {}".format(query_custom_ids_string) #OR each custom collection together eg OR #US OR #UK AND #DIGITAL_NATIVE
             else:
                 custom_query_partial = query_custom_ids_string
         full_custom_query = "{} {}".format(full_custom_query, custom_query_partial) # merge with the rest of the custom query and send back
