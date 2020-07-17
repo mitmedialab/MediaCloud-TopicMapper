@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Modal from '@material-ui/core/Modal';
 import DialogContent from '@material-ui/core/DialogContent';
 import MediaPickerComponentContainer from './MediaPickerComponentContainer';
-import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist } from '../../../actions/systemActions';
+import { initializePreviouslySelectedMedia, clearSelectedMedia, resetMetadataShortlist, resetMediaPickerSources, resetMediaPickerCollections } from '../../../actions/systemActions';
 import AppButton from '../AppButton';
 import { ALL_MEDIA } from '../../../lib/mediaUtil';
 
@@ -152,6 +152,8 @@ const mapDispatchToProps = dispatch => ({
   reset: () => {
     dispatch(clearSelectedMedia());
     dispatch(resetMetadataShortlist());
+    dispatch(resetMediaPickerSources());
+    dispatch(resetMediaPickerCollections());
   },
   handleInitialSelectionOfMedia: (prevSelectedMedia) => {
     if (prevSelectedMedia) {
