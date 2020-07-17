@@ -104,7 +104,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  resetAndUpdateMediaQuerySelection: (values) => {
+  resetAndUpdateMediaQuerySelection: (values) => { // reset collections and requery
     if (values && notEmptyString(values.mediaKeyword)) {
       dispatch(resetMediaPickerCollections());
       dispatch(selectMediaPickerQueryArgs(values));
@@ -113,7 +113,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   updateMediaQuerySelection: (values) => {
     if (values && notEmptyString(values.mediaKeyword)) {
-      dispatch(selectMediaPickerQueryArgs(values));
+      dispatch(selectMediaPickerQueryArgs(values)); // don't reset collections, pass any link id
       dispatch(fetchMediaPickerCollections({ media_keyword: (values.mediaKeyword || '*'), which_set: ownProps.whichTagSet || TAG_SET_MC_ID, type: values.type, linkId: values.linkId }));
     }
   },
