@@ -153,7 +153,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(clearSelectedMedia());
       dispatch(selectMedia({ label: values.label, id: ALL_MEDIA }));
     } else {
-      dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword, type: values.type, tags: { ...values.tags } }));
+      dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword, type: values.type, tags: { ...values.tags }, allMedia: false }));
     }
   },
   handleUnselectMedia: (selectedMedia) => {
