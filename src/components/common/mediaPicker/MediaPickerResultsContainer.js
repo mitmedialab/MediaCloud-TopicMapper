@@ -15,7 +15,6 @@ class MediaPickerResultsContainer extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // const { handleMediaConcurrency } = this.props;
     if (nextProps.selectedMediaQueryType !== this.props.selectedMediaQueryType) {
       this.updateMediaQuery({ type: nextProps.selectedMediaQueryType, tags: {}, keyword: '' });
     }
@@ -60,13 +59,6 @@ class MediaPickerResultsContainer extends React.Component {
         return m;
       });
     }
-    // if selected metadata has changed, update here
-    // selected metadata search settings has to be handled
-    if (whichProps.selectedMedia && whichProps.selectedMedia.length > 0) {
-      // sync up incoming selectedMedia and push to result sets.
-      // for each *metadata search item*, push it into query args
-      // whichProps.selectedMedia.filter(m => m.customColl).map(s => this.updateMediaQuery({ ...s, type: this.props.selectedMediaQueryType }));
-    }
     return 0;
   }
 
@@ -76,14 +68,6 @@ class MediaPickerResultsContainer extends React.Component {
     const whichMedia = {};
     whichMedia.fetchStatus = null;
     switch (selectedMediaQueryType) {
-      /* case PICK_COUNTRY:
-        content = (
-          <CountryCollectionSearchResultsContainer
-            whichTagSet={TAG_SET_ABYZ_GEO_COLLECTIONS}
-            onToggleSelected={handleToggleSelected}
-          />
-        );
-        break; */
       case PICK_SOURCE_AND_COLLECTION:
         content = (
           <AllMediaSearchResultsContainer
@@ -158,11 +142,10 @@ const mapDispatchToProps = dispatch => ({
   },
   handleToggleSelected: (selectedMedia) => {
     if (selectedMedia) {
-      dispatch(selectMedia(selectedMedia)); // disable button too
+      dispatch(selectMedia(selectedMedia));
     }
   },
   resetComponents: () => {
-    // dispatch(resetMediaPickerQueryArgs());
     dispatch(resetMediaPickerSources());
     dispatch(resetMediaPickerCollections());
     dispatch(resetMetadataShortlist());
