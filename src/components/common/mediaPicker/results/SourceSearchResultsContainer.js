@@ -310,7 +310,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       if (values.allMedia) { // handle the "all media" placeholder selection
         ownProps.updateMediaQuerySelection({ media_keyword: values.mediaKeyword || '*', type: values.type, allMedia: true });
       } else {
-        dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword || '*', type: values.type, tags: { ...values.tags } }));
+        dispatch(selectMediaPickerQueryArgs({ media_keyword: values.mediaKeyword || '*', type: values.type, tags: { ...values.tags }, allMedia: false }));
       }
     }
   },
