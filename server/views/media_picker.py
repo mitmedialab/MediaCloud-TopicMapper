@@ -157,7 +157,7 @@ def _cached_featured_collection_list(tag_id_list):
 
 def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_collection=None):
     query = '({})'.format(solr_seed_query)
-
+    custom_collection = [] if custom_collection is None else custom_collection
     if len(media_ids) > 0 or len(tags_ids) > 0 or len(custom_collection) > 0:
         if tags_ids == [ALL_MEDIA] or tags_ids == ALL_MEDIA:
             return query
@@ -180,7 +180,7 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             query_tags_ids = " ".join([str(t) for t in tags_ids])
             query_tags_ids = re.sub(r'\[*\]*', '', str(query_tags_ids))
             query_tags_ids = " tags_id_media:({})".format(query_tags_ids)
-            if not len(custom_collection) > 0:
+            if not len(custom_collection) > 0: # tags and custom collections are bracketed together
                 query += '('+query_tags_ids+')'
             else:
                 query += '(' + query_tags_ids
@@ -190,8 +190,12 @@ def concatenate_query_for_solr(solr_seed_query, media_ids, tags_ids, custom_coll
             custom_collection_dict = json.loads(custom_collection)
             has_custom_collections, custom_collection_string  = custom_collection_as_solr_query(custom_collection_dict)
             if has_custom_collections:
-                query = "{} {}".format(query, custom_collection_string)
-            query += ')'
+
+                if len(tags_ids) > 0:# tags and custom collections are bracketed together
+                    query = "{} OR {}".format(query, custom_collection_string)
+                    query += ')'
+                else:
+                    query = "{} ({})".format(query, custom_collection_string)
         query += ')'
     return query
 
@@ -219,7 +223,9 @@ def custom_collection_as_solr_query(custom_coll_dict):
             query_custom_ids_string = " AND ".join(custom_sets)  # AND the metadata sets together
             query_custom_ids_string = "{}".format(query_custom_ids_string)
 
-            custom_query_partial = "OR {}".format(query_custom_ids_string) #OR all custom collections with the rest of the query and send back
-
-        full_custom_query = "{} {}".format(full_custom_query, custom_query_partial)
+            if len(custom_coll_dict) > 1:
+                custom_query_partial = "OR {}".format(query_custom_ids_string) #OR each custom collection together
+            else:
+                custom_query_partial = query_custom_ids_string
+        full_custom_query = "{} {}".format(full_custom_query, custom_query_partial) # merge with the rest of the custom query and send back
     return True, full_custom_query
