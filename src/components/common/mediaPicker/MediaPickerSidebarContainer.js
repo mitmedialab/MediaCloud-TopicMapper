@@ -15,20 +15,6 @@ function composeMediaPickerSidebarContainer() {
             handleInitialSelectionOfMedia(nextProps.initMedia);
           }
         }
-        if ((nextProps.selectedMedia !== this.props.selectedMedia)
-          || (nextProps.selectedMedia && this.props.selectedMedia && nextProps.selectedMedia.length !== this.props.selectedMedia.length)) {
-          // if the results have changed from a keyword entry, we need to update the UI
-          this.shouldComponentUpdate(nextProps);
-        }
-      }
-
-      shouldComponentUpdate(nextProps) {
-        if ((nextProps.selectedMedia !== this.props.selectedMedia)
-          || (nextProps.selectedMedia && this.props.selectedMedia && nextProps.selectedMedia.length !== this.props.selectedMedia.length)) {
-          // if the results have changed from a keyword entry, we need to update the UI
-          return true;
-        }
-        return true;
       }
 
       componentWillUnmount() {
