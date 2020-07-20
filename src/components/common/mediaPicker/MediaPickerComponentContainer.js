@@ -7,7 +7,6 @@ import composeMediaPickerSidebarContainer from './MediaPickerSidebarContainer';
 import PickedMediaContainer from './PickedMediaContainer';
 import MediaPickerResultsContainer from './MediaPickerResultsContainer';
 import AppButton from '../AppButton';
-// import { ALL_MEDIA } from '../../../lib/mediaUtil';
 
 class MediaPickerComponentContainer extends React.Component {
   render() {
