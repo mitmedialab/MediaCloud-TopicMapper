@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../../../common/hocs/IntlForm';
@@ -8,6 +9,8 @@ import messages from '../../../../../resources/messages';
 import MediaPickerDialog from '../../../../common/mediaPicker/MediaPickerDialog';
 import QueryHelpDialog from '../../../../common/help/QueryHelpDialog';
 import OpenWebMediaFieldArray from '../../../../common/form/OpenWebMediaFieldArray';
+
+const formSelector = formValueSelector('platform');
 
 class EditOpenWebForm extends React.Component {
   state = {
@@ -18,8 +21,13 @@ class EditOpenWebForm extends React.Component {
     this.setState(prevState => ({ childDialogOpen: !prevState.childDialogOpen }));
   };
 
+  selectMediaAndChangeFormValues = selected => {
+    const { onFormChange } = this.props;
+    onFormChange('media', selected);
+  }
+
   render() {
-    const { renderSolrTextField, intl, initialValues, onFormChange } = this.props;
+    const { renderSolrTextField, intl, initialValues, selectedMedia, onFormChange } = this.props;
     return (
       <Row>
         <Col lg={6}>
@@ -59,8 +67,8 @@ class EditOpenWebForm extends React.Component {
               onDelete={onFormChange}
             />
             <MediaPickerDialog
-              initMedia={initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
-              onConfirmSelection={selections => onFormChange('media', selections)}
+              initMedia={selectedMedia.media ? selectedMedia.media : initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
+              onConfirmSelection={selected => this.selectMediaAndChangeFormValues(selected)}
               setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
             />
           </div>
@@ -79,6 +87,7 @@ EditOpenWebForm.propTypes = {
   change: PropTypes.func.isRequired,
   // from dispatch
   onFormChange: PropTypes.func.isRequired,
+  selectedMedia: PropTypes.object,
   // from compositional helper
   intl: PropTypes.object.isRequired,
   renderSolrTextField: PropTypes.func.isRequired,
@@ -92,11 +101,17 @@ const reduxFormConfig = {
   enableReinitialize: true,
 };
 
+const mapStateToProps = state => ({
+  selectedMedia: formSelector(state, 'uid', 'media', 'sources', 'collections', 'searches'),
+});
+
 export default
 injectIntl(
   withIntlForm(
     reduxForm(reduxFormConfig)(
-      EditOpenWebForm
+      connect(mapStateToProps)(
+        EditOpenWebForm
+      )
     )
   )
 );
