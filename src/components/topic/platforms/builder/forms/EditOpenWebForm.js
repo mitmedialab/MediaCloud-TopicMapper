@@ -67,7 +67,7 @@ class EditOpenWebForm extends React.Component {
               onDelete={onFormChange}
             />
             <MediaPickerDialog
-              initMedia={selectedMedia.media ? selectedMedia.media : initialValues.media} // {selected.media ? selected.media : cleanedInitialValues.media}
+              initMedia={selectedMedia.media ? selectedMedia.media : initialValues.media}
               onConfirmSelection={selected => this.selectMediaAndChangeFormValues(selected)}
               setQueryFormChildDialogOpen={this.setQueryFormChildDialogOpen}
             />
