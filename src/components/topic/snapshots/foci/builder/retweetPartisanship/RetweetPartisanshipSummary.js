@@ -30,6 +30,7 @@ const RetweetPartisanshipSummary = (props) => {
 RetweetPartisanshipSummary.propTypes = {
   // from parent
   topicId: PropTypes.number.isRequired,
+  year: PropTypes.number.isRequired,
   formValues: PropTypes.object.isRequired,
   // form context
   intl: PropTypes.object.isRequired,

@@ -10,7 +10,8 @@ import TopCountriesSummary from './topCountries/TopCountriesSummary';
 import NytThemeSummary from './nyttheme/NytThemeSummary';
 import MediaTypeSummary from './mediaType/MediaTypeSummary';
 import SearchSummary from './search/SearchSummary';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_TO_YEAR,
+  FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import AppButton from '../../../../common/AppButton';
 import messages from '../../../../../resources/messages';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
@@ -35,9 +36,11 @@ const FocusForm4ConfirmContainer = (props) => {
         <SearchSummary topicId={topicId} formValues={formValues} initialValues={initialValues} />
       );
       break;
-    case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP:
+    // both 2016 and 2020 use the same container
+    case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
+    case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020:
       content = (
-        <RetweetPartisanshipSummary topicId={topicId} formValues={formValues} initialValues={initialValues} />
+        <RetweetPartisanshipSummary year={FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_TO_YEAR[formValues.focalTechnique]} topicId={topicId} formValues={formValues} initialValues={initialValues} />
       );
       break;
     case FOCAL_TECHNIQUE_TOP_COUNTRIES:

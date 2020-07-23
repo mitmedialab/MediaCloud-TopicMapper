@@ -5,13 +5,13 @@ import mediacloud.error
 
 from server import app, mc
 from server.auth import user_mediacloud_client
+from server.util.tags import COLLECTION_US_TOP_ONLINE
 from server.util.request import form_fields_required, api_error_handler, json_error_response, arguments_required
 
 from server.views.topics.topic import topic_summary
 
 logger = logging.getLogger(__name__)
 VERSION_1 = 1
-COLLECTION_US_TOP_ONLINE = 58722749
 
 
 @app.route('/api/topics/create', methods=['PUT'])

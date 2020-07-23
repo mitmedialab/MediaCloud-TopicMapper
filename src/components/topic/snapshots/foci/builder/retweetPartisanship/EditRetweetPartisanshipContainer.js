@@ -13,31 +13,33 @@ import RetweetStoryCountsPreviewContainer from './RetweetStoryCountsPreviewConta
 const formSelector = formValueSelector('snapshotFocus');
 
 const localMessages = {
-  title: { id: 'focus.create.edit.title', defaultMessage: 'Step 2: Preview Subtopics by Retweet Partisanship' },
-  about: { id: 'focus.create.edit.about',
+  title: { id: 'focus.create.edit.title', defaultMessage: 'Step 2: Preview Subtopics by Retweet Partisanship {year}' },
+  about2016: { id: 'focus.create.edit.about',
     defaultMessage: 'This will create a set of subtopics driven by our analysis of Twitter followers of Trump and Clinton during the 2016 election season.  Each media soure is scored based on the ratio of retweets of their stories in those two groups.  For instance, if their stories are almost completely retweeted by Trump followers on Twitter, then that media source will be assigned to the "right" subtopic.  This covers the 1000 most tweeted media sources, so it is likely it will not cover all the media sources in your Topic.' },
+  about2020: { id: 'focus.create.edit.about',
+    defaultMessage: 'TODO: TBD' },
 };
 
 const EditRetweetPartisanshipContainer = (props) => {
-  const { topicId, onPreviousStep, handleSubmit, finishStep } = props;
+  const { topicId, year, onPreviousStep, handleSubmit, finishStep } = props;
   const { formatMessage } = props.intl;
   return (
     <Grid>
       <form className="focus-create-edit-retweet" name="focusCreateEditRetweetForm" onSubmit={handleSubmit(finishStep.bind(this))}>
         <Row>
           <Col lg={8} md={12}>
-            <h1><FormattedMessage {...localMessages.title} /></h1>
-            <p><FormattedMessage {...localMessages.about} /></p>
+            <h1><FormattedMessage {...localMessages.title} values={{ year }} /></h1>
+            <p><FormattedMessage {...localMessages[`about${year}`]} /></p>
           </Col>
         </Row>
         <Row>
           <Col lg={8} md={12}>
-            <RetweetCoveragePreviewContainer topicId={topicId} />
+            <RetweetCoveragePreviewContainer topicId={topicId} year={year} />
           </Col>
         </Row>
         <Row>
           <Col lg={8} md={12}>
-            <RetweetStoryCountsPreviewContainer topicId={topicId} />
+            <RetweetStoryCountsPreviewContainer topicId={topicId} year={year} />
           </Col>
         </Row>
         <Row>
@@ -56,6 +58,7 @@ const EditRetweetPartisanshipContainer = (props) => {
 EditRetweetPartisanshipContainer.propTypes = {
   // from parent
   topicId: PropTypes.number.isRequired,
+  year: PropTypes.number.isRequired,
   initialValues: PropTypes.object,
   onPreviousStep: PropTypes.func.isRequired,
   onNextStep: PropTypes.func.isRequired,

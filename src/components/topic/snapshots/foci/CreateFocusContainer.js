@@ -5,7 +5,8 @@ import { injectIntl } from 'react-intl';
 import { push } from 'react-router-redux';
 import { reset } from 'redux-form';
 import FocusBuilderWizard from './builder/FocusBuilderWizard';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020,
+  FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_TO_YEAR, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../lib/focalTechniques';
 import { submitFocusUpdateOrCreate, setTopicNeedsNewSnapshot, createRetweetFocalSet, createTopCountriesFocalSet, createNytThemeFocalSet, createMediaTypeFocalSet } from '../../../../actions/topicActions';
 import { LEVEL_ERROR } from '../../../common/Notice';
 import { updateFeedback, addNotice } from '../../../../actions/appActions';
@@ -101,8 +102,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
               dispatch(updateFeedback({ open: true, message: focusNoteSavedMessage })); // user feedback
             }
           });
-      case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP:
-        return dispatch(createRetweetFocalSet(topicId, formValues))
+      case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
+      case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020:
+        const year = FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_TO_YEAR[formValues.focalTechnique];
+        saveData = { ...formValues, year };
+        return dispatch(createRetweetFocalSet(topicId, saveData))
           .then(() => {
             const focusSavedMessage = ownProps.intl.formatMessage(localMessages.retweetFocusSaved);
             dispatch(setTopicNeedsNewSnapshot(true)); // user feedback

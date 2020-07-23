@@ -52,6 +52,22 @@ def arguments_required(*expected_args):
     return decorator
 
 
+def argument_is_valid(argument, valid_values):
+    """
+    Handy decorator for ensuring that the parameter is one of the valid values
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            logger.debug(request.args)
+            is_valid = request.args[argument] in valid_values
+            if not is_valid:
+                return json_error_response('"{}" is not in {}'.format(argument, valid_values))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
 def form_fields_required(*expected_form_fields):
     """
     Handy decorator for ensuring that the form has the fields you need

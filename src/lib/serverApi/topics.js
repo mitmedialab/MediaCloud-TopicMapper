@@ -144,16 +144,16 @@ export function userQueuedAndRunningTopics() {
   return createApiPromise('/api/topics/queued-and-running');
 }
 
-export function topicPreviewRetweetPartisanshipStoryCounts(topicId) {
-  return createApiPromise(`/api/topics/${topicId}/focal-sets/retweet-partisanship/preview/story-counts`);
+export function topicPreviewRetweetPartisanshipStoryCounts(topicId, year) {
+  return createApiPromise(`/api/topics/${topicId}/focal-sets/retweet-partisanship/preview/story-counts`, { year });
 }
 
-export function topicPreviewRetweetPartisanshipCoverage(topicId) {
-  return createApiPromise(`/api/topics/${topicId}/focal-sets/retweet-partisanship/preview/coverage`);
+export function topicPreviewRetweetPartisanshipCoverage(topicId, year) {
+  return createApiPromise(`/api/topics/${topicId}/focal-sets/retweet-partisanship/preview/coverage`, { year });
 }
 
 export function createRetweetFocalSet(topicId, params) {
-  const acceptedParams = acceptParams(params, ['focalSetName', 'focalSetDescription']);
+  const acceptedParams = acceptParams(params, ['focalSetName', 'focalSetDescription', 'year']);
   return createPostingApiPromise(`/api/topics/${topicId}/focal-sets/retweet-partisanship/create`, acceptedParams);
 }
 
