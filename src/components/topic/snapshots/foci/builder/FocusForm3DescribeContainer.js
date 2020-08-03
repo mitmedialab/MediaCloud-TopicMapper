@@ -7,7 +7,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../../../common/hocs/IntlForm';
 import AppButton from '../../../../common/AppButton';
 import FocusDescriptionForm, { NEW_FOCAL_SET_PLACEHOLDER_ID } from './FocusDescriptionForm';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020,
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020,
   FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
 import messages from '../../../../../resources/messages';
@@ -17,7 +17,7 @@ const formSelector = formValueSelector('snapshotFocus');
 
 const localMessages = {
   title: { id: 'focus.create.setup3.title', defaultMessage: 'Step 3: Describe Your Subtopic' },
-  retweetIntro: { id: 'focus.create.setup3.retweetIntro', defaultMessage: 'This will create a set with one subtopic for each of the partisan quintiles.  For example, any story from a media source in the "center left" group will be put into the "center left" subtopic in this set.  Name thet set and we will create the subtopics within it.  Give it a name that makes these subtopics easy to identify later.' },
+  retweetIntro: { id: 'focus.create.setup3.retweetIntro', defaultMessage: 'This will create a set with one subtopic for each of the partisan quintiles.  For example, any story from a media source in the "center left" group will be put into the "center left" subtopic in this set.  Name the set and we will create the subtopics within it.  Give it a name that makes these subtopics easy to identify later.' },
   topCountriesIntro: { id: 'focus.create.setup3.title', defaultMessage: 'This will create a subtopic containing the stories mentioning the top most tagged countries' },
   nytThemeIntro: { id: 'focus.create.setup3.nytTheme.title', defaultMessage: 'This will create a subtopic containing the stories tagged by New York Times Themes' },
   mediaTypeIntro: { id: 'focus.create.setup3.mediaType.title', defaultMessage: 'This will create a subtopic containing the stories tagged by media type' },
@@ -53,7 +53,7 @@ const FocusForm3DescribeContainer = (props) => {
       break;
     // both 2016 and 2020 use the same container
     case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
-    case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020:
+    case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020:
       introContent = (
         <p><FormattedMessage {...localMessages.retweetIntro} /></p>
       );

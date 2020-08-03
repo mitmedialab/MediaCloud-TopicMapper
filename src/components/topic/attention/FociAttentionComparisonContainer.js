@@ -18,7 +18,7 @@ import { DownloadButton } from '../../common/IconButton';
 import messages from '../../../resources/messages';
 import { downloadSvg } from '../../util/svg';
 import { LINE_VIEW, STACKED_VIEW } from '../../../lib/visUtil';
-import { usPartisanshipColorFor } from '../snapshots/foci/builder/retweetPartisanship/RetweetStoryCountsPreviewContainer';
+import { usPartisanshipColorFor } from '../snapshots/foci/builder/partisanship/PartisanshipStoryCountsPreviewContainer';
 
 const localMessages = {
   overallSeries: { id: 'topic.attention.series.overall', defaultMessage: 'Whole Topic' },

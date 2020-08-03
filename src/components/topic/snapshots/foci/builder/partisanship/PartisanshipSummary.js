@@ -11,7 +11,7 @@ const localMessages = {
   right: { id: 'focus.create.confirm.retweet.right', defaultMessage: 'Right' },
 };
 
-const RetweetPartisanshipSummary = (props) => {
+const PartisanshipSummary = (props) => {
   const { formValues } = props;
   return (
     <div className="focus-create-cofirm-retweet-partisanship">
@@ -27,7 +27,7 @@ const RetweetPartisanshipSummary = (props) => {
   );
 };
 
-RetweetPartisanshipSummary.propTypes = {
+PartisanshipSummary.propTypes = {
   // from parent
   topicId: PropTypes.number.isRequired,
   year: PropTypes.number.isRequired,
@@ -38,5 +38,5 @@ RetweetPartisanshipSummary.propTypes = {
 
 export default
 injectIntl(
-  RetweetPartisanshipSummary
+  PartisanshipSummary
 );

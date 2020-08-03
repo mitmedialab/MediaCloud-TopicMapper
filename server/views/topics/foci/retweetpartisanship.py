@@ -8,8 +8,8 @@ from server.util.request import api_error_handler, argument_is_valid, arguments_
     form_fields_required
 from server.views.topics.apicache import topic_story_count
 from server.auth import user_mediacloud_key, user_mediacloud_client
-from server.util.tags import tags_in_tag_set, TAG_SETS_ID_RETWEET_PARTISANSHIP_2016, \
-    TAG_SETS_ID_RETWEET_PARTISANSHIP_2020, COLLECTION_SET_PARTISANSHIP_QUINTILES_2016, \
+from server.util.tags import tags_in_tag_set, TAG_SETS_ID_PARTISANSHIP_2016, \
+    TAG_SETS_ID_PARTISANSHIP_2020, COLLECTION_SET_PARTISANSHIP_QUINTILES_2016, \
     COLLECTION_SET_PARTISANSHIP_QUINTILES_2020
 from server.views.topics.foci import FOCAL_TECHNIQUE_BOOLEAN_QUERY
 
@@ -29,7 +29,7 @@ def retweet_partisanship_story_counts(topics_id):
     # TODO: add in overall timespan id here so it works in different snapshots
     tag_story_counts = []
     year = request.args['year']
-    partisanship_tags = _cached_media_tags(year)
+    partisanship_tags = _cached_partisanship_tags(year)
     # grab the total stories
     try:
         total_stories = topic_story_count(user_mediacloud_key(), topics_id)['count']
@@ -71,7 +71,7 @@ def retweet_partisanship_story_counts(topics_id):
 @api_error_handler
 def retweet_partisanship_coverage(topics_id):
     year = request.args['year']
-    partisanship_tags = _cached_media_tags(year)
+    partisanship_tags = _cached_partisanship_tags(year)
     # grab the total stories
     try:
         total_stories = topic_story_count(user_mediacloud_key(), topics_id)['count']
@@ -89,12 +89,12 @@ def retweet_partisanship_coverage(topics_id):
 
 def _get_tag_sets_id(year):
     return {
-        YEAR_2016: TAG_SETS_ID_RETWEET_PARTISANSHIP_2016,
-        YEAR_2020: TAG_SETS_ID_RETWEET_PARTISANSHIP_2020,
+        YEAR_2016: TAG_SETS_ID_PARTISANSHIP_2016,
+        YEAR_2020: TAG_SETS_ID_PARTISANSHIP_2020,
     }.get(year, None)
 
 
-def _cached_media_tags(year):
+def _cached_partisanship_tags(year):
     tag_sets_id = _get_tag_sets_id(year)
     partisanship_tags = tags_in_tag_set(TOOL_API_KEY, tag_sets_id)
     for tag in partisanship_tags:
@@ -123,9 +123,10 @@ def _add_retweet_partisanship_to_topic(topics_id, focal_set_name, focal_set_desc
     if 'focal_set_definitions_id' not in new_focal_set:
         return json_error_response('Unable to create the subtopic set')
     # now make the foci in it - one for each partisanship quintile
-    partisanship_tags = _cached_media_tags(year)
+    partisanship_tags = _cached_partisanship_tags(year)
     for tag in partisanship_tags:
         name = tag['label']
+        # TODO: needs updated description
         description = "Media sources that were retweeted more often during the {year} US election " \
                       "season by people on the {quintile}".format(year=year, quintile=tag['label'])
         query = tag['query']

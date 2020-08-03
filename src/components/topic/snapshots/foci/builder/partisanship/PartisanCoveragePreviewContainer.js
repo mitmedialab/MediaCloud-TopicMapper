@@ -16,7 +16,7 @@ const localMessages = {
   notIncluded: { id: 'topic.snapshot.keywords.coverage.total', defaultMessage: 'Stories without partisanship info' },
 };
 
-const RetweetCoveragePreviewContainer = (props) => {
+const PartisanCoveragePreviewContainer = (props) => {
   const { counts, year } = props;
   const { formatMessage } = props.intl;
   let content = null;
@@ -44,7 +44,7 @@ const RetweetCoveragePreviewContainer = (props) => {
   );
 };
 
-RetweetCoveragePreviewContainer.propTypes = {
+PartisanCoveragePreviewContainer.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
@@ -66,7 +66,7 @@ export default
 injectIntl(
   connect(mapStateToProps)(
     withAsyncData(fetchAsycData)(
-      RetweetCoveragePreviewContainer
+      PartisanCoveragePreviewContainer
     )
   )
 );

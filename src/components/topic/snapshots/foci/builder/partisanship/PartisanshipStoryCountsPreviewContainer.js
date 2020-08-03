@@ -28,7 +28,7 @@ const localMessages = {
   intro2020: { id: 'topic.snapshot.retweet.storyCount.intro', defaultMessage: 'TODO: TBD' },
 };
 
-const RetweetStoryCountsPreviewContainer = (props) => {
+const PartisanshipStoryCountsPreviewContainer = (props) => {
   const { counts, year } = props;
   const { formatNumber } = props.intl;
   let content = null;
@@ -62,7 +62,7 @@ const RetweetStoryCountsPreviewContainer = (props) => {
   );
 };
 
-RetweetStoryCountsPreviewContainer.propTypes = {
+PartisanshipStoryCountsPreviewContainer.propTypes = {
   // from compositional chain
   intl: PropTypes.object.isRequired,
   // from parent
@@ -84,7 +84,7 @@ export default
 injectIntl(
   connect(mapStateToProps)(
     withAsyncData(fetchAsyncData)(
-      RetweetStoryCountsPreviewContainer
+      PartisanshipStoryCountsPreviewContainer
     )
   )
 );

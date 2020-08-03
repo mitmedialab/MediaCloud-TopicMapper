@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import KeywordSearchIcon from '../../../../common/icons/KeywordSearchIcon';
 import FocalTechniqueDescription from './FocalTechniqueDescription';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE }
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE }
   from '../../../../../lib/focalTechniques';
 
 const localMessages = {
@@ -15,11 +15,11 @@ const localMessages = {
   searchByKeywordName: { id: 'focus.technique.keyword.name', defaultMessage: 'Search' },
   searchByKeywordDescription: { id: 'focus.technique.keyword.description',
     defaultMessage: 'When you know a lot about the coverage, or have some hypotheses to test, you can define a Subtopic by specifying a boolean query.' },
-  retweetName2016: { id: 'focus.technique.retweet.name', defaultMessage: 'US Audience Partisanship 2016' },
-  retweetDescription2016: { id: 'focus.technique.retweet.description',
+  partisanshipName2016: { id: 'focus.technique.partisanship.2016.name', defaultMessage: 'US Audience Partisanship 2016' },
+  partisanshipDescription2016: { id: 'focus.technique.partisanship.2016.description',
     defaultMessage: 'TBD!!! When you want to slice your topic by U.S. audience partisanship, as determined by each media source\'s ratio of twitter shares by liberal vs. conservative tweeters.' },
-  retweetName2020: { id: 'focus.technique.retweet.name', defaultMessage: 'US Audience Partisanship 2020' },
-  retweetDescription2020: { id: 'focus.technique.retweet.description',
+  partisanshipName2020: { id: 'focus.technique.partisanship.2020.name', defaultMessage: 'US Audience Partisanship 2020' },
+  partisanshipDescription2020: { id: 'focus.technique.partisanship.2020.description',
     defaultMessage: 'TBD!!! When you want to slice your topic by U.S. audience partisanship, as determined by each media source\'s ratio of twitter shares by liberal vs. conservative tweeters.' },
   mediaTypeName: { id: 'focus.technique.mediaType.name', defaultMessage: 'Media Type' },
   mediaTypeDescription: { id: 'focus.technique.mediaType.description', defaultMessage: 'When you want to compare coverage of your topic by different types of media sources (broadcast, online, etc).' },
@@ -60,22 +60,22 @@ class FocalTechniqueSelector extends React.Component {
           </Col>
           <Col lg={3}>
             <FocalTechniqueDescription
-              onClick={() => this.handleSelection(FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020)}
-              selected={currentFocalTechnique === FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2020}
-              id="retweet-partisanship-2020"
+              onClick={() => this.handleSelection(FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020)}
+              selected={currentFocalTechnique === FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020}
+              id="partisanship-2020"
               icon={KeywordSearchIcon}
-              nameMsg={localMessages.retweetName2020}
-              descriptionMsg={localMessages.retweetDescription2020}
+              nameMsg={localMessages.partisanshipName2020}
+              descriptionMsg={localMessages.partisanshipDescription2020}
             />
           </Col>
           <Col lg={3}>
             <FocalTechniqueDescription
               onClick={() => this.handleSelection(FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016)}
               selected={currentFocalTechnique === FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016}
-              id="retweet-partisanship-2016"
+              id="partisanship-2016"
               icon={KeywordSearchIcon}
-              nameMsg={localMessages.retweetName2016}
-              descriptionMsg={localMessages.retweetDescription2016}
+              nameMsg={localMessages.partisanshipName2016}
+              descriptionMsg={localMessages.partisanshipDescription2016}
             />
           </Col>
           <Col lg={3}>
