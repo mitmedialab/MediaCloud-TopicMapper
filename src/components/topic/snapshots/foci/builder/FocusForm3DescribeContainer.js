@@ -7,7 +7,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import withIntlForm from '../../../../common/hocs/IntlForm';
 import AppButton from '../../../../common/AppButton';
 import FocusDescriptionForm, { NEW_FOCAL_SET_PLACEHOLDER_ID } from './FocusDescriptionForm';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020,
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019,
   FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
 import messages from '../../../../../resources/messages';
@@ -51,9 +51,9 @@ const FocusForm3DescribeContainer = (props) => {
         />
       );
       break;
-    // both 2016 and 2020 use the same container
+    // both 2016 and 2019 use the same container
     case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
-    case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020:
+    case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019:
       introContent = (
         <p><FormattedMessage {...localMessages.retweetIntro} /></p>
       );

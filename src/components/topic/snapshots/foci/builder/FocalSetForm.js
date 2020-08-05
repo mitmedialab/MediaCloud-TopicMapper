@@ -3,7 +3,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import withIntlForm from '../../../../common/hocs/IntlForm';
-import { FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
+import { FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import { notEmptyString } from '../../../../../lib/formValidators';
 
 const localMessages = {
@@ -15,7 +15,7 @@ const localMessages = {
   defaultSetName: { id: 'focalSet.default.setName', defaultMessage: 'Conversations' },
   defaultSetDescription: { id: 'focalSet.default.setDescription', defaultMessage: 'A set of different conversations within this topic.' },
   defaultSetNamePartisanship: { id: 'focalSet.default.setName.partisanship', defaultMessage: '{analysis} Partisanship {year}' },
-  defaultSetDescriptionPartisanship2020: { id: 'focalSet.default.setDescription.partisanship2020', defaultMessage: 'TODO: TBD' },
+  defaultSetDescriptionPartisanship2019: { id: 'focalSet.default.setDescription.partisanship2019', defaultMessage: 'Subtopics driven by our analysis driven by our analysis of the urls shared by partisan users on Twitter during 2019. Each media source is scored based on the average partisanship of the users who share urls belonging to that media source.' },
   defaultSetDescriptionPartisanship2016: { id: 'focalSet.default.setDescription.partisanship2016', defaultMessage: 'Subtopics driven by our analysis of Twitter followers of Trump and Clinton during the 2016 election season.  Each media source is scored based on the ratio of retweets of their stories in those two groups.' },
   defaultSetNameTopCountries: { id: 'focalSet.default.setName.retweet', defaultMessage: 'Top Countries' },
   defaultSetDescriptionTopCountries: { id: 'focalSet.default.setDescription.countries', defaultMessage: 'Subtopics for the countries stories are most often about.' },
@@ -33,9 +33,9 @@ class FocalSetForm extends React.Component {
     let setName;
     let setDescription;
     switch (focalTechnique) {
-      case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020:
-        setName = formatMessage(localMessages.defaultSetNamePartisanship, { analysis: 'Tweet', year: 2020 });
-        setDescription = formatMessage(localMessages.defaultSetDescriptionPartisanship2020);
+      case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019:
+        setName = formatMessage(localMessages.defaultSetNamePartisanship, { analysis: 'Tweet', year: 2019 });
+        setDescription = formatMessage(localMessages.defaultSetDescriptionPartisanship2019);
         break;
       case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
         setName = formatMessage(localMessages.defaultSetNamePartisanship, { analysis: 'Retweet', year: 2016 });

@@ -9,15 +9,15 @@ from server.util.request import api_error_handler, argument_is_valid, arguments_
 from server.views.topics.apicache import topic_story_count
 from server.auth import user_mediacloud_key, user_mediacloud_client
 from server.util.tags import tags_in_tag_set, TAG_SETS_ID_PARTISANSHIP_2016, \
-    TAG_SETS_ID_PARTISANSHIP_2020, COLLECTION_SET_PARTISANSHIP_QUINTILES_2016, \
-    COLLECTION_SET_PARTISANSHIP_QUINTILES_2020
+    TAG_SETS_ID_PARTISANSHIP_2019, COLLECTION_SET_PARTISANSHIP_QUINTILES_2016, \
+    COLLECTION_SET_PARTISANSHIP_QUINTILES_2019
 from server.views.topics.foci import FOCAL_TECHNIQUE_BOOLEAN_QUERY
 
 logger = logging.getLogger(__name__)
 
 YEAR_2016 = "2016"
-YEAR_2020 = "2020"
-VALID_YEARS = [YEAR_2016, YEAR_2020]
+YEAR_2019 = "2019"
+VALID_YEARS = [YEAR_2016, YEAR_2019]
 
 
 @app.route('/api/topics/<topics_id>/focal-sets/retweet-partisanship/preview/story-counts', methods=['GET'])
@@ -55,7 +55,7 @@ def retweet_partisanship_story_counts(topics_id):
     # order them in the way a person would expect ( left to center to right)
     collection_set = {
         YEAR_2016: COLLECTION_SET_PARTISANSHIP_QUINTILES_2016,
-        YEAR_2020: COLLECTION_SET_PARTISANSHIP_QUINTILES_2020
+        YEAR_2019: COLLECTION_SET_PARTISANSHIP_QUINTILES_2019
     }.get(year)
     ordered_tag_story_counts = list()
     for quintile in collection_set:
@@ -90,7 +90,7 @@ def retweet_partisanship_coverage(topics_id):
 def _get_tag_sets_id(year):
     return {
         YEAR_2016: TAG_SETS_ID_PARTISANSHIP_2016,
-        YEAR_2020: TAG_SETS_ID_PARTISANSHIP_2020,
+        YEAR_2019: TAG_SETS_ID_PARTISANSHIP_2019,
     }.get(year, None)
 
 

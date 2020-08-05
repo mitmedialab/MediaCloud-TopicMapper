@@ -9,7 +9,7 @@ import EditTopCountriesContainer from './topCountries/EditTopCountriesContainer'
 import EditNytThemeContainer from './nyttheme/EditNytThemeContainer';
 import EditMediaTypeContainer from './mediaType/EditMediaTypeContainer';
 import { goToCreateFocusStep } from '../../../../../actions/topicActions';
-import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020, FOCAL_TECHNIQUE_PARTISANSHIP_TO_YEAR,
+import { FOCAL_TECHNIQUE_BOOLEAN_QUERY, FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016, FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019, FOCAL_TECHNIQUE_PARTISANSHIP_TO_YEAR,
   FOCAL_TECHNIQUE_TOP_COUNTRIES, FOCAL_TECHNIQUE_NYT_THEME, FOCAL_TECHNIQUE_MEDIA_TYPE } from '../../../../../lib/focalTechniques';
 import messages from '../../../../../resources/messages';
 
@@ -30,9 +30,9 @@ const FocusForm2ConfigureContainer = (props) => {
         />
       );
       break;
-    // both 2016 and 2020 use the same container
+    // both 2016 and 2019 use the same container
     case FOCAL_TECHNIQUE_RETWEET_PARTISANSHIP_2016:
-    case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2020:
+    case FOCAL_TECHNIQUE_TWEET_PARTISANSHIP_2019:
       content = (
         <EditPartisanshipContainer
           topicId={topicId}
