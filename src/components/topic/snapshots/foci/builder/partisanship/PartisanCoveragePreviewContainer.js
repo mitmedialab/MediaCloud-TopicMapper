@@ -11,7 +11,7 @@ import { getBrandDarkColor } from '../../../../../../styles/colors';
 const localMessages = {
   title: { id: 'topic.snapshot.retweet.coverage.title', defaultMessage: 'Story Coverage' },
   intro2016: { id: 'topic.snapshot.retweet.coverage.intro2016', defaultMessage: 'Our categorization of media sources by how much Trump and Clinton followers retweeted them in 2016 only covers about 1000 sources from our 2016 US election topic. This pie chart shows you how many stories from those media appear in this topic, versus how many don\'t. If the coverage in this topic isn\'t high, you might not want to use this subtopic creation technique.' },
-  intro2019: { id: 'topic.snapshot.retweet.coverage.intro2019', defaultMessage: 'We have categorized over thirteen thousand media sources. This pie chart shows you how many stories from those media appear in this topic, versus how many don\'t. If the coverage in this topic isn\'t high, you might not want to use this subtopic creation technique.' },
+  intro2019: { id: 'topic.snapshot.retweet.coverage.intro2019', defaultMessage: 'We have categorized over thirteen thousand media sources. This pie chart shows the breakdown of stories within your topic that have been categorized by source partisanship score according to the method described above. If the coverage in this topic isn\'t high, you might not want to use this subtopic creation technique.' },
   included: { id: 'topic.snapshot.keywords.coverage.matching', defaultMessage: 'Stories with partisanship info' },
   notIncluded: { id: 'topic.snapshot.keywords.coverage.total', defaultMessage: 'Stories without partisanship info' },
 };

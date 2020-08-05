@@ -94,6 +94,17 @@ def _get_tag_sets_id(year):
     }.get(year, None)
 
 
+def _get_tag_description(year, quintile):
+    tag_description_template = {
+        YEAR_2016: "Media sources that were retweeted more often during the {year} US election season by people on "
+                   "the {quintile}.",
+        YEAR_2019: "Media sources that were shared disproportionately by users on Twitter during {year} by people on "
+                   "the {quintile}. Media source partisanship is determined by the average partisanship of the users "
+                   "who share urls belonging to that media source."
+    }.get(year)
+    return tag_description_template.format(year=year, quintile=quintile)
+
+
 def _cached_partisanship_tags(year):
     tag_sets_id = _get_tag_sets_id(year)
     partisanship_tags = tags_in_tag_set(TOOL_API_KEY, tag_sets_id)
@@ -126,9 +137,7 @@ def _add_retweet_partisanship_to_topic(topics_id, focal_set_name, focal_set_desc
     partisanship_tags = _cached_partisanship_tags(year)
     for tag in partisanship_tags:
         name = tag['label']
-        # TODO: needs updated description
-        description = "Media sources that were retweeted more often during the {year} US election " \
-                      "season by people on the {quintile}".format(year=year, quintile=tag['label'])
+        description = _get_tag_description(year, tag['label'])
         query = tag['query']
         focal_set_definitions_id = new_focal_set['focal_set_definitions_id']
         # create a new boolean query subtopic based on the tag sets
