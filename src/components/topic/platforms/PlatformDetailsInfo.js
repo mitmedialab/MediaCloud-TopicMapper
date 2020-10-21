@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import OpenWebMediaItem from '../../common/OpenWebMediaItem';
-import { PLATFORM_OPEN_WEB, PLATFORM_REDDIT, PLATFORM_TWITTER, CRIMSON_HEXAGON_SOURCE, MEDIA_CLOUD_SOURCE } from '../../../lib/platformTypes';
+import { PLATFORM_OPEN_WEB, PLATFORM_REDDIT, PLATFORM_TWITTER, CRIMSON_HEXAGON_SOURCE,
+  BRANDWATCH_SOURCE, MEDIA_CLOUD_SOURCE } from '../../../lib/platformTypes';
 import messages from '../../../resources/messages';
 
 const localMessages = {
   crimsonHexagonId: { id: 'crimsonHexagonId', defaultMessage: 'Crimson Hexagon Id' },
+  brandwatchId: { id: 'brandwatchId', defaultMessage: 'BrandWatch ID' },
 };
 
 const PlatformDetailsInfo = ({ platform }) => {
@@ -47,6 +49,15 @@ const PlatformDetailsInfo = ({ platform }) => {
         content = (
           <>
             <FormattedMessage {...localMessages.crimsonHexagonId} />:
+            &nbsp;
+            <code>{typeof platform.query === 'object' ? platform.query.getValue() : platform.query}</code>
+          </>
+        );
+      } else if (platform.source === BRANDWATCH_SOURCE) {
+        // TODO: BRANDWATCH -- I think we can combine this with the above
+        content = (
+          <>
+            <FormattedMessage {...localMessages.brandwatchId} />:
             &nbsp;
             <code>{typeof platform.query === 'object' ? platform.query.getValue() : platform.query}</code>
           </>

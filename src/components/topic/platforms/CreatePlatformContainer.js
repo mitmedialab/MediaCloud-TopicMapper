@@ -8,16 +8,13 @@ import PlatformWizard from './builder/PlatformWizard';
 import { topicCreatePlatform, setTopicNeedsNewSnapshot, fetchPlatformsInTopicList, fetchTopicSummary } from '../../../actions/topicActions';
 import { updateFeedback } from '../../../actions/appActions';
 import { platformChannelDataFormatter, topicQueryAsString } from '../../util/topicUtil';
+import { BRANDWATCH_SOURCE } from '../../../lib/platformTypes';
 
 const DEFAULT_SELECTED_NUMBER = 5;
 
 const localMessages = {
   platformNotSaved: { id: 'platform.create.notSaved', defaultMessage: 'That didn\'t work for some reason!' },
-  platformSaved: { id: 'platform.create.saved', defaultMessage: 'That worked!' },
-  duplicateName: { id: 'platform.create.invalid', defaultMessage: 'Duplicate name. Choose a unique platform name.' },
-  openWebSaved: { id: 'platform.create.openWebSaved', defaultMessage: 'We created a new Open Web platform' },
-  twitterSaved: { id: 'platform.create.twitterSaved', defaultMessage: 'We created a new Twitter platform' },
-  redditSaved: { id: 'platform.create.reddit.saved', defaultMessage: 'We created a new Reddit platform' },
+  platformSaved: { id: 'platform.create.saved', defaultMessage: 'That worked!' }
 };
 
 
@@ -34,6 +31,7 @@ const CreatePlatformContainer = (props) => {
       initialValues={initAndTopicInfoValues}
       location={location}
       onDone={(id, values) => handleDone(initAndTopicInfoValues, values)}
+      hidePreview={selectedPlatform.source === BRANDWATCH_SOURCE}
     />
   );
 };

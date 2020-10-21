@@ -53,16 +53,21 @@ def get_topic_platforms(topics_id):
     return jsonify({'results': available_platforms})
 
 
+def _parse_platform_args(form):
+    channel = form.get('platform_channel')
+    source = form.get('platform_source')
+    query = form.get('platform_query')
+    platform = form.get('platform_type')
+    return channel, source, query, platform
+
+
 @app.route('/api/topics/<topics_id>/platforms/add', methods=['POST'])
 @flask_login.login_required
 @form_fields_required('platform_type', 'platform_query', 'platform_source', 'platform_channel')
 @api_error_handler
 def topic_add_platform(topics_id):
     user_mc = user_mediacloud_client()
-    channel = request.form['platform_channel'] if 'platform_channel' in request.form else None
-    source = request.form['platform_source'] if 'platform_source' in request.form else None
-    query = request.form['platform_query'] if 'platform_query' in request.form else None
-    platform = request.form['platform_type']
+    channel, source, query, platform = _parse_platform_args(request.form)
     result = {}
     # now preprocess anything you need to
     if (platform == PLATFORM_GENERIC) and (source == PLATFORM_SOURCE_CSV):
@@ -75,15 +80,19 @@ def topic_add_platform(topics_id):
         # channel has open web sources in it
         sources, collections = parse_open_web_media_from_channel(channel)
         user_mc.topicUpdate(topics_id, media_ids=sources, media_tags_ids=collections, solr_seed_query=query)
-        result['success'] = 1
-        result['id'] = 1  # web/mediacloud
+        result.update({
+            'success': 1,
+            'id': 1,  # web/mediacloud
+        })
     else:
         # TODO do we need to add dates?
         # TODO format channel properly for reddit (subreddit)
         # if twitter crimson_hexagon, id is in query field
         result = user_mc.topicAddSeedQuery(topics_id=topics_id, platform=platform, source=source, query=query)
-        result['success'] = 1 if 'topic_seed_query' in result else 0
-        result['id'] = result['topic_seed_query']['topic_seed_queries_id']
+        result.update({
+            'success': 1 if 'topic_seed_query' in result else 0,
+            'id': result['topic_seed_query']['topic_seed_queries_id'],
+        })
     return jsonify(result)  # topic_seed_queries_id
 
 
@@ -93,10 +102,7 @@ def topic_add_platform(topics_id):
 @api_error_handler
 def topic_update_platform(topics_id, platform_id):
     user_mc = user_mediacloud_client()
-    channel = request.form['platform_channel'] if 'platform_channel' in request.form else None
-    source = request.form['platform_source'] if 'platform_source' in request.form else None
-    query = request.form['platform_query'] if 'platform_query' in request.form else None
-    platform = request.form['platform_type']
+    channel, source, query, platform = _parse_platform_args(request.form)
     result = {}
     if platform == PLATFORM_OPEN_WEB:
         # here we need to parse the sources and collections out of the 'channel'

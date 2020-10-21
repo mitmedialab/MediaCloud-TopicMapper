@@ -72,7 +72,7 @@ class PlatformFormContainer extends React.Component {
   }
 
   render() {
-    const { initialValues, handleSubmit, finishStep, currentPlatform, change /* redux form helper */, validationValues } = this.props;
+    const { hidePreview, initialValues, handleSubmit, finishStep, currentPlatform, change /* redux form helper */, validationValues } = this.props;
     const FormRenderer = formForPlatformSource(currentPlatform.platform, currentPlatform.source);
     return (
       <Grid>
@@ -82,8 +82,7 @@ class PlatformFormContainer extends React.Component {
               <h2>
                 <FormattedMessage {...localMessages.title} />
                 <FormattedHTMLMessage {...platformNameMessage(currentPlatform.platform, currentPlatform.source)} />
-                &nbsp;
-                ( <FormattedHTMLMessage {...sourceNameMessage(currentPlatform.source)} /> )
+                &nbsp;- <FormattedHTMLMessage {...sourceNameMessage(currentPlatform.source)} />
               </h2>
               <p>
                 <FormattedHTMLMessage {...platformDescriptionMessage(currentPlatform.platform, currentPlatform.source)} />
@@ -95,16 +94,18 @@ class PlatformFormContainer extends React.Component {
             onEnterKey={this.handleEnterKeyDown}
             onFormChange={change}
           />
-          <Row>
-            <Col lg={2} xs={12}>
-              <AppButton
-                label={messages.preview}
-                style={{ marginTop: 33 }}
-                onClick={this.handleSearchClick}
-                disabled={validationForPlatformSource(currentPlatform.platform, currentPlatform.source, validationValues)}
-              />
-            </Col>
-          </Row>
+          {!hidePreview && (
+            <Row>
+              <Col lg={2} xs={12}>
+                <AppButton
+                  label={messages.preview}
+                  style={{ marginTop: 33 }}
+                  onClick={this.handleSearchClick}
+                  disabled={validationForPlatformSource(currentPlatform.platform, currentPlatform.source, validationValues)}
+                />
+              </Col>
+            </Row>
+          )}
           {this.state.lastUpdated && (
             <PlatformPreview
               lastUpdated={this.state.lastUpdated}
@@ -144,6 +145,7 @@ PlatformFormContainer.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   renderTextField: PropTypes.func.isRequired,
   validationValues: PropTypes.object.isRequired,
+  hidePreview: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

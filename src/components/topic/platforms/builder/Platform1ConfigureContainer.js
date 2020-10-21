@@ -6,7 +6,7 @@ import PlatformFormContainer from './PlatformFormContainer';
 import { goToCreatePlatformStep } from '../../../../actions/topicActions';
 import { PLATFORM_OPEN_WEB } from '../../../../lib/platformTypes';
 
-const Platform1ConfigureContainer = ({ topicId, topicInfo, initialValues, handleNextStep, selectedPlatform, location }) => {
+const Platform1ConfigureContainer = ({ topicId, topicInfo, initialValues, handleNextStep, selectedPlatform, location, hidePreview }) => {
   let initValues = { ...initialValues, ...selectedPlatform };
   if (selectedPlatform.platform === PLATFORM_OPEN_WEB) {
     initValues = { ...initialValues, media: selectedPlatform.channel ? selectedPlatform.channel : (initialValues.media.concat(initialValues.media_tags)) };
@@ -20,6 +20,7 @@ const Platform1ConfigureContainer = ({ topicId, topicInfo, initialValues, handle
       onNextStep={handleNextStep}
       location={location}
       initialValues={initValues}
+      hidePreview={hidePreview}
     />
   );
 };
@@ -29,6 +30,7 @@ Platform1ConfigureContainer.propTypes = {
   topicId: PropTypes.number.isRequired,
   topicInfo: PropTypes.object.isRequired,
   initialValues: PropTypes.object,
+  hidePreview: PropTypes.bool,
   // form context
   intl: PropTypes.object.isRequired,
   // from dipatch

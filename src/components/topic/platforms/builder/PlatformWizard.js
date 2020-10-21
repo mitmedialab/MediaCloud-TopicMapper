@@ -13,10 +13,9 @@ import { goToCreatePlatformStep } from '../../../../actions/topicActions';
 
 const localMessages = {
   backToPlatformManager: { id: 'backToPlatformManager', defaultMessage: 'back to Platform Builder' },
-  // step0Name: { id: 'platform.create.step0Name', defaultMessage: 'Pick a Platform' },
-  step0Name: { id: 'platform.create.step1Name', defaultMessage: 'Configure' },
-  step1Name: { id: 'platform.create.step2Name', defaultMessage: 'Validate' },
-  step2Name: { id: 'platform.create.step3Name', defaultMessage: 'Confirm' },
+  configure: { id: 'platform.create.configure', defaultMessage: 'Configure' },
+  validate: { id: 'platform.create.validate', defaultMessage: 'Validate' },
+  confirm: { id: 'platform.create.confirm', defaultMessage: 'Confirm' },
 };
 
 class PlatformWizard extends React.Component {
@@ -36,26 +35,30 @@ class PlatformWizard extends React.Component {
   }
 
   render() {
-    const { topicId, topicInfo, currentStep, location, initialValues, onDone } = this.props;
-    const steps = [
-      Platform1ConfigureContainer,
-      Platform2ValidateContainer,
-      Platform3ConfirmContainer,
-    ];
+    const { topicId, topicInfo, currentStep, location, initialValues, hidePreview, onDone } = this.props;
     const initAndTopicInfoValues = { ...initialValues, ...topicInfo, query: topicInfo.solr_seed_query };
+
+    let steps = [Platform1ConfigureContainer];
+    if (!hidePreview) {
+      steps.push(Platform2ValidateContainer);
+    }
+    steps.push(Platform3ConfirmContainer);
+
     const CurrentStepComponent = steps[currentStep];
     return (
       <div className="platform-builder-wizard">
         <BackLinkingControlBar message={localMessages.backToPlatformManager} linkTo={`/topics/${topicId}/platforms/manage`}>
           <Stepper activeStep={currentStep}>
             <Step>
-              <StepLabel><FormattedMessage {...localMessages.step0Name} /></StepLabel>
+              <StepLabel><FormattedMessage {...localMessages.configure} /></StepLabel>
             </Step>
+            {!hidePreview && (
+              <Step>
+                <StepLabel><FormattedMessage {...localMessages.validate} /></StepLabel>
+              </Step>
+            )}
             <Step>
-              <StepLabel><FormattedMessage {...localMessages.step1Name} /></StepLabel>
-            </Step>
-            <Step>
-              <StepLabel><FormattedMessage {...localMessages.step2Name} /></StepLabel>
+              <StepLabel><FormattedMessage {...localMessages.confirm} /></StepLabel>
             </Step>
           </Stepper>
         </BackLinkingControlBar>
@@ -66,6 +69,7 @@ class PlatformWizard extends React.Component {
           onDone={onDone}
           currentStep={currentStep}
           currentPlatformType={initAndTopicInfoValues.currentPlatform}
+          hidePreview={hidePreview}
         />
       </div>
     );
@@ -80,6 +84,7 @@ PlatformWizard.propTypes = {
   startStep: PropTypes.number,
   location: PropTypes.object,
   onDone: PropTypes.func.isRequired,
+  hidePreview: PropTypes.bool,
   // from state
   currentStep: PropTypes.number.isRequired,
   currentPlatform: PropTypes.string,

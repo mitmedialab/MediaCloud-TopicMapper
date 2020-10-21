@@ -7,6 +7,7 @@ from server.platforms.reddit_pushshift import RedditPushshiftProvider
 from server.platforms.twitter_pushshift import TwitterPushshiftProvider
 from server.platforms.web_mediacloud import WebMediaCloudProvider
 from server.platforms.twitter_crimson_hexagon import TwitterCrimsonHexagonProvider
+from server.platforms.twitter_brandwatch import TwitterBrandwatchProvider
 from server.platforms.generic_csv import GenericCsvProvider
 from server.platforms.web_google import WebGoogleProvider
 from server.platforms.youtube_youtube import YouTubeYouTubeProvider
@@ -23,6 +24,7 @@ PLATFORM_YOUTUBE = 'youtube'  # coming soon
 
 # static list matching topics/info results
 PLATFORM_SOURCE_CRIMSON_HEXAGON = 'crimson_hexagon'
+PLATFORM_SOURCE_BRANDWATCH = 'brandwatch'
 PLATFORM_SOURCE_CSV = 'csv'
 PLATFORM_SOURCE_POSTGRES = 'postgres'
 PLATFORM_SOURCE_MEDIA_CLOUD = 'mediacloud'
@@ -40,21 +42,26 @@ def provider_for(platform: str, source: str) -> ContentProvider:
     :param source: One of the PLATFORM_SOURCE>* constants above.
     :return:
     """
+    platform_provider = None
     if (platform == PLATFORM_OPEN_WEB) and (source == PLATFORM_SOURCE_MEDIA_CLOUD):
-        return WebMediaCloudProvider(user_mediacloud_key())
-    if (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_PUSHSHIFT):
-        return TwitterPushshiftProvider()
-    if (platform == PLATFORM_REDDIT) and (source == PLATFORM_SOURCE_PUSHSHIFT):
-        return RedditPushshiftProvider()
-    if (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_CRIMSON_HEXAGON):
-        return TwitterCrimsonHexagonProvider(config.get('CRIMSON_HEXAGON_API_KEY'))
-    if (platform == PLATFORM_GENERIC) and (source == PLATFORM_SOURCE_CSV):
-        return GenericCsvProvider()
-    if (platform == PLATFORM_OPEN_WEB) and (source == PLATFORM_SOURCE_GOOGLE):
-        return WebGoogleProvider()
-    if (platform == PLATFORM_YOUTUBE) and (source == PLATFORM_SOURCE_YOUTUBE):
-        YouTubeYouTubeProvider(config.get('YOUTUBE_API_KEY'))
-    raise UnknownProviderException(platform, source)
+        platform_provider = WebMediaCloudProvider(user_mediacloud_key())
+    elif (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_PUSHSHIFT):
+        platform_provider = TwitterPushshiftProvider()
+    elif (platform == PLATFORM_REDDIT) and (source == PLATFORM_SOURCE_PUSHSHIFT):
+        platform_provider = RedditPushshiftProvider()
+    elif (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_CRIMSON_HEXAGON):
+        platform_provider = TwitterCrimsonHexagonProvider(config.get('CRIMSON_HEXAGON_API_KEY'))
+    elif (platform == PLATFORM_TWITTER) and (source == PLATFORM_SOURCE_BRANDWATCH):
+        platform_provider = TwitterBrandwatchProvider()
+    elif (platform == PLATFORM_GENERIC) and (source == PLATFORM_SOURCE_CSV):
+        platform_provider = GenericCsvProvider()
+    elif (platform == PLATFORM_OPEN_WEB) and (source == PLATFORM_SOURCE_GOOGLE):
+        platform_provider = WebGoogleProvider()
+    elif (platform == PLATFORM_YOUTUBE) and (source == PLATFORM_SOURCE_YOUTUBE):
+        platform_provider = YouTubeYouTubeProvider(config.get('YOUTUBE_API_KEY'))
+    else:
+        raise UnknownProviderException(platform, source)
+    return platform_provider
 
 
 class UnknownProviderException(Exception):
