@@ -3,12 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { push } from 'react-router-redux';
-// import { reset } from 'redux-form';
 import PlatformWizard from './builder/PlatformWizard';
 import withAsyncData from '../../common/hocs/AsyncDataContainer';
 import { topicUpdatePlatform, setTopicNeedsNewSnapshot, selectPlatform, fetchPlatformsInTopicList } from '../../../actions/topicActions';
 import { updateFeedback } from '../../../actions/appActions';
-import { platformChannelDataFormatter, topicQueryAsString } from '../../util/topicUtil';
+import { platformChannelDataFormatter, formatQueryData, hidePreview } from '../../util/topicUtil';
 
 const localMessages = {
   platformSaved: { id: 'focus.edit.saved', defaultMessage: 'We saved your platform.' },
@@ -20,7 +19,7 @@ class EditPlatformContainer extends React.Component {
     const { topicId, selectedPlatform } = this.props;
     return {
       topicId,
-      selectedPlatform,
+      selectedPlatform
     };
   }
 
@@ -34,6 +33,7 @@ class EditPlatformContainer extends React.Component {
         initialValues={initialValues}
         location={location}
         onDone={(tId, values) => handleUpdatePlatform(initialValues, values)}
+        hidePreview={hidePreview(selectedPlatform.source)}
       />
     );
   }
@@ -65,9 +65,9 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
     const formatPlatformChannelData = platformChannelDataFormatter(formValues.platform);
     const infoForQuery = {
       platform_type: formValues.platform,
-      platform_query: topicQueryAsString(formValues.query),
+      platform_query: formatQueryData(formValues, formValues),
       platform_source: formValues.source || '',
-      platform_channel: formatPlatformChannelData ? JSON.stringify(formatPlatformChannelData(formValues)) : JSON.stringify(formValues),
+      platform_channel: JSON.stringify(formatPlatformChannelData(formValues)),
       start_date: formValues.start_date,
       end_date: formValues.end_date,
     };

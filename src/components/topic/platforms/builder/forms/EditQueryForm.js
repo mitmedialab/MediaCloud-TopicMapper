@@ -12,10 +12,10 @@ const localMessages = {
 };
 
 const syntaxHelpMsgForPlatform = (platform, source) => {
-  if ((platform === PLATFORM_OPEN_WEB) && (source === GOOGLE_SOURCE)) {
+  if (platform === PLATFORM_OPEN_WEB && source === GOOGLE_SOURCE) {
     return <FormattedHTMLMessage {...localMessages.webGoogleHelp} />;
   }
-  if ((platform === PLATFORM_REDDIT) && (source === PUSHSHIFT_SOURCE)) {
+  if (platform === PLATFORM_REDDIT && source === PUSHSHIFT_SOURCE) {
     return <FormattedHTMLMessage {...localMessages.redditPushshiftHelp} />;
   }
   return null;

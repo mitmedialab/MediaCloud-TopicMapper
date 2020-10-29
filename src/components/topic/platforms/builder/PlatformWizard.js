@@ -10,6 +10,7 @@ import Platform1ConfigureContainer from './Platform1ConfigureContainer';
 import Platform2ValidateContainer from './Platform2ValidateContainer';
 import Platform3ConfirmContainer from './Platform3ConfirmContainer';
 import { goToCreatePlatformStep } from '../../../../actions/topicActions';
+import { parseQueryProjectId } from '../../../util/topicUtil';
 
 const localMessages = {
   backToPlatformManager: { id: 'backToPlatformManager', defaultMessage: 'back to Platform Builder' },
@@ -36,7 +37,17 @@ class PlatformWizard extends React.Component {
 
   render() {
     const { topicId, topicInfo, currentStep, location, initialValues, hidePreview, onDone } = this.props;
-    const initAndTopicInfoValues = { ...initialValues, ...topicInfo, query: topicInfo.solr_seed_query };
+
+    const parseIds = {
+      ...parseQueryProjectId(initialValues.selectedPlatform.platform, initialValues.selectedPlatform.source, topicInfo.solr_seed_query),
+      ...parseQueryProjectId(initialValues.selectedPlatform.platform, initialValues.selectedPlatform.source, initialValues.selectedPlatform.query)
+    };
+
+    const initAndTopicInfoValues = {
+      ...initialValues,
+      ...topicInfo,
+      ...parseIds
+    };
 
     let steps = [Platform1ConfigureContainer];
     if (!hidePreview) {

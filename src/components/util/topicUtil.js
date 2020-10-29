@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 import { serializeSearchTags } from '../../lib/explorerUtil';
-import { PLATFORM_OPEN_WEB, PLATFORM_REDDIT, PLATFORM_TWITTER } from '../../lib/platformTypes';
+import { PLATFORM_OPEN_WEB, PLATFORM_REDDIT, PLATFORM_TWITTER, BRANDWATCH_SOURCE } from '../../lib/platformTypes';
 import { queryAsString, replaceCurlyQuotes } from '../../lib/stringUtil';
 
 export const topicDownloadFilename = (topicName, filters) => (
@@ -65,6 +65,28 @@ export const formatPlatformRedditChannelData = (formValues) => ((formValues.chan
 
 export const timespanForDate = (date, timespans, period) => timespans.filter(t => t.period === period).find(t => date >= t.startDateObj && date <= t.endDateObj);
 
+export const formatQueryData = (selectedPlatform, formValues) => {
+  let { query } = formValues;
+  const { project } = formValues;
+  const { platform, source } = selectedPlatform;
+  if (platform === PLATFORM_TWITTER && source === BRANDWATCH_SOURCE) {
+    query = `${project}-${query}`;
+  }
+  return topicQueryAsString(query);
+};
+
+export const parseQueryProjectId = (platform, source, fullQuery) => {
+  let project;
+  let query = fullQuery;
+  if (platform === PLATFORM_TWITTER && source === BRANDWATCH_SOURCE) {
+    const tokens = fullQuery.split('-');
+    if (tokens.length === 2) {
+      [project, query] = tokens;
+    }
+  }
+  return { query, project };
+};
+
 export const platformChannelDataFormatter = (platform) => {
   switch (platform) {
     case PLATFORM_OPEN_WEB:
@@ -73,6 +95,9 @@ export const platformChannelDataFormatter = (platform) => {
       return formatPlatformRedditChannelData;
     case PLATFORM_TWITTER:
     default:
-      return null;
+      // return a function that returns the values without changing the format
+      return function (formValues) { return formValues; };
   }
 };
+
+export const hidePreview = (source) => source === BRANDWATCH_SOURCE;

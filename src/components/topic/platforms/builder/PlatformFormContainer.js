@@ -9,12 +9,13 @@ import withIntlForm from '../../../common/hocs/IntlForm';
 import messages from '../../../../resources/messages';
 import PlatformPreview from './preview/PlatformPreview';
 import { platformChannelDataFormatter } from '../../../util/topicUtil';
-import { PLATFORM_OPEN_WEB, PLATFORM_TWITTER, PLATFORM_GENERIC, MEDIA_CLOUD_SOURCE, CSV_SOURCE } from '../../../../lib/platformTypes';
+import { PLATFORM_OPEN_WEB, PLATFORM_TWITTER, PLATFORM_GENERIC, MEDIA_CLOUD_SOURCE, CSV_SOURCE, CRIMSON_HEXAGON_SOURCE, BRANDWATCH_SOURCE } from '../../../../lib/platformTypes';
 import { emptyString } from '../../../../lib/formValidators';
 import { queryAsString } from '../../../../lib/stringUtil';
 import EditOpenWebForm from './forms/EditOpenWebForm';
 import EditQueryForm from './forms/EditQueryForm';
 import EditGenericCsvForm from './forms/EditGenericCsvForm';
+import EditProjectQueryForm from './forms/EditProjectQueryForm';
 import { platformNameMessage, sourceNameMessage, platformDescriptionMessage } from '../AvailablePlatform';
 
 const formSelector = formValueSelector('platform');
@@ -23,6 +24,8 @@ const localMessages = {
   title: { id: 'platform.create.edit.title', defaultMessage: 'Step 1: Configure Your Platform: ' },
   noMediaSpecified: { id: 'platform.web.media', defaultMessage: 'You must select a media source.' },
   noMonitorSpecified: { id: 'platform.twitter.monitor', defaultMessage: 'You must specify a monitor.' },
+  noQueryIdSpecified: { id: 'platform.twitter.queryId', defaultMessage: 'You must specify a query ID.' },
+  noProjectIdSpecified: { id: 'platform.twitter.projectId', defaultMessage: 'You must specify a project ID.' },
   noChannelSpecified: { id: 'platform.reddit.channel', defaultMessage: 'You must specify a channel.' },
   noQuerySpecified: { id: 'platform.query', defaultMessage: 'You must specify a query.' },
 };
@@ -34,6 +37,9 @@ const formForPlatformSource = (platform, source) => {
   if ((platform === PLATFORM_GENERIC) && (source === CSV_SOURCE)) {
     return EditGenericCsvForm;
   }
+  if (platform === PLATFORM_TWITTER && source === BRANDWATCH_SOURCE) {
+    return EditProjectQueryForm;
+  }
   // anything without special seetings gets a generic query text box
   return EditQueryForm;
 };
@@ -42,8 +48,15 @@ const validationForPlatformSource = (platform, source, formInfo) => {
   if ((platform === PLATFORM_OPEN_WEB) && (source === MEDIA_CLOUD_SOURCE) && ((formInfo.media && formInfo.media.length < 1) || formInfo.media === undefined)) {
     return true; // disabled
   }
+
   if (formInfo.query !== undefined && emptyString(queryAsString(formInfo.query))) {
-    return true;
+    if (platform === PLATFORM_TWITTER && source === BRANDWATCH_SOURCE) {
+      if (formInfo.project !== undefined && emptyString(queryAsString(formInfo.project))) {
+        return true;
+      }
+    } else {
+      return true;
+    }
   }
   return false;
 };
@@ -63,7 +76,6 @@ class PlatformFormContainer extends React.Component {
   handleEnterKeyDown = (event) => {
     switch (event.key) {
       case 'Enter':
-        // this.updateQuery();
         event.preventDefault();
         break;
       default:
@@ -162,18 +174,28 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 });
 
+/**
+ * If the string value for a field is not valid, the error is returned.
+ */
+function validateString(field, values, errorMessage, formatMessage) {
+  if (values[field] === undefined || emptyString(queryAsString(values[field]))) {
+    return { _error: formatMessage(errorMessage) };
+  }
+  return undefined;
+}
+
 function validate(values, props) {
   const { formatMessage } = props.intl;
   const errors = {};
   if (!values.media || !values.media.length) {
     errors.media = { _error: formatMessage(localMessages.noMediaSpecified) };
   }
-  if (values.query === undefined || emptyString(queryAsString(values.query))) {
-    if (values.platform === PLATFORM_TWITTER) {
-      errors.query = { _error: formatMessage(localMessages.noMonitorSpecified) };
-    } else {
-      errors.query = { _error: formatMessage(localMessages.noQuerySpecified) };
-    }
+  if (values.platform === PLATFORM_TWITTER && values.source === BRANDWATCH_SOURCE) {
+    errors.query = validateString('query', values, localMessages.noQueryIdSpecified, formatMessage);
+    errors.project = validateString('project', values, localMessages.noProjectIdSpecified, formatMessage);
+  }
+  if (values.platform === PLATFORM_TWITTER && values.source === CRIMSON_HEXAGON_SOURCE) {
+    errors.query = validateString('query', values, localMessages.noMonitorSpecified, formatMessage);
   }
   return errors;
 }

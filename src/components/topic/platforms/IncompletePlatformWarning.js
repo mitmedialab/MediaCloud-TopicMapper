@@ -6,8 +6,6 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib';
 import Permissioned from '../../common/Permissioned';
 import { PERMISSION_TOPIC_WRITE } from '../../../lib/auth';
 import { WarningNotice } from '../../common/Notice';
-// import AppButton from '../../common/AppButton';
-// import LinkWithFilters from '../LinkWithFilters';
 
 const localMessages = {
   platformIncomplete: { id: 'topic.incomplete', defaultMessage: 'This is a new Topic. You need to add the Open Web Media Cloud platform, and any others you\'d like. Then you can run it.' },
