@@ -25,6 +25,9 @@ SMTP_PASS = my_passowrd
 # Service: API Key for accessing Media Cloud (get this on your profile page)
 MEDIA_CLOUD_API_KEY = YOUR_MEDIACLOUD_API_KEY_HERE
 
+# Service: URL to mediacloud api (Media Cloud backend)
+MEDIA_CLOUD_API_URL = YOUR_MEDIACLOUD_API_URL
+
 # Service: URL to Mongo db to use for storing user-specific information (shared across apps)
 MONGO_URL = mongodb://localhost:27017/mediacloud-app
 

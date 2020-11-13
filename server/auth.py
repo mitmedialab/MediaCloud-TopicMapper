@@ -5,6 +5,7 @@ import mediacloud.api
 from flask import session
 
 from server import user_db, login_manager
+from server.util.config import get_default_config
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,9 @@ ROLE_TM = 'tm'                              # Topic mapper; includes media and s
 ROLE_STORIES_API = 'stories-api'            # Access to the stories api
 ROLE_SEARCH = 'search'                      # Access to the /search pages
 ROLE_TM_READ_ONLY = 'tm-readonly'           # Topic mapper; excludes media and story editing
+
+# load the config helper
+config = get_default_config()
 
 
 # User class
@@ -142,6 +146,7 @@ def user_admin_mediacloud_client(user_mc_key=None):
     if mc_key_to_use is None:
         mc_key_to_use = user_mediacloud_key()
     user_mc = mediacloud.api.AdminMediaCloud(mc_key_to_use)
+    user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
     return user_mc
 
 
@@ -152,4 +157,5 @@ def user_mediacloud_client(user_mc_key=None):
     if mc_key_to_use is None:
         mc_key_to_use = user_mediacloud_key()
     user_mc = mediacloud.api.MediaCloud(mc_key_to_use)
+    user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
     return user_mc

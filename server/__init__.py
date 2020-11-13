@@ -66,6 +66,7 @@ except ConfigException as e:
 TOOL_API_KEY = config.get('MEDIA_CLOUD_API_KEY')
 
 mc = mediacloud.api.AdminMediaCloud(TOOL_API_KEY)
+mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
 logger.info("Connected to mediacloud")
 
 # Connect to CLIFF if the settings are there
