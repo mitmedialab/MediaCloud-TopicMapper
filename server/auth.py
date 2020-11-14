@@ -146,7 +146,10 @@ def user_admin_mediacloud_client(user_mc_key=None):
     if mc_key_to_use is None:
         mc_key_to_use = user_mediacloud_key()
     user_mc = mediacloud.api.AdminMediaCloud(mc_key_to_use)
-    user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
+    try:
+        user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
+    except KeyError:
+        pass # just use the default API url because a custom one is not defined
     return user_mc
 
 
@@ -157,5 +160,8 @@ def user_mediacloud_client(user_mc_key=None):
     if mc_key_to_use is None:
         mc_key_to_use = user_mediacloud_key()
     user_mc = mediacloud.api.MediaCloud(mc_key_to_use)
-    user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
+    try:
+        user_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
+    except KeyError:
+        pass # just use the default API url because a custom one is not defined
     return user_mc

@@ -1,6 +1,5 @@
 import logging
 import os
-from mediacloud.api import MediaCloud
 from operator import itemgetter
 import json
 import codecs
@@ -147,8 +146,7 @@ def tags_in_tag_set(mc_api_key, tag_sets_id):
 
 def tag_set_with_tags(mc_api_key, tag_sets_id, only_public_tags=False, use_file_cache=False):
     # don't need to cache here, because either you are reading from a file, or each page is cached
-    local_mc = MediaCloud(mc_api_key)
-    local_mc.V2_API_URL = config.get('MEDIA_CLOUD_API_URL')
+    local_mc = user_mediacloud_client(mc_api_key)
     if use_file_cache:
         file_name = "tags_in_{}.json".format(tag_sets_id)
         file_path = os.path.join(static_tag_set_cache_dir, file_name)
