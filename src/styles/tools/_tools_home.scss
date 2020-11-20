@@ -1,6 +1,4 @@
-
 .tools-home {
-
   h1 {
     text-align: center;
     font-size: 56px;
@@ -13,7 +11,10 @@
     padding: 0px;
     margin-bottom: 25px;
   }
-
+  .tools-card {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
   p {
     &.intro {
       text-align: center;
@@ -22,6 +23,19 @@
       padding: 0px;
       margin-bottom: 40px;
     }
+  }
+  .cta-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .app-button {
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+  }
+  .row {
+    padding: 5rem 0;
   }
 
 }

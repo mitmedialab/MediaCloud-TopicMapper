@@ -4,6 +4,7 @@
   text-align: center;
   color: $white;
   padding: 25px;
+  margin: .5rem;
   cursor: pointer;
 
   p {
@@ -23,6 +24,9 @@
 
   &.tool-sources {
     background-color: $sources-primary;
+  }
+  &.media-data{
+    background-color: $media-primary;
   }
 
 }
