@@ -32,18 +32,18 @@ const NavToolbar = (props) => {
     <div id="nav-toolbar">
       <Grid>
         <Row>
-          <Col lg={6}>
+          <Col xs={4} lg={6}>
           <a href={`#${formatMessage(localMessages.goHome)}`} onClick={evt => goToHome(evt)}>
               <img
                 className="app-logo"
                 alt={formatMessage(messages.suiteName)}
                 src={assetUrl('/static/img/logo.png')}
-                height={80}
+                height={40}
               />
             </a>
           
           </Col>
-          <Col lg={6}>
+          <Col xs={8} lg={6}>
             <ul className="right">
               <Permissioned onlyRole={PERMISSION_ADMIN}>
                 <li className="admin">
