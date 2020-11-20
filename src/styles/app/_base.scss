@@ -100,11 +100,32 @@ table td {
 }
 
 footer {
-  background-color: $material-grey200;
-  text-align: center;
+  background-color: $material-grey100;
   padding-top: 30px;
-  padding-bottom: 30px;
   border-top: 1px solid $material-grey300;
+  .primary-footer{
+    padding-bottom: 30px;
+  }
+  .secondary-footer{
+    background-color: black;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    .secondary-footer-col{
+      display: flex;
+      align-items: center;
+    }
+    .footer-social-col{
+justify-content: flex-end;
+    }
+    .footer-social{
+      height: 16px;
+      width: 16px;
+      margin-right: .5rem;
+      margin-right: .5rem;
+      fill:white
+  }
+
+  }
 }
 
 code {
@@ -144,4 +165,16 @@ code {
 
 .detail-background {
   background-color: $material-grey300;
+}
+
+.white{
+  color: white !important;
+}
+.submenulist{
+  list-style: none;
+  padding-left: 1rem;
+}
+.contained-btn{
+  background-color: $black !important;
+  color: white !important;
 }

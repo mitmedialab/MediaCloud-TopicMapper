@@ -1,7 +1,8 @@
-@import '../_constants';
+@import "../_constants";
 
 #nav-toolbar {
-  height: 60px;
+  min-height: 60px;
+  padding: 8px 0;
   font-family: $font-families;
   color: $white;
 
@@ -11,8 +12,16 @@
     margin: 0;
     padding: 0;
 
+    .partner {
+      margin-left: 0;
+      margin-right: 10px;
+    }
+
     &.right {
       float: right;
+      display: flex;
+      align-items: center;
+      height: 100%;
       li {
         margin-left: 0px;
         margin-right: 5px;
@@ -25,13 +34,13 @@
       margin-left: 10px;
       margin-top: 10px;
 
-      span, a {
+      span,
+      a {
         font-size: 14px;
         line-height: 40px;
         text-decoration: none;
         color: $white;
       }
-
     }
   }
 
@@ -51,6 +60,21 @@
     padding-top: 10px;
     padding-right: 10px;
     float: left;
+  }
+  .search-container {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .search-input {
+    width: 100%;
+    outline: none;
+    box-shadow: none;
+    border: 1px solid;
+    border-radius: 8px;
+    height: 36px;
+    align-items: flex-end;
+    margin-top: 8px;
+    padding-left: 8px;
   }
 
 }
