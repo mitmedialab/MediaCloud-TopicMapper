@@ -1,6 +1,47 @@
 {
   "releases": [
     {
+      "date": "2021-01-12",
+      "version": "v3.19.0",
+      "notes": [
+        {
+          "apps": [ "topics", "sources", "explorer" ],
+          "type": "New",
+          "note": "Generally available story details page"
+        },
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Default search set to U.S. National Collection"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Comma between collections"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "CSV file uploads limited to files with .csv extension"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Added 'dated' to attention chart"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "'0' missing when creating topics with no spidering"
+        },
+        {
+          "apps": [ "topics", "sources", "explorer" ],
+          "type": "Fix",
+          "note": "Update link to blog"
+        }
+      ]
+    },
+    {
       "date": "2020-11-17",
       "version": "v3.18.1",
       "notes": [
