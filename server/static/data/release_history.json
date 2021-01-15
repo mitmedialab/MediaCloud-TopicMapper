@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2021-01-15",
+      "version": "v3.19.1",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fix",
+          "note": "Entities page now loads correctly"
+        }
+      ]
+    },
+    {
       "date": "2021-01-12",
       "version": "v3.19.0",
       "notes": [

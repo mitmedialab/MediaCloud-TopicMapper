@@ -1,6 +1,6 @@
 {
   "name": "mediacloud-web-tools",
-  "version": "3.19.0",
+  "version": "3.19.1",
   "private": true,
   "engines": {
     "node": ">=12.14.0"
