@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "date": "2021-01-22",
+      "version": "v3.20.0",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "New",
+          "note": "Attention chart defaults to normalized story percentage"
+        },
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Updated tables to be full width"
+        }
+      ]
+    },
+    {
       "date": "2021-01-15",
       "version": "v3.19.1",
       "notes": [
