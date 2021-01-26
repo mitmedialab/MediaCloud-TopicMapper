@@ -31,6 +31,7 @@ jobs:
       - name: Super-Linter
         uses: github/super-linter@v3.14.0
         env:
+          FILTER_REGEX_INCLUDE: .*src/.*
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: /
           VALIDATE_JAVASCRIPT_ES: true
