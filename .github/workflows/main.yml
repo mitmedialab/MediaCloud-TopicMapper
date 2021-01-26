@@ -41,12 +41,3 @@ jobs:
 
       - name: Pylint
         run: make lint.py
-
-#       - name: Super-Linter | Python
-#         uses: github/super-linter@v3.14.0
-#         env:
-#           FILTER_REGEX_INCLUDE: .*server/.*
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           LINTER_RULES_PATH: /
-#           VALIDATE_PYTHON_PYLINT: true
-#           PYTHON_PYLINT_CONFIG_FILE: .pylintrc
