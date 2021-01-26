@@ -29,7 +29,7 @@ jobs:
         run: npm i --ignore-scripts
       
       - name: ESLint
-        run: npx eslint
+        run: npm run lint
         
 #       - name: Super-Linter | JS
 #         uses: github/super-linter@v3.14.0
