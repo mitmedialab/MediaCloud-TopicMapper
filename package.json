@@ -19,11 +19,6 @@
     "lint": "npx eslint src/",
     "lint_fix": "eslint --fix --ext .js --ext .jsx ./src/"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && sh scripts/validate-release-history.sh"
-    }
-  },
   "dependencies": {
     "@material-ui/core": "^4.10.0",
     "@material-ui/icons": "^4.9.1",
@@ -116,7 +111,6 @@
     "happypack": "^5.0.1",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^4.3.0",
-    "husky": "^4.2.5",
     "if-env": "^1.0.4",
     "manifest-revision-webpack-plugin": "^0.4.1",
     "mini-css-extract-plugin": "^0.9.0",
