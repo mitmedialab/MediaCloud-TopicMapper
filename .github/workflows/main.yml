@@ -27,15 +27,18 @@ jobs:
         
       - name: npm install
         run: npm i --ignore-scripts
+      
+      - name: ESLint
+        run: npx eslint
         
-      - name: Super-Linter | JS
-        uses: github/super-linter@v3.14.0
-        env:
-          FILTER_REGEX_INCLUDE: .*src/.*
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: /
-          VALIDATE_JAVASCRIPT_ES: true
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
+#       - name: Super-Linter | JS
+#         uses: github/super-linter@v3.14.0
+#         env:
+#           FILTER_REGEX_INCLUDE: .*src/.*
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           LINTER_RULES_PATH: /
+#           VALIDATE_JAVASCRIPT_ES: true
+#           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
 
       - name: pip install
         run: make requirements-local.py
