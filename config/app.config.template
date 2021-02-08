@@ -14,14 +14,6 @@ COOKIE_DOMAIN = localhost
 # The path to pass-through CloudFront account for serving up static assets
 #ASSET_URL = https://DISTRIBUTION_NAME.cloudfront.net/static/gen/topics/
 
-# Configuration for sending emails to users over SMTP
-SMTP_ENABLED = 0
-SMTP_SERVER = mail.your_server.suffix
-SMTP_PORT = 22
-SMTP_USE_SSL = 1
-SMTP_USER = me_the_user
-SMTP_PASS = my_passowrd
-
 # Service: API Key for accessing Media Cloud (get this on your profile page)
 MEDIA_CLOUD_API_KEY = YOUR_MEDIACLOUD_API_KEY_HERE
 
