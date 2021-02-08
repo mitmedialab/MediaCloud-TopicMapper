@@ -10,6 +10,6 @@ deploy-app:
 	npm run $(app)-release
 	git add server/static/gen/$(app)
 	git commit -m "Built $(app) assets"
-	git tag explorer-$(version)
+	git tag $(app)-$(version)
 	git push origin --tags
 	git push --force prod-$(app) $(app)-$(version):main
