@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2021-02-09",
+      "version": "v3.21.1",
+      "notes": [
+        {
+          "apps": [ "topics", "explorer", "sources" ],
+          "type": "Fix",
+          "note": "Error with NYTimes topic theming"
+        }
+      ]
+    },
+    {
       "date": "2021-02-08",
       "version": "v3.21.0",
       "notes": [
