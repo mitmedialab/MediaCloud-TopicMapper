@@ -261,7 +261,7 @@ def processed_for_themes_query_clause():
     :return: A solr query clause you can use to filter for stories that have been tagged by any version
      of our CLIFF geotagging engine (ie. tagged with people, places, and organizations)
     """
-    return "(tags_id_stories:({}))".format(" ".join([str(t) for t in TagSetDiscoverer().nyt_themes_version_tags]))
+    return "(tags_id_stories:({}))".format(" ".join([str(t) for t in TagDiscoverer().nyt_themes_version_tags]))
 
 
 def processed_for_entities_query_clause():
