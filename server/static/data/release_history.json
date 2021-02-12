@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2021-02-12",
+      "version": "v3.21.2",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Inlink and outllinks filtered by story"
+        }
+      ]
+    },
+    {
       "date": "2021-02-09",
       "version": "v3.21.1",
       "notes": [
