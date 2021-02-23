@@ -1,6 +1,32 @@
 {
   "releases": [
     {
+      "date": "2021-02-23",
+      "version": "v3.22.0",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Story tables loading errors when no stories available"
+        },
+        {
+          "apps": [ "topics", "sources" ],
+          "type": "New",
+          "note": "Updated emails to include contract information"
+        },
+        {
+          "apps": [ "topics", "sources", "explorer", "tools" ],
+          "type": "New",
+          "note": "Optimized page loads"
+        },
+        {
+          "apps": [ "topics", "sources", "explorer", "tools" ],
+          "type": "New",
+          "note": "Removed API console"
+        }
+      ]
+    },
+    {
       "date": "2021-02-12",
       "version": "v3.21.2",
       "notes": [
