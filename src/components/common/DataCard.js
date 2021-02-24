@@ -7,12 +7,12 @@ import React from 'react';
  */
 const DataCard = (props) => {
   const { children, border, disabled, className, inline, leftBorder } = props;
-  const unborderedClass = (border === false) ? 'unbordered' : '';
-  const disabledClass = (disabled === true) ? 'disabled' : '';
-  const leftBorderClass = (leftBorder === true) ? 'left-border' : '';
-  const inlineClass = (inline === true) ? 'inline' : '';
+  const unborderedClass = border ? 'unbordered' : '';
+  const disabledClass = disabled ? 'disabled' : '';
+  const leftBorderClass = leftBorder ? 'left-border' : '';
+  const inlineClass = inline ? 'inline' : '';
   const rootClasses = `${unborderedClass} ${disabledClass}`;
-  const classes = `datacard ${rootClasses} ${className} ${inlineClass} ${leftBorderClass}`;
+  const classes = `datacard ${rootClasses} ${className || ''} ${inlineClass} ${leftBorderClass}`;
   return (
     <div className={classes}>
       {children}
