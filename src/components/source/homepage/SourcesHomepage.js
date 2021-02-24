@@ -4,7 +4,7 @@ import { injectIntl, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import Link from 'react-router/lib/Link';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Grid, Container, Box } from '@material-ui/core';
 import FeaturedCollectionsContainer from './FeaturedCollectionsContainer';
 import FavoriteSourcesAndCollectionsContainer from './FavoriteSourcesAndCollectionsContainer';
 import SourceControlBar from '../controlbar/SourceControlBar';
@@ -35,20 +35,17 @@ const localMessages = {
 
 const SourcesHomepage = (props) => {
   const { user } = props;
-  let sideBarContent;
-  if (user.isLoggedIn) {
-    sideBarContent = <FavoriteSourcesAndCollectionsContainer />;
-  } else {
-    sideBarContent = (
-      <>
-        <br />
+  const sideBarContent = (
+    <Box pt={3}>
+      {user.isLoggedIn && <FavoriteSourcesAndCollectionsContainer />}
+      {!user.isLoggedIn && (
         <DataCard>
           <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
           <LoginForm />
         </DataCard>
-      </>
-    );
-  }
+      )}
+    </Box>
+  );
   return (
     <div className="homepage">
       <Masthead
@@ -59,7 +56,7 @@ const SourcesHomepage = (props) => {
       <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
         <SourceControlBar showSearch>
           <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
-            <Grid>
+            <Container maxWidth="lg">
               <Link to="collections/create">
                 <AddButton />
                 <FormattedMessage {...localMessages.addCollection} />
@@ -69,26 +66,24 @@ const SourcesHomepage = (props) => {
                 <AddButton />
                 <FormattedMessage {...localMessages.addSource} />
               </Link>
-            </Grid>
+            </Container>
           </Permissioned>
         </SourceControlBar>
       </Permissioned>
-      <Grid>
-        <Row>
-          <Col lg={1} xs={0} />
-          <Col lg={5} xs={12}>
+      <Container maxWidth="md">
+        <Grid container spacing={3}>
+          <Grid item md={6} xs={12}>
             <h1><FormattedMessage {...localMessages.intro} /></h1>
             <p>
               <FormattedHTMLMessage {...localMessages.about} />
               <Link to="/sources/suggest"><FormattedMessage {...localMessages.suggestLink} /></Link>
             </p>
-          </Col>
-          <Col lg={1} xs={0} />
-          <Col lg={5} xs={12}>
+          </Grid>
+          <Grid item md={6} xs={12}>
             {sideBarContent}
-          </Col>
-        </Row>
-      </Grid>
+          </Grid>
+        </Grid>
+      </Container>
 
       <Permissioned onlyRole={PERMISSION_LOGGED_IN}>
         <FeaturedCollectionsContainer />
@@ -96,9 +91,9 @@ const SourcesHomepage = (props) => {
 
       <SourcesMarketingFeatureList />
 
-      <Grid>
+      <Container maxWidth="lg">
         <SystemStatsContainer />
-      </Grid>
+      </Container>
 
     </div>
   );

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { Row, Col } from 'react-flexbox-grid/lib';
+import { Box } from '@material-ui/core';
 
 const localMessage = {
   showDescription: { id: 'describedDataCard.description.show', defaultMessage: ' Learn more' },
@@ -50,8 +51,8 @@ function withDescription(introMessage, descriptionMessage, showingPropName) {
         const visible = (showingPropName === undefined) || (showingPropName && (this.props[showingPropName] !== false));
         if (visible) {
           return (
-            <span className="described-data-card">
-              <Row>
+            <Box pt={3}>
+              <Row className="described-data-card">
                 <Col lg={8}>
                   <ChildComponent {...this.props} showingDetails={this.state.showDescription} />
                 </Col>
@@ -65,7 +66,7 @@ function withDescription(introMessage, descriptionMessage, showingPropName) {
                   </div>
                 </Col>
               </Row>
-            </span>
+            </Box>
           );
         }
         return '';

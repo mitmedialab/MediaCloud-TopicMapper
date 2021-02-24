@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { Row, Col } from 'react-flexbox-grid/lib';
+import { Grid } from '@material-ui/core';
 import CollectionSourceListContainer from './CollectionSourceListContainer';
 import CollectionSplitStoryCountContainer from './CollectionSplitStoryCountContainer';
 import CollectionTopWordsContainer from './CollectionTopWordsContainer';
@@ -42,44 +42,46 @@ class CollectionDetailsContainer extends React.Component {
     switch (this.state.selectedViewIndex) {
       case 0:
         viewContent = (
-          <Row>
-            <Col lg={6} xs={12}>
+          <>
+            <Grid item md={6} sm={12}>
               <CollectionSourceListContainer collectionId={collection.tags_id} />
-            </Col>
-            <Col lg={6} xs={12}>
-              <CollectionSourceRepresentation collection={collection} />
-              <CollectionMetadataCoverageSummaryContainer collection={collection} />
-              <CollectionSimilarContainer collectionId={collection.tags_id} filename={filename} />
-            </Col>
-          </Row>
+            </Grid>
+            <Grid item md={6} sm={12}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <CollectionSourceRepresentation collection={collection} />
+                </Grid>
+                <Grid item xs={12}>
+                  <CollectionMetadataCoverageSummaryContainer collection={collection} />
+                </Grid>
+                <Grid item xs={12}>
+                  <CollectionSimilarContainer collectionId={collection.tags_id} filename={filename} />
+                </Grid>
+              </Grid>
+            </Grid>
+          </>
         );
         break;
       case 1:
         viewContent = (
-          <span>
-            <Row>
-              <Col lg={12}>
-                <CollectionSplitStoryCountContainer
-                  collectionId={collection.tags_id}
-                  filename={filename}
-                  collectionName={collection.label || collection.tag}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={12}>
-                <CollectionTopWordsContainer collectionId={collection.tags_id} collectionName={collection.label || collection.tag} />
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={12}>
-                <CollectionGeographyContainer
-                  collectionId={collection.tags_id}
-                  collectionName={collection.label || collection.tag}
-                />
-              </Col>
-            </Row>
-          </span>
+          <>
+            <Grid item xs={12}>
+              <CollectionSplitStoryCountContainer
+                collectionId={collection.tags_id}
+                filename={filename}
+                collectionName={collection.label || collection.tag}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CollectionTopWordsContainer collectionId={collection.tags_id} collectionName={collection.label || collection.tag} />
+            </Grid>
+            <Grid item xs={12}>
+              <CollectionGeographyContainer
+                collectionId={collection.tags_id}
+                collectionName={collection.label || collection.tag}
+              />
+            </Grid>
+          </>
         );
         break;
       default:
@@ -87,19 +89,16 @@ class CollectionDetailsContainer extends React.Component {
     }
 
     return (
-      <div>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <p><b>{collection.description}</b></p>
+          <p>
+            {collection.is_static && <FormattedMessage {...localMessages.collectionIsStatic} values={{ shows: collection.is_static }} />}
+            {!collection.is_static && <FormattedMessage {...localMessages.collectionIsNotStatic} values={{ shows: collection.is_static }} />}
+          </p>
+        </Grid>
 
-        <Row>
-          <Col lg={8}>
-            <p><b>{collection.description}</b></p>
-            <p>
-              {collection.is_static && <FormattedMessage {...localMessages.collectionIsStatic} values={{ shows: collection.is_static }} />}
-              {!collection.is_static && <FormattedMessage {...localMessages.collectionIsNotStatic} values={{ shows: collection.is_static }} />}
-            </p>
-          </Col>
-        </Row>
-
-        <Row>
+        <Grid item xs={12}>
           <TabSelector
             tabLabels={[
               formatMessage(localMessages.sources),
@@ -107,11 +106,10 @@ class CollectionDetailsContainer extends React.Component {
             ]}
             onViewSelected={index => this.setState({ selectedViewIndex: index })}
           />
-        </Row>
+        </Grid>
 
         {viewContent}
-
-      </div>
+      </Grid>
     );
   }
 }

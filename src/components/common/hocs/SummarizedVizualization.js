@@ -92,8 +92,7 @@ class SummarizedVizualizationInternal extends React.Component {
               {detailsContent}
             </div>
           </Col>
-          {!wide && <Col lg={1} />}
-          <Col lg={wide ? 12 : 7}>
+          <Col lg={wide ? 12 : 8}>
             <div className="content">
               {children}
             </div>

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Container, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
 import withAsyncData from '../../../common/hocs/AsyncDataContainer';
 import CollectionIcon from '../../../common/icons/CollectionIcon';
@@ -15,35 +15,29 @@ const localMessages = {
 };
 
 const CountryCollectionListContainer = ({ collectionsByCountry, user, collectionSets }) => (
-  <>
-    <PageTitle value={localMessages.title} />
-    <Grid>
-      <Row>
-        <Col lg={10}>
-          <h1>
-            <CollectionIcon height={32} />
-            <FormattedMessage {...localMessages.title} />
-          </h1>
-          <p><FormattedMessage {...localMessages.description} /></p>
-        </Col>
-      </Row>
+  <Container maxWidth="lg">
+    <Grid container spacing={3}>
+      <PageTitle value={localMessages.title} />
+      <Grid item>
+        <h1>
+          <CollectionIcon height={32} />
+          <FormattedMessage {...localMessages.title} />
+        </h1>
+        <p><FormattedMessage {...localMessages.description} /></p>
+      </Grid>
       {collectionsByCountry.map((countryInfo, idx) => (
-        <Row key={idx}>
-          <Col lg={10}>
-            <div>
-              <CollectionList
-                collectionSets={collectionSets}
-                collections={countryInfo.collections}
-                title={countryInfo.country && countryInfo.country.name ? countryInfo.country.name : ''}
-                user={user}
-                dataCard={false}
-              />
-            </div>
-          </Col>
-        </Row>
+        <Grid item key={idx}>
+          <CollectionList
+            collectionSets={collectionSets}
+            collections={countryInfo.collections}
+            title={countryInfo.country && countryInfo.country.name ? countryInfo.country.name : ''}
+            user={user}
+            dataCard={false}
+          />
+        </Grid>
       ))}
     </Grid>
-  </>
+  </Container>
 );
 
 CountryCollectionListContainer.propTypes = {

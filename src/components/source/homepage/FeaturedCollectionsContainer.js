@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Container, Box, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Link from 'react-router/lib/Link';
 import { fetchFeaturedCollectionList } from '../../../actions/sourceActions';
@@ -16,40 +16,40 @@ const localMessages = {
 const FeaturedCollectionsContainer = (props) => {
   const { collections } = props;
   return (
-    <Grid>
+    <Container maxWidth="lg">
       <div className="featured-collections-wrapper">
-        <Row>
-          <Col lg={12}>
-            <h1>
-              <FormattedMessage {...localMessages.mainTitle} />
-            </h1>
-          </Col>
-        </Row>
+        <Grid item xs={12}>
+          <h1>
+            <FormattedMessage {...localMessages.mainTitle} />
+          </h1>
+        </Grid>
         <div className="featured-collections-list">
-          <Row>
+          <Grid container spacing={2}>
             {collections.map((c) => {
               const link = `collections/${c.tags_id}`;
+              const actions = (
+                <Grid container justify="flex-end">
+                  <Box pb={2} px={2}>
+                    <ExploreButton linkTo={link} />
+                  </Box>
+                </Grid>
+              );
               return (
-                <Col key={c.tags_id} lg={4} xs={12}>
-                  <DataCard className="featured-collections-item">
-                    <div className="content">
-                      <div>
-                        <h2><Link to={link}>{c.label}</Link></h2>
-                        <p><i>{c.tag_set_label}</i></p>
-                        <p>{c.description}</p>
-                      </div>
-                    </div>
-                    <div className="actions">
-                      <ExploreButton linkTo={link} />
-                    </div>
+                <Grid item key={c.tags_id} lg={4} md={6} xs={12}>
+                  <DataCard className="featured-collections-item" actions={actions}>
+                    <Box px={2}>
+                      <h2><Link to={link}>{c.label}</Link></h2>
+                      <p><i>{c.tag_set_label}</i></p>
+                      <p>{c.description}</p>
+                    </Box>
                   </DataCard>
-                </Col>
+                </Grid>
               );
             })}
-          </Row>
+          </Grid>
         </div>
       </div>
-    </Grid>
+    </Container>
   );
 };
 

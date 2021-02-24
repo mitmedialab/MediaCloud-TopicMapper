@@ -20,8 +20,9 @@
     "lint_fix": "eslint --fix --ext .js --ext .jsx ./src/"
   },
   "dependencies": {
-    "@material-ui/core": "^4.10.0",
+    "@material-ui/core": "^4.11.1",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "airbnb-js-shims": "^2.2.1",
     "codemirror": "^5.54.0",
     "core-js": "^3.6.5",

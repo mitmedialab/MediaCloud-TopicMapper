@@ -1,33 +1,33 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { Card, CardActions, CardContent } from '@material-ui/core';
+
 /**
  * The primary unit of our interface. Any self-contained piece of a larger report page should
  * be inside of a DataCard.
  */
 const DataCard = (props) => {
-  const { children, border, disabled, className, inline, leftBorder } = props;
-  const unborderedClass = border ? 'unbordered' : '';
-  const disabledClass = disabled ? 'disabled' : '';
-  const leftBorderClass = leftBorder ? 'left-border' : '';
-  const inlineClass = inline ? 'inline' : '';
-  const rootClasses = `${unborderedClass} ${disabledClass}`;
-  const classes = `datacard ${rootClasses} ${className || ''} ${inlineClass} ${leftBorderClass}`;
+  const { children, className, actions } = props;
   return (
-    <div className={classes}>
-      {children}
-    </div>
+    <Card className={`${className || ''}`}>
+      <CardContent>
+        {children}
+      </CardContent>
+      {actions && (
+        <CardActions>
+          {actions}
+        </CardActions>
+      )}
+    </Card>
   );
 };
 
 DataCard.propTypes = {
   // from parent
   children: PropTypes.node.isRequired,
-  border: PropTypes.bool,
-  leftBorder: PropTypes.bool,
-  disabled: PropTypes.bool,
-  inline: PropTypes.bool,
   className: PropTypes.string,
+  actions: PropTypes.object,
 };
 
 export default DataCard;

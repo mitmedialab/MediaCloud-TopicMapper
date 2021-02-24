@@ -72,7 +72,7 @@ const TopicPreviewList = (props) => {
             <div className="topic-preview-list-item">
               <DataCard>
                 <div className="content" id={`topic-preview-${topic.topics_id}`}>
-                  <div>
+                  <>
                     { onSetFavorited && (
                       <FavoriteToggler
                         isFavorited={topic.isFavorite}
@@ -89,10 +89,10 @@ const TopicPreviewList = (props) => {
                     />
                     <p>{topic.description}</p>
                     <TopicOwnerList owners={topic.owners} />
-                  </div>
+                  </>
+                  {!hideState && topicStateNotice}
                 </div>
               </DataCard>
-              {!hideState && topicStateNotice}
             </div>
           </Col>
         );

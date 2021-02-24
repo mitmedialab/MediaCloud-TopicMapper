@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Row, Col } from 'react-flexbox-grid/lib';
+import { Container } from '@material-ui/core';
 import { push } from 'react-router-redux';
 import SourceSearchContainer from './SourceSearchContainer';
 
 const SourceControlBar = props => (
   <div className="controlbar controlbar-sources">
     <div className="main">
-      <Grid>
+      <Container maxWidth="lg">
         <Row>
           <Col lg={(props.showSearch === true) ? 7 : 12} xs={12} className="left">
             {props.children}
@@ -24,7 +25,7 @@ const SourceControlBar = props => (
             )}
           </Col>
         </Row>
-      </Grid>
+      </Container>
     </div>
   </div>
 );

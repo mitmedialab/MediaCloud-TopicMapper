@@ -3,6 +3,7 @@ import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Box } from '@material-ui/core';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { urlWithFilters } from '../../util/location';
 import CountOverTimeSummaryContainer from './CountOverTimeSummaryContainer';
@@ -134,21 +135,17 @@ class TopicSummaryContainer extends React.Component {
           // language
           viewContent = (
             <>
-              <Row>
-                <Col lg={12}>
-                  <SummarizedVizualization
-                    titleMessage={messages.topWords}
-                    introMessage={localMessages.wordsDescriptionIntro}
-                    detailedMessage={[messages.wordcloudHelpText, messages.wordCloudTopicWord2VecLayoutHelp]}
-                    handleExplore={urlWithFilters(`/topics/${topic.topics_id}/words`, filters)}
-                  >
-                    <TopicWordCloudContainer svgName="all-words" border={false} uid="topic" />
-                  </SummarizedVizualization>
-                </Col>
-                <Col lg={12}>
-                  <TopicWordSpaceContainer topicId={topic.topics_id} topicName={topic.name} filters={filters} uid="topic" />
-                </Col>
-              </Row>
+              <SummarizedVizualization
+                titleMessage={messages.topWords}
+                introMessage={localMessages.wordsDescriptionIntro}
+                detailedMessage={[messages.wordcloudHelpText, messages.wordCloudTopicWord2VecLayoutHelp]}
+                handleExplore={urlWithFilters(`/topics/${topic.topics_id}/words`, filters)}
+              >
+                <TopicWordCloudContainer svgName="all-words" border={false} uid="topic" />
+              </SummarizedVizualization>
+              <Col lg={12}>
+                <TopicWordSpaceContainer topicId={topic.topics_id} topicName={topic.name} filters={filters} uid="topic" />
+              </Col>
               <Row>
                 <Col lg={12}>
                   <NytLabelSummaryContainer topicId={topic.topics_id} filters={filters} topicName={topic.name} location={location} />
@@ -207,11 +204,13 @@ class TopicSummaryContainer extends React.Component {
           // stats
           viewContent = (
             <>
-              <Row>
-                <Col lg={12}>
-                  <TopicStoryMetadataStatsContainer topicId={topic.topics_id} filters={filters} timespan={selectedTimespan} />
-                </Col>
-              </Row>
+              <Box py={3}>
+                <Row>
+                  <Col lg={12}>
+                    <TopicStoryMetadataStatsContainer topicId={topic.topics_id} filters={filters} timespan={selectedTimespan} />
+                  </Col>
+                </Row>
+              </Box>
               <Row>
                 <Col lg={12}>
                   <FociStoryCountComparisonContainer topicId={topic.topics_id} filters={filters} />
@@ -256,7 +255,9 @@ class TopicSummaryContainer extends React.Component {
             </Row>
             <Row>
               <Col lg={12}>
-                <TopicStoryStats topicId={topic.topics_id} filters={filters} timespan={selectedTimespan} />
+                <Box pt={3}>
+                  <TopicStoryStats topicId={topic.topics_id} filters={filters} timespan={selectedTimespan} />
+                </Box>
               </Col>
             </Row>
             <Row>

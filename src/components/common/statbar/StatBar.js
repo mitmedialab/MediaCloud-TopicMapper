@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { Row, Col } from 'react-flexbox-grid/lib';
+import { Grid } from '@material-ui/core';
 import Stat from './Stat';
 
 const StatBar = props => (
   <div className="stat-bar">
-    <Row>
+    <Grid container spacing={3}>
       {props.stats.map((stat, idx) => (
-        <Col lg={props.columnWidth || 4} md={6} key={idx}>
+        <Grid item lg={props.columnWidth || 4} md={6} key={idx}>
           <Stat {...stat} />
-        </Col>
+        </Grid>
       ))}
-    </Row>
+    </Grid>
   </div>
 );
 

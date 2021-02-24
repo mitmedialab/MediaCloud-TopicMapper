@@ -3,7 +3,7 @@ import React from 'react';
 import { FormattedMessage, FormattedHTMLMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Link from 'react-router/lib/Link';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Grid } from '@material-ui/core';
 import CollectionList from '../../common/CollectionList';
 import SourceStatInfo from './SourceStatInfo';
 import SourceSplitStoryCountContainer from './SourceSplitStoryCountContainer';
@@ -89,45 +89,39 @@ class SourceDetailsContainer extends React.Component {
     switch (this.state.selectedViewIndex) {
       case 0:
         viewContent = (
-          <span>
-            <SourceStatInfo sourceId={source.media_id} />
-            <Row>
-              <Col lg={6} md={6} sm={12}>
-                <SourceMetadataStatBar source={source} columnWidth={6} />
-              </Col>
-              <Col lg={6} md={6} sm={12}>
-                <CollectionList
-                  title={formatMessage(localMessages.sourceDetailsCollectionsTitle)}
-                  intro={formatMessage(localMessages.sourceDetailsCollectionsIntro, {
-                    name: source.name,
-                  })}
-                  collections={source.media_source_tags}
-                  collectionSets={collectionSets}
-                />
-              </Col>
-            </Row>
-          </span>
+          <>
+            <Grid item xs={12}>
+              <SourceStatInfo sourceId={source.media_id} />
+            </Grid>
+            <Grid item lg={6} md={6} sm={12}>
+              <SourceMetadataStatBar source={source} columnWidth={6} />
+            </Grid>
+            <Grid item md={6} sm={12}>
+              <CollectionList
+                title={formatMessage(localMessages.sourceDetailsCollectionsTitle)}
+                intro={formatMessage(localMessages.sourceDetailsCollectionsIntro, {
+                  name: source.name,
+                })}
+                collections={source.media_source_tags}
+                collectionSets={collectionSets}
+              />
+            </Grid>
+          </>
         );
         break;
       case 1:
         viewContent = (
-          <span>
-            <Row>
-              <Col lg={12}>
-                <SourceSplitStoryCountContainer sourceId={source.media_id} sourceName={source.name} filename={filename} />
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={12}>
-                <SourceTopWordsContainer source={source} />
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={12} md={12} sm={12}>
-                <SourceGeographyContainer source={source} />
-              </Col>
-            </Row>
-          </span>
+          <>
+            <Grid item xs={12}>
+              <SourceSplitStoryCountContainer sourceId={source.media_id} sourceName={source.name} filename={filename} />
+            </Grid>
+            <Grid item xs={12}>
+              <SourceTopWordsContainer source={source} />
+            </Grid>
+            <Grid item xs={12}>
+              <SourceGeographyContainer source={source} />
+            </Grid>
+          </>
         );
         break;
       default:
@@ -135,34 +129,31 @@ class SourceDetailsContainer extends React.Component {
     }
 
     return (
-      <Grid className="details source-details">
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          {notice}
+          {unhealthySourceWarning}
+          {publicNotes}
+          <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
+            {editorNotes}
+          </Permissioned>
+          <p>
+            <FormattedMessage
+              {...localMessages.dateInfo}
+              values={{
+                startDate: (source.health && source.health.start_date) ? source.health.start_date.substring(0, 10) : formatMessage(localMessages.unknown),
+                endDate: (source.health && source.health.end_date) ? source.health.end_date.substring(0, 10) : formatMessage(localMessages.unknown),
+              }}
+            />
+            &nbsp;
+            <Link to={`/sources/${source.media_id}/feeds`}>
+              <FormattedMessage {...localMessages.feedLink} />
+            </Link>
+            {feedScrapeMsg}
+          </p>
+        </Grid>
 
-        <Row>
-          <Col lg={9} xs={12}>
-            {notice}
-            {unhealthySourceWarning}
-            {publicNotes}
-            <Permissioned onlyRole={PERMISSION_MEDIA_EDIT}>
-              {editorNotes}
-            </Permissioned>
-            <p>
-              <FormattedMessage
-                {...localMessages.dateInfo}
-                values={{
-                  startDate: (source.health && source.health.start_date) ? source.health.start_date.substring(0, 10) : formatMessage(localMessages.unknown),
-                  endDate: (source.health && source.health.end_date) ? source.health.end_date.substring(0, 10) : formatMessage(localMessages.unknown),
-                }}
-              />
-              &nbsp;
-              <Link to={`/sources/${source.media_id}/feeds`}>
-                <FormattedMessage {...localMessages.feedLink} />
-              </Link>
-              {feedScrapeMsg}
-            </p>
-          </Col>
-        </Row>
-
-        <Row>
+        <Grid item xs={12}>
           <TabSelector
             tabLabels={[
               formatMessage(localMessages.about),
@@ -170,10 +161,9 @@ class SourceDetailsContainer extends React.Component {
             ]}
             onViewSelected={index => this.setState({ selectedViewIndex: index })}
           />
-        </Row>
+        </Grid>
 
         {viewContent}
-
       </Grid>
     );
   }

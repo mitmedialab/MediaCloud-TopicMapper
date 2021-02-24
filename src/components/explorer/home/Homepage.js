@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { schemeCategory10 } from 'd3';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib';
+import { Box } from '@material-ui/core';
 import DataCard from '../../common/DataCard';
 import LoginForm from '../../user/LoginForm';
 import SearchForm from './SearchForm';
@@ -54,10 +55,14 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount, defaultCollectionTa
           </Col>
           <Col lg={1} />
           <Col lg={4}>
-            <DataCard leftBorder>
-              <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
-              <LoginForm />
-            </DataCard>
+            <Box pt={5}>
+              <DataCard leftBorder>
+                <Box px={3}>
+                  <h2><FormattedMessage {...localMessages.loginTitle} /></h2>
+                  <LoginForm />
+                </Box>
+              </DataCard>
+            </Box>
           </Col>
         </Row>
       </Grid>
