@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2021-03-08",
+      "version": "v3.22.1",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "Fix",
+          "note": "Topic creation page timing out"
+        }
+      ]
+    },
+    {
       "date": "2021-02-23",
       "version": "v3.22.0",
       "notes": [
