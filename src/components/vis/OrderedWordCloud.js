@@ -46,6 +46,7 @@ function listCloudLayout(wordNodes, width, extent, sizeRange) {
     if (xPosition === '0') { // WTF does this come out as a string???!?!?!?!
       const height = 1.5 * fontSizeComputer(d, extent, sizeRange);
       y += height;
+      y = Math.max(y, height);
       lastAdded = height;
     }
     return y;
