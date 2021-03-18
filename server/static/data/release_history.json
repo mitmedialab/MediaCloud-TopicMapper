@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "date": "2021-03-18",
+      "version": "v3.22.2",
+      "notes": [
+        {
+          "apps": [ "explorer" ],
+          "type": "Fix",
+          "note": "Tops of word cut off on word clouds"
+        }
+      ]
+    },
+    {
       "date": "2021-03-08",
       "version": "v3.22.1",
       "notes": [
