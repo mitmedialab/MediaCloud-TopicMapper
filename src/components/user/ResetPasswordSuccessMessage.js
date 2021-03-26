@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 const localMessages = {
   title: { id: 'success.email', defaultMessage: 'We Reset Your Password' },
-  intro: { id: 'success.emailInfo', defaultMessage: 'We rest your password. We emailed you just to confirm that you did this on purpose - don\'t be suprised.' },
+  intro: { id: 'success.emailInfo', defaultMessage: 'We reset your password. We emailed you just to confirm that you did this on purpose - don\'t be suprised.' },
 };
 
 const ResetPasswordSuccessMessage = () => (
