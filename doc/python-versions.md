@@ -21,7 +21,7 @@ pyenv install 3.7.6
 PyEnv-VirtualEnv
 ----------------
 
-For managing a virtual enviromnent with a specific version of python for our project, we use 
+For managing a virtual environment with a specific version of python for our project, we use 
 [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). Install this with homebrew as well
 ```
 brew install pyenv-virtualenv
@@ -37,4 +37,21 @@ refers to it so it loads automatically when you enter the directory (if `eval "$
 is in your `.profile`):
 ```
 pyenv virtualenv 3.7.6 mc-web-tools
+```
+
+Ubuntu
+------
+See the installer at https://github.com/pyenv/pyenv-installer . Install pyenv by saying:
+
+```bash
+$ curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer >pyenv-installer
+$ bash pyenv-installer
+$ exec $SHELL
+```
+Load pyenv automatically by adding the following to ~/.bashrc:
+
+```bash
+export PATH="/home/username/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 ```

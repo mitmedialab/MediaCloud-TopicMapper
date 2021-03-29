@@ -22,6 +22,7 @@ Python:
 
 Node and npm:  
  * On Windows, make sure to create an environment variable: `set NODE_ENV=dev`
+ * On Linux/Ubuntu, see the doc folder for alternate instructions.
  * make sure your node installation is up-to-date (we work with v8.2.1 right now)
  * `npm install` to install all the package dependencies (as specified in the `package.json`)
 
@@ -36,8 +37,9 @@ Redis:
 MemCache:
 On OSX, make sure to run `brew install libmemcached` otherwise you'll get an error about pylibmc failing to install (http://brew.sh)
  
+
 Multi-platform setup:
-Coming soon
+Coming soon (for now see doc/ubuntu.md)
 
 Configuration
 ------------- 
