@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "date": "2021-03-31",
+      "version": "v3.23.0",
+      "notes": [
+        {
+          "apps": [ "sources" ],
+          "type": "Fix",
+          "note": "Error when creating collections via CSV upload"
+        },
+        {
+          "apps": [ "topics", "sources", "explorer" ],
+          "type": "New",
+          "note": "Updated card styles"
+        }
+      ]
+    },
+    {
       "date": "2021-02-23",
       "version": "v3.22.0",
       "notes": [
