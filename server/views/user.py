@@ -208,6 +208,7 @@ def api_user_update():
         has_consented = False
     valid_params = {
         'full_name': request.form['full_name'],
+        'email': request.form['email'],
         'notes': request.form['notes'],
         'has_consented': has_consented
     }
