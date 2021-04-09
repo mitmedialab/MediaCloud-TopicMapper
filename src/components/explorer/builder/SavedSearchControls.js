@@ -2,24 +2,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import QueryPickerLoadUserSearchesDialog from './QueryPickerLoadUserSearchesDialog';
-import QueryPickerSaveUserSearchesDialog from './QueryPickerSaveUserSearchesDialog';
 
 
 const SavedSearchControls = (props) => {
-  const { onLoadSearches, onSaveSearch, onDeleteSearch, savedSearches,
-    searchNickname, submitting, setQueryFormChildDialogOpen } = props;
+  const { onLoadSearches, onDeleteSearch, savedSearches,
+    submitting, setQueryFormChildDialogOpen } = props;
   return (
     <div className="saved-search-controls-wrapper">
       <QueryPickerLoadUserSearchesDialog
         onLoadSearches={onLoadSearches}
         onDeleteSearch={onDeleteSearch}
         searches={savedSearches}
-        submitting={submitting}
-        setQueryFormChildDialogOpen={setQueryFormChildDialogOpen}
-      />
-      <QueryPickerSaveUserSearchesDialog
-        onSaveSearch={onSaveSearch}
-        searchNickname={searchNickname}
         submitting={submitting}
         setQueryFormChildDialogOpen={setQueryFormChildDialogOpen}
       />

@@ -14,9 +14,6 @@ $sources-darker: #1C769D;
 $topics-primary: #38BBAC;
 $topics-darker: #189B8C;
 
-$explorer-primary: #8F3387;
-$explorer-darker: #6F1367;
-
 $material-grey100: rgb(245,245,245);
 $material-grey200: rgb(238,238,238);
 $material-grey300: rgb(224,224,224);
@@ -33,3 +30,6 @@ $material-red500: rgb(255,87,34);
 
 $warning-color: rgb(255,152,0);
 $error-color: rgb(255,87,34);
+
+$explorer-primary: $material-grey500;
+$explorer-darker: $material-grey800;

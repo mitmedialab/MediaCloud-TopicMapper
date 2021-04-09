@@ -11,8 +11,8 @@ const messages = {
   topicsToolDescription: { id: 'app.topics.description', defaultMessage: 'Dive deeply into coverage of an issue by collecting more stories, analyzing influence, and slicing and dicing the stories to discover narratives.' },
   toolsToolName: { id: 'app.tools.name', defaultMessage: 'Tools' },
   toolsToolDescription: { id: 'app.tools.description', defaultMessage: 'Support for MediaCloud, including FAQs, tools and how to use them' },
-  explorerToolName: { id: 'app.explorer.name', defaultMessage: 'Explorer' },
-  explorerToolDescription: { id: 'app.explorer.description', defaultMessage: 'Get a quick overview of how your topic of interest is covered by digital news media by exploring attention, language, and entities.' },
+  explorerToolName: { id: 'app.explorer.name', defaultMessage: 'Project Squirrel' },
+  explorerToolDescription: { id: 'app.explorer.description', defaultMessage: 'TBD' },
   readGuide: { id: 'app.readGuide', defaultMessage: 'Visit Our Support Page' },
 
   userLogin: { id: 'user.login', defaultMessage: 'Login' },

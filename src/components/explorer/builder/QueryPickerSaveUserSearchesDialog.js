@@ -67,12 +67,6 @@ class QueryPickerSaveUserSearchesDialog extends React.Component {
         onClick={this.handleDialogClose}
         key="qpsusd-cancel"
       />,
-      <AppButton
-        primary
-        label={formatMessage(messages.save)}
-        onClick={this.handleLabelChangeAndClose}
-        key="qpsusd-save"
-      />,
     ];
     return (
       <div className="save-search-wrapper">

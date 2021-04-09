@@ -13,7 +13,6 @@ import { getDateRange, solrFormat, PAST_MONTH } from '../../../lib/dateUtil';
 import { autoMagicQueryLabel, serializeQueriesForUrl } from '../../../lib/explorerUtil';
 import TrackingEvent, { CLICK_ACTION, EXPLORER_SEARCH_CATEGORY } from '../../../lib/tracking';
 import { emptyString } from '../../../lib/formValidators';
-import ExplorerMarketingFeatureList from './ExplorerMarketingFeatureList';
 import SystemStatsContainer from '../../common/statbar/SystemStatsContainer';
 import messages from '../../../resources/messages';
 import Masthead from '../../common/header/Masthead';
@@ -22,8 +21,8 @@ import Permissioned from '../../common/Permissioned';
 
 const localMessages = {
   title: { id: 'explorer.intro.title', defaultMessage: 'Explorer' },
-  subtitle: { id: 'explorer.intro.subtitle', defaultMessage: 'Explore Online News with Media Cloud' },
-  description: { id: 'explorer.intro.description', defaultMessage: 'Use the Media Cloud Explorer to search half a billion stories from more than 50,000 sources. We pull in stories from online news media, blogs, and other sources to let you research media attention to issues you are interested in. Track shifts in media attention, identify competing media narratives, compare coverage in different media sectors - these are all tasks Media Cloud can help you with.' },
+  subtitle: { id: 'explorer.intro.subtitle', defaultMessage: 'Word Cloud fix - TBD' },
+  description: { id: 'explorer.intro.description', defaultMessage: 'TBD' },
   loginTitle: { id: 'explorer.intro.login.title', defaultMessage: 'Have an Account? Login Now' },
 };
 
@@ -67,7 +66,6 @@ const Homepage = ({ isLoggedIn, onKeywordSearch, storyCount, defaultCollectionTa
         </Row>
       </Grid>
     )}
-    <ExplorerMarketingFeatureList />
     <Grid>
       <SystemStatsContainer />
     </Grid>
