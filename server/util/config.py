@@ -17,7 +17,7 @@ def _variables_from_file(filepath):
                 continue
             if line.strip()[0] == COMMENT_CHAR:
                 continue
-            parts = line.split("=")
+            parts = line.split("=", 1)
             key = parts[0].strip().upper()
             value = parts[1].strip()
             logger.debug("  {}={}".format(key, value))

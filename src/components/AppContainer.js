@@ -69,7 +69,7 @@ class AppContainer extends React.Component {
               && (
               <div style={{ textAlign: 'center' }}>
                 <WarningNotice>
-                  {document.appConfig.systemWarning}
+                  <span dangerouslySetInnerHTML={{ __html: document.appConfig.systemWarning }} />
                 </WarningNotice>
               </div>
 )}
