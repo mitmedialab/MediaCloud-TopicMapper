@@ -15,7 +15,7 @@ import messages from '../../../resources/messages';
 const localMessages = {
   buttonLabel: { id: 'topic.version.generate.trigger', defaultMessage: 'Advanced Options...' },
   title: { id: 'topic.version.generate.dialog.title', defaultMessage: 'Generate Version: Admin Options' },
-  intro: { id: 'topic.version.generate.dialog.intro', defaultMessage: 'As an admin you have a few helpful shortcuts you can use. You can decided to generate a new version (like normal),  or you can regenerate in the current version. This can be helpful if you just want to add a new subtopic or something. In additon, you can decided whether you want to respider or not. Thi can be helpful on big topics that perhaps need new subtopics or settings, but don\'t need to be respidered (because that would take a long time).' },
+  intro: { id: 'topic.version.generate.dialog.intro', defaultMessage: 'As an admin you have a few helpful shortcuts you can use. You can decided to generate a new version (like normal),  or you can regenerate in the current version. This can be helpful if you just want to add a new subtopic or something. In additon, you can decided whether you want to respider or not. This can be helpful on big topics that perhaps need new subtopics or settings, but don\'t need to be respidered (because that would take a long time).' },
   newVersion: { id: 'topic.version.generate.newVersion.label', defaultMessage: 'Version:' },
   newVersionYes: { id: 'topic.version.generate.newVersion.yes', defaultMessage: 'Make a new version (like normal)' },
   newVersionNo: { id: 'topic.version.generate.newVersion.no', defaultMessage: 'Use the current (it will go back to queued status)' },
