@@ -50,7 +50,7 @@ export function deleteAccount(email) {
 }
 
 export function updateProfile(profile) {
-  const acceptedParams = acceptParams(profile, ['full_name', 'notes', 'has_consented']);
+  const acceptedParams = acceptParams(profile, ['full_name', 'notes', 'has_consented', 'email']);
   return createPostingApiPromise('/api/user/update', acceptedParams);
 }
 
