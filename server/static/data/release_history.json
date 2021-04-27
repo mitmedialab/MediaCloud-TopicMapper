@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "date": "2021-04-27",
+      "version": "v3.24.0",
+      "notes": [
+        {
+          "apps": [ "topics" ],
+          "type": "New",
+          "note": "Improved topic creation workflow"
+        },
+        {
+          "apps": [ "sources" ],
+          "type": "New",
+          "note": "Updated country iso3166"
+        }
+      ]
+    },
+    {
       "date": "2021-03-31",
       "version": "v3.23.0",
       "notes": [
